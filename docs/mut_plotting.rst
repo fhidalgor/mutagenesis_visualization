@@ -78,6 +78,20 @@ enrichment scores using the attribute ``object.heatmap``.
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
+If you set the parameter ``show_snv=True``, the algorithm will color
+green every mutation that is not a single nucleotide variant of the
+wild-type protein. You will notice how many mutations are not accessible
+through a nucleotide change.
+
+.. code:: ipython3
+
+    # Create full heatmap
+    hras_RBD.heatmap(title='H-Ras 2-166', outputfilename='hras_fullheatmap_snv', outputfilepath=outputfilepath,
+                        show_cartoon=True, outputformat=outputformat, show_snv=True, savefile=savefile)
+
+
+.. image:: ../example/exported_images/hras_fullheatmap_snv.png
+
 From the full heatmap, we can slice into just a few rows (a few amino
 acid substitution profiles). For that, we will use the attribute
 ``object.heatmap_selection``. Note that we need to specify which amino
@@ -100,8 +114,9 @@ columns. For that, we will use the attribute ``object.heatmap_subset``.
     hras_RBD.heatmap_subset(segment=[20, 40], outputfilename='hras_subsetheatmap', outputfilepath=outputfilepath,
                                outputformat=outputformat, savefile=savefile)
 
-.. figure:: ../example/exported_images/hras_subsetheatmap.png
-   :width: 200
+.. image:: ../example/exported_images/hras_subsetheatmap.png
+   :width: 200px
+   :align: center
 
 A summarized heatmap can also be generated. It is useful to evaluate
 global trends in the data. The command to use is ``object.miniheatmap``.
@@ -114,7 +129,8 @@ global trends in the data. The command to use is ``object.miniheatmap``.
 
 
 .. image:: ../example/exported_images/hras_miniheatmap.png
-   :width: 200
+   :width: 250px
+   :align: center
 
 Histogram, scatter and more
 ---------------------------
@@ -142,13 +158,14 @@ replacements.
 
 
 .. image:: ../example/exported_images/hras_kde.png
-   :scale: 15 %
+   :width: 240px
 
 .. image:: ../example/exported_images/hras_histsnv.png
-   :scale: 15 %
+   :width: 200px
 
 .. image:: ../example/exported_images/hras_histnonsnv.png
-   :scale: 15 %
+   :width: 200px
+
 
 If you have multiple objects, you can create a scatter plot using
 ``object.scatter``. Or if you have multiple replicates of the same
@@ -171,10 +188,11 @@ level.
 
 
 .. image:: ../example/exported_images/hras_scatter.png
-   :scale: 15 %
+   :width: 200px
 
 .. image:: ../example/exported_images/hras_scatter_mean.png
-   :scale: 15 %
+   :width: 200px
+
 
 The attribute ``object.rank`` sorts each mutation (or position) by the
 enrichment score. If ``outdf=True``, it will return a dataframe with the
@@ -189,9 +207,11 @@ mutations ranked.
 
 
 .. image:: ../example/exported_images/hras_rank.png
-   :scale: 15 %
+   :width: 400px
+   
 .. image:: ../example/exported_images/hras_ranktable.png
-   :scale: 60 %
+   :width: 200px
+
 
 The attribute ``object.cumulative`` draws a cumulative plot that sums
 the mean enrichment score of every position. This plot is useful to
@@ -207,7 +227,8 @@ follows the x=y line, suggestion a homogeneous mutational tolerance.
 
 
 .. image:: ../example/exported_images/hras_cumulative.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 Bar and line charts
 -------------------
@@ -231,10 +252,12 @@ particular amino acid along the protein.
 
 
 .. image:: ../example/exported_images/hras_bar_mean.png
-   :scale: 15 %
-
+   :width: 500px
+   :align: center
+   
 .. image:: ../example/exported_images/hras_bar_alanine.png
-   :scale: 15 %
+   :width: 500px
+   :align: center
 
 The mean differential effect between the two H-Ras datasets is displayed
 (``object.differential``). This plot is useful to compare either
@@ -251,7 +274,22 @@ mutations.
 
 
 .. image:: ../example/exported_images/hras_diffenrichment.png
-   :scale: 15 %
+   :width: 500px
+   :align: center
+
+You can check the individual mutational profile of a residue by using
+``object.position``.
+
+.. code:: ipython3
+
+    # Create plot for position 117
+    hras_RBD.position(position = 117, yscale = (-1.5, 0.8), figsize = (3.5,2), title = 'Position 117', outputfilename='hras_position117',
+                      outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
+
+
+.. image:: ../example/exported_images/hras_position117.png
+   :width: 350px
+   :align: center
 
 If you added the secondary structure as an attribute of the object, you
 can plot the mean enrichment score for each alpha and beta motif in the
@@ -266,7 +304,8 @@ protein (``object.secondary_mean``).
 
 
 .. image:: ../example/exported_images/hras_secondary.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 Correlation, PCA and ROC AUC
 ----------------------------
@@ -283,7 +322,8 @@ themselves but low correlation with hydrophobic amino acids.
                  outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
 
 .. image:: ../example/exported_images/hras_correlation.png
-   :scale: 15 %
+   :width: 250px
+   :align: center
 
 If you were to do a single amino acid scan (ie. alanine scan), how would
 that predict the rest of the amino acid mutational profiles? That can be
@@ -298,7 +338,8 @@ determined using ``object.meancorrelation``.
 
 
 .. image:: ../example/exported_images/hras_variability.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 Grouping amino acids improves the predictive power.
 ``object.representatives`` lets you manually group amino acids. The
@@ -324,9 +365,12 @@ libraries, since you can save some cost by ordering less mutants.
 
 
 .. image:: ../example/exported_images/hras_logo.png
+   :align: center
 
 .. image:: ../example/exported_images/hras_meanrepresentatives_rank.png
-   :scale: 60 %
+   :width: 200px
+   :align: center
+
 
 The package can perform principal component analysis (PCA) using the
 attribute ``object.pca``. The parameter ``mode`` can be set to
@@ -354,13 +398,13 @@ notation), but that can be changed by ``dimensions`` parameter.
                  
 
 .. image:: ../example/exported_images/hras_pcaaminoacid.png
-   :scale: 15 %
+   :width: 200px
 
 .. image:: ../example/exported_images/hras_pcasecondary.png
-   :scale: 15 %
+   :width: 200px
 
 .. image:: ../example/exported_images/hras_pcaindividual.png
-   :scale: 15 %
+   :width: 250px
 
 Another type of plot that can be done is a receiver operating
 characteristic (ROC) curve for classification. You will use the
@@ -384,7 +428,8 @@ enrichment/conservation.
 
 
 .. image:: ../example/exported_images/hras_roc.png
-   :scale: 15 %
+   :width: 250px
+   :align: center
 
 The package also allows to do a boxplot using the function ``plot_box``.
 Note that the data needs to be binned separately. In this example, we
@@ -404,7 +449,8 @@ residues with a lower enrichment score are more conserved.
 
 
 .. image:: ../example/exported_images/hras_shannon.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 Pymol
 -----

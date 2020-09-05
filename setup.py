@@ -19,14 +19,11 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3.0",
         'Operating System :: OS Independent',
         'Intended Audience :: Science/Research',
-        'Intended Audience :: Education',
-        'Natural Language :: English',
         'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
     keywords=('ras', 'mutagenesis', 'saturation', 'saturation mutagenesis', 'deepsequencing'),
     project_urls={
-        'Documentation': ('https://htmlpreview.github.io/?https://github.com/'
-                          'drewhart/geonomics/blob/master/doc/built/doc.html'),
+        'Documentation': ('https://mutagenesis-visualization.readthedocs.io/'),
         # 'Methods Paper': 'PAPER URL HERE!',
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',
     install_requires=['numpy>=1.18.5', 'seaborn>=0.10.1', 'pandas>=1.0.5', 'copy', 'scipy>=1.5.0', 'matplotlib>=3.2.2',

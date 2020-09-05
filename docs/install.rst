@@ -11,8 +11,7 @@ Installation
 Installing with pip
 ====================
 
-Mutagenesis_visualization is compatible with Python 3.6.
-The code for Mutagenesis_visualization is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. Mutagenesis_visualization can be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the commandline:
+``Mutagenesis_visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the commandline:
 
 .. code-block:: bash
 
@@ -28,7 +27,7 @@ If you are working on a jupyter notebook, use the following command:
 Alternative installation
 =========================
 
-You may decide to download the jupyter notebook called mutagenesis_visualization which contains all the functions used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it to a py file first. The way to do that is to have the script Import_notebook on the same folder as the mutagenesis_visualization notebook and your current notebook where you are going to do the work. Note that you will need to manually install the required dependencies.
+You may decide to download the jupyter notebook called ``mutagenesis_visualization`` which contains all the functions used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it to a py file first. The way to do that is to have the script ``Import_notebook`` on the same folder as your current notebook and the notebook you are trying to import. Note that you will need to manually install the required dependencies.
 
 .. code:: ipython3
 

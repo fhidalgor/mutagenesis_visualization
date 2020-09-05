@@ -50,7 +50,8 @@ table)
 
 
 .. image:: ../example/exported_images/hras_tablecounts.png
-   :scale: 60 %
+   :width: 300px
+   :align: center
 
 
 Once the reads have been counted, the function ``plot_counts`` can be
@@ -80,11 +81,12 @@ the exported files.
 
 
 .. image:: ../example/exported_images/hras_countspre.png
-   :scale: 15 %
+   :width: 500px
+   :align: center
         
 .. image:: ../example/exported_images/hras_countssel.png
-   :scale: 15 %
-
+   :width: 500px
+   :align: center
 
 Calculate enrichment scores
 ---------------------------
@@ -144,13 +146,16 @@ concatenate them.
     # small differences in zeroing the data.
 
 .. image:: ../example/exported_images/hras_tableenrichment.png
-   :scale: 60 %
+   :width: 300px
+   :align: center
 
 .. image:: ../example/exported_images/hras_zeronormal.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 .. image:: ../example/exported_images/hras_zerokernel.png
-   :scale: 15 %
+   :width: 300px
+   :align: center
 
 
 Combine MSA with enrichment scores
@@ -187,4 +192,5 @@ Shannon entropy.
     df_freq.head(5)
 
 .. image:: ../example/exported_images/hras_table_msa.png
-   :scale: 60 %
+   :width: 300px
+   :align: center
