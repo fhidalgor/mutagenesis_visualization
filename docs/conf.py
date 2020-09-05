@@ -31,7 +31,7 @@ needs_sphinx = '1.7.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon', 'numpydoc',
-'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx','nbsphinx', 'sphinx.ext.mathjax', 'IPython.sphinxext.ipython_console_highlighting',
+'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx', 'sphinx.ext.mathjax', 'IPython.sphinxext.ipython_console_highlighting',
 'IPython.sphinxext.ipython_directive']
 
 # Allow errors nbsphinx
