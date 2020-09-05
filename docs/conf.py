@@ -19,9 +19,11 @@ sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 project = 'Mutagenesis Visualization'
 copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
+copyright = '2020-{}, Frank Hidalgo'.format(timezone.now().year)
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.5'
+version = get_version()
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,7 +33,7 @@ needs_sphinx = '1.7.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon', 'numpydoc',
-'sphinx.ext.autosectionlabel']
+'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx',]
 
 # mock import modules
 autodoc_mock_imports = ['Bio', 'ipymol', 'Shannon', 'logomaker', 'collections', 'adjustText', 'seaborn',
@@ -102,23 +104,16 @@ html_logo = '_static/logo.jpg'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [(master_doc, 'mutvis.tex', 'Mutagenesis Visualization Documentation',
+latex_documents = [('index', 'mutvis.tex', u'Mutagenesis Visualization Documentation',
      'Frank Hidalgo', 'manual'),]
+
+latex_engine = 'xelatex'
+latex_elements = {'pointsize':'12pt'}
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'mutvis', 'Mutagenesis Visualization Documentation',
-     [author], 1)]
+man_pages = [('index', 'mutagenesis-visualization', u'Mutagenesis Visualization Documentation',
+     ['Frank Hidalgo'], 1)]
      
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'Mutagenesis Visualization', 'Mutagenesis Visualization Documentation',
-     author, 'Mutagenesis Visualization', 'One line description of project.',
-     'Miscellaneous'),
-]
