@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 project = 'Mutagenesis Visualization'
 copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
-copyright = '2020-{}, Frank Hidalgo'.format(timezone.now().year)
+copyright = '2020, Frank Hidalgo'
 
 # The full version, including alpha/beta/rc tags
 version = get_version()
