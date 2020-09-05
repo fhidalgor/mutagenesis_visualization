@@ -22,8 +22,7 @@ author = 'Frank Hidalgo'
 copyright = '2020, Frank Hidalgo'
 
 # The full version, including alpha/beta/rc tags
-version = get_version()
-release = version
+version = '0.0.5'
 
 
 # -- General configuration ---------------------------------------------------
