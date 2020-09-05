@@ -3,3 +3,4 @@ pandas
 numpydoc
 matplotlib
 sphinx_rtd_theme
+seaborn
