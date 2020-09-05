@@ -27,12 +27,23 @@ Attribution and Contact
 This package was written by Frank Hidalgo, as part of his PhD work. Should you have any questons or concerns, please feel free to get in touch at fhidalgoruiz<at>berkeley<dot>edu
 
 
+
 .. toctree::
    :maxdepth: 1
    :Caption: Getting Started
 	
 	Installation <install>
-     Implementation <implementation>
+	Implementation <implementation>
+	
+
+.. toctree::
+   :maxdepth: 1
+   :Caption: Examples
+	
 	Processing <mut_processing>
-	Plotting <mut_plotting>  
+	Plotting <mut_plotting>
+
+
+
+
 

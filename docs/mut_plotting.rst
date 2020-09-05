@@ -113,8 +113,8 @@ global trends in the data. The command to use is ``object.miniheatmap``.
                  outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
 
 
-.. figure:: ../example/exported_images/hras_miniheatmap.png
-   :scale: 15 %
+.. image:: ../example/exported_images/hras_miniheatmap.png
+   :width: 200
 
 Histogram, scatter and more
 ---------------------------
