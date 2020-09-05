@@ -31,11 +31,18 @@ needs_sphinx = '1.7.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon', 'numpydoc',
-'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx','ipython',]
+'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx','nbsphinx', 'sphinx.ext.mathjax', 'IPython.sphinxext.ipython_console_highlighting',
+'IPython.sphinxext.ipython_directive']
+
+# Allow errors nbsphinx
+nbsphinx_allow_errors = True
+
+# Dont execute code on notebook
+nbsphinx_execute = 'never'
 
 # mock import modules
 autodoc_mock_imports = ['Bio', 'ipymol', 'Shannon', 'logomaker', 'collections', 'adjustText', 'seaborn',
-'scipy', 'sklearn', 'matplotlib', 'pandas']
+'scipy', 'sklearn', 'pandas', 'Import_notebook', 'mutagenesis_visualization', 'numpy']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -60,7 +67,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

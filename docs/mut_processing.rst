@@ -50,7 +50,7 @@ table)
 
 
 .. image:: ../example/exported_images/hras_tablecounts.png
-   :width: 300px
+   :width: 450px
    :align: center
 
 
@@ -81,11 +81,11 @@ the exported files.
 
 
 .. image:: ../example/exported_images/hras_countspre.png
-   :width: 500px
+   :width: 400px
    :align: center
         
 .. image:: ../example/exported_images/hras_countssel.png
-   :width: 500px
+   :width: 400px
    :align: center
 
 Calculate enrichment scores
@@ -146,7 +146,7 @@ concatenate them.
     # small differences in zeroing the data.
 
 .. image:: ../example/exported_images/hras_tableenrichment.png
-   :width: 300px
+   :width: 450px
    :align: center
 
 .. image:: ../example/exported_images/hras_zeronormal.png

@@ -474,6 +474,8 @@ mean.
     hras_RBD.pymol(pdb='5p21_A', mode = 'D', gof=0.2, lof=-0.5)
 
 .. image:: ../example/exported_images/hras_pymol_combLD.png
+   :align: center
+
 
 Reference
 ---------

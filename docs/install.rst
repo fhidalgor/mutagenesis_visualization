@@ -19,7 +19,7 @@ Installing with pip
 
 If you are working on a jupyter notebook, use the following command:
 
-.. code:: ipython3
+.. code-block:: python
 
     import sys
     !{sys.executable} -m pip install mutagenesis_visualization
@@ -29,7 +29,7 @@ Alternative installation
 
 You may decide to download the jupyter notebook called ``mutagenesis_visualization`` which contains all the functions used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it to a py file first. The way to do that is to have the script ``Import_notebook`` on the same folder as your current notebook and the notebook you are trying to import. Note that you will need to manually install the required dependencies.
 
-.. code:: ipython3
+.. code-block:: python
 
     import Import_notebook
     import mutagenesis_visualization as mut	
