@@ -4,3 +4,13 @@ numpydoc
 matplotlib
 sphinx_rtd_theme
 seaborn
+itertools
+copy
+scipy
+sklearn
+adjustText
+ipymol
+Bio
+collections
+logomaker
+Shannon
