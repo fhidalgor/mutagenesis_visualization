@@ -100,8 +100,8 @@ columns. For that, we will use the attribute ``object.heatmap_subset``.
     hras_RBD.heatmap_subset(segment=[20, 40], outputfilename='hras_subsetheatmap', outputfilepath=outputfilepath,
                                outputformat=outputformat, savefile=savefile)
 
-.. image:: ../example/exported_images/hras_subsetheatmap.png
-   :scale: 10 %
+.. figure:: ../example/exported_images/hras_subsetheatmap.png
+   :width: 200
 
 A summarized heatmap can also be generated. It is useful to evaluate
 global trends in the data. The command to use is ``object.miniheatmap``.
@@ -113,7 +113,7 @@ global trends in the data. The command to use is ``object.miniheatmap``.
                  outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
 
 
-.. image:: ../example/exported_images/hras_miniheatmap.png
+.. figure:: ../example/exported_images/hras_miniheatmap.png
    :scale: 15 %
 
 Histogram, scatter and more

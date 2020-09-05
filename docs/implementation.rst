@@ -1,10 +1,10 @@
 Implementation
-===============
+****************
 
 .. _Screen_class:
 
 Screen class
--------------
+==============
 
 .. autoclass:: mutagenesis_visualization.Screen
     :members:
@@ -13,7 +13,7 @@ Screen class
 .. _Processing_counts_functions:
 
 Functions
---------------
+==========
 
 .. _calculate_enrichment:
 
@@ -32,7 +32,7 @@ Functions
 .. autofunction:: mutagenesis_visualization.plot_box
 
 Kwargs
---------------
+=======
 
 .. _kwargs:
 

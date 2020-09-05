@@ -6,10 +6,11 @@
 	  
 	  
 Installation
-==============
+***************
 
 Installing with pip
---------------------
+====================
+
 Mutagenesis_visualization is compatible with Python 3.6.
 The code for Mutagenesis_visualization is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. Mutagenesis_visualization can be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the commandline:
 
@@ -25,7 +26,8 @@ If you are working on a jupyter notebook, use the following command:
     !{sys.executable} -m pip install mutagenesis_visualization
 
 Alternative installation
--------------------------
+=========================
+
 You may decide to download the jupyter notebook called mutagenesis_visualization which contains all the functions used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it to a py file first. The way to do that is to have the script Import_notebook on the same folder as the mutagenesis_visualization notebook and your current notebook where you are going to do the work. Note that you will need to manually install the required dependencies.
 
 .. code:: ipython3
@@ -34,7 +36,7 @@ You may decide to download the jupyter notebook called mutagenesis_visualization
     import mutagenesis_visualization as mut	
 
 Quick Start
-------------
+=============
 For a quick demonstration of mutagenesis_visualization, execute the following within Python:
 
 .. code-block:: python
@@ -48,10 +50,10 @@ This command will load the mutagenesis_visualization package and create a heatma
 
     
 Dependencies
--------------
+==============
 
 Required Dependencies
-^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 - `numpy <http://numpy.org/>`_ (version 1.18.5 or later)
 
 - `matplotlib <http://matplotlib.org/>`_ (version 3.2.2 or later)
@@ -73,7 +75,7 @@ Required Dependencies
 - `collections <https://docs.python.org/2/library/collections.html>`_ (version 1.2.1 or later)
 
 Optional dependencies
-^^^^^^^^^^^^^^^^^^^^^^
+---------------------
 - `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5 or later)
 
 - `logomaker <https://logomaker.readthedocs.io>`_ (version 0.8 or later)
