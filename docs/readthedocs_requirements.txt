@@ -3,3 +3,4 @@ numpydoc
 sphinx_rtd_theme
 matplotlib
 IPython
+IPython3
