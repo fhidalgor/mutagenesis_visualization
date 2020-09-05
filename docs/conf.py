@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 
 
 # -- Project information -----------------------------------------------------
-project = 'mutagenesis_visualization'
+project = 'Mutagenesis Visualization'
 copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
 
@@ -98,3 +98,16 @@ html_theme_options = {
 html_static_path = ['_static']
 
 html_logo = '_static/logo.jpg'
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+latex_documents = [(master_doc, 'mutvis.tex', 'Mutagenesis Visualization Documentation',
+     'Frank Hidalgo', 'manual'),]
+
+# -- Options for manual page output ------------------------------------------
+
+# One entry per manual page. List of tuples
+# (source start file, name, description, authors, manual section).
+man_pages = [(master_doc, 'mutvis', 'Mutagenesis Visualization Documentation',
+     [author], 1)]
