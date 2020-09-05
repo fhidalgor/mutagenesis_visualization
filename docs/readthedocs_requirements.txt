@@ -9,6 +9,5 @@ sklearn
 adjustText
 ipymol
 Bio
-collections
 logomaker
 Shannon
