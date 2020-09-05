@@ -3,11 +3,3 @@ pandas
 numpydoc
 matplotlib
 sphinx_rtd_theme
-seaborn
-scipy
-sklearn
-adjustText
-ipymol
-Bio
-logomaker
-Shannon
