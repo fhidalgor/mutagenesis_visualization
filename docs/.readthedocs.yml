@@ -16,5 +16,6 @@ formats:
 # Optionally set the version of Python and requirements required to build your docs
 python:
   version: 3.7
+  system_packages: true #so numpy runs
   #install:
     #- requirements: docs/requirements.txt
