@@ -31,17 +31,11 @@ needs_sphinx = '1.7.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon', 'numpydoc',
-'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx', 'sphinx.ext.mathjax']
-
-# Allow errors nbsphinx
-nbsphinx_allow_errors = True
-
-# Dont execute code on notebook
-nbsphinx_execute = 'never'
+'sphinx.ext.autosectionlabel', 'sphinx.ext.intersphinx']
 
 # mock import modules
 autodoc_mock_imports = ['Bio', 'ipymol', 'Shannon', 'logomaker', 'collections', 'adjustText', 'seaborn',
-'scipy', 'sklearn', 'pandas', 'Import_notebook', 'mutagenesis_visualization', 'numpy', 'matplotlib']
+'scipy', 'sklearn', 'matplotlib', 'pandas']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
