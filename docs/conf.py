@@ -21,10 +21,12 @@ copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.3'
+release = '0.0.5'
 
 
 # -- General configuration ---------------------------------------------------
+# If your documentation needs a minimal Sphinx version, state it here.
+needs_sphinx = '1.7.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -32,9 +34,6 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-#autodoc_mock_imports = ['numpy','unicode_literals','seaborn','pandas','itertools','copy','scipy','matplotlib','matplotlib',
-#'sklearn','adjustText','ipymol','pymol','Bio','collections','logomaker']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:

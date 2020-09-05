@@ -5,8 +5,7 @@ Mutagenesis_visualization
 Description
 --------------
 
-``Mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets. 
-The package will take as an input fastq files, count the reads and calculate the enrichment scores for each variant in the population. Then it will create a stunning heatmap as well as perform further statistical analysis on the data.
+``Mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets. The package will take as an input fastq files, count the reads and calculate the enrichment scores for each variant in the population. Then it will create a stunning heatmap as well as perform further statistical analysis on the data.
 
 Key Features
 --------------
