@@ -102,16 +102,24 @@ html_logo = '_static/logo.jpg'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [('index', 'mutvis.tex', u'Mutagenesis Visualization Documentation',
-     'Frank Hidalgo', 'manual'),]
+latex_documents = [
+    ('index', 'main.tex', 'Mutagenesis Visualization Documentation',
+     'Frank Hidalgo', 'manual')
+ ]
+     
+latex_engine = 'pdflatex'
 
-latex_engine = 'xelatex'
-latex_elements = {'pointsize':'12pt'}
+latex_elements = {
+# The paper size ('letterpaper' or 'a4paper').
+    'papersize': 'letterpaper',
+
+# The font size ('10pt', '11pt' or '12pt').
+    'pointsize': '12pt',}
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [('index', 'mutagenesis-visualization', u'Mutagenesis Visualization Documentation',
+man_pages = [('index', 'mutagenesis-visualization', 'Mutagenesis Visualization Documentation',
      ['Frank Hidalgo'], 1)]
      
