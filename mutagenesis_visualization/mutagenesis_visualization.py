@@ -30,7 +30,13 @@ from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
 from collections import defaultdict, OrderedDict, Counter
 import logomaker
-import Shannon as shannon
+import shannon as shannon
+
+__author__ = "Frank Hidalgo"
+__version__ = "0.0.6"
+__title__ = "Mutagenesis Visualization"
+__license__ = "GPLv3"
+__author_email__ = "fhidalgoruiz@berkeley.edu"
 
 
 # # Data Process Functions
@@ -78,8 +84,6 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
     
     wt_counts : list
         List of the counts for each for each DNA sequence that codes for the wild-type protein.
-    
-    None the two output counts to txt files.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -218,39 +222,39 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
     Parameters
     -----------
     pre_lib : str, pandas dataframe or np.array
-        Can be filepath and name of the exported txt file, dataframe or np.array 
+        Can be filepath and name of the exported txt file, dataframe or np.array.
     
     post_lib : str, pandas dataframe or np.array
-        Can be filepath and name of the exported txt file, dataframe or np.array  
+        Can be filepath and name of the exported txt file, dataframe or np.array. 
     
     pre_wt : str, or np.array, optional 
-        str with filepath and name of the exported txt file or np.array.  
+        Str with filepath and name of the exported txt file or np.array.  
     
     post_wt : str, or np.array, optional 
-        str with filepath and name of the exported txt file or np.array.  
+        Str with filepath and name of the exported txt file or np.array.  
     
     aminoacids : list, default ('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
-        index of aminoacids (in order). Stop codon needs to be '*'.
+        Index of aminoacids (in order). Stop codon needs to be '*'.
     
     zeroing : str, default 'population'
-        method to zero the data
-        Can also use 'wt' or 'kernel'
+        Method to zero the data.
+        Can also use 'counts', wt' or 'kernel'.
     
     how : str, default 'median'
-        metric to zero the data. 
-        Can also use 'mean' or 'mode'
+        Metric to zero the data. Only works if zeroing='population' or 'wt'.
+        Can also be set to 'mean' or 'mode'.
     
     norm_std : boolean, default True
         If norm_std is set to True, it will scale the data.
         
     stopcodon : boolean, default False
-        use the enrichment score stop codons as a metric to determine the minimum enrichment score
+        Use the enrichment score stop codons as a metric to determine the minimum enrichment score.
     
     min_counts : int, default 25
-        if mutant has less than the min_counts, it will be replaced by np.nan
+        If mutant has less than the min_counts, it will be replaced by np.nan.
     
     min_countswt : int, default 100 
-        if synonymous wild-type mutant has less than the min_counts, it will be replaced by np.nan
+        If synonymous wild-type mutant has less than the min_counts, it will be replaced by np.nan.
     
     std_scale : float, default 0.2
         Factor by which the population is scaled. Only works if norm_std is set to True.
@@ -265,7 +269,7 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
         alleles is the reference for data zeroing.
         
     infinite : int, default 3
-        Tt will replace +infinite values with +3 and -infinite with -3.
+        It will replace +infinite values with +3 and -infinite with -3.
     
     **kwargs : other keyword arguments
         savefile : boolean, default False. optional kwarg 
@@ -275,7 +279,6 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
     --------
     zeroed : ndarray
         A np.array containing the enrichment scores. 
-        None zeroed to a txt file.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -353,6 +356,12 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
             zeroed = log10_counts_grouped - median_pop
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_pop
+        if norm_std == True:
+            zeroed = zeroed*std_scale/std_pop
+    elif zeroing == 'counts':
+        # Get the ratio of counts
+        ratio = np.log10(pre_lib.sum().sum()/post_lib.sum().sum())
+        zeroed = log10_counts_grouped + ratio
         if norm_std == True:
             zeroed = zeroed*std_scale/std_pop
     elif zeroing == 'kernel':
@@ -555,6 +564,164 @@ def _array_to_df_enrichments(lib, aminoacids):
     df = pd.DataFrame(index=aminoacids, data=lib)
     return df.astype(float)
                  
+
+
+# ## Assemble sublibraries
+
+# In[ ]:
+
+
+def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
+                      nrows_pop, nrows_wt, columns_wt=None, skiprows=1,
+                      aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
+                      zeroing='population', how='median', norm_std=True, 
+                      stopcodon=False, min_counts=25, min_countswt=100, 
+                      std_scale=0.2, mpop=2, mwt=2, infinite=3, **kwargs):
+    '''
+    Assembles different sublibraries into one. Uses calculate_enrichments. 
+    Can only read from excel files that are in the same format as the example provided.
+
+    Parameters
+    -----------
+    excel_path : str
+        Location of the excel file to read.
+
+    sheet_pre : str
+        Name of the sheet with input (pre-selected) counts.
+
+    sheet_post : str
+        Name of the sheet with output (post-selected) counts.
+
+    columns : list
+        List of columns for each sublibrary to read from the excel file.
+
+    nrows_pop : int, 
+        Number of rows to read from the excel.
+
+    nrows_wt : list, 
+        Contains a list of integers, with the number of rows to read from each wt subset.
+
+    columns_wt : list,
+        Contains a list of strings, specifying the excel columns to read for each wt subset.
+    
+    skiprows : int, default 1
+        Parameter for pd.read_excel. Only works for the main columns, not for wt.
+    
+    aminoacids : list, default ('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+        Index of aminoacids (in order). Stop codon needs to be '*'.
+
+    zeroing : str, default 'population'
+        Method to zero the data.
+        Can also use 'counts', wt' or 'kernel'.
+
+    how : str, default 'median'
+        Metric to zero the data. Only works if zeroing='population' or 'wt'.
+        Can also be set to 'mean' or 'mode'.
+
+    norm_std : boolean, default True
+        If norm_std is set to True, it will scale the data.
+
+    stopcodon : boolean, default False
+        Use the enrichment score stop codons as a metric to determine the minimum enrichment score.
+
+    min_counts : int, default 25
+        If mutant has less than the min_counts, it will be replaced by np.nan.
+
+    min_countswt : int, default 100 
+        If synonymous wild-type mutant has less than the min_counts, it will be replaced by np.nan.
+
+    std_scale : float, default 0.2
+        Factor by which the population is scaled. Only works if norm_std is set to True.
+
+    mpop : int, default 2 
+        When using the median absolute deviation (MAD) filtering, mpop is the number of medians away
+        a data point must be to be discarded.
+
+    mwt : int, default 2 
+        When MAD filtering, mpop is the number of medians away a data point must be to 
+        be discarded. The difference with mpop is that mwt is only used when the population of wild-type 
+        alleles is the reference for data zeroing.
+
+    infinite : int, default 3
+        It will replace +infinite values with +3 and -infinite with -3.
+
+    **kwargs : other keyword arguments
+        savefile : boolean, default False. optional kwarg 
+            If set to true, the function will export the enrichment scores to a txt file.
+
+    Returns
+    --------
+    df : Pandas dataframe
+        A dataframe that contains the enrichment scores of the assembled sublibraries.
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs.update(kwargs)
+    
+    # Read reads from excel
+    list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(excel_path, sheet_pre, sheet_post, columns,
+                                                                nrows_pop, nrows_wt, columns_wt)
+
+    # Assemble sublibraries
+    df = _assemble_list(list_pre, list_sel, list_pre_wt, list_sel_wt,
+                        aminoacids, zeroing, how, norm_std, stopcodon, min_counts,
+                        min_countswt, std_scale, mpop, mwt, infinite, **kwargs)
+    
+        # Export files
+    if temp_kwargs['savefile']:
+        np.savetxt(temp_kwargs['outputfilepath']+temp_kwargs['outputfilename'],
+                   zeroed, fmt='%i', delimiter='\t')
+
+    
+    return df
+
+
+def _read_counts(excel_path, sheet_pre, sheet_post, columns,
+                 nrows_pop, nrows_wt, columns_wt=None, skiprows=1):
+    '''Aux'''
+    # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
+    list_pre, list_sel, list_pre_wt, list_sel_wt = ([] for i in range(4))
+
+    # Read counts from excel
+    replicates = np.arange(0, len(sheet_pre))
+    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt, replicates):
+        # Pre counts
+        list_pre.append(pd.read_excel(excel_path, sheet_pre,
+                                      skiprows=skiprows, usecols=column, nrows=nrows_pop))
+        # Sel counts
+        list_sel.append(pd.read_excel(excel_path, sheet_post,
+                                      skiprows=skiprows, usecols=column, nrows=nrows_pop))
+        if columns_wt is None:
+            list_pre_wt.append(None)
+            list_sel_wt.append(None)
+        else:
+            # Pre counts wild-type alleles
+            list_pre_wt.append(pd.read_excel(
+                excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt))
+            # Sel counts wild-type alleles
+            list_sel_wt.append(pd.read_excel(
+                excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt))
+    return list_pre, list_sel, list_pre_wt, list_sel_wt
+
+
+def _assemble_list(list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing,
+                   how, norm_std, stopcodon, min_counts,
+                   min_countswt, std_scale, mpop, mwt, infinite, **kwargs):
+    '''gets the output from _read_counts and assembles the sublibraries'''
+    
+    enrichment_lib = []
+    
+    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt, list_sel_wt):
+        # log 10
+        enrichment_log10 = calculate_enrichment(pre, sel, pre_wt, sel_wt, aminoacids, zeroing,
+                                                how, norm_std, stopcodon, min_counts,
+                                                min_countswt, std_scale, mpop, mwt, infinite, **kwargs)
+        # Store in list
+        enrichment_lib.append(enrichment_log10)
+
+    # Concatenate sublibraries
+    df = pd.concat(enrichment_lib, ignore_index=True, axis=1)
+    return df
 
 
 # ## Merge enrichment with MSA conservation
@@ -778,6 +945,87 @@ def _parameters():
     return
 
 
+# ## Multiple Kernel plots
+
+# In[ ]:
+
+
+def plot_multiplekernel(dict_entries, kernel='gau',
+                        colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], **kwargs):
+    '''
+    Generate a kernel density plot for multiple objects passed as a dictionary.
+    If specified it can also draw a histogram. Uses sns.distplot. Can manage either Screen objects
+    or dataframes out of the calculate_enrichments function.
+
+    Parameters
+    ----------
+    dict_entries : dictionary containing dataframes
+        Allows for either putting multiple objects as inputs or to use dataframes 
+        that come out of the calculate_enrichments function. If you use an object, 
+        you need to say object.dataframe.
+
+    kernel : str, default gau
+        options are ['biw','cos','epa','gau','tri','triw'].
+
+    colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
+        List of the colors (in order of arguments) that the kernels will have.
+
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    None
+    '''
+
+    # update kwargs
+    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
+    temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
+
+    # hard copy of data
+    dict_copy = copy.deepcopy(dict_entries)
+
+    # create figure
+    fig = plt.figure(figsize=temp_kwargs['figsize'])
+
+    # import parameters
+    _parameters()
+
+    # plot (allows two types of data input)
+    for (label, dataset, color) in zip(dict_copy.keys(), dict_copy.values(), colors[0:len(dict_copy)]):
+        if 'Score' in dataset.columns:
+            # plot objects scores
+            sns.distplot(dataset['Score'], hist=False,
+                         kde_kws={"color": color, "lw": 2, "label": label})
+        else:
+            # get rid of stop codons
+            dataset.drop('*', errors='ignore', inplace=True)
+            dataset = dataset.stack()
+            # plot stacked matrix
+            sns.distplot(dataset, kde=True, hist=False, 
+                         kde_kws={"color": color, "lw": 2, "label": label})
+
+    # tune graph
+    plt.xlabel(r'$∆E^i_x$', fontsize=10,
+               fontname='Arial', color='k', labelpad=0)
+    plt.ylabel('Probability density', fontsize=10,
+               fontname='Arial', color='k', labelpad=3)
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+    plt.xlim(temp_kwargs['xscale'])
+    plt.grid()
+    plt.legend(dict_copy.keys(), loc='best', frameon=False, fontsize=9,
+               handlelength=1, handletextpad=0.5)
+
+    # save file
+    _savefile(fig, temp_kwargs)
+
+    if temp_kwargs['show']:
+        plt.show()
+
+    return
+
+
 # ## Heatmap
 
 # ### Full Heatmap
@@ -785,7 +1033,7 @@ def _parameters():
 # In[ ]:
 
 
-def plot_heatmap(self, nancolor='lime', show_cartoon=False, **kwargs):
+def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **kwargs):
     '''
     Generate a heatmap plot of the enrichment scores.
 
@@ -799,6 +1047,11 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, **kwargs):
     show_carton : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
     
+    show_snv : boolean, default False
+        If true, it will only display mutants that are a single nucleotide variant (SNV) of the wild-type
+        protein sequence. The algorithm does not take into account the wild-type DNA allele, so it 
+        will include any possible mutant that is one base away.
+        
     **kwargs : other keyword arguments
         
     Returns
@@ -817,8 +1070,8 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, **kwargs):
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # sort data in specified order by user
-    dataset = _df_rearrange(self.dataframe_stopcodons,
-                            temp_kwargs['neworder_aminoacids'], values='Score_NaN').to_numpy()
+    dataset = _df_rearrange(_add_SNV_boolean(self.dataframe_stopcodons.copy()),
+                            temp_kwargs['neworder_aminoacids'], values='Score_NaN', show_snv = show_snv).to_numpy()
 
     # declare figure and subplots
     figwidth = 14*len(dataset[0])/165
@@ -849,7 +1102,7 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, **kwargs):
                             cmap=cmap, edgecolors='k', linewidths=0.2, antialiased=True, color='darkgrey')
 
     # average of residues by positon
-    average = [self.dataframe.groupby(by='Position').mean()['Score']]
+    average = [_add_SNV_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']]
 
     # average by position
     heatmapaverageresidues = averageresidue.pcolormesh(average, vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
@@ -1069,7 +1322,7 @@ def _loop(starting_aa, length_aa, color='k'):
 # In[ ]:
 
 
-def plot_heatmap_selection(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
+def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
                            nancolor='lime', **kwargs):
     '''
     Generate a heatmap plot enrichment scores of selected aminoacids. 
@@ -1087,7 +1340,7 @@ def plot_heatmap_selection(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # load font parameters
     _font_parameters()
@@ -1188,7 +1441,7 @@ def plot_heatmap_selection(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
 # In[ ]:
 
 
-def plot_heatmap_subset(self, segment, ylabel_color='k', nancolor='lime', **kwargs):
+def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwargs):
     '''
     Generate a heatmap plot enrichment scores but only plots a selected segment.
 
@@ -1315,7 +1568,7 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     mode : str, default 'mean'
         Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
         each position. If mode = 'A', it will show the alanine substitution profile. Can be 
-        used for each amino acid.
+        used for each amino acid. Use the one-letter code and upper case.
         
     show_carton : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
@@ -1324,7 +1577,7 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -1427,7 +1680,7 @@ def plot_meandifferential (self, obj2, show_cartoon=False,**kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -1500,7 +1753,7 @@ def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -1552,6 +1805,69 @@ def _inputtext(text_entries):
     return
 
 
+# ### Positional
+
+# In[ ]:
+
+
+def plot_position(self, position, **kwargs):
+    '''
+    Choose a position and plot in a bargraph the enrichment score for each substitution.
+    Red for gain of function, blue for loss of function.
+
+    Parameters
+    ----------
+    self : object from class "Screen"
+    
+    position : int
+        number of residue of the protein to display.
+    
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    None.
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
+    temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
+    temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
+
+    # load parameters
+    parameters_mean()
+
+    # Select position
+    df = self.dataframe.loc[self.dataframe['Position']==position].copy()
+    
+    # Color
+    df['Color'] = df.apply(color_data, axis=1)
+
+    # make figure
+    fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
+    width = 0.5
+
+    # Color based on values
+    ax.bar(df['Aminoacid'], df['Score'], width, color=df['Color'], ec='k')
+
+    # axes parameters
+    ax.set_ylim(temp_kwargs['yscale'])
+    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10,
+                  fontname="Arial", color='k', labelpad=10, rotation=0)
+
+    ax.set_xlabel('Residue', fontsize=10,
+                  fontname="Arial", color='k', labelpad=4)
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+
+    # save file
+    _savefile(fig, temp_kwargs)
+    
+    if temp_kwargs['show']:
+        plt.show()
+    return
+
+
 # ## Scatter
 
 # In[ ]:
@@ -1574,7 +1890,7 @@ def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
 
     # update kwargs
@@ -1646,8 +1962,8 @@ def _process_bypointmutant(self, obj):
     # truncate so both datasets have same length and delete stop codons
     minlength = min(len(self.dataframe), len(obj.dataframe))
     df = pd.DataFrame()
-    df['dataset_1'] = list(self.dataframe['Score'])[:minlength]
-    df['dataset_2'] = list(obj.dataframe['Score'])[:minlength]
+    df['dataset_1'] = list(self.dataframe['Score_NaN'])[:minlength]
+    df['dataset_2'] = list(obj.dataframe['Score_NaN'])[:minlength]
 
     # eliminate Nans
     df.dropna(how='any', inplace=True)
@@ -1694,7 +2010,6 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
     Returns
     ----------
     Pandas dataframe
-    None the plot to specified folder in the specified format.
     '''
 
     # update kwargs
@@ -1769,7 +2084,7 @@ def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
 
     '''
     # update kwargs
@@ -1817,8 +2132,6 @@ def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
 
 
 # ### Internal SNV
-
-# Bring the SNV code I made in cancer script
 
 # In[ ]:
 
@@ -2077,7 +2390,7 @@ def plot_miniheatmap(self, offset=0, **kwargs):
     
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
 
     # load font parameters
@@ -2205,7 +2518,7 @@ def plot_neighboreffect (self, offset=1, **kwargs):
 
    Returns
    ----------
-   None the plot to specified folder in the specified format.
+   None.
    '''
    # load font parameters
    _font_parameters()
@@ -2341,7 +2654,7 @@ def plot_correlation(self, **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
     '''
 
     # load font parameters
@@ -2440,15 +2753,16 @@ def _calculate_correlation_byresidue(df):
     return dataset
 
 
-# ### Mean correlation
+# ### Individual correlation
 
 # In[ ]:
 
 
-def plot_meancorrelation(self, **kwargs):
+def plot_individual_correlation(self, **kwargs):
     '''
-    Genereates a bar plot of the mean correlation of each position with the rest.
-
+    Genereates a bar plot of the correlation of each amino acid mutational 
+    profile (row of the heatmap) with the rest of amino acids (rows)
+    
     Parameters
     -----------
     self : object from class "Screen"
@@ -2457,7 +2771,7 @@ def plot_meancorrelation(self, **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
 
     '''
     # Load parameters
@@ -2466,7 +2780,7 @@ def plot_meancorrelation(self, **kwargs):
     # Update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
-    temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2))
+    temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
     temp_kwargs['yscale'] = kwargs.get('yscale', (0, 1))
 
     # Get data
@@ -2505,7 +2819,7 @@ def plot_meancorrelation(self, **kwargs):
 # In[ ]:
 
 
-def plot_representatives(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
+def plot_group_correlation(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
                         output=False, **kwargs):
     '''
     Determines which amino acids better represent the heatmap. Requires logomaker package.
@@ -2648,7 +2962,7 @@ def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False, **
         random_state : int, default 554
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
 
     '''
 
@@ -2779,7 +3093,7 @@ def plot_secondary(self, **kwargs):
 
     Returns
     ----------
-    None the plot to specified folder in the specified format.
+    None.
 
     '''
     # Load parameters
@@ -2855,7 +3169,7 @@ def plot_roc(self, df_class=None, **kwargs):
 
     Returns
     --------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # Use default class
     if df_class is None:
@@ -2945,7 +3259,7 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
 
     Returns
     --------
-    None the plot to specified folder in the specified format.
+    None.
     '''
     # Concatenate tp and tn datasets
     df_true = pd.concat([df_tp, df_tn], sort=False)
@@ -2974,9 +3288,9 @@ def plot_cumulative(self, mode='all', **kwargs):
     
     **kwargs : other keyword arguments
 
-Returns
+    Returns
     --------
-    None the plot to specified folder in the specified format.
+    None.
     '''
 
     # update kwargs
@@ -3057,8 +3371,7 @@ def plot_box(binned_x, y, **kwargs):
 
     Returns
     ----------
-    Nothing.
-    None the plot to specified folder in the specified format.
+    None.
 
     '''
     # Load parameters
@@ -3121,7 +3434,7 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
     mode : str, default 'mean'
         Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
         each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
-        used for each amino acid.
+        used for each amino acid. Use the one-letter code and upper case.
         
     residues : list , optional
         If user decides to pass custom arguments, use the following format
@@ -3142,8 +3455,7 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
              cutoff for determining loss of function mutations based on mutagenesis data.
     Returns
     ----------
-    Open pymol session with a fetched pdb structure where the residues are colored
-    according to the enrichment scores.
+    Open pymol session with a fetched pdb structure where the residues are colored according to the enrichment scores.
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
@@ -3368,7 +3680,7 @@ def _convert_to_df(dataset, sequence, aminoacids, startposition):
     return df
 
 
-def _df_rearrange(df, new_order, values='Score'):
+def _df_rearrange(df, new_order, values='Score',show_snv = False):
     '''
     convert a df into a numpy array for mutagenesis data. 
     Allows the option of keeping NaN scores
@@ -3376,6 +3688,11 @@ def _df_rearrange(df, new_order, values='Score'):
     Returns copy
     '''
     dfcopy = df.copy()
+    
+    # If only SNVs, turn rest to NaN
+    if show_snv is True:
+        dfcopy.loc[dfcopy['SNV?']==True, values] = np.nan
+    
     df_pivoted = dfcopy.pivot_table(values=values, index='Aminoacid',
                                     columns=['Position'], dropna=False)
     df_reindexed = df_pivoted.reindex(index=list(new_order))
@@ -3435,7 +3752,7 @@ def kwargs():
         Used for heatmaps.
     
     colorbar_scale: list, default [-1, 1]
-        Scale min and max used in heatmaps and correlation heatmaps
+        Scale min and max used in heatmaps and correlation heatmaps.
     
     color: str, default 'k'
         Color used for the ...
@@ -3450,9 +3767,11 @@ def kwargs():
         Label of y axis.
     
     xscale: tuple, default (None, None)
-    
+        MinMax of x axis.
+        
     yscale: tuple, default (None, None)
-    
+        MinMax of y axis.
+
     tick_spacing: int, default 1
         Space of axis ticks. Used for scatter and cumulative plots.
         
@@ -3494,7 +3813,7 @@ def kwargs():
     text_labels: str, default 'None'
         Text labels that you can add to mean and mean_count plots. You will need to specify the coordinates.
         
-    show: boolean, default 'True'
+    show: boolean, default True
         Whether to execute plt.show() or not on a matplotlib object.
         
     random_state : int, default 554
@@ -3541,9 +3860,10 @@ class Screen:
     Screen represents a saturation mutagenesis experiment, where every amino acid 
     in the protein has been mutated to other amino acids. The mutants are scored based
     on some custom screen.
-
+    
     Attributes
-    -----------
+    ----------
+    
     dataset : array
         2D matrix containing the enrichment scores of the point mutants. Columns will contain the
         amino acid substitutions, rows will contain the enrichment for each residue in the protein sequence.
@@ -3597,19 +3917,20 @@ class Screen:
     # Methods (Associated functions)
     kernel = plot_kernel
     heatmap = plot_heatmap
-    heatmap_selection = plot_heatmap_selection
-    heatmap_subset = plot_heatmap_subset
+    heatmap_rows = plot_heatmap_rows
+    heatmap_columns = plot_heatmap_columns
     mean = plot_mean
     meancounts = plot_meancounts
     differential = plot_meandifferential
+    position = plot_position
     scatter = plot_scatter
     rank = plot_rank
     histogram = plot_hist
     miniheatmap = plot_miniheatmap
     neighboreffect = plot_neighboreffect
     correlation = plot_correlation
-    meancorrelation = plot_meancorrelation
-    representatives = plot_representatives
+    individual_correlation = plot_individual_correlation
+    group_correlation = plot_group_correlation
     pca = plot_pca
     secondary_mean = plot_secondary
     roc = plot_roc

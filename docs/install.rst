@@ -11,7 +11,7 @@ Installation
 Installing with pip
 ====================
 
-``Mutagenesis_visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the commandline:
+``Mutagenesis_visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the command line:
 
 .. code-block:: bash
 
@@ -27,7 +27,7 @@ If you are working on a jupyter notebook, use the following command:
 Alternative installation
 =========================
 
-You may decide to download the jupyter notebook called ``mutagenesis_visualization`` which contains all the functions used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it to a py file first. The way to do that is to have the script ``Import_notebook`` on the same folder as your current notebook and the notebook you are trying to import. Note that you will need to manually install the required dependencies.
+You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it everyt time to a .py file. The way to do that is to download the script ``Import_notebook.py`` and place it in the same folder where you have the ``mutagenesis_visualization.ipynb`` notebook and your current notebook. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
 
 .. code:: ipython3
 
@@ -36,18 +36,17 @@ You may decide to download the jupyter notebook called ``mutagenesis_visualizati
 
 Quick Start
 =============
-For a quick demonstration of mutagenesis_visualization, execute the following within Python:
+Now that you have installed ``mutagenesis_visualization``, execute the following within Python to evaluate whether it is working propertly:
 
-.. code-block:: python
+.. code:: ipython3
 
 	import mutagenesis_visualization as mut
 	mut.demo()
 
-This command will load the mutagenesis_visualization package and create a heatmap plot of an H-Ras saturation mutagenesis dataset.
+This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
-    
 Dependencies
 ==============
 
@@ -81,9 +80,9 @@ Optional dependencies
 
 - `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3 or later)
 
-- `Shannon <https://pypi.org/project/shannon/>`_ (version 1.0.0 or later)
+- `Shannon`_ (version 1.0.0)
 
-A way to ensure Pymol is on the same as Python is to install ``Pymol`` using the following command:
+You may have already installed ``Pymol``. However, if it is not on the same path as Python, there will not be communication between the two. An easy way to circumvent the problem is to reinstall ``Pymol`` using the following command:
 
 .. code:: ipython3
 

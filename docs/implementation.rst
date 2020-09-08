@@ -4,7 +4,7 @@ Implementation
 .. _Screen_class:
 
 Screen class
-==============
+-------------
 
 .. autoclass:: mutagenesis_visualization.Screen
     :members:
@@ -14,6 +14,10 @@ Screen class
 
 Functions
 ==========
+
+.. _assemble_avengers:
+
+.. autofunction:: mutagenesis_visualization.assemble_avengers
 
 .. _calculate_enrichment:
 
@@ -30,6 +34,11 @@ Functions
 .. _plot_box:
 
 .. autofunction:: mutagenesis_visualization.plot_box
+
+.. _plot_multiplekernel:
+
+.. autofunction:: mutagenesis_visualization.plot_multiplekernel
+
 
 Kwargs
 =======
