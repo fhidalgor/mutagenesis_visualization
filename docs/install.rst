@@ -27,7 +27,7 @@ If you are working on a jupyter notebook, use the following command:
 Alternative installation
 =========================
 
-You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it everyt time to a .py file. The way to do that is to download the script ``Import_notebook.py`` and place it in the same folder where you have the ``mutagenesis_visualization.ipynb`` notebook and your current notebook. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
+You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on GitHub, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it everyt time to a .py file. The way to do that is to download the script ``Import_notebook.py`` and place it in the same folder where you have the ``mutagenesis_visualization.ipynb`` notebook and your current notebook. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
 
 .. code:: ipython3
 
@@ -47,41 +47,79 @@ This command will load the ``mutagenesis_visualization`` package, create a ``Scr
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
+There are four other demo plots, and can be invoked using the following command:
+.. code:: ipython3
+
+	mut.demo(figure = 'mean')
+	mut.demo(figure = 'miniheatmap')
+	mut.demo(figure = 'kernel')
+	mut.demo(figure = 'pca')
+
+.. image:: ../example/exported_images/hras_bar_mean.png
+   :width: 500px
+   :align: center
+   
+.. image:: ../example/exported_images/hras_miniheatmap.png
+   :width: 250px
+
+.. image:: ../example/exported_images/hras_pcaaminoacid.png
+   :width: 200px
+     
+.. image:: ../example/exported_images/hras_kde.png
+   :width: 240px
+   
+A more detailed explanation on how to generate these figures can be seen at :ref:`plotting`.
+
 Dependencies
 ==============
 
+In this section I am listing the dependencies and the versions I used to make the package.
+ 
 Required Dependencies
 -----------------------
-- `numpy <http://numpy.org/>`_ (version 1.18.5 or later)
+- `numpy <http://numpy.org/>`_ (version 1.18.5)
 
-- `matplotlib <http://matplotlib.org/>`_ (version 3.2.2 or later)
+- `matplotlib <http://matplotlib.org/>`_ (version 3.2.2)
 
-- `seaborn <https://seaborn.pydata.org/>`_ (version 0.10.1 or later)
+- `seaborn <https://seaborn.pydata.org/>`_ (version 0.10.1)
 
-- `pandas <http://pandas.pydata.org/>`_ (version 1.0.5 or later)
+- `pandas <http://pandas.pydata.org/>`_ (version 1.0.5)
 
-- `scipy <http://www.scipy.org/scipylib/index.html>`_ (version 1.5.0 or later)
+- `scipy <http://www.scipy.org/scipylib/index.html>`_ (version 1.5.0)
 
-- `scikit-learn <http://scikit-learn.org/stable/>`_ (version 0.23.1 or later)
+- `scikit-learn <http://scikit-learn.org/stable/>`_ (version 0.23.1)
 
 - `copy <https://docs.python.org/2/library/copy.html>`_ 
 
-- `itertools <https://docs.python.org/3/library/itertools.html>`_ (version 8.4.0 or later)
+- `itertools <https://docs.python.org/3/library/itertools.html>`_ (version 8.4.0)
 
-- `biopython <https://pypi.org/project/biopython/>`_ (version 1.77 or later)
+- `biopython <https://pypi.org/project/biopython/>`_ (version 1.77)
 
-- `collections <https://docs.python.org/2/library/collections.html>`_ (version 1.2.1 or later)
+- `collections <https://docs.python.org/2/library/collections.html>`_ (version 1.2.1)
 
 Optional dependencies
 ---------------------
-- `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5 or later)
+- `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5)
 
-- `logomaker <https://logomaker.readthedocs.io>`_ (version 0.8 or later)
+- `logomaker <https://logomaker.readthedocs.io>`_ (version 0.8)
 
-- `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3 or later)
+- `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3)
 
-- `Shannon`_ (version 1.0.0)
+.. note::
+    Logomaker, ipymol and adjustText dependencies were not installing when downloading mutagenesis_visualization, but then they could be 	downloaded manually with pip install.
+    
+If you want to manually install and/or upgrade the dependencies on your own, use:
 
+.. code:: ipython3
+	!{sys.executable} -m pip install --upgrade numpy seaborn pandas scipy matplotlib sklearn adjustText Bio logomaker
+
+
+``Ipymol`` needs to be installed from Github, since the current Pypi version does not work. To install use this command:
+
+.. code:: ipython3
+	pip install git+https://github.com/cxhernandez/ipymol #when working on a terminal
+	!{sys.executable} -m pip install git+https://github.com/cxhernandez/ipymol #when working on a jupyter notebook
+	
 You may have already installed ``Pymol``. However, if it is not on the same path as Python, there will not be communication between the two. An easy way to circumvent the problem is to reinstall ``Pymol`` using the following command:
 
 .. code:: ipython3

@@ -23,20 +23,21 @@ import matplotlib.ticker as ticker
 from sklearn import metrics
 from sklearn.decomposition import PCA
 from adjustText import adjust_text
-from ipymol import viewer as pymol
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
 from collections import defaultdict, OrderedDict, Counter
-import logomaker
-import shannon as shannon
+from . import shannon
 
-__author__ = "Frank Hidalgo"
-__version__ = "0.0.6"
-__title__ = "Mutagenesis Visualization"
-__license__ = "GPLv3"
-__author_email__ = "fhidalgoruiz@berkeley.edu"
+try:
+    import logomaker
+except ModuleNotFoundError:
+    print("module 'logomaker' is not installed")
+
+try:
+    from ipymol import viewer as pymol
+except ModuleNotFoundError:
+    print("module 'ipymol' is not installed")
 
 
 # # Data Process Functions
@@ -129,7 +130,7 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
     usefulreads = np.nansum(list(variants.values()))
 
     # Convert to df
-    wtProtein = Seq(dna_sequence, generic_dna).translate()
+    wtProtein = Seq(dna_sequence).translate()
     df = pd.DataFrame()
     df['Position'] = np.ravel([[pos]*len(codon_list)
                                for pos in np.arange(1, len(wtProtein)+1).astype(int)])
@@ -3860,10 +3861,9 @@ class Screen:
     Screen represents a saturation mutagenesis experiment, where every amino acid 
     in the protein has been mutated to other amino acids. The mutants are scored based
     on some custom screen.
-    
+
     Attributes
-    ----------
-    
+    -----------
     dataset : array
         2D matrix containing the enrichment scores of the point mutants. Columns will contain the
         amino acid substitutions, rows will contain the enrichment for each residue in the protein sequence.
@@ -3958,7 +3958,7 @@ def demo():
     """
 
     # Load enrichment scores
-    hras_enrichment_RBD = np.genfromtxt('../example/HRas166_RBD.csv', delimiter=',')
+    hras_enrichment_RBD = np.genfromtxt('data/HRas166_RBD.csv', delimiter=',')
 
     # Define protein sequence
     hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'

@@ -43,7 +43,7 @@ In this chapter, you will find how to install the package (:ref:`installation`) 
 Examples
 ===============
 
-In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`processing`) and we will do each type of plot (:ref:`plotting`). :ref:`Normalizing` shows the different options of data normalization that the package allows for.
+In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`processing`) and we will do each type of plot (:ref:`plotting`). :ref:`Normalizing` shows the different options of data normalization that the package allows for. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``mut_processing.ipynb``, ``mut_normalizing.ipynb`` and ``mut_plotting.ipynb``. 
 
 .. toctree::
    :maxdepth: 1
