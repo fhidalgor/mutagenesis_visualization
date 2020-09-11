@@ -15,12 +15,6 @@ Import module
     import numpy as np
     import pandas as pd
 
-
-.. parsed-literal::
-
-    importing Jupyter notebook from mutagenesis_visualization.ipynb
-
-
 Count DNA reads from fastq file
 -------------------------------
 
@@ -111,7 +105,7 @@ enrichment score of each mutant. The function to do so is
 ``calculate_enrichment``. This function allows for different parameters
 to tune how the data is processed and normalized.
 
-In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`normalization`.
+In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`normalizing`.
 
 .. code:: ipython3
 
@@ -166,7 +160,7 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
 Assemble multiple sublibraries
 ------------------------------
 
-If you split your library into multiple pools, you can use ``assemble_avengers`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`normalization` for more details.
+If you split your library into multiple pools, you can use ``assemble_avengers`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`normalizing` for more details.
 
 .. code:: ipython3
 

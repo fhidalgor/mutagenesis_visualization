@@ -30,6 +30,11 @@ from collections import defaultdict, OrderedDict, Counter
 from . import shannon
 
 try:
+    import adjustText
+except ModuleNotFoundError:
+    print("module 'adjustText' is not installed")
+    
+try:
     import logomaker
 except ModuleNotFoundError:
     print("module 'logomaker' is not installed")
@@ -3936,45 +3941,6 @@ class Screen:
     roc = plot_roc
     cumulative = plot_cumulative
     pymol = plot_pymol
-
-
-# # Demo
-
-# In[ ]:
-
-
-def demo():
-
-    """
-    Performs a demonstration of the mutagenesis_visualization software.
-    
-    Parameters
-    -----------
-    None.
-    
-    Returns
-    -------
-    None.
-    """
-
-    # Load enrichment scores
-    hras_enrichment_RBD = np.genfromtxt('data/HRas166_RBD.csv', delimiter=',')
-
-    # Define protein sequence
-    hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
-
-    # Define secondary structure
-    secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36), ['L3']*(48-46), ['β3']*(58-48), ['L4'] *  (64-58), 
-    ['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), ['β5']*(116-110), ['L8']*(126-116),['α4']*(137-126), 
-    ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
-    
-    # Create object
-    hras_RBD = Screen(dataset = hras_enrichment_RBD, sequence = hras_sequence, secondary = secondary)
-    
-    # Create plot
-    hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
-    
-    return
 
 
 # # Ras Trouble Shooting

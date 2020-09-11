@@ -17,7 +17,7 @@ Installing with pip
 
      pip install mutagenesis_visualization
 
-If you are working on a jupyter notebook, use the following command:
+If you are working on a jupyter notebook, you may have to use the following command:
 
 .. code:: ipython3
 
@@ -48,6 +48,7 @@ This command will load the ``mutagenesis_visualization`` package, create a ``Scr
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
 There are four other demo plots, and can be invoked using the following command:
+
 .. code:: ipython3
 
 	mut.demo(figure = 'mean')
@@ -60,8 +61,9 @@ There are four other demo plots, and can be invoked using the following command:
    :align: center
    
 .. image:: ../example/exported_images/hras_miniheatmap.png
-   :width: 250px
-
+   :width: 200px
+   :align: center
+   
 .. image:: ../example/exported_images/hras_pcaaminoacid.png
    :width: 200px
      
@@ -108,17 +110,21 @@ Optional dependencies
 .. note::
     Logomaker, ipymol and adjustText dependencies were not installing when downloading mutagenesis_visualization, but then they could be 	downloaded manually with pip install.
     
+    
 If you want to manually install and/or upgrade the dependencies on your own, use:
 
 .. code:: ipython3
-	!{sys.executable} -m pip install --upgrade numpy seaborn pandas scipy matplotlib sklearn adjustText Bio logomaker
+
+	pip install --upgrade package_name
+
 
 
 ``Ipymol`` needs to be installed from Github, since the current Pypi version does not work. To install use this command:
 
 .. code:: ipython3
-	pip install git+https://github.com/cxhernandez/ipymol #when working on a terminal
-	!{sys.executable} -m pip install git+https://github.com/cxhernandez/ipymol #when working on a jupyter notebook
+
+	pip install git+https://github.com/cxhernandez/ipymol
+
 	
 You may have already installed ``Pymol``. However, if it is not on the same path as Python, there will not be communication between the two. An easy way to circumvent the problem is to reinstall ``Pymol`` using the following command:
 

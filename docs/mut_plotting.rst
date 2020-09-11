@@ -1,10 +1,7 @@
 Plotting
 ========
 
-This section shows how to use the mutagenesis_visualization package. The
-plotting functions can be used regardless of how you process your data.
-For the examples, we are using two datasets that are derived from
-Pradeep’s legacy. [#Pradeep2017]\_
+This section shows how to use the mutagenesis_visualization package. The plotting functions can be used regardless of how you process your data. For the examples, we are using two datasets that are derived from Pradeep’s legacy. [#Pradeep2017]_
 
 Import module
 -------------
@@ -364,16 +361,7 @@ rest of the dataset.
    :width: 300px
    :align: center
 
-Grouping amino acids improves the predictive power.
-``object.group_correlation`` lets you manually group amino acids. The
-algorithm picks one amino acid per group and evaluates the predictive
-power of the subset. Such operation will be done for every possible
-combination. In the example, 8 amino acids explain 0.75 of the data. A
-sequence logo [#Tareen2019]\_ will show for each group which is the most
-represented amino acid in of the subset that has an R2 value greater
-than the cutoff that you have set using the parameter ``r2``. Such plot
-will let you see if there is any preference for a particular amino acid
-within a group.
+Grouping amino acids improves the predictive power. ``object.group_correlation`` lets you manually group amino acids. The algorithm picks one amino acid per group and evaluates the predictive power of the subset. Such operation will be done for every possible combination. In the example, 8 amino acids explain 0.75 of the data. A sequence logo [#Tareen2019]_ will show for each group which is the most represented amino acid in of the subset that has an R2 value greater than the cutoff that you have set using the parameter ``r2``. Such plot will let you see if there is any preference for a particular amino acid within a group.
 
 .. code:: ipython3
 
@@ -384,7 +372,7 @@ within a group.
     # Get list of all combinations and their associated R2 value
     df_r2 = hras_RBD.group_correlation(r2=0.75, groups=groups, output=False, title='',
                                        outputfilename='hras_logo', outputfilepath=outputfilepath,
-                                       outputformat=outputformat, savefile=savefile)
+                                       outputformat=outputformat, savefile=False)
     
     # Only show the top 5
     df_r2.sort_values(by='R2', ascending=False).head()
@@ -508,3 +496,70 @@ Reference
 .. [#Pradeep2017] Bandaru et al. (2017). Deconstruction of the Ras switching cycle through saturation mutagenesis. `DOI: 10.7554/eLife.27810  <https://elifesciences.org/articles/27810>`_
 
 .. [#Tareen2019] Tareen A, Kinney JB (2019). Logomaker: beautiful sequence logos in Python. `bioRxiv DOI:10.1101/635029. <https://www.biorxiv.org/content/10.1101/635029v1>`_
+
+.. code:: ipython3
+
+    from .mutagenesis_visualization import *
+    import numpy as np
+    import os
+    import sys
+    
+    __author__ = "Frank Hidalgo"
+    __version__ = "0.0.9"
+    __title__ = "Mutagenesis Visualization"
+    __license__ = "GPLv3"
+    __author_email__ = "fhidalgoruiz@berkeley.edu"
+    
+    
+    def demo(figure='heatmap'):
+        """
+        Performs a demonstration of the mutagenesis_visualization software.
+    
+        Parameters
+        -----------
+        figure : str, default 'heatmap'
+            There are 5 example plots that can be displayed to test the package is working on your station.
+            The 5 options are 'heatmap', 'miniheatmap', 'mean', 'kernel' and 'pca'. Check the documentation for more information.
+    
+        Returns
+        -------
+        None.
+        """
+        # Use relative file import to access the data folder
+        location = os.path.dirname(os.path.realpath(__file__))
+        my_file = os.path.join(location, 'data', 'HRas166_RBD.csv')
+    
+        # Load enrichment scores
+        hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
+    
+        # Define protein sequence
+        hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+    
+        # Define secondary structure
+        secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36), ['L3']*(48-46), 
+                     ['β3']*(58-48), ['L4'] * (64-58),['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), 
+                     ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), ['β5']*(116-110), ['L8']*(126-116), ['α4']*(137-126),
+                     ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
+    
+        # Create object
+        hras_RBD = Screen(dataset=hras_enrichment_RBD,
+                          sequence=hras_sequence, secondary=secondary)
+    
+        if figure == 'heatmap':
+            # Create heatmap plot
+            hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
+        elif figure == 'miniheatmap':
+            # Condensed heatmap
+            hras_RBD.miniheatmap(title='Wt residue H-Ras')
+        elif figure == 'mean':
+            # Mean enrichment by position
+            hras_RBD.mean(figsize=[6, 2.5], mode='mean',
+                          show_cartoon=True, yscale=[-2, 0.5])
+        elif figure == 'kernel':
+            # Plot kernel dist using sns.distplot.
+            hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1])
+        elif figure == 'pca':
+            # PCA by amino acid substitution
+            hras_RBD.pca(title='', dimensions=[
+                         0, 1], figsize=(2, 2), adjustlabels=True)
+        return

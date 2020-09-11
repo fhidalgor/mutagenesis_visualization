@@ -4,7 +4,7 @@ Implementation
 .. _Screen_class:
 
 Screen class
--------------
+==============
 
 .. autoclass:: mutagenesis_visualization.Screen
     :members:
@@ -40,9 +40,9 @@ Functions
 .. autofunction:: mutagenesis_visualization.plot_multiplekernel
 
 
+
 Kwargs
 =======
-
 .. _kwargs:
 
 .. autofunction:: mutagenesis_visualization.kwargs
