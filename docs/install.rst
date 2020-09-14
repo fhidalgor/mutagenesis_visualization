@@ -56,6 +56,7 @@ There are four other demo plots, and can be invoked using the following command:
 	mut.demo(figure = 'kernel')
 	mut.demo(figure = 'pca')
 
+
 .. image:: ../example/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center

@@ -18,7 +18,7 @@ Key Features
 	3. Numerous visualization plots to analyze the data.
 	4. Principal component analysis (PCA) and receiver operating characteristic (ROC) curve tools.
 	5. Calculates correlation between evolutionary sequence alignment and enrichment scores.
-	6. Map enrichment scores on a Pymol session.
+	6. Map enrichment scores on a Pymol session. Extract properties from PDB files (ie. SASA) and compare it to the enrichment scores.
 	
 
 Attribution and Contact
@@ -43,7 +43,7 @@ In this chapter, you will find how to install the package (:ref:`installation`) 
 Examples
 ===============
 
-In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`processing`) and we will do each type of plot (:ref:`plotting`). :ref:`Normalizing` shows the different options of data normalization that the package allows for. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``mut_processing.ipynb``, ``mut_normalizing.ipynb`` and ``mut_plotting.ipynb``. 
+In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`processing`) and we will do each type of plot (:ref:`plotting`). :ref:`Normalizing` shows the different options of data normalization that the package allows for. :ref:`more examples`) shows uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``mut_processing.ipynb``, ``mut_normalizing.ipynb``, ``mut_plotting.ipynb`` and ``mut_moreexamples.ipynb``. 
 
 .. toctree::
    :maxdepth: 1
@@ -53,7 +53,7 @@ In this chapter, we will walk the user through the different functions and metho
 	Processing <mut_processing>
 	Normalizing <mut_normalizing>
 	Plotting <mut_plotting>
-
+	More examples <mut_moreexamples>
 
 
 

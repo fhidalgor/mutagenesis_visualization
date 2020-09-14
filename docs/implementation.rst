@@ -31,6 +31,10 @@ Functions
 
 .. autofunction:: mutagenesis_visualization.msa_enrichment
 
+.. _parse_pivot:
+
+.. autofunction:: mutagenesis_visualization.parse_pivot
+
 .. _plot_box:
 
 .. autofunction:: mutagenesis_visualization.plot_box

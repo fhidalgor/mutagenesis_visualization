@@ -3,13 +3,13 @@ Plotting
 
 This section shows how to use the mutagenesis_visualization package. The plotting functions can be used regardless of how you process your data. For the examples, we are using two datasets that are derived from Pradeep’s legacy. [#Pradeep2017]_
 
-Import module
--------------
+Import modules
+--------------
 
 .. code:: ipython3
 
-    # Import Module
-    import Import_notebook
+    # Import Modules
+    import import_notebook
     import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
@@ -29,10 +29,10 @@ are importing two datasets and creating two objects named
 .. code:: ipython3
 
     # Load enrichment scores
-    hras_enrichment_GAPGEF = np.genfromtxt('Exported/HRas166_GAPGEF.csv',
+    hras_enrichment_GAPGEF = np.genfromtxt('../data/HRas166_GAPGEF.csv',
                                            delimiter=',')
     
-    hras_enrichment_RBD = np.genfromtxt('Exported/HRas166_RBD.csv',
+    hras_enrichment_RBD = np.genfromtxt('../data/HRas166_RBD.csv',
                                         delimiter=',')
     
     # Define protein sequence
@@ -64,7 +64,7 @@ are importing two datasets and creating two objects named
                           aminoacids, start_position, fillna, secondary)
     
     # Parameters to save output images, will be the same for each plot
-    outputfilepath = 'mv_repo/example/exported_images/'
+    outputfilepath = '../../example/exported_images/'
     outputformat = 'png'
     savefile = True
 
@@ -466,6 +466,39 @@ residues with a lower enrichment score are more conserved.
    :width: 300px
    :align: center
 
+3-D scatter
+-----------
+
+The user can plot a 3-D scatter using the atomic coordinates of the
+C-alpha atoms of a PDB file. The method ``object.scatter_3D`` will take
+as an input either a PDB file or the x,y,z coordinates and plot a
+color-coded scatter. In the example, we can appreciate how mutation at
+the inner residues (hydrophobic) are loss of function (blue), and
+surface residues (green) are more tolerant to mutations. For the second
+plot, we have centered and squared the data. The closer to (0,0,0), the
+higher the amoung of blue residues. We have colored in lightblue the
+residues of Switch I of Ras, which are known to interact with RBD, the
+effector used in the assay. They are all loss of function and away from
+the origin.
+
+.. code:: ipython3
+
+    # Plot 3-D plot
+    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared = False,
+                        lof=-0.5, gof=0.1)
+    
+    # Plot 3-D plot, centering and squaring the distances
+    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared = True,
+                        lof=-0.5, gof=0.1)
+
+.. image:: ../example/exported_images/hras_3dscatter.png
+   :width: 300px
+   :align: center
+   
+.. image:: ../example/exported_images/hras_3dscatter_squared.png
+   :width: 300px
+   :align: center
+
 Pymol
 -----
 
@@ -496,70 +529,3 @@ Reference
 .. [#Pradeep2017] Bandaru et al. (2017). Deconstruction of the Ras switching cycle through saturation mutagenesis. `DOI: 10.7554/eLife.27810  <https://elifesciences.org/articles/27810>`_
 
 .. [#Tareen2019] Tareen A, Kinney JB (2019). Logomaker: beautiful sequence logos in Python. `bioRxiv DOI:10.1101/635029. <https://www.biorxiv.org/content/10.1101/635029v1>`_
-
-.. code:: ipython3
-
-    from .mutagenesis_visualization import *
-    import numpy as np
-    import os
-    import sys
-    
-    __author__ = "Frank Hidalgo"
-    __version__ = "0.0.9"
-    __title__ = "Mutagenesis Visualization"
-    __license__ = "GPLv3"
-    __author_email__ = "fhidalgoruiz@berkeley.edu"
-    
-    
-    def demo(figure='heatmap'):
-        """
-        Performs a demonstration of the mutagenesis_visualization software.
-    
-        Parameters
-        -----------
-        figure : str, default 'heatmap'
-            There are 5 example plots that can be displayed to test the package is working on your station.
-            The 5 options are 'heatmap', 'miniheatmap', 'mean', 'kernel' and 'pca'. Check the documentation for more information.
-    
-        Returns
-        -------
-        None.
-        """
-        # Use relative file import to access the data folder
-        location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, 'data', 'HRas166_RBD.csv')
-    
-        # Load enrichment scores
-        hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
-    
-        # Define protein sequence
-        hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
-    
-        # Define secondary structure
-        secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36), ['L3']*(48-46), 
-                     ['β3']*(58-48), ['L4'] * (64-58),['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), 
-                     ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), ['β5']*(116-110), ['L8']*(126-116), ['α4']*(137-126),
-                     ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
-    
-        # Create object
-        hras_RBD = Screen(dataset=hras_enrichment_RBD,
-                          sequence=hras_sequence, secondary=secondary)
-    
-        if figure == 'heatmap':
-            # Create heatmap plot
-            hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
-        elif figure == 'miniheatmap':
-            # Condensed heatmap
-            hras_RBD.miniheatmap(title='Wt residue H-Ras')
-        elif figure == 'mean':
-            # Mean enrichment by position
-            hras_RBD.mean(figsize=[6, 2.5], mode='mean',
-                          show_cartoon=True, yscale=[-2, 0.5])
-        elif figure == 'kernel':
-            # Plot kernel dist using sns.distplot.
-            hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1])
-        elif figure == 'pca':
-            # PCA by amino acid substitution
-            hras_RBD.pca(title='', dimensions=[
-                         0, 1], figsize=(2, 2), adjustlabels=True)
-        return

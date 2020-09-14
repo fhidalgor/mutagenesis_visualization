@@ -18,7 +18,6 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.patches as patches
 from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.mlab as pl
 import matplotlib.ticker as ticker
 from sklearn import metrics
 from sklearn.decomposition import PCA
@@ -26,23 +25,30 @@ from adjustText import adjust_text
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.Seq import Seq
+from Bio.PDB import PDBParser
 from collections import defaultdict, OrderedDict, Counter
-from . import shannon
+import freesasa
+from os import path
 
+try:
+    import shannon
+except ModuleNotFoundError:
+    print("")
+    
 try:
     import adjustText
 except ModuleNotFoundError:
-    print("module 'adjustText' is not installed")
+    print("")
     
 try:
     import logomaker
 except ModuleNotFoundError:
-    print("module 'logomaker' is not installed")
+    print("")
 
 try:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
-    print("module 'ipymol' is not installed")
+    print("")
 
 
 # # Data Process Functions
@@ -891,7 +897,6 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
-    temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
 
     # create figure
     fig = plt.figure(figsize=temp_kwargs['figsize'])
@@ -900,7 +905,7 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
     _parameters()
 
     # plot
-    ax = sns.distplot(self.dataframe['Score'], kde=True, hist=histogram, norm_hist=True,
+    ax = sns.distplot(self.dataframe['Score_NaN'], kde=True, hist=histogram, norm_hist=True,
                       kde_kws={'kernel': kernel, 'color': temp_kwargs['color'], 'lw': 2, 'label': kernel_label}, fit=fit,
                       fit_kws={'label': fit_label, 'linestyle': 'dotted', 'color': 'red'})
 
@@ -1002,14 +1007,14 @@ def plot_multiplekernel(dict_entries, kernel='gau',
     for (label, dataset, color) in zip(dict_copy.keys(), dict_copy.values(), colors[0:len(dict_copy)]):
         if 'Score' in dataset.columns:
             # plot objects scores
-            sns.distplot(dataset['Score'], hist=False,
+            sns.distplot(dataset['Score_NaN'], hist=False,
                          kde_kws={"color": color, "lw": 2, "label": label})
         else:
             # get rid of stop codons
             dataset.drop('*', errors='ignore', inplace=True)
             dataset = dataset.stack()
             # plot stacked matrix
-            sns.distplot(dataset, kde=True, hist=False, 
+            sns.distplot(dataset[~numpy.isnan(dataset)], kde=True, hist=False, 
                          kde_kws={"color": color, "lw": 2, "label": label})
 
     # tune graph
@@ -1076,23 +1081,23 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # sort data in specified order by user
-    dataset = _df_rearrange(_add_SNV_boolean(self.dataframe_stopcodons.copy()),
-                            temp_kwargs['neworder_aminoacids'], values='Score_NaN', show_snv = show_snv).to_numpy()
+    df = _df_rearrange(_add_SNV_boolean(self.dataframe_stopcodons.copy()),
+                            temp_kwargs['neworder_aminoacids'], values='Score_NaN', show_snv = show_snv)
 
     # declare figure and subplots
-    figwidth = 14*len(dataset[0])/165
+    figwidth = 14*len(df.columns)/165
 
     # Change parameters depending on whether cartoon is on or off
     if show_cartoon:
         figheight = 2.45
         fig = plt.figure(figsize=(figwidth, figheight))
         gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[
-                               len(dataset), 1, 5], width_ratios=[len(dataset[0]), 1])
+                               len(df), 1, 5], width_ratios=[len(df.columns), 1])
     else:
         figheight = 2
         fig = plt.figure(figsize=(figwidth, figheight))
         gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[
-                               len(dataset), 1], width_ratios=[len(dataset[0]), 1])
+                               len(df), 1], width_ratios=[len(df.columns), 1])
 
     ax = plt.subplot(gs[0, 0])
     averageresidue = plt.subplot(gs[1, 0])
@@ -1104,7 +1109,7 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
     cmap.set_bad(color=nancolor)
 
     # main heatmap
-    heatmap = ax.pcolormesh(dataset, vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
+    heatmap = ax.pcolormesh(df, vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
                             cmap=cmap, edgecolors='k', linewidths=0.2, antialiased=True, color='darkgrey')
 
     # average of residues by positon
@@ -1116,8 +1121,8 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
 
     # ____________axes manipulation____________________________________________
     # put the major ticks at the middle of each cell
-    ax.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
-    ax.set_yticks(np.arange(dataset.shape[0]) + 0.5, minor=False)
+    ax.set_xticks(np.arange(len(df.columns)) + 0.5, minor=False)
+    ax.set_yticks(np.arange(len(df)) + 0.5, minor=False)
 
     # position of axis labels
     ax.tick_params('x', direction='out', pad=-2.5)
@@ -1128,12 +1133,12 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
     ax3 = ax.twinx()
 
     # tune the axes
-    ax2.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
-    ax3.set_yticks(np.arange(dataset.shape[0]) + 0.5, minor=False)
+    ax2.set_xticks(np.arange(len(df.columns)) + 0.5, minor=False)
+    ax3.set_yticks(np.arange(len(df)) + 0.5, minor=False)
     ax2.tick_params(direction='out', pad=4)
     ax3.tick_params(direction='out', pad=0.4)
     averageresidue.tick_params(direction='out', pad=-2)
-    averageresidue.set_xticks(np.arange(len(dataset[0])) + 0.5, minor=False,)
+    averageresidue.set_xticks(np.arange(len(df.columns)) + 0.5, minor=False,)
     averageresidue.set_yticks(np.arange(0.5)+0.5)
 
     # Set the limits of the new axis from the original axis limits
@@ -1159,7 +1164,7 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
                        fontname="Arial", color='k', minor=False)
     ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6,
                        fontname="Arial", color='k', minor=False)
-    ax2.set_xticklabels(temp_kwargs['number_sequencelabels'][0:len(dataset[0])],
+    ax2.set_xticklabels(temp_kwargs['number_sequencelabels'][0:len(df.columns)],
                         fontsize=10, fontname="Arial", color='k', minor=False)
     ax3.set_yticklabels(temp_kwargs['neworder_aminoacids'],
                         fontsize=6, fontname="Arial", color='k', minor=False)
@@ -1190,10 +1195,10 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
     cb.ax.set_yticklabels(cb.ax.get_yticklabels(),
                           fontsize=6, fontname="Arial", color='k')
     cb.update_ticks()
-    plt.text(1.2+10/len(dataset[0]), 0.7, r'$\langle∆E^x_i\rangle_x$', transform=cbar1.transAxes,
+    plt.text(1.2+10/len(df.columns), 0.7, r'$\langle∆E^x_i\rangle_x$', transform=cbar1.transAxes,
              horizontalalignment='center', fontsize=7, fontname="Arial", color='k')
 
-    gs.update(hspace=0.1, wspace=0.1/len(dataset[0])*50)
+    gs.update(hspace=0.1, wspace=0.1/len(df.columns)*50)
 
     # for putting title on graph
     plt.title(temp_kwargs['title'], horizontalalignment='center',
@@ -1483,15 +1488,16 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # sort data in specified order by user
-    dataset = _df_rearrange(self.dataframe_stopcodons,
-                            temp_kwargs['neworder_aminoacids'], values='Score_NaN').to_numpy()
-
+    df_whole = _df_rearrange(self.dataframe_stopcodons,
+                            temp_kwargs['neworder_aminoacids'], values='Score_NaN')
+    
     # select subset
-    dataset = dataset[:, segment[0] -
-                      self.start_position:segment[1]-self.start_position+1]
+    c0 = segment[0]-self.start_position
+    c1 = segment[1]-self.start_position+1
+    df = df_whole.iloc[:,c0:c1]
 
     # the size can be changed
-    figwidth = 2*len(dataset[0])/22
+    figwidth = 2*len(df.columns)/22
     figheight = 2
     fig = plt.figure(figsize=(figwidth, figheight))
     gs = gridspec.GridSpec(nrows=1, ncols=1)
@@ -1503,12 +1509,12 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
     cmap.set_bad(color=nancolor)
 
     # main heatmap
-    heatmap = ax.pcolormesh(dataset, vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
+    heatmap = ax.pcolormesh(df, vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
                             cmap=cmap, edgecolors='k', linewidths=0.2, antialiased=True, color='darkgrey')
 
     # put the major ticks at the middle of each cell
-    ax.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False,)
-    ax.set_yticks(np.arange(dataset.shape[0]) + 0.5, minor=False)
+    ax.set_xticks(np.arange(len(df.columns)) + 0.5, minor=False,)
+    ax.set_yticks(np.arange(len(df)) + 0.5, minor=False)
 
     # position of axis labels
     ax.tick_params('x', direction='out', pad=-2.5)
@@ -1516,7 +1522,7 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
 
     # second axis
     ax2 = ax.twiny()
-    ax2.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
+    ax2.set_xticks(np.arange(len(df.columns)) + 0.5, minor=False)
     ax2.tick_params(direction='out', pad=4)
 
     # Set the limits of the new axis from the original axis limits
@@ -1553,7 +1559,7 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
 
     if temp_kwargs['show']:
         plt.show()
-    return
+    return 
 
 
 # ## Mean Plots
@@ -2071,7 +2077,7 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
 # In[ ]:
 
 
-def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
+def plot_hist(self, population='All', loc='upper left', **kwargs):
     '''
     Generate a histogram plot. Can plot single nucleotide variants (SNVs) or non-SNVs only
 
@@ -2080,14 +2086,12 @@ def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
     population : str, default 'All'. 
         Other options are 'SNV' and 'nonSNV'.
     
-    bins : int, default 40. 
-        Number of bins for the histogram.
-    
     loc : str, default 'upper left'. 
         Position of the legend.
     
     **kwargs : other keyword arguments
-
+        bins : int, default 50. 
+            Number of bins for the histogram.
     Returns
     ----------
     None.
@@ -2101,11 +2105,11 @@ def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
     temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
 
     # Select case input data
-    df = self.dataframe['Score']
+    df = self.dataframe['Score_NaN']
     if population == 'SNV':
-        df = self.dataframe_SNV['Score']
+        df = self.dataframe_SNV['Score_NaN']
     elif population == 'nonSNV':
-        df = self.dataframe_nonSNV['Score']
+        df = self.dataframe_nonSNV['Score_NaN']
 
     # create figure
     fig = plt.figure(figsize=temp_kwargs['figsize'])
@@ -2114,7 +2118,7 @@ def plot_hist(self, population='All', bins=40, loc='upper left', **kwargs):
     _parameters()
 
     # plot figure
-    plt.hist(df, density=True, bins=bins, color='k')
+    plt.hist(df, density=True, bins=temp_kwargs['bins'], color='k')
 
     # axes labels and title
     plt.xlabel(r'$∆E^i_x$' if temp_kwargs['x_label'] == 'x_label' else temp_kwargs['x_label'],
@@ -3419,6 +3423,346 @@ def plot_box(binned_x, y, **kwargs):
     return
 
 
+# ## 3D plot
+
+# ### 3D Scatter
+
+# In[2]:
+
+
+def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
+                    df_color=None,  position_correction=0, chain='A',
+                    squared=False, rotate=False, **kwargs):
+    '''
+    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, color coded
+    by the enrichment scores. PDBs may have atoms missing, you should fix the PDB before using this
+    method. Use %matplotlib for interactive plot.
+
+    Parameters
+    -----------
+    self : object from class "Screen"
+        **kwargs : other keyword arguments.
+
+    mode : str, default 'mean'
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
+        used for each amino acid. Use the one-letter code and upper case.
+
+    pdb : str, default None
+        User should specify the path PDB chain.
+
+    df_coordinates: pandas dataframe, default None
+        If no pdb is included, the user must pass the 3-D coordinates of the residues to plot. 
+        In here you have more flexibility and you can select other atoms besides the C-alpha.
+
+    df_color : pandas dataframe, default None     
+        The color of each residue can also be included. You must label that label column.
+
+    position_correction : int, default 0
+        If the pdb structure has a different numbering of positions than you dataset,
+        you can correct for that. If your start_position = 2, but in the PDB that same residue
+        is at position 20, position_correction needs to be set at 18.
+
+    chain : str, default 'A'
+        Chain of the PDB file to get the coordinates and SASA from.
+
+    squared : booleand, False
+        If this parameter is True, the algorithm will center the data, and plot the square value of the 
+        distance.
+
+    rotate : boolean, False
+        If you are using an interactive matplotlib, set up rotate = True so the graph spins.
+
+    **kwargs : other keyword arguments
+        gof : int, default is 1
+                 cutoff for determining gain of function mutations based on mutagenesis data.
+        lof : int, default is -1
+            cutoff for determining loss of function mutations based on mutagenesis data.
+
+    Returns
+    ---------
+    None
+    '''
+
+    # Load parameters
+    _parameters()
+
+    # Update kwargs
+    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs.update(kwargs)
+
+    # Get Scores and colors
+    if df_color is None:
+        df = _color_3D_scatter(self.dataframe, mode, temp_kwargs['lof'],
+                               temp_kwargs['gof'])
+
+    # If coordinates is not an input, get it from the pdb
+    if df_coordinates is None:
+        df_coordinates = _parse_pdbcoordinates(
+            self, pdb_path, position_correction, chain)
+
+    # Plot figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    if squared is False:
+        ax.scatter(df_coordinates['x'], df_coordinates['y'],
+                   df_coordinates['z'], c=df['Color'])
+    else:
+        ax.scatter(df_coordinates['x_cent'], df_coordinates['y_cent'],
+                   df_coordinates['z_cent'], c=df['Color'])
+        
+
+    ax.set_xlabel('X axis')
+    ax.set_ylabel('Y axis')
+    ax.set_zlabel('Z axis')
+
+    # save file
+    _savefile(fig, temp_kwargs)
+
+    # rotate if you are using interactive plot
+    if rotate is True:
+        for angle in range(0, 360):
+            ax.view_init(30, angle)
+            plt.draw()
+            plt.pause(.001)
+
+    if temp_kwargs['show']:
+        plt.show()
+
+    return
+
+
+def _color_3D_scatter(df, mode, lof, gof):
+    '''Color the data points by enrichment scores'''
+    # Copy df
+    df_grouped = df.copy()
+
+    # Select grouping
+    if mode == 'mean':
+        df_grouped = df_grouped.groupby(['Position'], as_index=False).mean()
+    else:
+        df_grouped = df_grouped.loc[df_grouped['Aminoacid'] == mode]
+
+    # Select colors
+    df_grouped['Color'] = 'green'
+    df_grouped.loc[df_grouped['Score'] < lof, 'Color'] = 'blue'
+    df_grouped.loc[df_grouped['Score'] > gof, 'Color'] = 'red'
+
+    return df_grouped
+
+
+def centeroidnp(df):
+    '''find center of x,y,z'''
+    return df['x'].sum()/len(df['x']), df['y'].sum()/len(df['y']), df['z'].sum()/len(df['z'])
+
+
+def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False):
+    '''parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
+    If PDB is missing atoms, it can handle it.'''
+    
+    # Get structure from PDB
+    structure = PDBParser().get_structure('pdb', pdb_path)
+
+    coordinates = []
+    commands = []
+    bfactors = []
+    positions_worked =[] # positions present in pdb
+    
+    # Iterate over each CA atom and geet coordinates
+    for i in np.arange(self.start_position+position_correction, self.end_position+position_correction):
+        # first check if atom exists
+        try:
+            structure[0][chain][int(i)].has_id("CA")
+            # Get atom from pdb and geet coordinates
+            atom = list(structure[0][chain][int(i)]["CA"].get_vector())+[i]
+            coordinates.append(atom)
+            # Get SASA command for each residue and bfactor
+            residue = "s{}, chain {} and resi {}".format(str(i), chain, str(i))
+            commands.append(residue)
+            bfactor = (structure[0][chain][int(i)]["CA"].get_bfactor())
+            bfactors.append(bfactor)
+            positions_worked.append(i)
+        except:
+            print ("residue {} not found".format(str(i)))
+            coordinates.append([np.nan, np.nan, np.nan, i])
+            
+    # Convert to df
+    df_coordinates = pd.DataFrame(
+        columns=['x', 'y', 'z', 'Position'], data=coordinates)
+
+    # Center data
+    x, y, z = centeroidnp(df_coordinates)
+    df_coordinates['x_cent'] = (df_coordinates['x']-x).abs()**2
+    df_coordinates['y_cent'] = (df_coordinates['y']-y).abs()**2
+    df_coordinates['z_cent'] = (df_coordinates['z']-z).abs()**2
+    df_coordinates['Distance'] = df_coordinates['x_cent'] +         df_coordinates['y_cent']+df_coordinates['z_cent']
+
+    # Add sasa values
+    if sasa:
+        # Get structure for SASA
+        structure_sasa = freesasa.Structure(pdb_path)
+        result = freesasa.calc(structure_sasa)
+        # Calculate sasa
+        sasa = freesasa.selectArea(commands, structure_sasa, result)
+        df_sasa = pd.DataFrame(columns=['SASA'], data=sasa.values())
+        df_sasa['B-factor'] = bfactors
+        df_sasa['Position'] = positions_worked
+
+        # Merge
+        df_coordinates = df_coordinates.merge(df_sasa,how='outer', on='Position')
+
+    return df_coordinates
+
+
+# ### 3D Scatter Second version
+
+# In[3]:
+
+
+def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
+                            mode='mean', pdb_path=None, custom=None, 
+                            axis_scale = ["linear", "linear", "linear"],
+                            df_color=None,  color_by_score=True,
+                            position_correction=0, chain='A',
+                            rotate=False, output_df= False, **kwargs):
+    '''
+    Generates a 3-D scatter plot of different properties obtained from the PDB. PDBs may have atoms missing, you should fix the PDB before using this
+    method. We recommend you use %matplotlib for interactive plot. 
+
+    Parameters
+    -----------
+    self : object from class "Screen"
+        **kwargs : other keyword arguments.
+
+    plot : list, default ['Distance', 'SASA', 'B-factor']
+        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the 
+        label to the third element of the list ie ['Distance', 'SASA', 'Conservation']. 
+
+    mode : str, default 'mean'
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
+        used for each amino acid. Use the one-letter code and upper case.
+
+    pdb_path : str, default None
+        User should specify the path PDB.
+    
+    custom : list or dataframe or np.array, default None
+        If you want to add a custom dataset to plot, use custom. On the parameter
+        plot, the 3rd item of the list will be the label for your custom dataset.
+    
+    axis_scale : list, default ["linear", "linear", "linear"]
+        Check matplotlib.axes.Axes.set_xscale documentation for more information.
+        The axis scale type to apply. Some options are {"linear", "log", "symlog", "logit", ...}.
+        
+    df_color : pandas dataframe, default None     
+        The color of each residue can also be included. You must label that label column.
+    
+    color_by_score : boolean, default True
+        If set to False, the points in the scatter will not be colored based on the enrichment score.
+
+    position_correction : int, default 0
+        If the pdb structure has a different numbering of positions than you dataset,
+        you can correct for that. If your start_position = 2, but in the PDB that same residue
+        is at position 20, position_correction needs to be set at 18.
+
+    chain : str, default 'A'
+        Chain of the PDB file to get the coordinates and SASA from.
+
+    rotate : boolean, False
+        If you are using an interactive matplotlib, set up rotate = True so the graph spins.
+    
+    output_df : boolean, default False
+        If true, this method will return the dataframe with the data.
+        
+    **kwargs : other keyword arguments
+        gof : int, default is 1
+                 cutoff for determining gain of function mutations based on mutagenesis data.
+        lof : int, default is -1
+            cutoff for determining loss of function mutations based on mutagenesis data.
+
+    Returns
+    ---------
+    df_items : pandas dataframe
+        Contains the plotted data. Needs to have output_df set to true.
+    '''
+
+    # Load parameters
+    _parameters()
+
+    # Update kwargs
+    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs.update(kwargs)
+    temp_kwargs['x_label'] = kwargs.get('x_label', plot[0])
+    temp_kwargs['y_label'] = kwargs.get('y_label', plot[1])
+    temp_kwargs['z_label'] = kwargs.get('z_label', plot[2])
+    
+    # Get Scores and colors
+    df_scores = _color_3D_scatter(self.dataframe, mode, temp_kwargs['lof'],
+                           temp_kwargs['gof'])
+    
+    # If coordinates is not an input, get it from the pdb
+    df_items = _parse_pdbcoordinates(self, pdb_path, position_correction,
+                                     chain, sasa=True)
+    
+    # Add scores
+    df_items['Score'] = list(df_scores['Score'])
+    
+    
+    # Custom data
+    if custom is not None:
+        df_items[plot[2]] = custom
+        
+    # Plot figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    
+    if df_color is None and color_by_score is True:
+        c = df_scores['Color']
+    elif df_color is None and color_by_score is False:
+        c = 'k'
+    else:
+        c = df_scores['Color']
+    
+    ax.scatter(df_items[plot[0]], df_items[plot[1]], df_items[plot[2]], c=c)
+
+    # axis labels
+    ax.set_xlabel(temp_kwargs['x_label'])
+    ax.set_ylabel(temp_kwargs['y_label'])
+    ax.set_zlabel(temp_kwargs['z_label'])
+    
+    # axis scales
+    ax.set_xscale(axis_scale[0])
+    ax.set_yscale(axis_scale[1])
+    ax.set_xscale(axis_scale[2])
+    
+    # save file
+    _savefile(fig, temp_kwargs)
+
+    # rotate if you are using interactive plot
+    if rotate is True:
+        for angle in range(0, 360):
+            ax.view_init(30, angle)
+            plt.draw()
+            plt.pause(.001)
+
+    if temp_kwargs['show']:
+        plt.show()
+    
+    if output_df:
+        return df_items, df_scores
+    
+
+
+# In[ ]:
+
+
+'''%matplotlib widget
+
+plot_scatter_3D_pdbprop(hras_object, plot=['Distance', 'B-factor', 'Score'],
+                        pdb_path = '../data/5p21.pdb', color_by_score=False,
+                       gof=0.2, lof=-0.5)'''
+
+
 # ## Map into Pymol
 
 # In[ ]:
@@ -3434,9 +3778,11 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
     
     Parameters
     ----------
-    pdb : str,
+    pdb : str
         User should specify the PDB chain in the following format 4G0N_A.
-    
+        If you have internet connection, Pymol will download the pdb. Otherwise,
+        include the path were your PDB is stored locally.
+        
     mode : str, default 'mean'
         Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
         each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
@@ -3476,9 +3822,13 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
     if not pymol._process_is_running():
         pymol.start()
 
-    # Fetch structure
-    pymol.fetch(pdb)
-
+    # Fetch structure. If pdb contains a "/", it will assume it is stored locally
+    if '/' in pdb:
+        pymol.load(pdb)
+        pdb = (path.basename(pdb)).partition('.')[0] # Extract filename from pdb and then extract pdb code
+    else:
+        pymol.fetch(pdb)
+    
     # Hide everything
     pymol.do('hide everything')
 
@@ -3577,7 +3927,7 @@ def _light_parameters():
     return
 
 
-# ## Internal Functions
+# # Internal Functions
 
 # In[ ]:
 
@@ -3697,7 +4047,7 @@ def _df_rearrange(df, new_order, values='Score',show_snv = False):
     
     # If only SNVs, turn rest to NaN
     if show_snv is True:
-        dfcopy.loc[dfcopy['SNV?']==True, values] = np.nan
+        dfcopy.loc[dfcopy['SNV?']==False, values] = np.nan
     
     df_pivoted = dfcopy.pivot_table(values=values, index='Aminoacid',
                                     columns=['Position'], dropna=False)
@@ -3742,6 +4092,53 @@ def _savefile(fig, temp_kwargs):
                     bbox_inches='tight', dpi=temp_kwargs['dpi'], transparent=True)
     return
 
+def parse_pivot(df_imported, col_variant = 'variant', col_data = 'DMS',
+               fill_value = np.nan):
+    '''
+    Parses a dataframe that contains saturation mutagenesis data in the Variant/Scores format.
+    
+    Parameters
+    -----------
+    df_imported : pandas dataframe
+        Dataframe with the data imported with pd.read_excel.
+    
+    col_variant : str, default 'variant'
+        Name of the column that contains the variants (ie T31A).
+        
+    col_data : str, default 'DMS'
+        Name of the column that contains the saturation mutagenesis scores.
+    
+    fill_value : float, default np.nan
+        What number to replace values that are omitted. It is possible that your 
+        dataset does not have a wt value.
+        
+    Returns
+    --------
+    df_pivoted : pandas dataframe
+        Dataframe that has been pivoted. Values are the saturation mutagenesis data. Columns are 
+        the amino acid substitutions. Rows are the positions of the protein.
+    
+    sequence : list
+        List of the amino acids that form the protein sequence.
+    '''
+    
+    # Copy
+    df = df_imported.copy()
+    
+    # Extract position and amino acids that are being mutated
+    df['Position'] = df[col_variant].str.extract('(\d+)').astype(int)
+    df['Original'] = df[col_variant].str[0:1]
+    df['Substitution'] = df[col_variant].str[-1:]
+    
+    # Get sequence
+    sequence = list(df.groupby(by=['Position', 'Original'], as_index=False, group_keys=False).sum() ['Original'])
+
+    # Pivot
+    df_pivoted = df.pivot_table(index='Substitution',columns = 'Position', 
+                                values=col_data, fill_value = fill_value, dropna=False)
+    
+    return df_pivoted, sequence
+
 
 # # Kwargs
 
@@ -3755,8 +4152,9 @@ def kwargs():
     Parameters
     -----------
     colormap : cmap, default custom bluewhitered
-        Used for heatmaps.
-    
+        Used for heatmaps. You can use your own colormap or the ones provided by 
+        matplotlib. Example colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
+
     colorbar_scale: list, default [-1, 1]
         Scale min and max used in heatmaps and correlation heatmaps.
     
@@ -3812,7 +4210,15 @@ def kwargs():
     lof: int, default -1
         Cutoff of the enrichment score to classify a mutation as loss of funtion.
         Used on pymol function.
+    
+    color_gof : str, default 'red'
+        Color to color mutations above the gof cutoff.
+        Used in pymol and mean methods.
 
+    color_lof : str, default 'blue'
+        Color to color mutations below the lof cutoff.
+        Used in pymol and mean methods.
+        
     cartoon_colors: list, default ['lightgreen', 'lavender', 'k']
         Colors used for secondary structure cartoon. Used for heatmap, mean and mean_count plots.
         
@@ -3824,7 +4230,7 @@ def kwargs():
         
     random_state : int, default 554
         Random state used for PCA function.
-        
+      
     '''
     # Do nothing, only so sphinx adds this to the rst file
     return
@@ -3835,6 +4241,7 @@ default_kwargs = {'colormap': generatecolormap(),
                   'title': 'Title',
                   'x_label': 'x_label',
                   'y_label': 'y_label',
+                  'z_label': 'y_label',
                   'xscale': (None, None),
                   'yscale': (None, None),
                   'tick_spacing': 1,
@@ -3849,10 +4256,13 @@ default_kwargs = {'colormap': generatecolormap(),
                   'savefile': False,
                   'gof': 1,
                   'lof': -1,
+                  'color_gof' : 'red',
+                  'color_lof' : 'blue',
                   'cartoon_colors': ['lightgreen', 'lavender', 'k'],
                   'text_labels': None,
                   'show': True,
                   'random_state' : 554,
+                  'bins' : 50,
                   }
 
 
@@ -3867,7 +4277,7 @@ class Screen:
     in the protein has been mutated to other amino acids. The mutants are scored based
     on some custom screen.
 
-    Attributes
+    Parameters
     -----------
     dataset : array
         2D matrix containing the enrichment scores of the point mutants. Columns will contain the
@@ -3897,6 +4307,14 @@ class Screen:
     
     fillna : int, default 0
         How to replace NaN values.
+        
+    Attributes
+    -----------
+    dataframe : pandas dataframe
+        Contains the enrichment scores, position, sequence.
+    
+    Other attributes are same as input parameters: dataset, aminoacids, start_position, roc_df, secondary
+
     '''
 
     def __init__(self, dataset, sequence, aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
@@ -3904,9 +4322,10 @@ class Screen:
         self.dataset = np.array(dataset)
         self.aminoacids = aminoacids
         self.start_position = start_position
-        self.sequence_raw = sequence
+        self.end_position = len(self.dataset[0])+start_position
+        self.sequence_raw = ''.join(sequence)
         self.sequence = _transform_sequence(
-            self.dataset, sequence, self.start_position)
+            self.dataset, self.sequence_raw, self.start_position)
         self.dataframe_stopcodons, self.dataframe = _transform_dataset(
             self.dataset, self.sequence, self.aminoacids, self.start_position, fillna)
         self.dataframe_SNV = _select_SNV(self.dataframe)
@@ -3940,6 +4359,8 @@ class Screen:
     secondary_mean = plot_secondary
     roc = plot_roc
     cumulative = plot_cumulative
+    scatter_3D = plot_scatter_3D
+    scatter_3D_pdbprop = plot_scatter_3D_pdbprop
     pymol = plot_pymol
 
 
@@ -4055,7 +4476,7 @@ KRas165.pymol('5p21_A')
 
 
 '''# Load enrichment scores into a np.array
-hras_enrichment = np.genfromtxt('Exported/HRas166_GAPGEF.csv', delimiter=',')
+hras_enrichment = np.genfromtxt('../data/HRas166_RBD.csv', delimiter=',')
 
 # Define protein sequence
 hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
@@ -4072,4 +4493,34 @@ secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-2
 # Create object
 hras_object = Screen(hras_enrichment,hras_sequence,aminoacids,start_position,0,secondary)
 '''
+
+
+# In[ ]:
+
+
+'''path = '../Data/DMS_others.xlsx'
+sheet_name='env'
+usecols='A:B'
+
+# Read excel file
+df = pd.read_excel(path, sheet_name, usecols=usecols)
+
+# Parse
+df_env, sequence_env = parse_pivot(df)'''
+
+
+# In[ ]:
+
+
+'''# Order of amino acid substitutions in the hras_enrichment dataset
+aminoacids = list(df_env.index)
+neworder_aminoacids = list('DEKHRGNQASTPCVYMILFW')
+
+# First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
+start_position = df_env.columns[0]
+
+sequence = ['X']*start_position+sequence_env
+# Create objects
+env_obj = Screen(df_env, sequence,
+                         aminoacids, start_position)'''
 

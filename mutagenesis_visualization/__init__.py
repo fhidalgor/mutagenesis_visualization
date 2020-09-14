@@ -52,11 +52,11 @@ def demo(figure='heatmap'):
         hras_RBD.miniheatmap(title='Wt residue H-Ras')
     elif figure == 'mean':
         # Mean enrichment by position
-        hras_RBD.mean(figsize=[6, 2.5], mode='mean',show_cartoon=True, yscale=[-2, 0.5])
+        hras_RBD.mean(figsize=[6, 2.5], mode='mean',show_cartoon=True, yscale=[-2, 0.5], title = '')
     elif figure == 'kernel':
         # Plot kernel dist using sns.distplot.
         hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1])
     elif figure == 'pca':
         # PCA by amino acid substitution
-        hras_RBD.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True)
+        hras_RBD.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True, title = '')
     return
