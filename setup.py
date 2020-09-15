@@ -9,7 +9,7 @@ def readme():
         return fh.read()
 
 setuptools.setup(
-    name="mutagenesis-visualization",
+    name="mutagenesis_visualization",
     version="0.0.1.4",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
@@ -31,7 +31,7 @@ setuptools.setup(
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',},
     install_requires=['numpy', 'seaborn', 'pandas', 'scipy', 'matplotlib>=3.0.0',
         'sklearn', 'adjustText', 'Bio', 'logomaker','freesasa'],
-    dependency_links=['https://github.com/cxhernandez/ipymol'],
+    dependency_links=['https://github.com/cxhernandez/ipymol.git'],
     zip_safe=True,
     include_package_data=True,
     python_requires='>=3.6',

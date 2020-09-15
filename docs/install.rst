@@ -15,18 +15,18 @@ Installing with pip
 
 .. code-block:: bash
 
-     pip install mutagenesis-visualization
+     pip install mutagenesis_visualization
 
 If you are working on a jupyter notebook, you may have to use the following command:
 
 .. code:: ipython3
 
     import sys
-    !{sys.executable} -m pip install mutagenesis-visualization
+    !{sys.executable} -m pip install mutagenesis_visualization
 
 
 .. note::
-    The package folder is called "mutagenesis_visualization" (with underscore), but pip does not recognize underscores so for installation purposes you need to use a hyphen "mutagenesis-visualization".
+    The package folder is called "mutagenesis_visualization" (with underscore), but pip replaces the underscore with a hyphen. Thus, if you search for it on Pypi, it will show up as "mutagenesis-visualization". For installation purposes, both a hyphen and an underscore work.
     
 
 Alternative installation
@@ -42,14 +42,14 @@ You may decide to download the jupyter notebook called ``mutagenesis_visualizati
 
 Quick Start
 =============
-Now that you have installed ``mutagenesis-visualization``, execute the following within Python to evaluate whether it is working propertly:
+Now that you have installed ``mutagenesis_visualization``, execute the following within Python to evaluate whether it is working propertly:
 
 .. code:: ipython3
 
 	import mutagenesis_visualization as mut
 	mut.demo()
 
-This command will load the ``mutagenesis-visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
+This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
@@ -115,23 +115,22 @@ Required Dependencies
 
 - `freesasa <https://pypi.org/project/freesasa/>`_ (version 2.1.0)
 
-Optional dependencies
----------------------
-- `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5)
-
 - `logomaker <https://logomaker.readthedocs.io>`_ (version 0.8)
 
 - `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3)
 
 
-    
 If you want to manually install and/or upgrade the dependencies on your own, use:
 
 .. code:: ipython3
 
 	pip install --upgrade package_name
+	
 
-
+Optional dependencies
+---------------------
+- `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5)
+    
 
 ``Ipymol`` needs to be installed from Github, since the current Pypi version does not work. To install use this command:
 

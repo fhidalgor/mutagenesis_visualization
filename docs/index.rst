@@ -8,7 +8,11 @@ Overview
 Description
 -------------
 
-``mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets. While the software offers tools to calculate enrichment scores from fastq files, the main focus of this package is to perform the statistical analysis and and the visualization steps of your pipeline. Unlike other available python packages, ``mutagenesis_visualization`` has a user-centered design. The customer will convert their input dataset into an object, and from this object each plot can be called by typing the command ``object.method``. A vast number of examples is provided in the documentation so the user can see hot to tune the parameters to suit their own requirements.
+``mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets. While the software offers tools to calculate enrichment scores from fastq files, the main focus of this package is to perform the statistical analysis and the visualization steps of your pipeline. Unlike other available python packages, ``mutagenesis_visualization`` has a user-centered design and does not require prior experience with Python nor statistics. The the documentation provides multiple examples of how to perform each step. As the user, you will be guided to input your dataset and the protein sequence. From here, the software *prend le contrôle*, and will produce a wide range of stunning and detailed plots. 
+
+.. image:: ../example/exported_images/user_experience.jpg
+   :width: 300px
+   :align: center
 
 Key Features
 -------------
