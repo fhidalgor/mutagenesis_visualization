@@ -29,6 +29,8 @@ from Bio.PDB import PDBParser
 from collections import defaultdict, OrderedDict, Counter
 import freesasa
 from os import path
+import os
+import sys
 
 try:
     import shannon
@@ -3434,9 +3436,9 @@ def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
                     df_color=None,  position_correction=0, chain='A',
                     squared=False, rotate=False, **kwargs):
     '''
-    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, color coded
-    by the enrichment scores. PDBs may have atoms missing, you should fix the PDB before using this
-    method. Use %matplotlib for interactive plot.
+    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, 
+    color coded by the enrichment scores. PDBs may have atoms missing, 
+    you should fix the PDB before using this method. Use matplotlib for interactive plot.
 
     Parameters
     -----------
@@ -3445,8 +3447,8 @@ def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
 
     mode : str, default 'mean'
         Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
-        used for each amino acid. Use the one-letter code and upper case.
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Can be used for each amino acid. Use the one-letter code and upper case.
 
     pdb : str, default None
         User should specify the path PDB chain.
@@ -3626,8 +3628,9 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
                             position_correction=0, chain='A',
                             rotate=False, output_df= False, **kwargs):
     '''
-    Generates a 3-D scatter plot of different properties obtained from the PDB. PDBs may have atoms missing, you should fix the PDB before using this
-    method. We recommend you use %matplotlib for interactive plot. 
+    Generates a 3-D scatter plot of different properties obtained from the PDB. 
+    PDBs may have atoms missing, you should fix the PDB before using this
+    method. We recommend you use matplotlib for interactive plot. 
 
     Parameters
     -----------
@@ -3733,7 +3736,7 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
     # axis scales
     ax.set_xscale(axis_scale[0])
     ax.set_yscale(axis_scale[1])
-    ax.set_xscale(axis_scale[2])
+    ax.set_zscale(axis_scale[2])
     
     # save file
     _savefile(fig, temp_kwargs)
@@ -3751,16 +3754,6 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
     if output_df:
         return df_items, df_scores
     
-
-
-# In[ ]:
-
-
-'''%matplotlib widget
-
-plot_scatter_3D_pdbprop(hras_object, plot=['Distance', 'B-factor', 'Score'],
-                        pdb_path = '../data/5p21.pdb', color_by_score=False,
-                       gof=0.2, lof=-0.5)'''
 
 
 # ## Map into Pymol
@@ -4307,9 +4300,10 @@ class Screen:
     
     fillna : int, default 0
         How to replace NaN values.
-        
+    
+    
     Attributes
-    -----------
+    ------------
     dataframe : pandas dataframe
         Contains the enrichment scores, position, sequence.
     
@@ -4364,113 +4358,132 @@ class Screen:
     pymol = plot_pymol
 
 
+# # Demo
+
+# In[ ]:
+
+
+def demo(figure='heatmap'):
+    """
+    Performs a demonstration of the mutagenesis_visualization software.
+
+    Parameters
+    -----------
+    figure : str, default 'heatmap'
+        There are 5 example plots that can be displayed to test the package is working on your station.
+        The 5 options are 'heatmap', 'miniheatmap', 'mean', 'kernel' and 'pca'. Check the documentation for more information.
+
+    Returns
+    -------
+    None.
+    """
+    # Use relative file import to access the data folder
+    location = os.path.dirname(os.path.realpath(__file__))
+    my_file = os.path.join(location, 'data', 'HRas166_RBD.csv')
+
+    # Load enrichment scores
+    hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
+
+    # Define protein sequence
+    hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+
+    # Define secondary structure
+    secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36), ['L3']*(48-46), 
+                 ['β3']*(58-48), ['L4'] * (64-58),['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), 
+                 ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), ['β5']*(116-110), ['L8']*(126-116), ['α4']*(137-126),
+                 ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
+
+    # Create object
+    hras_RBD = Screen(dataset=hras_enrichment_RBD,
+                      sequence=hras_sequence, secondary=secondary)
+
+    if figure == 'heatmap':
+        # Create heatmap plot
+        hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
+    elif figure == 'miniheatmap':
+        # Condensed heatmap
+        hras_RBD.miniheatmap(title='Wt residue H-Ras')
+    elif figure == 'mean':
+        # Mean enrichment by position
+        hras_RBD.mean(figsize=[6, 2.5], mode='mean',show_cartoon=True, yscale=[-2, 0.5], title = '')
+    elif figure == 'kernel':
+        # Plot kernel dist using sns.distplot.
+        hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1])
+    elif figure == 'pca':
+        # PCA by amino acid substitution
+        hras_RBD.pca(dimensions=[0, 1], figsize=(2, 2), adjustlabels=True, title = '')
+    return
+    
+def demo_datasets():
+    '''
+    Loads example datasets so the user can play with it.
+    
+    Parameters
+    -----------
+    None
+    
+    Returns
+    --------
+    data_dict : dictionary
+        Dictionary that contains the datasets used to create the plots on the documentation.
+    '''
+    
+    # Use relative file import to access the data folder
+    location = os.path.dirname(os.path.realpath(__file__))
+    
+    # Create dictionary where to store data
+    data_dict = {}
+    
+    # Retrieve H-Ras dataset and store in dict
+    my_file = os.path.join(location, 'data', 'HRas166_RBD.csv')
+    hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
+    data_dict['array_hras'] = hras_enrichment_RBD
+    
+    # Beta lactamase data
+    my_file = os.path.join(location, 'data', 'df_bla_raw.pkl')
+    df_bla_raw = pd.read_pickle(my_file)
+    data_dict['df_bla'], sequence_bla = parse_pivot(df_bla_raw, col_data = 'DMS_amp_625_(b)')
+
+    # Sumo
+    my_file = os.path.join(location, 'data', 'df_sumo1_raw.pkl')
+    df_sumo1_raw = pd.read_pickle(my_file)
+    data_dict['df_sumo1'], sequence_sumo1 = parse_pivot(df_sumo1_raw, col_data = 'DMS')
+   
+    # MAPK1
+    my_file = os.path.join(location, 'data', 'df_mapk1_raw.pkl')
+    df_mapk1_raw = pd.read_pickle(my_file)
+    data_dict['df_mapk1'], sequence_mapk1 = parse_pivot(df_mapk1_raw, col_data = 'DMS_DOX')
+    
+    #UBE2I
+    my_file = os.path.join(location, 'data', 'df_ube2i_raw.pkl')
+    df_ube2i_raw = pd.read_pickle(my_file)
+    data_dict['df_ube2i'], sequence_ube2i = parse_pivot(df_ube2i_raw, col_data = 'DMS')
+
+    #TAT
+    my_file = os.path.join(location, 'data', 'df_tat.pkl')
+    data_dict['df_tat'] = pd.read_pickle(my_file)
+
+    #REV
+    my_file = os.path.join(location, 'data', 'df_rev.pkl')
+    data_dict['df_rev'] = pd.read_pickle(my_file)
+    
+    # asynuclein
+    my_file = os.path.join(location, 'data', 'df_asynuclein.pkl')
+    data_dict['df_asynuclein'] = pd.read_pickle(my_file)
+    
+    # APH
+    my_file = os.path.join(location, 'data', 'df_aph.pkl')
+    data_dict['df_aph'] = pd.read_pickle(my_file)
+
+    # b11L5
+    my_file = os.path.join(location, 'data', 'df_b11L5F_raw.pkl')
+    df_b11L5F_raw = pd.read_pickle(my_file)
+    data_dict['df_b11L5F'], sequence_b11L5F = parse_pivot(df_b11L5F_raw, col_data = 'relative_tryp_stability_score')
+    
+    return data_dict
+
+
 # # Ras Trouble Shooting
-
-# In[ ]:
-
-
-'''KRas165_RBD = np.genfromtxt('Exported/KRas165_RBD.csv', delimiter=',')
-KRas173_RBD = np.genfromtxt('Exported/KRas173_RBD.csv', delimiter=',')
-HRas180_GAP = np.genfromtxt('Exported/HRas180_GAP.csv', delimiter=',')
-HRas188_BaF3 = np.genfromtxt('Exported/HRas188_BaF3.csv', delimiter=',')
-HRas188_BaF3_rep1 = np.genfromtxt('Exported/HRas188_BaF3_rep1.csv', delimiter=',')
-HRas188_BaF3_rep2 = np.genfromtxt('Exported/HRas188_BaF3_rep2.csv', delimiter=',')
-
-HRas166_GAP = np.genfromtxt('Exported/HRas166_GAP.csv', delimiter=',')
-AncRas167_RBD = np.genfromtxt('Exported/Ancestral167_RBD.csv', delimiter=',')
-HRas166_RBD = np.genfromtxt('Exported/HRas166_RBD.csv', delimiter=',')
-HRas180_RBD = np.genfromtxt('Exported/HRas180_RBD.csv', delimiter=',')
-Ancestral167_RBD = np.genfromtxt('Exported/Ancestral167_RBD.csv', delimiter=',')
-Ancestral167_GAP = np.genfromtxt('Exported/Ancestral167_GAP.csv', delimiter=',')
-Ancestral167_GAPGEF = np.genfromtxt('Exported/Ancestral167_GAPGEF.csv', delimiter=',')
-Srosetta167_RBD = np.genfromtxt('Exported/Srosetta167_RBD.csv', delimiter=',')
-Srosetta167_GAP = np.genfromtxt('Exported/Srosetta167_GAP.csv', delimiter=',')
-Srosetta167_GAPGEF = np.genfromtxt('Exported/Srosetta167_GAPGEF.csv', delimiter=',')
-KRas173_GEF = np.genfromtxt('Exported/KRas173_GEF.csv', delimiter=',')
-KRas173_GAPGEF = np.genfromtxt('Exported/KRas173_GAPGEF.csv', delimiter=',')
-KRas165_GEF = np.genfromtxt('Exported/KRas165_GEF.csv', delimiter=',')
-KRas165_GAPGEF = np.genfromtxt('Exported/KRas165_GAPGEF.csv', delimiter=',')
-HRas166_GAPGEF = np.genfromtxt('Exported/HRas166_GAPGEF.csv', delimiter=',')
-df_Cosmic_n2 = pd.read_pickle('Exported/df_Cosmic_n2.pkl')
-df_Cosmic_n2 = df_Cosmic_n2.groupby('Position', as_index=False).sum()
-#counts_input = np.loadtxt('codon_frequency_matrix_FJH1.txt')
-
-hras = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
-kras = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHHYREQIKRVKDSEDVPMVLVGNKCDLPSRTVDTKQAQDLARSYGIPFIETSAKTRQGVDDAFYTLVREIRKHKEKMSKD'
-ancras='MTEYKLVVVGGGGVGKSALTIQFIQSHFVDEYDPTIEDSYRKQVVIDDEVAILDILDTAGQEEYSAMREQYMRNGEGFLLVYSITDRSSFDEISTYHEQILRVKDTDDVPMVLVGNKADLESRAVSMQEGQNLAKQLNVPFIETSAKQRMNVDEAFYTLVRVVRRH'
-srosettaras='MTEYRLVVVGTGGVGKSALTIQLIQQHFVTEYDPTIEDSYRKHVSIDDEACLLDILDTAGQEDYSAMRDQYMRTGEGFLCVYSIDSQQSLDEIHSFREQILRVKDQDEVPMILVGNKCDLEHREVSTEAGQAVAKSYSIPFMETSAKKRINVEEAFYQLVREIRKY'
-
-secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36),
-                     ['L3']*(48-46), ['β3']*(58-48), ['L4'] *(64-58), ['α2']*(74-64), ['L5']*(76-74),
-                     ['β4']*(83-76), ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), 
-                     ['β5']*(116-110), ['L8']*(126-116), ['α4']*(137-126), ['L9']*(140-137), 
-                     ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
-                     
-HRas166_RBD = np.genfromtxt('Exported/HRas166_RBD.csv', delimiter=',')
-hras_object = Screen(HRas166_RBD,hras)
-'''
-
-
-# In[ ]:
-
-
-'''kwargs = {'secondary':secondary}
-KRas165 = Screen(KRas165_RBD,kras,**kwargs)
-KRas173 = Screen(KRas173_RBD,kras,**kwargs)
-HRas166 = Screen(HRas166_RBD,hras,**kwargs)
-HRas180 = Screen(HRas180_RBD,hras,**kwargs)
-HRas188 = Screen(HRas188_BaF3,hras,**kwargs)
-HRas188_rep1 = Screen(HRas188_BaF3_rep1,hras,**kwargs)
-HRas188_rep2 = Screen(HRas188_BaF3_rep2,hras,**kwargs)'''
-
-'''
-AncRas167 = Screen(AncRas167_RBD,ancras,**kwargs)
-oKRas165_GEF = Screen(KRas165_GEF, kras, **kwargs)
-oKRas173_GEF = Screen(KRas173_GEF, kras, **kwargs)
-oKRas165_GAPGEF = Screen(KRas165_GAPGEF, kras, **kwargs)
-oKRas173_GAPGEF = Screen(KRas173_GAPGEF, kras, **kwargs)
-oSRosetta166_GAPGEF = Screen(Srosetta167_GAPGEF, srosettaras, **kwargs)
-oAncestral166_GAPGEF = Screen(Ancestral167_GAPGEF, ancras, **kwargs)'''
-
-
-# In[ ]:
-
-
-'''kwargs = {'secondary':secondary}
-KRas165 = Screen(KRas165_RBD,kras,**kwargs)
-KRas173 = Screen(KRas173_RBD,kras,**kwargs)
-'''
-
-
-# In[ ]:
-
-
-'''KRas173.heatmap(title = 'B2H K-Ras 1-173 RBD',show_cartoon=True)
-KRas173.subset(segment=[20,40])
-KRas173.kernel(title = 'K-Ras 1-173 RBD',xscale=[-2,1])
-KRas173.histogram(population='All',title = 'K-Ras 1-173 RBD',xscale=[-2,1])
-KRas173.histogram(population='SNV',title = 'K-Ras 1-173 RBD',xscale=[-2,1])
-KRas173.histogram(population='nonSNV',title = 'K-Ras 1-173 RBD',xscale=[-2,1])
-KRas173.scatter(KRas165,dict_param=[-0.8,0.5],title = '', xscale = (-2.5,1.5), yscale = (-2.5,1.5),
-                x_label = 'K-Ras 1-173',y_label = 'K-Ras 1-165')
-entry = [(8,-5.5,'G12'),(14,-9,'G13'),(14,-14,'V14'),(17,-17,'L19'), 
-         (23,-19,'Q22'),(51,-17,'A59'),(58,-12,'Q61'),(112,-16,'K117'),(141,-13,'A146')]
-KRas173.mean(figsize=[6, 2.5], show_cartoon=True, yscale = [-1.5,0.5], title = '',text_labels = entry)
-KRas173.differential(KRas165,figsize=[6, 2.5], show_cartoon=True, yscale = [-0.5,2], title = '')
-entry = [(8,-5.5,'G12'),(14,-9,'G13'),(14,-14,'V14'),(17,-17,'L19'), 
-         (23,-19,'Q22'),(51,-17,'A59'),(58,-12,'Q61'),(112,-16,'K117'),(141,-13,'A146')]
-KRas173.meancounts(df_Cosmic_n2['Position'], df_Cosmic_n2['Counts'], show_cartoon=True, 
-                text_labels = entry, yscale = (0,5.5), figsize = (6,2.5), title = '')
-
-KRas173.secondary_mean(yscale=[-0.6,0],figsize=[3,2],title = 'B2H K-Ras 1-173 RBD')
-KRas173.miniheatmap(title = 'Wt residue K-Ras 1-173')
-KRas173.correlation(colorbar_scale=[0.5,1],title = 'Correlation')
-KRas173.meancorrelation(yscale=[0,0.6], title = 'Explained variability by amino acid')
-KRas173.pca(title = '')
-KRas173.pca(title = '',mode='secondary')
-KRas165.pymol('5p21_A')
-'''
-
 
 # In[ ]:
 

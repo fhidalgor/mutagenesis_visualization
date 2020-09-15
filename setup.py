@@ -9,8 +9,8 @@ def readme():
         return fh.read()
 
 setuptools.setup(
-    name="mutagenesis_visualization",
-    version="0.0.9.6.9.9.1",
+    name="mutagenesis-visualization",
+    version="0.0.1.4",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
     description="A package for analysis and visualization of saturation mutagenesis data",

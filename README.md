@@ -7,7 +7,7 @@ Python package to analyze and plot saturation mutagenesis data
 Mutagenesis Visualization can be installed from PyPI by executing
 
 ```
-pip install mutagenesis_visualization
+pip install mutagenesis-visualization
 ```
 
 ## Documentation

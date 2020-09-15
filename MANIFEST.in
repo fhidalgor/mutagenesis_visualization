@@ -1,3 +1,4 @@
 include README.rst
 include LICENSE
 include mutagenesis_visualization/data/*.csv mutagenesis_visualization/data/*.xlsx mutagenesis_visualization/data/*.fasta mutagenesis_visualization/data/*.pdb
+include mutagenesis_visualization/data/*.pkl

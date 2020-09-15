@@ -11,18 +11,23 @@ Installation
 Installing with pip
 ====================
 
-``Mutagenesis_visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <XXXX>`_ using the ``pip`` package manager by executing the following at the command line:
+``mutagenesis-visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <https://pypi.org/project/mutagenesis-visualization>`_ using the ``pip`` package manager by executing the following at the command line:
 
 .. code-block:: bash
 
-     pip install mutagenesis_visualization
+     pip install mutagenesis-visualization
 
 If you are working on a jupyter notebook, you may have to use the following command:
 
 .. code:: ipython3
 
     import sys
-    !{sys.executable} -m pip install mutagenesis_visualization
+    !{sys.executable} -m pip install mutagenesis-visualization
+
+
+.. note::
+    The package folder is called "mutagenesis_visualization" (with underscore), but pip does not recognize underscores so for installation purposes you need to use a hyphen "mutagenesis-visualization".
+    
 
 Alternative installation
 =========================
@@ -34,16 +39,17 @@ You may decide to download the jupyter notebook called ``mutagenesis_visualizati
     import Import_notebook
     import mutagenesis_visualization as mut	
 
+
 Quick Start
 =============
-Now that you have installed ``mutagenesis_visualization``, execute the following within Python to evaluate whether it is working propertly:
+Now that you have installed ``mutagenesis-visualization``, execute the following within Python to evaluate whether it is working propertly:
 
 .. code:: ipython3
 
 	import mutagenesis_visualization as mut
 	mut.demo()
 
-This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
+This command will load the ``mutagenesis-visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
@@ -70,8 +76,15 @@ There are four other demo plots, and can be invoked using the following command:
      
 .. image:: ../example/exported_images/hras_kde.png
    :width: 240px
-   
-A more detailed explanation on how to generate these figures can be seen at :ref:`plotting`.
+
+If you would like to play with the data yourself, execute the following command to retrieve the raw data:
+
+.. code:: ipython3
+
+	datasets = mut.demo_datasets()
+	
+	
+A more detailed explanation on how to generate these figures can be seen at :ref:`plotting` and at :ref:`more examples`.
 
 Dependencies
 ==============
@@ -100,6 +113,8 @@ Required Dependencies
 
 - `collections <https://docs.python.org/2/library/collections.html>`_ (version 1.2.1)
 
+- `freesasa <https://pypi.org/project/freesasa/>`_ (version 2.1.0)
+
 Optional dependencies
 ---------------------
 - `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5)
@@ -108,9 +123,7 @@ Optional dependencies
 
 - `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3)
 
-.. note::
-    Logomaker, ipymol and adjustText dependencies were not installing when downloading mutagenesis_visualization, but then they could be 	downloaded manually with pip install.
-    
+
     
 If you want to manually install and/or upgrade the dependencies on your own, use:
 

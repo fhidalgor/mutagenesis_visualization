@@ -2,7 +2,20 @@ More examples
 =============
 
 This section will use saturation mutagenesis data found in the
-literature and plot it to showcase the flexibility of the package.
+literature and plot it to showcase the flexibility of the package. Not
+only it works with other datasets, but also you can customize a wide
+range of parameters such as color maps, scales, etc. The data used in
+this notebook is included as part of the package, and can be quickly
+retrieved using the following command:
+
+.. code:: ipython3
+
+    # If you want to retrieve the data used in this notebook, use the following command
+    datasets = mut.demo_datasets()
+
+Now we will import the modules. Note that this is being done on a local
+Jupyter notebook, you should change the path of output files to your
+own.
 
 .. code:: ipython3
 
@@ -15,7 +28,8 @@ literature and plot it to showcase the flexibility of the package.
     import copy
     
     # Parameters to save output images, will be the same for each plot
-    outputfilepath = '../../example/other_examples/'
+    # Note that this path is local, so you should change it 
+    outputfilepath = '../../example/other_examples/' # Change
     outputformat = 'png'
     savefile = True
 
@@ -25,11 +39,19 @@ Beta Lactamase
 Load data
 ~~~~~~~~~
 
+Note that in this Jupyter notebook we are retrieving the data from an
+Excel file called “DMS_others.xlsx”. This file is included with the
+package, although to ease the workflow, we have saved into pickle files
+each of the dataframes that we are obtaining. This is appliable to each
+of the nine examples.
+
 .. code:: ipython3
 
+    #https://www.uniprot.org/uniprot/P62593#sequences
+        
     path = '../Data/DMS_others.xlsx'
     sheet_name='bla'
-    usecols='A,F'### Load data### Load data
+    usecols='A,F'
     
     # Read excel file
     #df_bla_raw = pd.read_excel(path, sheet_name, usecols=usecols)
@@ -56,7 +78,11 @@ Create object
     start_position = df_bla.columns[0]
     
     # Define sequence. If you dont know the start of the sequence, just add X's
-    sequence_bla_x = ['X']*(start_position-1)+sequence_bla
+    sequence_bla_x = 'MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYIELDLNSGKILESFRP'\
+                    +'EERFPMMSTFKVLLCGAVLSRVDAGQEQLGRRIHYSQNDLVEYSPVTEKHLTDGMTVREL'\
+                    +'CSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRWEPELNEAIPNDERDTTM'\
+                    +'PAAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSALPAGWFIADKSGAGERGS'\
+                    +'RGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGASLIKHW'
     
     # Define secondary structure
     secondary_bla = [['L0']*23, ['α1']*(38-23), ['L1']*2, ['β1']*(48-40), ['L2']*5,
@@ -81,7 +107,7 @@ Create object
     %matplotlib inline
     
     # Create full heatmap
-    '''bla_obj.heatmap(colorbar_scale=(-3, 3), neworder_aminoacids=neworder_aminoacids,
+    bla_obj.heatmap(colorbar_scale=(-3, 3), neworder_aminoacids=neworder_aminoacids,
                     title='Beta Lactamase', outputfilename='bla_fullheatmap',
                     outputfilepath=outputfilepath, show_cartoon=True,
                     outputformat=outputformat, savefile=savefile)'''
@@ -89,7 +115,7 @@ Create object
     # Miniheatmap
     '''bla_obj.miniheatmap(title='Wt residue Beta Lactamase', neworder_aminoacids=neworder_aminoacids,
                         outputfilename='bla_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)'''
+                        outputformat=outputformat, savefile=savefile)
     
     # Positional mean
     bla_obj.mean(figsize=[10, 2.5], mode='mean', show_cartoon=True, yscale=[-3, 0.25],
@@ -360,7 +386,7 @@ Load data
     
     # Read excel file
     #df_mapk1_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_sumo1_raw = pd.read_pickle('../data/df_sumo1_raw.pkl')
+    df_mapk1_raw = pd.read_pickle('../data/df_mapk1_raw.pkl')
     
     # Save into pickle so it is easier to read next time you need it
     #df_mapk1_raw.to_pickle('../data/df_mapk1_raw.pkl')
@@ -383,12 +409,16 @@ Create object
     start_position = df_mapk1.columns[0]
     
     # Full sequence
-    sequence_mapk1_x = ['M']+sequence_mapk1
+    sequence_mapk1_x = 'MAAAAAAGAGPEMVRGQVFDVGPRYTNLSYIGEGAYGMVCSAYDNVNKVRVAIK'\
+                    +'KISPFEHQTYCQRTLREIKILLRFRHENIIGINDIIRAPTIEQMKDVYIVQDLMETDLYKLLKTQ'\
+                    +'HLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLLNTTCDLKICDFGLARVADPDHDHTGFL'\
+                    +'TEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQ'\
+                    +'EDLNCIINLKARNYLLSLPHKNKVPWNRLFPNADSKALDLLDKMLTFNPHKRIEVEQALAHPYLE'\
+                    +'QYYDPSDEPIAEAPFKFDMELDDLPKEKLKELIFEETARFQPGYRS'
     
     # Create objects
     mapk1_obj = mut.Screen(df_mapk1, sequence_mapk1_x,
-                         aminoacids, start_position, 0)
-
+                           aminoacids, start_position, 0)
 
 2D Plots
 ~~~~~~~~
@@ -503,7 +533,9 @@ Create object
     start_position = df_ube2i.columns[0] # Create object2i.columns[0]
     
     # Full sequence
-    sequence_ube2i_x = ['M']+sequence_ube2i
+    sequence_ube2i_x = 'MSGIALSRLAQERKAWRKDHPFGFVAVPTKNPDGTMNLMNWECAIPGKKGTP'\
+                        +'WEGGLFKLRMLFKDDYPSSPPKCKFEPPLFHPNVYPSGTVCLSILEEDKDWRPAITIKQ'\
+                        +'ILLGIQELLNEPNIQDPAQAEAYTIYCQNRVEYEKRVRAQAKKFAPS'
     
     # Define secondary structure
     secondary_ube2i = [['α1']*(20-1),['L1']*(24-20), ['β1']*(30-24), ['L2']*5,
@@ -619,11 +651,12 @@ Load data
     sheet_name='TAT'
     usecols='A:V'
     col_data = 'DMS'
-    df_tat = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
-    #df_tat = pd.read_pickle('../data/df_tat.pkl')
+    #df_tat = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
+    df_tat = pd.read_pickle('../data/df_tat.pkl')
     
     # Save into pickle so it is easier to read next time you need it
-    df_tat.to_pickle('../data/df_tat.pkl')
+    #df_tat.to_pickle('../data/df_tat.pkl')
+
 
 Create object
 ~~~~~~~~~~~~~
@@ -736,11 +769,12 @@ Load data
     sheet_name='REV'
     usecols='A:V'
     col_data = 'DMS'
-    df_rev = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
-    #df_rev = pd.read_pickle('../data/df_rev.pkl')
+    #df_rev = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
+    df_rev = pd.read_pickle('../data/df_rev.pkl')
     
     # Save into pickle so it is easier to read next time you need it
-    df_rev.to_pickle('../data/df_rev.pkl')
+    #df_rev.to_pickle('../data/df_rev.pkl')
+
 
 Create object
 ~~~~~~~~~~~~~
@@ -855,11 +889,12 @@ Load data
     path = '../Data/DMS_others.xlsx'
     sheet_name='a-synuclein'
     usecols='A:EK'
-    df_asynuclein = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
-    #df_asynuclein = pd.read_pickle('../data/df_asynuclein.pkl')
+    #df_asynuclein = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
+    df_asynuclein = pd.read_pickle('../data/df_asynuclein.pkl')
     
     # Save into pickle so it is easier to read next time you need it
-    df_asynuclein.to_pickle('../data/df_asynuclein.pkl')
+    #df_asynuclein.to_pickle('../data/df_asynuclein.pkl')
+
 
 Create object
 ~~~~~~~~~~~~~
@@ -1160,12 +1195,15 @@ Create object
     aminoacids = list(df_b11L5F.index)
     neworder_aminoacids = list('DEKHRGNQASTPVYMILFW')
     
+    # Sequence
+    sequence_b11L5F = 'CRAASLLPGTWQVTMTNEDGQTSQGQMHFQPRSPYTLDVKAQGTISDGRPI'\
+                        +'SGKGKVTCKTPDTMDVDITYPSLGNMKVQGQVTLDSPTQFKFDVTTSDGSKVTGTLQRQE'
+    
     # First residue of the hras_enrichment dataset. Because 1-Met was not mureved, the dataset starts at residue 2
     start_position = df_b11L5F.columns[0]
     
     b11L5F_obj = mut.Screen(df_b11L5F, sequence_b11L5F,
-                         aminoacids, start_position, 0)
-
+                            aminoacids, start_position, 0)
 
 2D Plots
 ~~~~~~~~
@@ -1238,7 +1276,7 @@ Create object
    
 .. image:: ../example/other_examples/b11L5F_pcaaminoacid.png
    :width: 200px
-
+   :align: center
 
 References
 ----------

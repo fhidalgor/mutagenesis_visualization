@@ -1,4 +1,4 @@
-Implementation
+API
 ****************
 
 .. _Screen_class:
@@ -22,6 +22,14 @@ Functions
 .. _calculate_enrichment:
 
 .. autofunction:: mutagenesis_visualization.calculate_enrichment
+
+.. _demo:
+
+.. autofunction:: mutagenesis_visualization.demo
+
+.. _demo_datasets:
+
+.. autofunction:: mutagenesis_visualization.demo_datasets
 
 .. _count_reads:
 

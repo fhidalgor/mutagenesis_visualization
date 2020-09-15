@@ -23,7 +23,7 @@ copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
 
 # The full version, including alpha/beta/rc tags
-version = '0.0.9'
+version = '0.0.1'
 
 
 # -- General configuration ---------------------------------------------------

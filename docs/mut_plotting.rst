@@ -13,6 +13,8 @@ Import modules
     import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
+    import matplotlib as plt
+    import copy
 
 Create object of class Screen
 -----------------------------
@@ -68,6 +70,7 @@ are importing two datasets and creating two objects named
     outputformat = 'png'
     savefile = True
 
+
 Heatmaps
 --------
 
@@ -81,18 +84,37 @@ enrichment scores using the method ``object.heatmap``.
                      outputfilepath=outputfilepath, show_cartoon=True,
                      outputformat=outputformat, savefile=savefile)
 
+
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
-If you set the parameter ``show_snv=True``, the algorithm will color
-green every mutation that is not a single nucleotide variant of the
-wild-type protein. You will notice how many mutations are not accessible
-through a nucleotide change. This option may be of importance to you if
-you are interested in studying Cancer mutations, where non-SNV are
-inaccessible and may be of less relevance to you.
+You can change the scale and the color map using the parameters
+``colorbar_scale`` and ``colormap``.
 
 .. code:: ipython3
 
-    # Create full heatmap
+    # Load a color map from matplotlib
+    colormap = copy.copy((plt.cm.get_cmap('PuOr')))
+    
+    # Change scale and colormap
+    hras_RBD.heatmap(title='H-Ras 2-166', colorbar_scale=(-2, 2), 
+                     outputfilename='hras_fullheatmap_colormap', colormap=colormap,
+                     outputfilepath=outputfilepath, show_cartoon=True,
+                     outputformat=outputformat, savefile=savefile)
+
+
+.. image:: ../example/exported_images/hras_fullheatmap_colormap.png
+
+If you set the parameter ``show_snv=True``, the algorithm will color
+green every mutation that is not a single nucleotide variant (SNV) of
+the wild-type protein. You will notice how many mutations are not
+accessible through a nucleotide change. This option may be useful to you
+so you can quickly evaluate which mutations are accessible through
+random DNA mutations. In the example of Ras, the frequency of non-SNV
+substitutions at residues 12 and 13 is dramatically lower.
+
+.. code:: ipython3
+
+    # Create full heatmap showing only SNV mutants
     hras_RBD.heatmap(title='H-Ras 2-166', outputfilename='hras_fullheatmap_snv',
                      outputfilepath=outputfilepath, show_cartoon=True,
                      outputformat=outputformat, show_snv=True, savefile=savefile)
@@ -431,7 +453,7 @@ enrichment/conservation.
 .. code:: ipython3
 
     # Calculate conservation score from MSA
-    path = 'Other/2020_pfam/Ras_family_trimmed.fasta'
+    path = '../data/Ras_family_trimmed.fasta'
     df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
                                              threshold=0.1)
     
@@ -483,19 +505,36 @@ the origin.
 
 .. code:: ipython3
 
+    %matplotlib widget
+    
     # Plot 3-D plot
-    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared = False,
-                        lof=-0.5, gof=0.1)
+    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared=False,
+                        lof=-0.5, gof=0.15)
     
     # Plot 3-D plot, centering and squaring the distances
-    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared = True,
-                        lof=-0.5, gof=0.1)
+    hras_RBD.scatter_3D(mode='mean', pdb_path='../data/5p21.pdb', squared=True,
+                        lof=-0.5, gof=0.15)
+    
+    # Calculate conservation score from MSA
+    path = '../data/Ras_family_trimmed.fasta'
+    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
+                                             threshold=0.1)
+    
+    # Plot 3-D SASA, B-factor and Shannon Entropy
+    hras_RBD.scatter_3D_pdbprop(plot=['SASA', 'Score', 'Shannon'],custom = df_shannon['Shannon'],
+                                pdb_path='../data/5p21.pdb', color_by_score=True,
+                                gof=0.15, lof=-0.5)
+
 
 .. image:: ../example/exported_images/hras_3dscatter.png
    :width: 300px
    :align: center
    
 .. image:: ../example/exported_images/hras_3dscatter_squared.png
+   :width: 300px
+   :align: center
+   
+.. image:: ../example/exported_images/hras_3dscatter_shannon.png
    :width: 300px
    :align: center
 
@@ -526,6 +565,6 @@ Leucine, right - Aspartate).
 Reference
 ---------
 
-.. [#Pradeep2017] Bandaru et al. (2017). Deconstruction of the Ras switching cycle through saturation mutagenesis. `DOI: 10.7554/eLife.27810  <https://elifesciences.org/articles/27810>`_
+.. [#Pradeep2017] Bandaru, P., Shah, N. H., Bhattacharyya, M., Barton, J. P., Kondo, Y., Cofsky, J. C., … Kuriyan, J. (2017). Deconstruction of the Ras switching cycle through saturation mutagenesis. ELife, 6. `DOI: 10.7554/eLife.27810  <https://elifesciences.org/articles/27810>`_
 
-.. [#Tareen2019] Tareen A, Kinney JB (2019). Logomaker: beautiful sequence logos in Python. `bioRxiv DOI:10.1101/635029. <https://www.biorxiv.org/content/10.1101/635029v1>`_
+.. [#Tareen2019] Tareen, A., & Kinney, J. B. (2020). Logomaker: beautiful sequence logos in Python. Bioinformatics, 36(7), 2272–2274. `doi:10.1093/bioinformatics/btz921 <https://academic.oup.com/bioinformatics/article/36/7/2272/5671693>`_
