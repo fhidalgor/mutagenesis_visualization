@@ -1,19 +1,27 @@
-API
-****************
-
 .. _Screen_class:
 
-Screen class
-==============
+Class
+****************
+
+*Screen* class
+===============
 
 .. autoclass:: mutagenesis_visualization.Screen
     :members:
+
+Associated kwargs
+===================
+.. _kwargs:
+
+.. autofunction:: mutagenesis_visualization.kwargs
 
 
 .. _Processing_counts_functions:
 
 Functions
-==========
+****************
+
+The following functions do not belong to the class *Screen*. Some of them are used to process fastq files, normalize or parse datasets. We also have the demo functions that are used to ensure that the package was installed correctly. Furthermore, there are a couple of plotting functions that were not suitable for being part of *Screen*.
 
 .. _assemble_avengers:
 
@@ -53,8 +61,3 @@ Functions
 
 
 
-Kwargs
-=======
-.. _kwargs:
-
-.. autofunction:: mutagenesis_visualization.kwargs

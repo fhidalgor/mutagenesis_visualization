@@ -1,5 +1,5 @@
-Processing
-==========
+Processing DNA reads
+====================
 
 This section will teach you how to use the built-in data processing
 functions. If you already have your own processing pipeline built, you
@@ -17,6 +17,10 @@ Import module
 
 Count DNA reads from fastq file
 -------------------------------
+
+Methods and functions reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.meancounts`
+    - :func:`mutagenesis_visualization.count_reads`
 
 After sequencing your DNA library, using other packages you will
 assemble the forward and reverse reads and trim the flanking bases. That
@@ -66,9 +70,9 @@ file.
                                   'R1_after', skiprows=1, index_col='Codons',
                                   usecols='E:FN', nrows=32)
 
-Once the reads have been counted, the function ``plot_counts`` can be
-used to evaluate the coverage by position. You can also manually inspect
-the exported files.
+Once the reads have been counted, the object ``meancounts`` can be used
+to evaluate the coverage by position. You can also manually inspect the
+exported files.
 
 .. code:: ipython3
 
@@ -99,13 +103,18 @@ the exported files.
 Calculate enrichment scores
 ---------------------------
 
+Methods and functions reviewed in this section:
+    - :class:`mutagenesis_visualization.Screen`
+    - :meth:`mutagenesis_visualization.Screen.heatmap`
+    - :func:`mutagenesis_visualization.calculate_enrichment`
+
 If you are performing a selection experiment, where you sequence your
 library before and after selection, you will need to calculate the
 enrichment score of each mutant. The function to do so is
 ``calculate_enrichment``. This function allows for different parameters
 to tune how the data is processed and normalized.
 
-In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`normalizing`.
+In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`Normalizing datasets`.
 
 .. code:: ipython3
 
@@ -160,7 +169,10 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
 Assemble multiple sublibraries
 ------------------------------
 
-If you split your library into multiple pools, you can use ``assemble_avengers`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`normalizing` for more details.
+Function reviewed in this section:
+    - :func:`mutagenesis_visualization.assemble_avengers`
+
+If you split your library into multiple pools, you can use ``assemble_avengers`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`Normalizing datasets` for more details.
 
 .. code:: ipython3
 
@@ -190,6 +202,10 @@ If you split your library into multiple pools, you can use ``assemble_avengers``
 
 Combine MSA with enrichment scores
 ----------------------------------
+
+Function and class reviewed in this section:
+    - :class:`mutagenesis_visualization.Screen`
+    - :func:`mutagenesis_visualization.msa_enrichment`
 
 Function ``msa_enrichment`` will calculate the frequency of each substitution in an input MSA. The frequency of each substitution will be merged into the enrichment score dataframe. The function also calculates the Shannon entropy for each position in the protein. This function has been used to generate the data that is plotted in box plot and the ROC AUC charts :ref:`Correlation, PCA and ROC AUC`. We will first need to create the object.
 

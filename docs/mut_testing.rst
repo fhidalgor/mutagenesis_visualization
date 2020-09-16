@@ -1,12 +1,20 @@
-More examples
-=============
+Holistic testing
+================
 
-This section will use saturation mutagenesis data found in the
-literature and plot it to showcase the flexibility of the package. Not
-only it works with other datasets, but also you can customize a wide
-range of parameters such as color maps, scales, etc. The data used in
-this notebook is included as part of the package, and can be quickly
-retrieved using the following command:
+Up to this moment, we have only shown how the package performs with our
+own dataset. The moment of truth is when we test our software with other
+people’s datasets. In this section we have compiled saturation
+mutagenesis datasets found in the literature and we reproduce the
+analysis. Not only does the package works with other datasets, but also
+it allows to customize a wide range of parameters such as color maps,
+scales, etc. Furthermore, on top of testing the resilience of
+``mutagenesis_visualization``, we are providing extra examples on how to
+use this API.
+
+The data used in this notebook is included as part of the package in two
+different ways. First, it is saved as ``data/DMS_others.xlsx``. You can
+find the excel spreadsheet on the Github repository. In addition, we are
+providing a command to quickly retrieve and load the data:
 
 .. code:: ipython3
 
@@ -990,6 +998,7 @@ Create object
    
 .. image:: ../example/other_examples/asynuclein_pcaaminoacid.png
    :width: 200px
+   :align: center
 
 
 APH(3) II

@@ -31,26 +31,18 @@ import freesasa
 from os import path
 import os
 import sys
+import logomaker
+import adjustText
 
 try:
     import shannon
 except ModuleNotFoundError:
-    print("")
+    dummy = 0
     
-try:
-    import adjustText
-except ModuleNotFoundError:
-    print("")
-    
-try:
-    import logomaker
-except ModuleNotFoundError:
-    print("")
-
 try:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
-    print("")
+    dummy = 0
 
 
 # # Data Process Functions
@@ -4266,7 +4258,7 @@ default_kwargs = {'colormap': generatecolormap(),
 
 class Screen:
     '''
-    Screen represents a saturation mutagenesis experiment, where every amino acid 
+    *Screen* represents a saturation mutagenesis experiment, where every amino acid 
     in the protein has been mutated to other amino acids. The mutants are scored based
     on some custom screen.
 

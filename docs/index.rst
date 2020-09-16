@@ -5,58 +5,86 @@ Welcome to Mutagenesis Visualization!
 Overview
 ==========
 
+.. toctree::
+   :hidden:
+   :Caption: Overview
+
+	Overview <overview>
+	
+
 Description
 -------------
 
-``mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets. While the software offers tools to calculate enrichment scores from fastq files, the main focus of this package is to perform the statistical analysis and the visualization steps of your pipeline. Unlike other available python packages, ``mutagenesis_visualization`` has a user-centered design and does not require prior experience with Python nor statistics. The the documentation provides multiple examples of how to perform each step. As the user, you will be guided to input your dataset and the protein sequence. From here, the software *prend le contrôle*, and will produce a wide range of stunning and detailed plots. 
+``mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets.
 
-.. image:: ../example/exported_images/user_experience.jpg
-   :width: 300px
+.. image:: ../example/exported_images/heatmap_intro.png
+   :width: 350px
+   :align: center
+
+The package main focus is to perform the statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from fastq files.
+
+Unlike other available python packages, we have developed a user-centered API which does not require prior experience with Python nor statistics. The documentation provides multiple examples of how to perform each step. As the user, you will be guided to input your dataset and the protein sequence. From here, the software *prend le contrôle*, and will produce a wide range of stunning and detailed plots. 
+
+.. image:: ../example/exported_images/user_experience_v2.jpg
+   :width: 250px
    :align: center
 
 Key Features
 -------------
 
-	1. Calculate enrichment scores from fastq files, allowing for different ways of data processing and normalization.
-	2. Produce publication-quality heatmaps from enrichment scores as well as a wide range of visualization plots.
-	3. Principal component analysis (PCA), hierarchical clusterint and receiver operating characteristic (ROC) curve tools.
-	4. Map enrichment scores effortlessly onto a PDB structure using Pymol. Structural properties such as SASA, B-factor or atom coordinates can be extracted from the PDB and visualized using a built-in method.
-
-	
-Attribution and Contact
--------------------------
-
-This package was written by Frank Hidalgo, as part of his PhD work. Should you have any questons or concerns, please feel free to get in touch at fhidalgoruiz@berkeley.edu
+	- Calculate enrichment scores from fastq files, allowing for different ways of data processing and normalization.
+	- Produce publication-quality heatmaps from enrichment scores as well as a wide range of visualization plots.
+	- Principal component analysis (PCA), hierarchical clustering and receiver operating characteristic (ROC) curve tools.
+	- Map enrichment scores effortlessly onto a PDB structure using Pymol. Structural properties such as SASA, B-factor or atom coordinates can be extracted from the PDB and visualized using a built-in method.
 
 
 Getting Started
 ===============
 
-In this chapter, you will find how to install the package (:ref:`installation`) and the :ref:`API` containing the class, methods and functions in this package.
+In this chapter, you will find how to install the package (:ref:`installation guide`) and how to rapidly test that the software is up and running (:ref:`quick demo`). 
 
 .. toctree::
    :maxdepth: 1
    :hidden:
    :Caption: Getting Started
 
-	Installation <install>
-	API <api>
+	Installation guide <install>
 
-Examples
+API Description
 ===============
 
-In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`processing`) and we will do each type of plot (:ref:`plotting`). :ref:`Normalizing` shows the different options of data normalization that the package allows for. :ref:`more examples` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``mut_processing.ipynb``, ``mut_normalizing.ipynb``, ``mut_plotting.ipynb`` and ``mut_moreexamples.ipynb``. 
+In here, you will find the :ref:`class`, methods and :ref:`functions` used in this API.
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :Caption: API Description
+
+	API <api>
+	
+Tutorial
+===============
+
+In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start from a fastq file, we will process the data (:ref:`Processing DNA reads`) and we will do each type of plot (:ref:`Creating plots`). :ref:`Normalizing datasets` shows the different options of data normalization that the package allows for. :ref:`Holistic testing` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``mut_processing.ipynb``, ``mut_normalizing.ipynb``, ``mut_plotting.ipynb`` and ``mut_testing.ipynb``. 
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :Caption: Examples
+   :Caption: Tutorial
 	
-	Processing <mut_processing>
-	Normalizing <mut_normalizing>
-	Plotting <mut_plotting>
-	More examples <mut_moreexamples>
+	Processing DNA reads <mut_processing>
+	Normalizing datasets <mut_normalizing>
+	Creating plots <mut_plotting>
+	Holistic testing <mut_testing>
 
+About Me
+===============
 
+Chapter in construction
 
-
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :Caption: About Me
+   
+	Bio <aboutme>

@@ -1,7 +1,8 @@
-Normalizing
-===========
+Normalizing datasets
+====================
 
-This section will teach the different options to normalize the data using the function ``calculate_enrichment``. If you already have your own processing pipeline built, you can skip this section and go to the (:ref:`plotting`) examples.
+This section will teach the different options to normalize the data using the function :func:`mutagenesis_visualization.calculate_enrichment` . 
+If you already have your own processing pipeline built, you can skip this section and go to the (:ref:`Creating plots`) examples.
 
 Import modules and load data
 ----------------------------
@@ -93,6 +94,11 @@ selected than in the pre-selected population, the center is >0.
 
 Centering the data (zeroing)
 ----------------------------
+
+Functions used in this section:
+    - :func:`mutagenesis_visualization.plot_multiplekernel`
+    - :func:`mutagenesis_visualization.calculate_enrichment`
+
 
 Counts normalization
 ~~~~~~~~~~~~~~~~~~~~
@@ -387,6 +393,10 @@ get in touch if you have questions regarding data normalization.
 
 Heatmaps
 --------
+
+Function and class used in this section:
+    - :class:`mutagenesis_visualization.Screen`
+    - :meth:`mutagenesis_visualization.heatmap`
 
 We are going to evaluate how does the heatmap of produced by each of the
 normalization methods. We are not going to scale the data, so some

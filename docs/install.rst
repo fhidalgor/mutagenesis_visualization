@@ -5,13 +5,13 @@
       :language: bash
 	  
 	  
-Installation
-***************
+Installation guide
+********************
 
 Installing with pip
 ====================
 
-``mutagenesis-visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <https://pypi.org/project/mutagenesis-visualization>`_ using the ``pip`` package manager by executing the following at the command line:
+``mutagenesis_visualization`` is compatible with Python 3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <https://pypi.org/project/mutagenesis-visualization>`_ using the ``pip`` package manager by executing the following at the command line:
 
 .. code-block:: bash
 
@@ -38,53 +38,6 @@ You may decide to download the jupyter notebook called ``mutagenesis_visualizati
 
     import Import_notebook
     import mutagenesis_visualization as mut	
-
-
-Quick Start
-=============
-Now that you have installed ``mutagenesis_visualization``, execute the following within Python to evaluate whether it is working propertly:
-
-.. code:: ipython3
-
-	import mutagenesis_visualization as mut
-	mut.demo()
-
-This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
-
-.. image:: ../example/exported_images/hras_fullheatmap.png
-
-There are four other demo plots, and can be invoked using the following command:
-
-.. code:: ipython3
-
-	mut.demo(figure = 'mean')
-	mut.demo(figure = 'miniheatmap')
-	mut.demo(figure = 'kernel')
-	mut.demo(figure = 'pca')
-
-
-.. image:: ../example/exported_images/hras_bar_mean.png
-   :width: 500px
-   :align: center
-   
-.. image:: ../example/exported_images/hras_miniheatmap.png
-   :width: 200px
-   :align: center
-   
-.. image:: ../example/exported_images/hras_pcaaminoacid.png
-   :width: 200px
-     
-.. image:: ../example/exported_images/hras_kde.png
-   :width: 240px
-
-If you would like to play with the data yourself, execute the following command to retrieve the raw data:
-
-.. code:: ipython3
-
-	datasets = mut.demo_datasets()
-	
-	
-A more detailed explanation on how to generate these figures can be seen at :ref:`plotting` and at :ref:`more examples`.
 
 Dependencies
 ==============
@@ -144,3 +97,51 @@ You may have already installed ``Pymol``. However, if it is not on the same path
 .. code:: ipython3
 
 	conda install -c schrodinger pymol-bundle
+
+Quick demo
+********************
+
+Now that you have installed ``mutagenesis_visualization``, execute the following within Python to evaluate whether it is working propertly:
+
+.. code:: ipython3
+
+	import mutagenesis_visualization as mut
+	mut.demo()
+
+This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
+
+.. image:: ../example/exported_images/hras_fullheatmap.png
+
+There are four other demo plots, and can be invoked using the following command:
+
+.. code:: ipython3
+
+	mut.demo(figure = 'mean')
+	mut.demo(figure = 'miniheatmap')
+	mut.demo(figure = 'kernel')
+	mut.demo(figure = 'pca')
+
+
+.. image:: ../example/exported_images/hras_bar_mean.png
+   :width: 500px
+   :align: center
+   
+.. image:: ../example/exported_images/hras_miniheatmap.png
+   :width: 200px
+   :align: center
+   
+.. image:: ../example/exported_images/hras_pcaaminoacid.png
+   :width: 200px
+     
+.. image:: ../example/exported_images/hras_kde.png
+   :width: 240px
+
+If you would like to play with the data yourself, execute the following command to retrieve the raw data:
+
+.. code:: ipython3
+
+	datasets = mut.demo_datasets()
+	
+	
+A more detailed explanation on how to generate these figures can be seen at :ref:`Creating plots` and at :ref:`Holistic testing`.
+

@@ -1,5 +1,5 @@
-Plotting
-========
+Creating plots
+==============
 
 This section shows how to use the mutagenesis_visualization package. The plotting functions can be used regardless of how you process your data. For the examples, we are using two datasets that are derived from Pradeep’s legacy. [#Pradeep2017]_
 
@@ -18,6 +18,10 @@ Import modules
 
 Create object of class Screen
 -----------------------------
+
+Class reviewed in this section:
+    - :class:`mutagenesis_visualization.Screen`
+
 
 In order to create plots, the first step is to create a
 ``Screen.object``. The enrichment scores will be passed using the
@@ -73,6 +77,12 @@ are importing two datasets and creating two objects named
 
 Heatmaps
 --------
+
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.heatmap`
+    - :meth:`mutagenesis_visualization.Screen.heatmap_rows`
+    - :meth:`mutagenesis_visualization.Screen.heatmap_columns`
+    - :meth:`mutagenesis_visualization.Screen.miniheatmap`
 
 Once the object ``hras_RBD`` is created, we will plot a heatmap of the
 enrichment scores using the method ``object.heatmap``.
@@ -167,6 +177,13 @@ global trends in the data. The command to use is ``object.miniheatmap``.
 
 Histogram, scatter and more
 ---------------------------
+
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.kernel`
+    - :meth:`mutagenesis_visualization.Screen.histogram`
+    - :meth:`mutagenesis_visualization.Screen.scatter`
+    - :meth:`mutagenesis_visualization.Screen.rank`
+    - :meth:`mutagenesis_visualization.Screen.cumulative`
 
 There are different tools to analyze the data. The package can plot the
 kernel density estimation (``object.kernel``). There is the option to
@@ -269,6 +286,12 @@ follows the x=y line, suggestion a homogeneous mutational tolerance.
 Bar and line charts
 -------------------
 
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.mean`
+    - :meth:`mutagenesis_visualization.Screen.differential`
+    - :meth:`mutagenesis_visualization.Screen.position`
+    - :meth:`mutagenesis_visualization.Screen.secondary_mean`
+
 The method ``object.mean`` will plot the mean enrichment score for every
 position on a bar chart. It will be colored blue for loss of function
 and red for gain of function. Additionally, setting the parameter
@@ -351,6 +374,15 @@ protein (``object.secondary_mean``).
 
 Correlation, PCA and ROC AUC
 ----------------------------
+
+Methods and functions reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.correlation`
+    - :meth:`mutagenesis_visualization.Screen.individual_correlation`
+    - :meth:`mutagenesis_visualization.Screen.group_correlation`
+    - :meth:`mutagenesis_visualization.Screen.pca`
+    - :meth:`mutagenesis_visualization.Screen.roc`
+    - :func:`mutagenesis_visualization.msa_enrichment`
+    - :func:`mutagenesis_visualization.plot_box`
 
 The correlation of amino acid substitution profiles can be calculated
 for each amino acid and graphed using ``object.correlation``. In the
@@ -491,6 +523,11 @@ residues with a lower enrichment score are more conserved.
 3-D scatter
 -----------
 
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.scatter_3D`
+    - :meth:`mutagenesis_visualization.Screen.scatter_3D_pdbprop`
+
+
 The user can plot a 3-D scatter using the atomic coordinates of the
 C-alpha atoms of a PDB file. The method ``object.scatter_3D`` will take
 as an input either a PDB file or the x,y,z coordinates and plot a
@@ -527,19 +564,23 @@ the origin.
 
 
 .. image:: ../example/exported_images/hras_3dscatter.png
-   :width: 300px
+   :width: 500px
    :align: center
    
 .. image:: ../example/exported_images/hras_3dscatter_squared.png
-   :width: 300px
+   :width: 500px
    :align: center
    
 .. image:: ../example/exported_images/hras_3dscatter_shannon.png
-   :width: 300px
+   :width: 500px
    :align: center
 
 Pymol
 -----
+
+Method reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.pymol`
+
 
 The data can be graphed on a Pymol object using ``object.pymol``. The
 parameter ``pdb`` will fetch the pdb that you want to use. Note that the
@@ -560,6 +601,57 @@ Leucine, right - Aspartate).
     hras_RBD.pymol(pdb='5p21_A', mode = 'D', gof=0.2, lof=-0.5)
 
 .. image:: ../example/exported_images/hras_pymol_combLD.png
+   :align: center
+
+Art
+---
+
+The heatmap method can be used to generate artistic plots such as the
+one in the documentation overview. In here we show how that is done. On
+an Excel we have defined the color for each square in the heatmap (also
+available with the package, see ``logo.xlsx``). The first step is to
+import the excel file, and then we perform the same steps as in a normal
+dataset.
+
+.. code:: ipython3
+
+    # Read excel file
+    path = '../../example/exported_images/logo.xlsx'
+    usecols='A:BL'
+    df_logo = pd.read_excel(path, 'logo', usecols=usecols, nrows=21)
+    df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
+    
+    # Combine two dataframes
+    df_mixed = df_logo*1.2 - df_faded
+    
+    # Aminoacids
+    aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
+    
+    # Define protein sequence
+    sequence_logo = "FUNNY THAT YOU ARE READING THIS SEQUENCE. NO SECRET CODE FOR NOW"
+    
+    # Define secondary structure
+    secondary = [['L0']*5, ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-20), ['L2']*(32-25),
+                 ['β2']*(42-32), ['L3']*(54-42),['α2']*(74-64)]
+    
+    # Create object
+    logo_obj = mut.Screen(df_mixed, sequence_logo, start_position=1, fillna=0, secondary=secondary)
+    
+    # Parameters to save output images, will be the same for each plot
+    outputfilepath = '../../example/exported_images/'
+    outputformat = 'png'
+    savefile = False
+    
+    # Create hetmap
+    logo_obj.heatmap(show_cartoon=True, title = '', 
+                     neworder_aminoacids='ACDEFGHIKLMNPQRSTVWY*',
+                     outputfilename='heatmap_intro',
+                     outputfilepath=outputfilepath,outputformat=outputformat, 
+                     savefile=savefile)
+
+
+.. image:: ../example/exported_images/heatmap_intro.png
+   :width: 350px
    :align: center
 
 Reference

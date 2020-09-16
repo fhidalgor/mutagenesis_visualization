@@ -30,7 +30,7 @@ setuptools.setup(
         # 'Methods Paper': 'PAPER URL HERE!',
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',},
     install_requires=['numpy', 'seaborn', 'pandas', 'scipy', 'matplotlib>=3.0.0',
-        'sklearn', 'adjustText', 'Bio', 'logomaker','freesasa'],
+        'sklearn', 'adjustText', 'biopython', 'logomaker','freesasa'],
     dependency_links=['https://github.com/cxhernandez/ipymol.git'],
     zip_safe=True,
     include_package_data=True,
