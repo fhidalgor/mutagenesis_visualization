@@ -21,6 +21,7 @@ Create object of class Screen
 
 Class reviewed in this section:
     - :class:`mutagenesis_visualization.Screen`
+    - :func:`mutagenesis_visualization.demo_datasets`
 
 
 In order to create plots, the first step is to create a
@@ -34,12 +35,18 @@ are importing two datasets and creating two objects named
 
 .. code:: ipython3
 
-    # Load enrichment scores
+    # Load enrichment scores. This is how you would load them from a local file
     hras_enrichment_GAPGEF = np.genfromtxt('../data/HRas166_GAPGEF.csv',
                                            delimiter=',')
     
     hras_enrichment_RBD = np.genfromtxt('../data/HRas166_RBD.csv',
                                         delimiter=',')
+    
+    # However, if you are trying to run the tutorial example, load the data the following way:
+    data_dict = mut.demo_dataThanksets() # load example datasets
+    hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
+    hras_enrichment_RBD = data_dict['array_hras_RBD']
+    
     
     # Define protein sequence
     hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
@@ -618,8 +625,10 @@ dataset.
     # Read excel file
     path = '../../example/exported_images/logo.xlsx'
     usecols='A:BL'
-    df_logo = pd.read_excel(path, 'logo', usecols=usecols, nrows=21)
-    df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
+    #df_logo = pd.read_excel(path, 'logo', usecols=usecols, nrows=21)
+    #df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
+    df_logo = pd.read_excel(path, 'logo_2', usecols=usecols, nrows=21)
+    df_faded = pd.read_excel(path, 'logo_faded_2', usecols=usecols, nrows=21)
     
     # Combine two dataframes
     df_mixed = df_logo*1.2 - df_faded
@@ -645,9 +654,9 @@ dataset.
     # Create hetmap
     logo_obj.heatmap(show_cartoon=True, title = '', 
                      neworder_aminoacids='ACDEFGHIKLMNPQRSTVWY*',
-                     outputfilename='heatmap_intro',
+                     outputfilename='heatmap_intro_v2',
                      outputfilepath=outputfilepath,outputformat=outputformat, 
-                     savefile=savefile)
+                     savefile=True)
 
 
 .. image:: ../example/exported_images/heatmap_intro.png

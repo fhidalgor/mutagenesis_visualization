@@ -10,7 +10,7 @@ def readme():
 
 setuptools.setup(
     name="mutagenesis_visualization",
-    version="0.0.1.4",
+    version="0.0.1.5",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
     description="A package for analysis and visualization of saturation mutagenesis data",
@@ -29,8 +29,8 @@ setuptools.setup(
         'Documentation': ('https://mutagenesis-visualization.readthedocs.io/'),
         # 'Methods Paper': 'PAPER URL HERE!',
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',},
-    install_requires=['numpy', 'seaborn', 'pandas', 'scipy', 'matplotlib>=3.0.0',
-        'sklearn', 'adjustText', 'biopython', 'logomaker','freesasa'],
+    install_requires=['numpy>=1.18.5', 'seaborn>=0.10.0', 'pandas>=1.0.0', 'scipy>=1.5.0', 'matplotlib>=3.0.0',
+        'sklearn>=0.23.0', 'adjustText>=0.7.0', 'biopython>=1.77', 'logomaker>=0.8','freesasa>=2.1.0'],
     dependency_links=['https://github.com/cxhernandez/ipymol.git'],
     zip_safe=True,
     include_package_data=True,

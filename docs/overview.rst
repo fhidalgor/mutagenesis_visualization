@@ -3,7 +3,7 @@ Description
 
 ``mutagenesis_visualization`` is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets.
 
-.. image:: ../example/exported_images/heatmap_intro.png
+.. image:: ../example/exported_images/heatmap_intro_v2.png
    :width: 350px
    :align: center
 

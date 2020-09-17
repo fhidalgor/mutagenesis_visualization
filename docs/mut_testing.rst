@@ -14,12 +14,31 @@ use this API.
 The data used in this notebook is included as part of the package in two
 different ways. First, it is saved as ``data/DMS_others.xlsx``. You can
 find the excel spreadsheet on the Github repository. In addition, we are
-providing a command to quickly retrieve and load the data:
+providing a command to quickly retrieve and load the data with
+:func:``mutagenesis_visualization.demo_datasets``.
 
 .. code:: ipython3
 
-    # If you want to retrieve the data used in this notebook, use the following command
-    datasets = mut.demo_datasets()
+    # Dictionary with the datasets
+    data_dict = mut.demo_datasets()
+    # Beta lactamase data
+    df_bla = data_dict['df_bla']
+    # Sumo
+    df_sumo1 = data_dict['df_sumo1']
+    # MAPK1
+    df_mapk1 = data_dict['df_mapk1']
+    #UBE2I
+    df_ube2i = data_dict['df_ube2i']
+    #TAT
+    df_tat = data_dict['df_tat']
+    #REV
+    df_rev = data_dict['df_rev']
+    # asynuclein
+    df_asynuclein = data_dict['df_asynuclein']
+    # APH
+    df_aph = data_dict['df_aph']
+    # b11L5
+    df_b11L5F = data_dict['df_b11L5F']
 
 Now we will import the modules. Note that this is being done on a local
 Jupyter notebook, you should change the path of output files to your

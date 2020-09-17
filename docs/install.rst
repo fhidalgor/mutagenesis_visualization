@@ -32,7 +32,7 @@ If you are working on a jupyter notebook, you may have to use the following comm
 Alternative installation
 =========================
 
-You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on GitHub, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it everyt time to a .py file. The way to do that is to download the script ``Import_notebook.py`` and place it in the same folder where you have the ``mutagenesis_visualization.ipynb`` notebook and your current notebook. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
+You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on GitHub, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it every time to a .py file. Download the folder ``jupyter_notebooks`` and place your current notebook in that folder. The run the command shown below. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
 
 .. code:: ipython3
 
@@ -43,6 +43,9 @@ Dependencies
 ==============
 
 In this section I am listing the dependencies and the versions I used to make the package.
+ 
+.. note::
+    The software has been tested on Linux, Windows and MacOS platforms. The package works in all of them as long as the dependencies are updated.
  
 Required Dependencies
 -----------------------
