@@ -29,9 +29,12 @@ If you are working on a jupyter notebook, you may have to use the following comm
     The package folder is called "mutagenesis_visualization" (with underscore), but pip replaces the underscore with a hyphen. Thus, if you search for it on Pypi, it will show up as "mutagenesis-visualization". For installation purposes, both a hyphen and an underscore work.
     
 
-Alternative installation
-=========================
+Use mutagenesis_visualization locally 
+=======================================
 
+.. note::
+    Skip this section if you pip installed the package.
+    
 You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on GitHub, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it every time to a .py file. Download the folder ``jupyter_notebooks`` and place your current notebook in that folder. The run the command shown below. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
 
 .. code:: ipython3
@@ -45,7 +48,7 @@ Dependencies
 In this section I am listing the dependencies and the versions I used to make the package.
  
 .. note::
-    The software has been tested on Linux, Windows and MacOS platforms. The package works in all of them as long as the dependencies are updated.
+    The software has been tested on Linux, Windows and MacOS platforms. The package works in all of them as long as the dependencies are updated. We have encountered issues when the Anaconda environment was old. Those issues got solved by uninstalling and reinstalling Anaconda (which will automatically update all the dependencies.)
  
 Required Dependencies
 -----------------------

@@ -8,13 +8,18 @@ Import modules
 
 .. code:: ipython3
 
-    # Import Modules
+    # Run only if you are using the code from jupyter notebooks instead of pypi
     import import_notebook
+
+.. code:: ipython3
+
+    # Import Modules
     import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
     import matplotlib as plt
     import copy
+
 
 Create object of class Screen
 -----------------------------
@@ -23,6 +28,15 @@ Class reviewed in this section:
     - :class:`mutagenesis_visualization.Screen`
     - :func:`mutagenesis_visualization.demo_datasets`
 
+
+We will first load the sample datasets. They are part of the package.
+You would ignore this step if you are trying to use your own dataset.
+
+.. code:: ipython3
+
+    data_dict = mut.demo_datasets() # load example datasets
+    hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
+    hras_enrichment_RBD = data_dict['array_hras_RBD']
 
 In order to create plots, the first step is to create a
 ``Screen.object``. The enrichment scores will be passed using the
@@ -35,17 +49,12 @@ are importing two datasets and creating two objects named
 
 .. code:: ipython3
 
-    # Load enrichment scores. This is how you would load them from a local file
+    # Load enrichment scores. This is how you would load them from a local file.
     hras_enrichment_GAPGEF = np.genfromtxt('../data/HRas166_GAPGEF.csv',
                                            delimiter=',')
     
     hras_enrichment_RBD = np.genfromtxt('../data/HRas166_RBD.csv',
                                         delimiter=',')
-    
-    # However, if you are trying to run the tutorial example, load the data the following way:
-    data_dict = mut.demo_dataThanksets() # load example datasets
-    hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
-    hras_enrichment_RBD = data_dict['array_hras_RBD']
     
     
     # Define protein sequence
@@ -79,7 +88,7 @@ are importing two datasets and creating two objects named
     # Parameters to save output images, will be the same for each plot
     outputfilepath = '../../example/exported_images/'
     outputformat = 'png'
-    savefile = True
+    savefile = False
 
 
 Heatmaps
@@ -391,6 +400,10 @@ Methods and functions reviewed in this section:
     - :func:`mutagenesis_visualization.msa_enrichment`
     - :func:`mutagenesis_visualization.plot_box`
 
+If you want to know more about PCA and ROC, watch the following StatQuest videos on youtube:
+`PCA <https://www.youtube.com/watch?v=FgakZw6K1QQ&ab_channel=StatQuestwithJoshStarmer>`_
+`ROC and AUC <https://www.youtube.com/watch?v=4jRBRDbJemM&ab_channel=StatQuestwithJoshStarmer>`_
+
 The correlation of amino acid substitution profiles can be calculated
 for each amino acid and graphed using ``object.correlation``. In the
 example we observe that polar amino acids have high correlation between
@@ -431,7 +444,7 @@ Grouping amino acids improves the predictive power. ``object.group_correlation``
     groups = ['DE', 'HKR', 'QN', 'CST', 'AG', 'ILMV', 'WYF', 'P']
     
     # Get list of all combinations and their associated R2 value
-    df_r2 = hras_RBD.group_correlation(r2=0.75, groups=groups, output=False, title='',
+    df_r2 = hras_RBD.group_correlation(r2=0.75, groups=groups, output=True, title='',
                                        outputfilename='hras_logo', outputfilepath=outputfilepath,
                                        outputformat=outputformat, savefile=False)
     
@@ -641,7 +654,7 @@ dataset.
     
     # Define secondary structure
     secondary = [['L0']*5, ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-20), ['L2']*(32-25),
-                 ['β2']*(42-32), ['L3']*(54-42),['α2']*(74-64)]
+                 ['β2']*(42-32), ['L3']*(50-42),['α2']*(58-50),['L4']*(70-58)]
     
     # Create object
     logo_obj = mut.Screen(df_mixed, sequence_logo, start_position=1, fillna=0, secondary=secondary)
@@ -656,7 +669,7 @@ dataset.
                      neworder_aminoacids='ACDEFGHIKLMNPQRSTVWY*',
                      outputfilename='heatmap_intro_v2',
                      outputfilepath=outputfilepath,outputformat=outputformat, 
-                     savefile=True)
+                     savefile=False)
 
 
 .. image:: ../example/exported_images/heatmap_intro.png

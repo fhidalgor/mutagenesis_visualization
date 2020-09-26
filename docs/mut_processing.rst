@@ -10,7 +10,11 @@ Import module
 
 .. code:: ipython3
 
-    import Import_notebook
+    # Run only if you are using the code from jupyter notebooks instead of pypi
+    import import_notebook
+
+.. code:: ipython3
+
     import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd

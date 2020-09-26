@@ -742,7 +742,7 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
     
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     path : str
         Path where is located the fasta MSA that will be parsed. That MSA needs to have removed 
@@ -862,7 +862,7 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     kernel : str, default gau
         options are ['biw','cos','epa','gau','tri','triw']
@@ -882,7 +882,7 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
     extra_dist_label : str, default '_nolegend_'
     
     **kwargs : other keyword arguments
-
+        
     Returns
     ----------
     None
@@ -1044,7 +1044,7 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
@@ -1334,7 +1334,7 @@ def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     selection : list of aa to show, default ['E','Q','A','P','V','Y']. 
     
@@ -1452,7 +1452,7 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     segment : list
         Segment is typed as [20,40] and includes both residues 20 and 40.
@@ -1569,7 +1569,7 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     mode : str, default 'mean'
         Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
@@ -1580,6 +1580,11 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
     
     **kwargs : other keyword arguments
+        color_gof : str, default 'red'
+            Choose color to color positions with an enrichment score > 0.
+            
+        color_lof : str, default 'blue'
+            Choose color to color positions with an enrichment score < 0.
 
     Returns
     ----------
@@ -1589,7 +1594,6 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
-    temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
     temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
 
     # load parameters
@@ -1601,7 +1605,8 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     else:
         df = self.dataframe.loc[self.dataframe['Aminoacid']==mode].copy()
     
-    df['Color'] = df.apply(color_data, axis=1)
+    df['Color'] = df.apply(color_data, axis=1, args = (temp_kwargs['color_gof'],
+                                                      temp_kwargs['color_lof']))
 
     # make figure
     if show_cartoon:
@@ -1624,12 +1629,18 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     ax.set_xlabel('Residue', fontsize=10,
                   fontname="Arial", color='k', labelpad=4)
     ax.set_xlim(self.start_position-0.1, len(df)+self.start_position-1+0.1)
-    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
 
     # cartoon
+    title_pad = 0 
     if show_cartoon:
         _generate_cartoon(self, gs, 1, temp_kwargs['cartoon_colors'],
                           bottom_space=-0.78, show_labels=False)
+        title_pad = 2.5
+    
+    # Plot title
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k',
+             pad = title_pad)
+
     # Put text labels
     _inputtext(temp_kwargs['text_labels'])
 
@@ -1640,11 +1651,11 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     return
 
 
-def color_data(row):
+def color_data(row, color_gof, color_lof):
     if row['Score'] > 0:
-        return 'red'
+        return color_gof
     else:
-        return 'blue'
+        return color_lof
 
 
 def parameters_mean():
@@ -1675,7 +1686,7 @@ def plot_meandifferential (self, obj2, show_cartoon=False,**kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     obj2 : another Screen object to compare with 
     
@@ -1746,7 +1757,7 @@ def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
     
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     positions : list, x coordinates
     
@@ -1823,7 +1834,7 @@ def plot_position(self, position, **kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     position : int
         number of residue of the protein to display.
@@ -1885,9 +1896,9 @@ def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
-    obj2 : object from class "Screen" to do the scatter with
+    obj2 : object from class *Screen* to do the scatter with
     
     mode : str, default 'pointmutant'. 
         Alternative set to "mean" for the mean of each position
@@ -1903,8 +1914,6 @@ def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
-    temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
-    temp_kwargs['yscale'] = kwargs.get('yscale', (-2, 2))
 
     # Chose mode:
     if mode == 'pointmutant':
@@ -2003,7 +2012,7 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
         
     mode : str, default 'pointmutant'. 
         Alternative set to "mean" for the mean of each position
@@ -2156,7 +2165,7 @@ def _select_nonSNV(df):
     SNV = _select_SNV(df)
 
     # Merge and eliminate duplicates. Keep Non-SNV
-    NonSNV = pd.concat([SNV, df], sort=False)[['Position', 'Variant', 'Score']]
+    NonSNV = pd.concat([SNV, df], sort=False)[['Position', 'Variant', 'Score','Score_NaN']]
     NonSNV.drop_duplicates(subset='Variant', keep=False, inplace=True)
 
     return NonSNV
@@ -2182,7 +2191,7 @@ def _select_SNV(df):
     df = df[df['SNV?'] == True].copy()
 
     # Select columns of interest
-    df = df[['Position', 'Variant', 'Score']].copy()
+    df = df[['Position', 'Variant', 'Score','Score_NaN']].copy()
 
     # Reset index
     df.reset_index(drop=True, inplace=True)
@@ -2383,7 +2392,7 @@ def plot_miniheatmap(self, offset=0, **kwargs):
 
     Parameters
     ----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     offset : int, default 0
         if you want to study effects of a residue when is behind or in front of another residue.
@@ -2510,7 +2519,7 @@ def plot_neighboreffect (self, offset=1, **kwargs):
 
    Parameters
    ----------
-   self : object from class "Screen"
+   self : object from class *Screen*
    
    offset : int, default 1
        if you want to study effects of a residue when is behind or in front of another residue.
@@ -2764,12 +2773,12 @@ def _calculate_correlation_byresidue(df):
 
 def plot_individual_correlation(self, **kwargs):
     '''
-    Genereates a bar plot of the correlation of each amino acid mutational 
+    Generates a bar plot of the correlation of each amino acid mutational 
     profile (row of the heatmap) with the rest of amino acids (rows)
     
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     **kwargs : other keyword arguments
 
@@ -2830,7 +2839,7 @@ def plot_group_correlation(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WY
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     r2 : float
         cutoff of the r**2 correlation value. Only values above that will be plot at the sequence logo
@@ -2944,11 +2953,11 @@ def _find_correlation(aa1, aa2, corr_values):
 
 def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False, **kwargs):
     '''
-    Genereates a plot of two PCA dimensions
+    Generates a plot of two PCA dimensions
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     mode : list, default 'aminoacid'
         Can also do PCA by secondary structure element if set to "secondary" or 
@@ -3087,11 +3096,11 @@ def _calculate_correlation_bysecondary(df, secondary):
 
 def plot_secondary(self, **kwargs):
     '''
-    Genereates a bar plot of data sorted by secondary elements (alpha helices and beta sheets).
+    Generates a bar plot of data sorted by secondary elements (alpha helices and beta sheets).
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     **kwargs : other keyword arguments
 
@@ -3165,7 +3174,7 @@ def plot_roc(self, df_class=None, **kwargs):
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     df_class: Pandas dataframe
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
@@ -3285,7 +3294,7 @@ def plot_cumulative(self, mode='all', **kwargs):
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
     
     mode : str, default 'all' 
         Options are 'all','SNV' and 'nonSNV'.
@@ -3310,7 +3319,7 @@ def plot_cumulative(self, mode='all', **kwargs):
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
 
     # Get data filtered
-    df = _filter(self, mode)
+    df = _filter_bySNV(self, mode)
     cumsum = df.cumsum(skipna=False)['Score']
     plt.plot(df['Position'], cumsum/list(cumsum)[-1], color='red', lw=2)
 
@@ -3344,7 +3353,7 @@ def plot_cumulative(self, mode='all', **kwargs):
     return
 
 
-def _filter(self, mode):
+def _filter_bySNV(self, mode):
 
     # Select all, SNV, nonSNV
     if mode == 'all':
@@ -3364,7 +3373,7 @@ def _filter(self, mode):
 
 def plot_box(binned_x, y, **kwargs):
     '''
-    Genereates a boxplot. Data needs to be binned prior before using this function. 
+    Generates a boxplot. Data needs to be binned prior before using this function. 
 
     Parameters
     -----------
@@ -3421,7 +3430,7 @@ def plot_box(binned_x, y, **kwargs):
 
 # ### 3D Scatter
 
-# In[2]:
+# In[ ]:
 
 
 def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
@@ -3434,7 +3443,7 @@ def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
         **kwargs : other keyword arguments.
 
     mode : str, default 'mean'
@@ -3610,7 +3619,7 @@ def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False
 
 # ### 3D Scatter Second version
 
-# In[3]:
+# In[ ]:
 
 
 def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
@@ -3626,7 +3635,7 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
 
     Parameters
     -----------
-    self : object from class "Screen"
+    self : object from class *Screen*
         **kwargs : other keyword arguments.
 
     plot : list, default ['Distance', 'SASA', 'B-factor']
@@ -3786,10 +3795,16 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
         if quit, close pymol after executing code.
     
     **kwargs : other keyword arguments
-         gof : int, default is 1
+        gof : int, default is 1
              cutoff for determining gain of function mutations based on mutagenesis data.
-         lof : int, default is -1
+        lof : int, default is -1
              cutoff for determining loss of function mutations based on mutagenesis data.
+        color_gof : str, default 'red'
+            Choose color to color positions with an enrichment score > gof.
+        color_lof : str, default 'neptunium'
+            Choose color to color positions with an enrichment score < lof.
+    
+    
     Returns
     ----------
     Open pymol session with a fetched pdb structure where the residues are colored according to the enrichment scores.
@@ -3797,7 +3812,8 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
-
+    temp_kwargs['color_lof'] = kwargs.get('color_lof', 'neptunium')
+    
     # Calculate residues only if they are not given by the user
     if residues is None:
         residues = _pymol_fitness(self.dataframe.copy(), temp_kwargs['gof'], 
@@ -3829,8 +3845,8 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
 
     # Representation parameters
     pymol.show_as('cartoon', pdb)
-    pymol.set('cartoon_color', 'neptunium', blue)
-    pymol.set('cartoon_color', 'red', red)
+    pymol.set('cartoon_color', temp_kwargs['color_lof'], blue)
+    pymol.set('cartoon_color', temp_kwargs['color_gof'], red)
     pymol.set('cartoon_color', 'chlorine', white)
     pymol.bg_color('white')
     pymol.remove('solvent')
@@ -4132,7 +4148,8 @@ def parse_pivot(df_imported, col_variant = 'variant', col_data = 'DMS',
 
 def kwargs():
     '''
-    Kwargs used in the package. Not all of them work on each function.
+    Kwargs used in the methods and some other functions. 
+    Not all kwargs work on each method, read the individual description.
     
     Parameters
     -----------
@@ -4144,7 +4161,7 @@ def kwargs():
         Scale min and max used in heatmaps and correlation heatmaps.
     
     color: str, default 'k'
-        Color used for the ...
+        Color used for the kernel plot line.
         
     title : str, default 'Title'
         Title of plot.
@@ -4190,19 +4207,19 @@ def kwargs():
         
     gof: int, default 1
         Cutoff of the enrichment score to classify a mutation as gain of function.
-        Used on pymol function.
+        Used on pymol and 3D methods.
         
     lof: int, default -1
         Cutoff of the enrichment score to classify a mutation as loss of funtion.
-        Used on pymol function.
+        Used on pymol and 3D methods.
     
     color_gof : str, default 'red'
         Color to color mutations above the gof cutoff.
-        Used in pymol and mean methods.
+        Used in pymol, 3D and mean methods.
 
     color_lof : str, default 'blue'
         Color to color mutations below the lof cutoff.
-        Used in pymol and mean methods.
+        Used in pymol, 3D and mean methods.
         
     cartoon_colors: list, default ['lightgreen', 'lavender', 'k']
         Colors used for secondary structure cartoon. Used for heatmap, mean and mean_count plots.
@@ -4215,7 +4232,9 @@ def kwargs():
         
     random_state : int, default 554
         Random state used for PCA function.
-      
+    
+    bins : int, default 50
+        Number of bins used for kernel and histograms.
     '''
     # Do nothing, only so sphinx adds this to the rst file
     return
@@ -4258,9 +4277,12 @@ default_kwargs = {'colormap': generatecolormap(),
 
 class Screen:
     '''
-    *Screen* represents a saturation mutagenesis experiment, where every amino acid 
-    in the protein has been mutated to other amino acids. The mutants are scored based
-    on some custom screen.
+    *Screen* represents a mutagenesis experiment. If you are doing deep scan 
+    mutagenesis, then every amino acid in the protein has been mutated to every possible 
+    amino acid. For example, if there was a leucine at position 2, then this leucine would
+    be mutated to the other 19 naturally occurring amino acids. However, you can also use the 
+    package if you only have a handful of amino acid substitutions.
+
 
     Parameters
     -----------
@@ -4278,12 +4300,13 @@ class Screen:
         First position in the protein sequence that will be used for the first column of the
         array. If a protein has been mutated only from residue 100-150, then if start_position = 100,
         the algorithm will trim the first 99 amino acids in the input sequence. The last 
-        residue will be calculated based on the length of the input array. 
+        residue will be calculated based on the length of the input array. We have set the default value to 2
+        because normally the Methionine in position 1 is not mutated.
     
     secondary : list, optional
         This parameter is used to group the data by secondary structure. The format is 
-        the name of the secondary structure multiplied by the residue length of that motif
-        example : [['β1']*(8),['L1']*(7),['α1']*(9),...,].
+        the name of the secondary structure multiplied by the residue length of that motif.
+        Example : [['β1']*(8),['L1']*(7),['α1']*(9),...,].
     
     roc_df: Pandas dataframe, optional
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
@@ -4426,10 +4449,14 @@ def demo_datasets():
     # Create dictionary where to store data
     data_dict = {}
     
-    # Retrieve H-Ras dataset and store in dict
+    # Retrieve H-Ras datasets and store in dict
     my_file = os.path.join(location, 'data', 'HRas166_RBD.csv')
     hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
-    data_dict['array_hras'] = hras_enrichment_RBD
+    data_dict['array_hras_RBD'] = hras_enrichment_RBD
+
+    my_file = os.path.join(location, 'data', 'HRas166_GAPGEF.csv')
+    hras_enrichment_GAPGEF = np.genfromtxt(my_file, delimiter=',')
+    data_dict['array_hras_GAPGEF'] = hras_enrichment_GAPGEF    
     
     # Beta lactamase data
     my_file = os.path.join(location, 'data', 'df_bla_raw.pkl')
@@ -4475,7 +4502,65 @@ def demo_datasets():
     return data_dict
 
 
-# # Ras Trouble Shooting
+def demo_pdbs():
+    '''
+    Loads example pdbs so the user can play with it (5p21, 1erm, 1a5r, 1nd4).
+    
+    Parameters
+    -----------
+    None
+    
+    Returns
+    --------
+    data_dict : dictionary
+        Dictionary that contains the pdbs used to create the plots on the documentation.
+    '''
+    
+    # Use relative file import to access the data folder
+    location = os.path.dirname(os.path.realpath(__file__))
+    
+    # Create dictionary where to store data
+    pdb_dict = {}
+    
+    # H-Ras
+    pdb_dict['5p21'] = os.path.join(location, 'data', '5p21.pdb')
+    
+    # Beta lactamase data
+    pdb_dict['1erm'] = os.path.join(location, 'data', '1erm.pdb')
+
+    # Sumo
+    pdb_dict['1a5r'] = os.path.join(location, 'data', '1a5r.pdb')
+    
+    # APH
+    pdb_dict['1nd4'] = os.path.join(location, 'data', '1nd4.pdb')
+
+    return pdb_dict
+
+def demo_fasta():
+    '''
+    Loads example fasta so the user can play with it.
+    
+    Parameters
+    -----------
+    None
+    
+    Returns
+    --------
+    data_dict : dictionary
+        Dictionary that contains the fasta used to extract the sequence conservation.
+    '''
+    
+    # Use relative file import to access the data folder
+    location = os.path.dirname(os.path.realpath(__file__))
+    
+    # Create dictionary where to store data
+    fasta_dict = {}
+    fasta_dict['ras'] = os.path.join(location, 'data', 'Ras_family_trimmed.fasta')
+    
+    return fasta_dict
+
+
+# # Trouble Shooting
 
 # In[ ]:
 

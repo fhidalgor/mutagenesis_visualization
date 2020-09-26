@@ -11,11 +11,8 @@ scales, etc. Furthermore, on top of testing the resilience of
 ``mutagenesis_visualization``, we are providing extra examples on how to
 use this API.
 
-The data used in this notebook is included as part of the package in two
-different ways. First, it is saved as ``data/DMS_others.xlsx``. You can
-find the excel spreadsheet on the Github repository. In addition, we are
-providing a command to quickly retrieve and load the data with
-:func:``mutagenesis_visualization.demo_datasets``.
+The data used in this notebook is included as part of the package in two different ways. First, it is saved as ``data/DMS_others.xlsx``. You can find the excel spreadsheet on the Github repository. In addition, we are providing a command to quickly retrieve and load the data with :func:`mutagenesis_visualization.demo_datasets`.
+
 
 .. code:: ipython3
 
@@ -46,8 +43,12 @@ own.
 
 .. code:: ipython3
 
-    # Import Modules
+    # Run only if you are using the code from jupyter notebooks instead of pypi
     import import_notebook
+
+.. code:: ipython3
+
+    # Import Modules
     import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
