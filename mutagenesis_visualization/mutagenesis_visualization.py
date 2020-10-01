@@ -4668,7 +4668,7 @@ def demo_fasta():
 # In[ ]:
 
 
-# Load enrichment scores into a np.array
+'''# Load enrichment scores into a np.array
 hras_enrichment = np.genfromtxt('../data/HRas166_RBD.csv', delimiter=',')
 
 # Define protein sequence
@@ -4685,6 +4685,7 @@ secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-2
 
 # Create object
 hras_object = Screen(hras_enrichment,hras_sequence,aminoacids,start_position,0,secondary)
+'''
 
 
 # In[ ]:
