@@ -54,12 +54,6 @@ own.
     import pandas as pd
     import matplotlib as plt
     import copy
-    
-    # Parameters to save output images, will be the same for each plot
-    # Note that this path is local, so you should change it 
-    outputfilepath = '../../example/other_examples/' # Change
-    outputformat = 'png'
-    savefile = True
 
 Beta Lactamase
 --------------
@@ -136,50 +130,39 @@ Create object
     
     # Create full heatmap
     bla_obj.heatmap(colorbar_scale=(-3, 3), neworder_aminoacids=neworder_aminoacids,
-                    title='Beta Lactamase', outputfilename='bla_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=True,
-                    outputformat=outputformat, savefile=savefile)'''
+                    title='Beta Lactamase', show_cartoon=True, output_file = None)
     
     # Miniheatmap
-    '''bla_obj.miniheatmap(title='Wt residue Beta Lactamase', neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='bla_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+    bla_obj.miniheatmap(title='Wt residue Beta Lactamase', neworder_aminoacids=neworder_aminoacids,
+                        output_file = None)
     
     # Positional mean
     bla_obj.mean(figsize=[10, 2.5], mode='mean', show_cartoon=True, yscale=[-3, 0.25],
-                 outputfilename='bla_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                 title='', output_file = None)
     
     # Kernel
     bla_obj.kernel(histogram=True, title='Beta Lactamase', xscale=[-4, 1],
-                   outputfilename='bla_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                   output_file = None)
     
     # Graph bar of the mean of each secondary motif
     bla_obj.secondary_mean(yscale=[-1.5, 0], figsize=[5, 2], title='Mean of secondary motifs',
-                           outputfilename='bla_secondary', outputfilepath=outputfilepath,
-                           outputformat=outputformat, savefile=savefile)
+                           output_file = None)
     
     # Correlation between amino acids
     bla_obj.correlation(colorbar_scale=[0.5, 1], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='bla_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                        neworder_aminoacids=neworder_aminoacids,output_file = None)
     
     # Explained variability by amino acid
     bla_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='bla_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                   output_file = None)
     
     # PCA by amino acid substitution
     bla_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='bla_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
+                output_file = None)
     
     # PCA by secondary structure motif
     bla_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
-                adjustlabels=True, outputfilename='bla_pcasecondary',
-                outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
+                adjustlabels=True,output_file = None)
 
 .. image:: ../example/other_examples/bla_fullheatmap.png
 
@@ -216,17 +199,21 @@ Create object
 3D Plots
 ~~~~~~~~
 
+If you want to use the example pdbs, use the command
+``pdbs_dict = mut.demo_pdbs()`` to retrieve the pdb_paths. Then when you
+call the method, do ``pdb_path=pdbs_dict['1erm']``.
+
 .. code:: ipython3
 
     %matplotlib widget
     
     # Plot 3-D plot
     bla_obj.scatter_3D(mode='mean', pdb_path='../data/1erm.pdb', position_correction = 2,
-                       squared = False,lof=-0.75, gof=0.1)
+                       squared = False,lof=-0.75, gof=0.1, output_file=None)
     
     # Plot 3-D of distance to center of protein, SASA and B-factor
     bla_obj.scatter_3D_pdbprop(plot=['Distance', 'Score', 'SASA'], position_correction = 2,
-                               pdb_path='../data/1erm.pdb', color_by_score=False)
+                               pdb_path='../data/1erm.pdb', color_by_score=False, output_file=None)
 
 
 .. image:: ../example/other_examples/bla_3dscatter.png
@@ -310,51 +297,40 @@ Create object
     
     # Create full heatmap
     sumo_obj.heatmap(colorbar_scale=(-0.5, 1), neworder_aminoacids=neworder_aminoacids,
-                     title='Sumo1', outputfilename='sumo_fullheatmap', colormap=colormap,
-                     outputfilepath=outputfilepath, show_cartoon=True,
-                     outputformat=outputformat, savefile=savefile)
+                     title='Sumo1', colormap=colormap, show_cartoon=True, output_file=None)
     
     # Miniheatmap
     sumo_obj.miniheatmap(colorbar_scale=(0, 1), title='Wt residue Sumo1',
                          neworder_aminoacids=neworder_aminoacids, colormap=colormap,
-                         outputfilename='sumo_miniheatmap', outputfilepath=outputfilepath,
-                         outputformat=outputformat, savefile=savefile)
+                         output_file=None)
     
     # Positional mean
     sumo_obj.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[0, 1],
-                  outputfilename='sumo_bar_mean', title='', outputfilepath=outputfilepath,
-                  outputformat=outputformat, savefile=savefile)
+                  title='', output_file=None)
     
     # Kernel
     sumo_obj.kernel(histogram=True, title='Sumo1', xscale=[-1, 2],
-                    outputfilename='sumo_kde', outputfilepath=outputfilepath,
-                    outputformat=outputformat, savefile=savefile)
+                    output_file=None)
     
     # Graph bar of the mean of each secondary motif
     sumo_obj.secondary_mean(yscale=[0, 1], figsize=[2, 2], title='Mean of secondary motifs',
-                            outputfilename='sumo_secondary', outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            output_file=None)
     
     # Correlation between amino acids
     sumo_obj.correlation(colorbar_scale=[0.25, 0.75], title='Correlation',
-                         neworder_aminoacids=neworder_aminoacids,
-                         outputfilename='sumo_correlation', outputfilepath=outputfilepath,
-                         outputformat=outputformat, savefile=savefile)
+                         neworder_aminoacids=neworder_aminoacids,output_file=None)
     
     # Explained variability by amino acid
     sumo_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                    outputfilename='sumo_variability', outputfilepath=outputfilepath,
-                                    outputformat=outputformat, savefile=savefile)
+                                    output_file=None)
     
     # PCA by amino acid substitution
     sumo_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                 outputfilename='sumo_pcaaminoacid', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                 output_file=None)
     
     # PCA by secondary structure motif
     sumo_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
-                 adjustlabels=True, outputfilename='sumo_pcasecondary',
-                 outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
+                 adjustlabels=True, output_file = None)
 
 .. image:: ../example/other_examples/sumo_fullheatmap.png
 
@@ -457,42 +433,32 @@ Create object
     
     # Create full heatmap
     mapk1_obj.heatmap(colorbar_scale=(-2, 2), neworder_aminoacids=neworder_aminoacids,
-                    title='MAPK1', outputfilename='mapk1_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=False,
-                    outputformat=outputformat, savefile=savefile)
+                      title='MAPK1', show_cartoon=False, output_file=None)
     
     # Miniheatmap
     mapk1_obj.miniheatmap(title='Wt residue MAPK1', neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='mapk1_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                          output_file = None)
     
     # Positional mean
     mapk1_obj.mean(figsize=[10, 2.5], mode='mean', show_cartoon=False, yscale=[-1, 1],
-                 outputfilename='mapk1_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                   title='', output_file = None)
     
     # Kernel
     mapk1_obj.kernel(histogram=True, title='MAPK1', xscale=[-2, 2],
-                   outputfilename='mapk1_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                     output_file = None)
     
     # Correlation between amino acids
     mapk1_obj.correlation(colorbar_scale=[0.25, 0.75], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='mapk1_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                          neworder_aminoacids=neworder_aminoacids,
+                          output_file = None)
     
     # Explained variability by amino acid
     mapk1_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='mapk1_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                     output_file = None)
     
     # PCA by amino acid substitution
     mapk1_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='mapk1_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
-    
-
+                  output_file = None)
 
 .. image:: ../example/other_examples/mapk1_fullheatmap.png
 
@@ -586,51 +552,42 @@ Create object
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
     # Create full heatmap
-    ube2i_obj.heatmap(colorbar_scale = (0, 1), neworder_aminoacids=neworder_aminoacids,
-                    title='Ube2i', outputfilename='ube2i_fullheatmap', colormap = colormap,
-                    outputfilepath=outputfilepath, show_cartoon=True,
-                    outputformat=outputformat, savefile=savefile)
+    ube2i_obj.heatmap(colorbar_scale=(0, 1), neworder_aminoacids=neworder_aminoacids,
+                      title='Ube2i', colormap=colormap, show_cartoon=True,
+                      output_file=None)
     
     # Miniheatmap
-    ube2i_obj.miniheatmap(colorbar_scale = (0, 1), title='Wt residue Ube2i', neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='ube2i_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile,  colormap = colormap)
+    ube2i_obj.miniheatmap(colorbar_scale=(0, 1), title='Wt residue Ube2i', neworder_aminoacids=neworder_aminoacids,
+                          output_file=None, colormap=colormap)
     
     # Positional mean
     ube2i_obj.mean(figsize=[10, 2.5], mode='mean', show_cartoon=True, yscale=[0, 2],
-                 outputfilename='ube2i_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                   title='', output_file = None)
     
     # Kernel
     ube2i_obj.kernel(histogram=True, title='Ube2i', xscale=[-1, 2],
-                   outputfilename='ube2i_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                     output_file = None)
     
     # Graph bar of the mean of each secondary motif
     ube2i_obj.secondary_mean(yscale=[0, 2], figsize=[3, 2], title='Mean of secondary motifs',
-                           outputfilename='ube2i_secondary', outputfilepath=outputfilepath,
-                           outputformat=outputformat, savefile=savefile)
+                             output_file = None)
     
     # Correlation between amino acids
     ube2i_obj.correlation(colorbar_scale=[0.25, 0.75], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='ube2i_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                          neworder_aminoacids=neworder_aminoacids,
+                          output_file = None)
     
     # Explained variability by amino acid
     ube2i_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='ube2i_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                     output_file = None)
     
     # PCA by amino acid substitution
     ube2i_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='ube2i_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
+                  output_file = None)
     
     # PCA by secondary structure motif
     ube2i_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
-                adjustlabels=True, outputfilename='ube2i_pcasecondary',
-                outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
+                  adjustlabels=True, output_file = None)
 
 .. image:: ../example/other_examples/ube2i_fullheatmap.png
 
@@ -719,40 +676,32 @@ Create object
     
     # Create full heatmap
     tat_obj.heatmap(colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                    title='TAT', outputfilename='tat_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=True,
-                    outputformat=outputformat, savefile=savefile)
+                    title='TAT', show_cartoon=True,output_file = None)
     
     # Miniheatmap
     tat_obj.miniheatmap(title='Wt residue TAT', colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='tat_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                        output_file = None)
     
     # Positional mean
     tat_obj.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[-0.5, 0.25],
-                 outputfilename='tat_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                 title='', output_file = None)
     
     # Kernel
     tat_obj.kernel(histogram=True, title='TAT', xscale=[-1, 1],
-                   outputfilename='tat_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                   output_file = None)
     
     # Correlation between amino acids
     tat_obj.correlation(colorbar_scale=[0.25, 1], title='Correlation',
                         neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='tat_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                        output_file = None)
     
     # Explained variability by amino acid
     tat_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='tat_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                   output_file = None)
     
     # PCA by amino acid substitution
     tat_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='tat_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
+                output_file = None)
 
 
 .. image:: ../example/other_examples/tat_fullheatmap.png
@@ -840,42 +789,32 @@ Create object
     %matplotlib inline
     
     # Create full heatmap
-    rev_obj.heatmap(colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                    title='REV', outputfilename='rev_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=True,
-                    outputformat=outputformat, savefile=savefile)
+    rev_obj.heatmap(colorbar_scale=(-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
+                    title='REV', show_cartoon=True, output_file=None)
     
     # Miniheatmap
-    rev_obj.miniheatmap(title='Wt residue REV', colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='rev_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+    rev_obj.miniheatmap(title='Wt residue REV', colorbar_scale=(-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
+                        output_file=None)
     
     # Positional mean
     rev_obj.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[-0.5, 0.25],
-                 outputfilename='rev_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                 title='', output_file=None)
     
     # Kernel
     rev_obj.kernel(histogram=True, title='REV', xscale=[-1, 1],
-                   outputfilename='rev_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                   output_file=None)
     
     # Correlation between amino acids
     rev_obj.correlation(colorbar_scale=[0.25, 1], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='rev_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                        neworder_aminoacids=neworder_aminoacids, output_file=None)
     
     # Explained variability by amino acid
     rev_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='rev_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                   output_file = None)
     
     # PCA by amino acid substitution
     rev_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='rev_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
-
+                output_file = None)
 
 .. image:: ../example/other_examples/rev_fullheatmap.png
 
@@ -957,42 +896,32 @@ Create object
     %matplotlib inline
     
     # Create full heatmap
-    asynuclein_obj.heatmap(colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                    title='α-synuclein', outputfilename='asynuclein_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=True,
-                    outputformat=outputformat, savefile=savefile)
+    asynuclein_obj.heatmap(colorbar_scale=(-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
+                           title='α-synuclein', show_cartoon=True, output_file=None)
     
     # Miniheatmap
-    asynuclein_obj.miniheatmap(title='Wt residue α-synuclein', colorbar_scale = (-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='asynuclein_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+    asynuclein_obj.miniheatmap(title='Wt residue α-synuclein', colorbar_scale=(-0.75, 0.75), neworder_aminoacids=neworder_aminoacids,
+                               output_file=None)
     
     # Positional mean
     asynuclein_obj.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[0, 0.5],
-                 outputfilename='asynuclein_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                        title='', output_file=None)
     
     # Kernel
     asynuclein_obj.kernel(histogram=True, title='α-synuclein', xscale=[-0.75, 0.75],
-                   outputfilename='asynuclein_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                          output_file=None)
     
     # Correlation between amino acids
     asynuclein_obj.correlation(colorbar_scale=[0.5, 1], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='asynuclein_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                               neworder_aminoacids=neworder_aminoacids, output_file=None)
     
     # Explained variability by amino acid
     asynuclein_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='asynuclein_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                          output_file=None)
     
     # PCA by amino acid substitution
     asynuclein_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='asynuclein_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
-
+                       output_file=None)
 
 .. image:: ../example/other_examples/asynuclein_fullheatmap.png
 
@@ -1087,51 +1016,39 @@ Create object
     
     # Create full heatmap
     aph_obj.heatmap(colorbar_scale = (-0.75, 0.25), neworder_aminoacids=neworder_aminoacids,
-                    title='APH', outputfilename='aph_fullheatmap',
-                    outputfilepath=outputfilepath, show_cartoon=True, colormap=colormap,
-                    outputformat=outputformat, savefile=savefile)
+                    title='APH', show_cartoon=True, colormap=colormap,output_file = None)
     
     # Miniheatmap
     aph_obj.miniheatmap(title='Wt residue APH', neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='aph_miniheatmap', outputfilepath=outputfilepath,
-                        colormap=colormap, colorbar_scale = (-0.75, 0.25),
-                        outputformat=outputformat, savefile=savefile)
+                        colormap=colormap, colorbar_scale = (-0.75, 0.25),output_file = None)
     
     # Positional mean
     aph_obj.mean(figsize=[10, 2.5], mode='mean', show_cartoon=True, yscale=[-1.5, 0.5],
-                 outputfilename='aph_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                 title='',output_file = None)
     
     # Kernel
-    aph_obj.kernel(histogram=True, title='APH', xscale=[-2, 2],
-                   outputfilename='aph_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+    aph_obj.kernel(histogram=True, title='APH', xscale=[-2, 2],output_file = None)
     
     # Graph bar of the mean of each secondary motif
     aph_obj.secondary_mean(yscale=[-1, 0], figsize=[5, 2], title='Mean of secondary motifs',
-                           outputfilename='aph_secondary', outputfilepath=outputfilepath,
-                           outputformat=outputformat, savefile=savefile)
+                           output_file = None)
     
     # Correlation between amino acids
     aph_obj.correlation(colorbar_scale=[0.25, 0.75], title='Correlation',
                         neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='aph_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                        output_file = None)
     
     # Explained variability by amino acid
     aph_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='aph_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, savefile=savefile)
+                                   output_file = None)
     
     # PCA by amino acid substitution
     aph_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='aph_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, savefile=savefile)
+                output_file = None)
     
     # PCA by secondary structure motif
     aph_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
-                adjustlabels=True, outputfilename='aph_pcasecondary',
-                outputfilepath=outputfilepath, outputformat=outputformat, savefile=savefile)
+                adjustlabels=True, output_file = None)
 
 .. image:: ../example/other_examples/aph_fullheatmap.png
 
@@ -1244,41 +1161,33 @@ Create object
     
     # Create full heatmap
     b11L5F_obj.heatmap(neworder_aminoacids=neworder_aminoacids,
-                    title='b11L5F', outputfilename='b11L5F_fullheatmap',
-                    outputfilepath=outputfilepath,
-                    outputformat=outputformat, savefile=savefile)
+                       title='b11L5F', output_file=None)
     
     # Miniheatmap
     b11L5F_obj.miniheatmap(title='Wt residue b11L5F', neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='b11L5F_miniheatmap', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                           output_file=None)
     
     # Positional mean
     b11L5F_obj.mean(figsize=[6, 2.5], mode='mean', yscale=[-1.5, 0.5],
-                 outputfilename='b11L5F_bar_mean', title='', outputfilepath=outputfilepath,
-                 outputformat=outputformat, savefile=savefile)
+                    title='', output_file=None)
     
     # Kernel
     b11L5F_obj.kernel(histogram=True, title='b11L5F', xscale=[-2, 1],
-                   outputfilename='b11L5F_kde', outputfilepath=outputfilepath,
-                   outputformat=outputformat, savefile=savefile)
+                      output_file = None)
     
     
     # Correlation between amino acids
     b11L5F_obj.correlation(colorbar_scale=[0.25, 1], title='Correlation',
-                        neworder_aminoacids=neworder_aminoacids,
-                        outputfilename='b11L5F_correlation', outputfilepath=outputfilepath,
-                        outputformat=outputformat, savefile=savefile)
+                           neworder_aminoacids=neworder_aminoacids,
+                           output_file = None)
     
     # Explained variability by amino acid
     b11L5F_obj.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                   outputfilename='b11L5F_variability', outputfilepath=outputfilepath,
-                                   outputformat=outputformat, neworder_aminoacids=neworder_aminoacids,savefile=savefile)
-    
+                                      neworder_aminoacids=neworder_aminoacids,
+                                      output_file = None)
     # PCA by amino acid substitution
     b11L5F_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                outputfilename='b11L5F_pcaaminoacid', outputfilepath=outputfilepath,
-                outputformat=outputformat, neworder_aminoacids=neworder_aminoacids, savefile=savefile)
+                   neworder_aminoacids=neworder_aminoacids, output_file = None)
 
 
 .. image:: ../example/other_examples/b11L5F_fullheatmap.png

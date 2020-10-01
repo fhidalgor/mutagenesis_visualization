@@ -25,17 +25,12 @@ In here we are loading and assembling the data by hand instead of using the func
 
 .. code:: ipython3
 
-    # Parameters to save output images, will be the same for each plot
-    outputfilepath = 'mv_repo/example/exported_images/'
-    outputformat = 'png'
-    savefile = False
-    
     # List of sheets and columns to use
     sheets_pre = ['R1_before', 'R2_before', 'R3_before']
     sheets_sel = ['R1_after', 'R2_after', 'R3_after']
     columns = ['F:BG', 'BH:DK', 'DL:FN']
     columns_wt = ['A', 'B', 'C']
-    path = 'mv_repo/example/hrasRBD_counts.xlsx'
+    path = '../data/hrasRBD_counts.xlsx' # change path
     
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     dict_pre, dict_sel, dict_pre_wt, dict_sel_wt = ({} for i in range(4))
@@ -87,9 +82,7 @@ selected than in the pre-selected population, the center is >0.
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, '+r'$log_{10}$'+'(sel/pre)',
-                            xscale=(-0.5, 0.75), outputfilename='hras_kdesub1', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-0.5, 0.75), output_file = None)
     
 
 
@@ -124,9 +117,7 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = counts',
-                            xscale=(-1, 1), outputfilename='hras_zeroingcounts', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-1, 1), output_file = None)
 
 .. image:: ../example/exported_images/hras_zeroingcounts.png
    :width: 350px
@@ -161,9 +152,7 @@ But in other datasets we have, it has been a source of error.
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = wt_allele only',
-                            xscale=(-0.5, 0.5), outputfilename='hras_zeroingwtallele', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-0.5, 0.5), output_file = None)
 
 .. image:: ../example/exported_images/hras_zeroingwtallele.png
    :width: 350px
@@ -191,9 +180,7 @@ and then ``how='median', 'mean' or 'mode'``.
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = wt',
-                            xscale=(-1.5, 1), outputfilename='hras_zeroingwtpop',
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-1.5, 1), output_file = None)
     
 
 
@@ -224,9 +211,7 @@ spread.
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = population',
-                            xscale=(-1, 1), outputfilename='hras_zeroingpopulation', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-1, 1), output_file = None)
 
 .. image:: ../example/exported_images/hras_zeroingpopulation.png
    :width: 350px
@@ -255,9 +240,7 @@ standard deviation. Results are quite similar to setting
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = kernel',
-                            xscale=(-1.5, 1), outputfilename='hras_zeroingkernel', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-1.5, 1), output_file = None)
 
 .. image:: ../example/exported_images/hras_zeroingkernel.png
    :width: 350px
@@ -288,9 +271,7 @@ shoulder.
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, baseline subtraction',
-                            xscale=(-5, 1.5), outputfilename='hras_baselinesubtr', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-5, 1.5), output_file = None)
 
 
 .. image:: ../example/exported_images/hras_baselinesubtr.png
@@ -324,9 +305,7 @@ spread.
     
     # Plot histogram and KDE
     mut.plot_multiplekernel(enrichment_scalar, title='Sublibrary 1, scaling',
-                            xscale=(-5, 1.5), outputfilename='hras_scaling', 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            xscale=(-5, 1.5), output_file = None)
 
 
 .. image:: ../example/exported_images/hras_scaling.png
@@ -346,8 +325,6 @@ get in touch if you have questions regarding data normalization.
 
 .. code:: ipython3
 
-    savefile = True
-    
     # Labels
     labels = ['Sublibrary 1', 'Sublibrary 2', 'Sublibrary 3']
     zeroing_options = ['population', 'counts', 'wt', 'kernel']
@@ -379,9 +356,7 @@ get in touch if you have questions regarding data normalization.
         
         # Plot
         mut.plot_multiplekernel(enrichment_lib, title=title+option, xscale=xscale,
-                            outputfilename='hras_repA_zeroing'+option, 
-                            outputfilepath=outputfilepath,
-                            outputformat=outputformat, savefile=savefile)
+                            output_file = None)
 
 
 .. image:: ../example/exported_images/hras_repA_zeroingpopulation.png
@@ -445,11 +420,7 @@ select the method of normalization that works with your data.
     
     # Create objects
     for obj, title in zip(objects.values(), titles):
-        obj.heatmap(title='Normalization by '+title+' method',
-                    outputfilename='hras_heatmap_norm_'+title,
-                    outputfilepath=outputfilepath,
-                    outputformat=outputformat, savefile=savefile)
-        
+        obj.heatmap(title='Normalization by '+title+' method', output_file=None)
 
 .. image:: ../example/exported_images/hras_heatmap_norm_population.png
 

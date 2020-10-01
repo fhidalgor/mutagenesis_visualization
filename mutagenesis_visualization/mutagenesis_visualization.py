@@ -6,7 +6,6 @@
 # In[ ]:
 
 
-from __future__ import unicode_literals
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -33,6 +32,8 @@ import os
 import sys
 import logomaker
 import adjustText
+from pathlib import Path
+from typing import Union
 
 try:
     import shannon
@@ -52,7 +53,9 @@ except ModuleNotFoundError:
 # In[ ]:
 
 
-def count_reads(dna_sequence, codon_list='NNS', **kwargs):
+def count_reads(dna_sequence, codon_list='NNS',
+                input_file: Union[None, str, Path] = None,
+                output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Process a trimmed fastq file containing DNA reads and returns the counts of 
     each DNA sequence specified by the user.
@@ -67,22 +70,13 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
         If the library was built using NNS and NNK codons, it is enough to input 'NNS' or 'NNK' as a string. 
         It is important to know that the order of the codon_list will determine the output order.
     
-    inputfilepath : str, not optional kwarg
-        Path where the input fastq file is stored.
+    output_file : str, default None
+        If you want to export the generated files, add the path and name of the file without suffix.
+        Example: 'path/filename'. The function will export two txt files with that name (adding a suffix).
     
-    inputfilename : str, not optional kwarg
-        Name of the fastq file (full name including ".fastq").
+    input_file : str, default None
+        Path and name of the fastq file (full name including suffix ".fastq").
     
-    outputfilepath : str, optional kwarg
-        Path where the output files will be saved.
-    
-    outputfilename : str, optional kwarg
-        Name of the output files.
-    
-    savefile : boolean, default False. optional kwarg 
-        If set to true, the function will export the two arrays to separate txt files using the
-        output filepath and output filename specified by the user.
-
     Returns
     --------
     df_counts : dataframe 
@@ -94,9 +88,6 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
     # update kwargs
     temp_kwargs = copy.deepcopy(default_kwargs)
     temp_kwargs.update(kwargs)
-
-    # Naming files
-    trimmedfile = temp_kwargs['inputfilepath']+temp_kwargs['inputfilename']
 
     # Make upper case in case input was lower case
     dna_sequence = dna_sequence.upper()
@@ -127,7 +118,7 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
 
     # Translate nucleotide sequence and count variant frequency
     totalreads = 0
-    for nuc in SeqIO.parse(trimmedfile, "fastq"):
+    for nuc in SeqIO.parse(Path(input_file), "fastq"):
         totalreads += 1
         nucleicsequence = str(nuc.seq)
         if nucleicsequence in variants:
@@ -159,14 +150,11 @@ def count_reads(dna_sequence, codon_list='NNS', **kwargs):
     wt_counts.insert(0, int([variants[dna_sequence]][0]))
 
     # Export files
-    if temp_kwargs['savefile']:
-        # Generate file handles
-        outputfile_counts = temp_kwargs['outputfilepath'] +             temp_kwargs['outputfilename']+"_counts.txt"
-        outputfile_wtcounts = temp_kwargs['outputfilepath'] +             temp_kwargs['outputfilename']+"_wtcounts.txt"
+    if output_file:
         # Save to txt files
-        np.savetxt(outputfile_counts, np.array(df_counts), fmt='%i', delimiter='\t')
-        np.savetxt(outputfile_wtcounts, wt_counts, fmt='%i', delimiter='\t')
-
+        np.savetxt(Path(output_file)+"_counts.txt", np.array(df_counts), fmt='%i', delimiter='\t')
+        np.savetxt(Path(output_file)+"_wtcounts.txt", wt_counts, fmt='%i', delimiter='\t')
+    
     # Print total reads
     print('{}/{} useful reads ({}%)'.format(str(usefulreads),
                                             str(totalreads), str(int(usefulreads/totalreads*100))))
@@ -220,7 +208,8 @@ def _translate(seq, codontable):
 
 def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
                          zeroing='population', how='median', norm_std=True, stopcodon=False, min_counts=25,
-                         min_countswt=100, std_scale = 0.2, mpop=2, mwt=2, infinite=3, **kwargs):
+                         min_countswt=100, std_scale = 0.2, mpop=2, mwt=2, infinite=3, output_file: Union[None, str, Path] = None,
+                         **kwargs):
     '''
     Determine the enrichment scores of a selection experiment, where there is a preselected population (input)
     and a selected population (output).
@@ -277,9 +266,11 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
     infinite : int, default 3
         It will replace +infinite values with +3 and -infinite with -3.
     
+    output_file : str, default None
+        If you want to export the generated files, add the path and name of the file without suffix.
+        Example: 'path/filename'. File will be save as a txt file.
+        
     **kwargs : other keyword arguments
-        savefile : boolean, default False. optional kwarg 
-            If set to true, the function will export the enrichment scores to a txt file.
     
     Returns
     --------
@@ -378,9 +369,8 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
             zeroed = zeroed*std_scale/kernel_std
 
     # Export files
-    if temp_kwargs['savefile']:
-        np.savetxt(temp_kwargs['outputfilepath']+temp_kwargs['outputfilename'],
-                   zeroed, fmt='%i', delimiter='\t')
+    if output_file:
+        np.savetxt(Path(output_file),zeroed, fmt='%i', delimiter='\t')
 
     return zeroed
 
@@ -582,7 +572,8 @@ def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
                       aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
                       zeroing='population', how='median', norm_std=True, 
                       stopcodon=False, min_counts=25, min_countswt=100, 
-                      std_scale=0.2, mpop=2, mwt=2, infinite=3, **kwargs):
+                      std_scale=0.2, mpop=2, mwt=2, infinite=3, 
+                      output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Assembles different sublibraries into one. Uses calculate_enrichments. 
     Can only read from excel files that are in the same format as the example provided.
@@ -650,10 +641,12 @@ def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
 
     infinite : int, default 3
         It will replace +infinite values with +3 and -infinite with -3.
-
+    
+    output_file : str, default None
+        If you want to export the generated files, add the path and name of the file without suffix.
+        Example: 'path/filename'. File will be save as a txt file.
+        
     **kwargs : other keyword arguments
-        savefile : boolean, default False. optional kwarg 
-            If set to true, the function will export the enrichment scores to a txt file.
 
     Returns
     --------
@@ -674,11 +667,9 @@ def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
                         min_countswt, std_scale, mpop, mwt, infinite, **kwargs)
     
         # Export files
-    if temp_kwargs['savefile']:
-        np.savetxt(temp_kwargs['outputfilepath']+temp_kwargs['outputfilename'],
-                   zeroed, fmt='%i', delimiter='\t')
+    if output_file:
+        np.savetxt(Path(output_file),zeroed, fmt='%i', delimiter='\t')
 
-    
     return df
 
 
@@ -712,7 +703,7 @@ def _read_counts(excel_path, sheet_pre, sheet_post, columns,
 
 def _assemble_list(list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing,
                    how, norm_std, stopcodon, min_counts,
-                   min_countswt, std_scale, mpop, mwt, infinite, **kwargs):
+                   min_countswt, std_scale, mpop, mwt, infinite, output_file: Union[None, str, Path] = None,**kwargs):
     '''gets the output from _read_counts and assembles the sublibraries'''
     
     enrichment_lib = []
@@ -856,7 +847,8 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
 
 def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
                 fit=None, fit_label='_nolegend_', extra_dist=None,
-                extra_dist_label='_nolegend_',  **kwargs):
+                extra_dist_label='_nolegend_',  
+                output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a kernel density plot. If specified it can also draw a histogram. Uses sns.distplot.
 
@@ -881,6 +873,10 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
     
     extra_dist_label : str, default '_nolegend_'
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+        
     **kwargs : other keyword arguments
         
     Returns
@@ -920,7 +916,7 @@ def plot_kernel(self, kernel='gau', kernel_label='KDE', histogram=False,
               handlelength=1, handletextpad=0.5)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -956,7 +952,8 @@ def _parameters():
 
 
 def plot_multiplekernel(dict_entries, kernel='gau',
-                        colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], **kwargs):
+                        colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], 
+                        output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a kernel density plot for multiple objects passed as a dictionary.
     If specified it can also draw a histogram. Uses sns.distplot. Can manage either Screen objects
@@ -975,6 +972,10 @@ def plot_multiplekernel(dict_entries, kernel='gau',
     colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
         List of the colors (in order of arguments) that the kernels will have.
 
+output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+        
     **kwargs : other keyword arguments
 
     Returns
@@ -1008,7 +1009,7 @@ def plot_multiplekernel(dict_entries, kernel='gau',
             dataset.drop('*', errors='ignore', inplace=True)
             dataset = dataset.stack()
             # plot stacked matrix
-            sns.distplot(dataset[~numpy.isnan(dataset)], kde=True, hist=False, 
+            sns.distplot(dataset[~np.isnan(dataset)], kde=True, hist=False, 
                          kde_kws={"color": color, "lw": 2, "label": label})
 
     # tune graph
@@ -1023,7 +1024,7 @@ def plot_multiplekernel(dict_entries, kernel='gau',
                handlelength=1, handletextpad=0.5)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -1038,7 +1039,8 @@ def plot_multiplekernel(dict_entries, kernel='gau',
 # In[ ]:
 
 
-def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **kwargs):
+def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, 
+                 output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a heatmap plot of the enrichment scores.
 
@@ -1056,7 +1058,11 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
         If true, it will only display mutants that are a single nucleotide variant (SNV) of the wild-type
         protein sequence. The algorithm does not take into account the wild-type DNA allele, so it 
         will include any possible mutant that is one base away.
-        
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                
     **kwargs : other keyword arguments
         
     Returns
@@ -1203,7 +1209,7 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, **
         _generate_cartoon(self, gs, 2, temp_kwargs['cartoon_colors'], 0.025)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     plt.show()
     return
 
@@ -1328,7 +1334,8 @@ def _loop(starting_aa, length_aa, color='k'):
 
 
 def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
-                           nancolor='lime', **kwargs):
+                      nancolor='lime', output_file: Union[None, str, Path] = None,
+                      **kwargs):
     '''
     Generate a heatmap plot enrichment scores of selected aminoacids. 
 
@@ -1341,6 +1348,10 @@ def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1434,7 +1445,7 @@ def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
     ax2.xaxis.set_ticks_position('none')
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -1446,7 +1457,8 @@ def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
 # In[ ]:
 
 
-def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwargs):
+def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', 
+                         output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a heatmap plot enrichment scores but only plots a selected segment.
 
@@ -1463,6 +1475,10 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1549,7 +1565,7 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
     ax2.xaxis.set_ticks_position('none')
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -1563,7 +1579,8 @@ def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', **kwa
 # In[ ]:
 
 
-def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
+def plot_mean(self, mode='mean', show_cartoon=False, 
+              output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Plot in a bargraph the mean enrichment for each residue of the protein. Red for gain of function, blue for loss of function
 
@@ -1579,6 +1596,10 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     show_carton : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
         color_gof : str, default 'red'
             Choose color to color positions with an enrichment score > 0.
@@ -1645,7 +1666,7 @@ def plot_mean(self, mode='mean', show_cartoon=False, **kwargs):
     _inputtext(temp_kwargs['text_labels'])
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     if temp_kwargs['show']:
         plt.show()
     return
@@ -1680,19 +1701,24 @@ def parameters_mean():
 # In[ ]:
 
 
-def plot_meandifferential (self, obj2, show_cartoon=False,**kwargs):
+def plot_meandifferential (self, obj2, show_cartoon=False,
+                           output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Plot the mean positional difference between two experiments
 
     Parameters
     ----------
     self : object from class *Screen*
-    
+        
     obj2 : another Screen object to compare with 
     
     show_carton : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1730,17 +1756,23 @@ def plot_meandifferential (self, obj2, show_cartoon=False,**kwargs):
     ax.set_xticks(np.arange(self.start_position, len(df)+self.start_position, 20))
     ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
     ax.set_xlim(self.start_position-0.1, len(df)+self.start_position-1+0.1)
-    ax.set_title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
 
     # cartoon
+    title_pad = 0
     if show_cartoon:
+        title_pad = 2.5
         obj = obj2
         if len(self.dataframe) < len(obj2.dataframe):
             obj = self
         _generate_cartoon(obj,gs,1,temp_kwargs['cartoon_colors'],
                             bottom_space=-0.78, show_labels=False)
+        
+    # title 
+    ax.set_title(temp_kwargs['title'], fontsize=12, fontname='Arial', 
+                 color='k', pad = title_pad)
+
     # save file
-    _savefile(fig,temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']: plt.show()
     return
@@ -1751,13 +1783,15 @@ def plot_meandifferential (self, obj2, show_cartoon=False,**kwargs):
 # In[ ]:
 
 
-def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
+def plot_meancounts (self, positions, counts, show_cartoon=False, start_position=None,
+                     output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Plot in a bargraph the mean counts for each residue of the protein.
     
     Parameters
     ----------
     self : object from class *Screen*
+        If you use the function instead of the method, fill the first parameter self with ''.
     
     positions : list, x coordinates
     
@@ -1765,7 +1799,12 @@ def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
     
     show_carton : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
-    
+        Will only work if you are using the method, and not the independent function.
+        
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1778,7 +1817,8 @@ def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
     temp_kwargs['figsize'] = kwargs.get('figsize', (3,2.5))
     temp_kwargs['yscale'] = kwargs.get('yscale', (0,5))
     temp_kwargs['y_label'] = kwargs.get('y_label', r'$Log_{10}$ mean counts')
-
+    if start_position is None: start_position = self.start_position
+    
     # load parameters
     parameters_mean()
         
@@ -1797,20 +1837,28 @@ def plot_meancounts (self, positions, counts, show_cartoon=False, **kwargs):
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
     ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0, rotation=90)
-    ax.set_xticks(np.arange(self.start_position, len(self.dataset[0])+self.start_position, 20))
+    ax.set_xticks(np.arange(start_position, len(counts)+start_position, 20))
     ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
-    ax.set_xlim(self.start_position-0.1, len(self.dataset[0])+self.start_position-1+0.1)
-    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+    ax.set_xlim(start_position-0.1, len(counts)+start_position-1+0.1)
+    
     
     # cartoon
+    title_pad = 0
     if show_cartoon:
         _generate_cartoon(self,gs,1,temp_kwargs['cartoon_colors'],
                             bottom_space=-0.78, show_labels=False)
+        title_pad = 2.5
+    
+    # Title
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', 
+              color='k', pad = title_pad)
+    
     # Put text labels
     _inputtext(temp_kwargs['text_labels'])
     
     # save file
-    _savefile(fig,temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
+    
     if temp_kwargs['show']: plt.show()
     return
 
@@ -1827,7 +1875,8 @@ def _inputtext(text_entries):
 # In[ ]:
 
 
-def plot_position(self, position, **kwargs):
+def plot_position(self, position, output_file: Union[None, str, Path] = None,
+                  **kwargs):
     '''
     Choose a position and plot in a bargraph the enrichment score for each substitution.
     Red for gain of function, blue for loss of function.
@@ -1839,6 +1888,10 @@ def plot_position(self, position, **kwargs):
     position : int
         number of residue of the protein to display.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1859,7 +1912,8 @@ def plot_position(self, position, **kwargs):
     df = self.dataframe.loc[self.dataframe['Position']==position].copy()
     
     # Color
-    df['Color'] = df.apply(color_data, axis=1)
+    df['Color'] = df.apply(color_data, axis=1, 
+                           args = (temp_kwargs['color_gof'],temp_kwargs['color_lof']))
 
     # make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -1878,7 +1932,7 @@ def plot_position(self, position, **kwargs):
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     
     if temp_kwargs['show']:
         plt.show()
@@ -1890,7 +1944,8 @@ def plot_position(self, position, **kwargs):
 # In[ ]:
 
 
-def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
+def plot_scatter(self, obj2, mode='pointmutant', 
+                 output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a scatter plot between object and a second object of the same class.
 
@@ -1903,6 +1958,10 @@ def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
     mode : str, default 'pointmutant'. 
         Alternative set to "mean" for the mean of each position
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -1965,7 +2024,7 @@ def plot_scatter(self, obj2, mode='pointmutant', **kwargs):
                handletextpad=0, frameon=False, fontsize=10)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     
     if temp_kwargs['show']:
         plt.show()
@@ -2006,7 +2065,8 @@ def _process_meanresidue(self, obj):
 # In[ ]:
 
 
-def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
+def plot_rank(self, mode='pointmutant', outdf=False, 
+              output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a rank plot so every mutation/residue is sorted based on enrichment score.
 
@@ -2019,7 +2079,11 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
     
     outdf : boolean, default False
         If set to true, will return the df with the rank of mutations
-        
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                        
     **kwargs : other keyword arguments
 
     Returns
@@ -2065,7 +2129,7 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
     plt.ylim(temp_kwargs['yscale'])
     
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     
     if temp_kwargs['show']:
         plt.show()
@@ -2080,7 +2144,8 @@ def plot_rank(self, mode='pointmutant', outdf=False, **kwargs):
 # In[ ]:
 
 
-def plot_hist(self, population='All', loc='upper left', **kwargs):
+def plot_hist(self, population='All', loc='upper left', 
+              output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generate a histogram plot. Can plot single nucleotide variants (SNVs) or non-SNVs only
 
@@ -2092,6 +2157,10 @@ def plot_hist(self, population='All', loc='upper left', **kwargs):
     loc : str, default 'upper left'. 
         Position of the legend.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
         bins : int, default 50. 
             Number of bins for the histogram.
@@ -2138,7 +2207,7 @@ def plot_hist(self, population='All', loc='upper left', **kwargs):
     plt.grid()
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     if temp_kwargs['show']:
         plt.show()
     return
@@ -2386,7 +2455,8 @@ def _aatocodons_df(df, namecolumn):
 # In[ ]:
 
 
-def plot_miniheatmap(self, offset=0, **kwargs):
+def plot_miniheatmap(self, offset=0, output_file: Union[None, str, Path] = None,
+                     **kwargs):
     '''
     Generate a miniheatmap plot enrichment scores of mutagenesis selection assays.
 
@@ -2399,6 +2469,10 @@ def plot_miniheatmap(self, offset=0, **kwargs):
         offset of 1 means that you evaluate the effect of following residue n+1 on n.
         offset of -1 means that you look at the previous residue (n-1 on n).
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
     
     Returns
@@ -2424,7 +2498,7 @@ def plot_miniheatmap(self, offset=0, **kwargs):
     dataset = _condense_heatmap(
         dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
 
-    _plot_miniheatmap(dataset, temp_kwargs)
+    _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
     return
 
@@ -2512,7 +2586,8 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
 # In[ ]:
 
 
-def plot_neighboreffect (self, offset=1, **kwargs):
+def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = None,
+                         **kwargs):
    '''
    Generate a miniheatmap plot telling you the effect of having a residue in front or behind.
    It corrects for the effect of that amino acid on the rest of the population.
@@ -2527,6 +2602,10 @@ def plot_neighboreffect (self, offset=1, **kwargs):
        you would look at the effect of T on M, E on T, Y on E, etc.. and then group by residue (n+1).
        offset of -1 means that you look at the previous residue (n-1 on n).
    
+   output_file : str, default None
+       If you want to export the generated graph, add the path and name of the file.
+       Example: 'path/filename.png' or 'path/filename.svg'. 
+                   
    **kwargs : other keyword arguments
 
    Returns
@@ -2549,7 +2628,7 @@ def plot_neighboreffect (self, offset=1, **kwargs):
    
    return
    
-def _plot_miniheatmap(df,temp_kwargs):
+def _plot_miniheatmap(df,output_file, temp_kwargs):
    # declare figure and subplots
    coeff = len(df.columns)/19*1.05
    fig = plt.figure(figsize=(2.5*coeff, 2.5))
@@ -2603,7 +2682,7 @@ def _plot_miniheatmap(df,temp_kwargs):
    plt.ylabel('Amino Acid Substitution', fontsize=10, labelpad=-1)
 
    # save file
-   _savefile(fig,temp_kwargs)
+   _save_work(fig, output_file, temp_kwargs)
    
    if temp_kwargs['show']: plt.show()
    return
@@ -2657,12 +2736,18 @@ def _sort_yaxis_aminoacids(df,neworder,oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
 # In[ ]:
 
 
-def plot_correlation(self, **kwargs):
+def plot_correlation(self, output_file: Union[None, str, Path] = None,
+                     **kwargs):
     '''
     Generate a correlation of each amino acid
 
     Parameters
     ----------
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                
     **kwargs : other keyword arguments
 
     Returns
@@ -2738,7 +2823,7 @@ def plot_correlation(self, **kwargs):
               fontname="Arial", fontsize=10, pad=10)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -2771,7 +2856,8 @@ def _calculate_correlation_byresidue(df):
 # In[ ]:
 
 
-def plot_individual_correlation(self, **kwargs):
+def plot_individual_correlation(self, output_file: Union[None, str, Path] = None,
+                                **kwargs):
     '''
     Generates a bar plot of the correlation of each amino acid mutational 
     profile (row of the heatmap) with the rest of amino acids (rows)
@@ -2780,6 +2866,10 @@ def plot_individual_correlation(self, **kwargs):
     -----------
     self : object from class *Screen*
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -2821,7 +2911,7 @@ def plot_individual_correlation(self, **kwargs):
               fontname="Arial", fontsize=10, pad=5)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     if temp_kwargs['show']:
         plt.show()
     return
@@ -2833,7 +2923,8 @@ def plot_individual_correlation(self, **kwargs):
 
 
 def plot_group_correlation(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
-                        output=False, **kwargs):
+                        output=False, output_file: Union[None, str, Path] = None,
+                           **kwargs):
     '''
     Determines which amino acids better represent the heatmap. Requires logomaker package.
 
@@ -2849,6 +2940,10 @@ def plot_group_correlation(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WY
     
     output : boolean, default False
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -2895,7 +2990,6 @@ def plot_group_correlation(self, r2, groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WY
               fontname="Arial", fontsize=10, pad=10)
 
     # save file, cannot save logo file for now
-    #_savefile(fig.ax, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -2951,7 +3045,8 @@ def _find_correlation(aa1, aa2, corr_values):
 # In[ ]:
 
 
-def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False, **kwargs):
+def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False,
+             output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generates a plot of two PCA dimensions
 
@@ -2971,6 +3066,10 @@ def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False, **
         If set to true, it will adjust the text labels so there is no overlap. It is convenient to increase
         the size of the figure, otherwise the algorithm will not find a solution. Requires to install adjustText package.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
         random_state : int, default 554
     Returns
@@ -3029,7 +3128,7 @@ def plot_pca(self, mode='aminoacid', dimensions=[0, 1], adjustlabels = False, **
               fontname="Arial", fontsize=10, pad=5)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -3094,14 +3193,18 @@ def _calculate_correlation_bysecondary(df, secondary):
 # In[ ]:
 
 
-def plot_secondary(self, **kwargs):
+def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     '''
     Generates a bar plot of data sorted by secondary elements (alpha helices and beta sheets).
 
     Parameters
     -----------
     self : object from class *Screen*
-    
+
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+
     **kwargs : other keyword arguments
 
     Returns
@@ -3122,14 +3225,16 @@ def plot_secondary(self, **kwargs):
     df = _calculate_secondary(self.dataframe, self.secondary_dup)
 
     # Color
-    df['Color'] = df.apply(color_data, axis=1)
+    df['Color'] = df.apply(color_data, axis=1,
+                           args=(temp_kwargs['color_gof'],
+                                 temp_kwargs['color_lof']))
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
     ticks = np.arange(0, len(df))  # label locations
     width = 0.5
     labels = df['Secondary']
-    
+
     # Plot figure
     ax.bar(ticks, df['Score'], width, color=df['Color'], ec='k',)
 
@@ -3144,8 +3249,8 @@ def plot_secondary(self, **kwargs):
               fontname="Arial", fontsize=10, pad=5)
 
     # save file
-    _savefile(fig, temp_kwargs)
-    
+    _save_work(fig, output_file, temp_kwargs)
+
     if temp_kwargs['show']:
         plt.show()
     return
@@ -3168,7 +3273,8 @@ def _calculate_secondary(df, secondary):
 # In[ ]:
 
 
-def plot_roc(self, df_class=None, **kwargs):
+def plot_roc(self, df_class=None, output_file: Union[None, str, Path] = None,
+             **kwargs):
     '''
     Generates ROC AUC plot. It compares enrichment scores to some labels that the user has specified.
 
@@ -3179,7 +3285,11 @@ def plot_roc(self, df_class=None, **kwargs):
     df_class: Pandas dataframe
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
         containing the true class of that mutation. The true class can also be an input when creating the object.
-
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                
     Returns
     --------
     None.
@@ -3228,7 +3338,7 @@ def plot_roc(self, df_class=None, **kwargs):
                handletextpad=0, frameon=False)
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     if temp_kwargs['show']:
         plt.show()
     return
@@ -3288,7 +3398,8 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
 # In[ ]:
 
 
-def plot_cumulative(self, mode='all', **kwargs):
+def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None,
+                    **kwargs):
     '''
     Generates a cumulative plot of the enrichment scores by position. 
 
@@ -3299,6 +3410,10 @@ def plot_cumulative(self, mode='all', **kwargs):
     mode : str, default 'all' 
         Options are 'all','SNV' and 'nonSNV'.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
 
     Returns
@@ -3347,7 +3462,7 @@ def plot_cumulative(self, mode='all', **kwargs):
              color='silver', lw=2, linestyle='--')
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     if temp_kwargs['show']:
         plt.show()
     return
@@ -3371,7 +3486,7 @@ def _filter_bySNV(self, mode):
 # In[ ]:
 
 
-def plot_box(binned_x, y, **kwargs):
+def plot_box(binned_x, y, output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generates a boxplot. Data needs to be binned prior before using this function. 
 
@@ -3381,7 +3496,11 @@ def plot_box(binned_x, y, **kwargs):
         Contain the data is going to plot
         
     **kwargs : other keyword arguments
-
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                
     Returns
     ----------
     None.
@@ -3418,7 +3537,7 @@ def plot_box(binned_x, y, **kwargs):
     plt.grid()
 
     # save file
-    _savefile(fig, temp_kwargs)
+    _save_work(fig, output_file, temp_kwargs)
     
     if temp_kwargs['show']:
         plt.show()
@@ -3435,7 +3554,8 @@ def plot_box(binned_x, y, **kwargs):
 
 def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
                     df_color=None,  position_correction=0, chain='A',
-                    squared=False, rotate=False, **kwargs):
+                    squared=False, 
+                    output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, 
     color coded by the enrichment scores. PDBs may have atoms missing, 
@@ -3472,10 +3592,11 @@ def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
     squared : booleand, False
         If this parameter is True, the algorithm will center the data, and plot the square value of the 
         distance.
-
-    rotate : boolean, False
-        If you are using an interactive matplotlib, set up rotate = True so the graph spins.
-
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                
     **kwargs : other keyword arguments
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
@@ -3520,14 +3641,7 @@ def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
     ax.set_zlabel('Z axis')
 
     # save file
-    _savefile(fig, temp_kwargs)
-
-    # rotate if you are using interactive plot
-    if rotate is True:
-        for angle in range(0, 360):
-            ax.view_init(30, angle)
-            plt.draw()
-            plt.pause(.001)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -3627,7 +3741,8 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
                             axis_scale = ["linear", "linear", "linear"],
                             df_color=None,  color_by_score=True,
                             position_correction=0, chain='A',
-                            rotate=False, output_df= False, **kwargs):
+                            output_df= False, 
+                            output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Generates a 3-D scatter plot of different properties obtained from the PDB. 
     PDBs may have atoms missing, you should fix the PDB before using this
@@ -3672,12 +3787,13 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
     chain : str, default 'A'
         Chain of the PDB file to get the coordinates and SASA from.
 
-    rotate : boolean, False
-        If you are using an interactive matplotlib, set up rotate = True so the graph spins.
-    
     output_df : boolean, default False
         If true, this method will return the dataframe with the data.
-        
+    
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                        
     **kwargs : other keyword arguments
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
@@ -3740,14 +3856,7 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
     ax.set_zscale(axis_scale[2])
     
     # save file
-    _savefile(fig, temp_kwargs)
-
-    # rotate if you are using interactive plot
-    if rotate is True:
-        for angle in range(0, 360):
-            ax.view_init(30, angle)
-            plt.draw()
-            plt.pause(.001)
+    _save_work(fig, output_file, temp_kwargs)
 
     if temp_kwargs['show']:
         plt.show()
@@ -3763,7 +3872,7 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
 
 
 def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
-               quit=False, **kwargs):
+               quit=False, output_file: Union[None, str, Path] = None,**kwargs):
     '''
     Color pymol structure residues. User can specify the residues to color, or can use the mutagenesis data.
     Activating mutations will be colored red and loss of function blue. Neutral mutations in green.
@@ -3794,6 +3903,10 @@ def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
     quit : boolean, default False
         if quit, close pymol after executing code.
     
+    output_file : str, default None
+        If you want to export the generated graph, add the path and name of the file.
+        Example: 'path/filename.png' or 'path/filename.svg'. 
+                    
     **kwargs : other keyword arguments
         gof : int, default is 1
              cutoff for determining gain of function mutations based on mutagenesis data.
@@ -4086,10 +4199,18 @@ def _select_aa(df, selection, values='Score'):
 
 
 def _savefile(fig, temp_kwargs):
-    '''Save file function'''
+    '''DEPRECATED
+    Save file function'''
     if temp_kwargs['savefile'] is True:
         filename = temp_kwargs['outputfilepath'] +             temp_kwargs['outputfilename']+"."+temp_kwargs['outputformat']
         fig.savefig(filename, format=temp_kwargs['outputformat'],
+                    bbox_inches='tight', dpi=temp_kwargs['dpi'], transparent=True)
+    return
+
+def _save_work(fig, output_file, temp_kwargs):
+    '''Save file function using pathlib'''
+    if output_file:
+        fig.savefig(Path(output_file), format=Path(output_file).suffix.strip('.'),
                     bbox_inches='tight', dpi=temp_kwargs['dpi'], transparent=True)
     return
 
@@ -4181,29 +4302,17 @@ def kwargs():
     tick_spacing: int, default 1
         Space of axis ticks. Used for scatter and cumulative plots.
         
-    inputfilepath : str, default ''
-        Path of the input file.
-        
-    inputfilename : str, default ''
-        Name of the input file.
-        
     outputfilepath : str, default ''
         Path where file will be exported to.
         
     outputfilename : str, default ''
         Name of the exported file.
         
-    outputformat': str, default 'png'
-        Fortmat to export matplotlib object.
-        
     dpi : int, default 600
         Dots Per Inch in the created image.
         
     neworder_aminoacids: list, default list('DEKHRGNQASTPCVYMILFW*')
         Order of amino acids to display in heatmaps. Used for heatmaps.
-    
-    savefile: boolean, default False
-        If true, will save the matplotlib object into the specified folder.
         
     gof: int, default 1
         Cutoff of the enrichment score to classify a mutation as gain of function.
@@ -4249,15 +4358,9 @@ default_kwargs = {'colormap': generatecolormap(),
                   'xscale': (None, None),
                   'yscale': (None, None),
                   'tick_spacing': 1,
-                  'inputfilepath': '',
-                  'inputfilename': '',
-                  'outputfilepath': '',
-                  'outputfilename': '',
-                  'outputformat': 'png',
                   'dpi': 600,
                   'aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
                   'neworder_aminoacids': list('DEKHRGNQASTPCVYMILFW*'),
-                  'savefile': False,
                   'gof': 1,
                   'lof': -1,
                   'color_gof' : 'red',
@@ -4565,7 +4668,7 @@ def demo_fasta():
 # In[ ]:
 
 
-'''# Load enrichment scores into a np.array
+# Load enrichment scores into a np.array
 hras_enrichment = np.genfromtxt('../data/HRas166_RBD.csv', delimiter=',')
 
 # Define protein sequence
@@ -4582,7 +4685,6 @@ secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-2
 
 # Create object
 hras_object = Screen(hras_enrichment,hras_sequence,aminoacids,start_position,0,secondary)
-'''
 
 
 # In[ ]:
