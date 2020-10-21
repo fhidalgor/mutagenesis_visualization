@@ -6,4 +6,3 @@ __title__ = "Mutagenesis Visualization"
 __license__ = "GPLv3"
 __author_email__ = "fhidalgoruiz@berkeley.edu"
 
-

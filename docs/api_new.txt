@@ -6,14 +6,14 @@ Class
 *Screen* class
 ===============
 
-.. autoclass:: mutagenesis_visualization.Screen
+.. autoclass:: code_class.Screen
     :members:
 
 Associated kwargs
 ===================
 .. _kwargs:
 
-.. autofunction:: mutagenesis_visualization.kwargs
+.. autofunction:: code_kwargs.kwargs
 
 
 .. _Processing_counts_functions:
@@ -25,43 +25,43 @@ The following functions do not belong to the class *Screen*. Some of them are us
 
 .. _assemble_avengers:
 
-.. autofunction:: mutagenesis_visualization.assemble_avengers
+.. autofunction:: process_data.assemble_avengers
 
 .. _calculate_enrichment:
 
-.. autofunction:: mutagenesis_visualization.calculate_enrichment
+.. autofunction:: process_data.calculate_enrichment
 
 .. _demo:
 
-.. autofunction:: mutagenesis_visualization.demo
+.. autofunction:: demo.demo
 
 .. _demo_datasets:
 
-.. autofunction:: mutagenesis_visualization.demo_datasets
+.. autofunction:: demo.demo_datasets
 
 .. _count_reads:
 
-.. autofunction:: mutagenesis_visualization.count_reads
+.. autofunction:: process_data.count_reads
 
 .. _count_fastq:
 
-.. autofunction:: mutagenesis_visualization.count_fastq
+.. autofunction:: process_data.count_fastq
 
 .. _msa_enrichment:
 
-.. autofunction:: mutagenesis_visualization.msa_enrichment
+.. autofunction:: process_data.msa_enrichment
 
 .. _parse_pivot:
 
-.. autofunction:: mutagenesis_visualization.parse_pivot
+.. autofunction:: code_utils.parse_pivot
 
 .. _plot_box:
 
-.. autofunction:: mutagenesis_visualization.plot_box
+.. autofunction:: code_other.plot_box
 
 .. _plot_multiplekernel:
 
-.. autofunction:: mutagenesis_visualization.plot_multiplekernel
+.. autofunction:: code_kernel.plot_multiplekernel
 
 
 
