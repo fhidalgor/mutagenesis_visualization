@@ -15,6 +15,7 @@ Feel free to contact Frank on `LinkedIn <https://www.linkedin.com/in/frankhidalg
 
 Sage Templeton
 ---------------
+Sage is currently an undergraduate senior majoring in Molecular and Cell Biology: Biochemistry and Molecular Biology and Public Health at UC Berkeley. She is interested in the analysis of living systems at all levels of organization: from genetic changes in minute proteins such as KRAS to the effects of our climate crisis on ppopulation health. Sage is an undergraduate researcher in the Kuriyan Lab studying protein stability in HRAS under her advisor Frank Hidalgo. After graduation from Cal in 2021, Sage plans to return to her home state of New Mexico to work in community health policy before attending medical school. 
 
 Che Olavarria
 ---------------
