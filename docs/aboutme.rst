@@ -12,6 +12,7 @@ Frank is also part of a non-profit organization called `Beyond Academia (BA) htt
 Feel free to contact Frank on `LinkedIn <https://www.linkedin.com/in/frankhidalgo/>`_ 
 
 
+
 Sage Templeton
 ---------------
 
