@@ -22,3 +22,6 @@ Che Olavarria
 
 Joanne Wang
 -------------
+Joanne is currently a second year undergraduate student at UC Berkeley intending to major in Molecular and Cell Biology with an emphasis in Neurobiology. She plans to work in healthcare or biotech in the future.
+
+Last year as a freshman in UC Berkeley’s Kuriyan Lab, Joanne conducted research alongside her mentor Frank Hidalgo to assess the protein stability of various single-point H-RAS mutants. This semester she is working remotely from San Diego and has transitioned her focus onto a computational project. Joanne has learned and been using python to improve the ways mutagenesis data can be analyzed which is applicable to her previous work with H-RAS mutants. 
