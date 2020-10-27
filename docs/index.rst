@@ -65,14 +65,14 @@ In here, you will find the :ref:`class`, methods and :ref:`functions` used in th
 Tutorial
 ===============
 
-In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start with how to generate the primers to synthesize the DNA library, or the input file that companies like Twist Bioscience need in order to synthesize the library for you (:ref:`Creating the DNA libraries`). Then, from a fastq file, we will process the data (:ref:`Processing DNA reads`) and we will do each type of plot (:ref:`Creating plots`). :ref:`Normalizing datasets` shows the different options of data normalization that the package allows for. :ref:`Holistic testing` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``code_processing.ipynb``, ``code_normalizing.ipynb``, ``code_plotting.ipynb`` and ``code_testing.ipynb``. 
+In this chapter, we will walk the user through the different functions and methods ``mutagenesis_visualization`` offers. We will start with how to generate the primers to synthesize the DNA library, or the input file that companies like Twist Bioscience need in order to synthesize the library for you (:ref:`Designing the DNA libraries`). Then, from a fastq file, we will process the data (:ref:`Processing DNA reads`) and we will do each type of plot (:ref:`Creating plots`). :ref:`Normalizing datasets` shows the different options of data normalization that the package allows for. :ref:`Holistic testing` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``code_processing.ipynb``, ``code_normalizing.ipynb``, ``code_plotting.ipynb`` and ``code_testing.ipynb``. 
 
 .. toctree::
    :maxdepth: 1
    :hidden:
    :Caption: Tutorial
 	
-	Creating the DNA libraries <doc_libraries>
+	Designing the DNA libraries <doc_libraries>
 	Processing DNA reads <doc_processing>
 	Normalizing datasets <doc_normalizing>
 	Creating plots <doc_plotting>

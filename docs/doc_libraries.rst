@@ -1,3 +1,6 @@
+Designing the libraries
+=======================
+
 In this section we will generate the primers that are used to do
 saturation mutagenesis on proteins (ie. NNS primers).
 
@@ -14,8 +17,8 @@ generate your site saturation library.
 
     import code_synthesis
 
-Create primers
-==============
+Design primers
+--------------
 
 Now we will define the dna sequence, the beginning and end of the
 mutable part.
@@ -56,15 +59,17 @@ If you just want to export the file to excel:
    :width: 450px
    :align: center
 
-Create sequences
-================
+Design site-saturation sequences
+================================
 
 Define dna sequence and the list of codons that we want to use to
 generate the mutants.
 
 .. code:: ipython3
 
+    # list of codons we want to use
     codon_list = ["GCC", "GCG", "TGC", "GAC", "GAG", "TTC"]
+    # DNA sequence we are going to use as the template
     dna = 'ATGGCCGTGGGGTGTTATGGATGTACAGTAATACAAGGGGTGTTATGGAAAAAATTATGCCGGAAGAAGAATACAGCGAATTTAAAG'
 
 Get a dataframe with the sequences:
@@ -82,7 +87,7 @@ If you just want to export the file to fasta:
                                    output_file='sequences.fasta')
 
 .. image:: ../example/exported_images/fasta.png
-   :width: 450px
+   :width: 300px
    :align: center
 
 If you just want to export the file to excel:
