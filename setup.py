@@ -16,7 +16,7 @@ setuptools.setup(
     description="A package for analysis and visualization of saturation mutagenesis data",
     long_description=readme(),
     url="https://github.com/fhidalgor/mutagenesis_visualization",
-    keywords=['saturation','mutagenesis','deepsequencing', 'ras'],
+    keywords=['saturation','mutagenesis','deepsequencing', 'ras', 'site-saturation'],
     packages=setuptools.find_packages(),
     #py_modules=['main.mutagenesis_visualization'],
     classifiers=[

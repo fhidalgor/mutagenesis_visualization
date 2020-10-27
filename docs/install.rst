@@ -78,6 +78,8 @@ Required Dependencies
 
 - `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3)
 
+- `plotly <https://plotly.com/>`_ (version 4.11.0)
+
 
 If you want to manually install and/or upgrade the dependencies on your own, use:
 
