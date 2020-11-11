@@ -160,7 +160,7 @@ Workflow
 Let's take a look to the normal workflow:
 
 .. image:: _static/workflow.png
-   :width: 500px
+   :width: 800px
    :align: center
    
 You can design the site-saturation sequences using our software. Then, you will have to synthesize the DNA library, perform the experiments and sequence the samples. After that, you will use a bioinformatics software (ie Flash) to pair the unpaired reads. Then you will trim the adapters. Now you can start using the software again. Mutagenesis_visualization will read the fastq files and count the variants. You can plot some statistics about the quality of the DNA library. After that, you will calculate the enrichment scores (you will need a pre-selection and a post-selection dataset). With the enrichment scores in hand, you can generate multiple plots. The workflow diagram only showing a subset of them.
