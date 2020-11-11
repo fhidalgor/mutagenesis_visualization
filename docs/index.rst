@@ -41,7 +41,7 @@ Key Features
 Getting Started
 ===============
 
-In this chapter, you will find how to install the package (:ref:`installation guide`) and how to rapidly test that the software is up and running (:ref:`quick demo`). 
+In this chapter, you will find how to install the package (:ref:`installation guide`) and how to rapidly test that the software is up and running (:ref:`quick demo`). You will also find a workflow.
 
 .. toctree::
    :maxdepth: 1
