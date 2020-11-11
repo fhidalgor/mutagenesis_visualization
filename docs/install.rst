@@ -157,10 +157,11 @@ A more detailed explanation on how to generate these figures can be seen at :ref
 Workflow
 ********************
 
-Let's take a look to the normal workflow:
+Let's take a look to the workflow of this software:
 
-.. image:: _static/workflow_v2-01.png
-   :width: 1500px
+.. image:: _static/workflow_v2.png
    :align: center
    
-You can design the site-saturation sequences using our software. Then, you will have to synthesize the DNA library, perform the experiments and sequence the samples. After that, you will use a bioinformatics software (ie Flash) to pair the unpaired reads. Then you will trim the adapters. Now you can start using the software again. Mutagenesis_visualization will read the fastq files and count the variants. You can plot some statistics about the quality of the DNA library. After that, you will calculate the enrichment scores (you will need a pre-selection and a post-selection dataset). With the enrichment scores in hand, you can generate multiple plots. The workflow diagram only showing a subset of them.
+Mutagenesis_visualization allows you to design the site-saturation sequences. Then you will likely ask Twist Bio or Agilent to synthesize the site-saturation sequences for you. Once you have got your DNA library ready, you will perform the experiments and sequence the samples. After that, you will use a bioinformatics software (ie Flash) to pair the unpaired reads. Then you will trim the adapters. 
+
+From here, you will start using the software again. Mutagenesis_visualization will read the fastq files and return the counts per variant. There are a few visualization plots that you can do in order to assess the quality of the DNA library. After that, you will calculate the enrichment scores (you will need a pre-selection and a post-selection dataset). With the enrichment scores in hand, you can generate multiple plots such as a heatmap, histograms, scatter plots, PCA analysis or Pymol figures.
