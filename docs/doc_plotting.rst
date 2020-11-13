@@ -14,12 +14,12 @@ Import modules
 .. code:: ipython3
 
     # Import Modules
-    import mutagenesis_visualization as mut
+    import code_class as mut
+    import code_process_data
     import numpy as np
     import pandas as pd
     import matplotlib as plt
     import copy
-
 
 Create object of class Screen
 -----------------------------
@@ -34,7 +34,7 @@ You would ignore this step if you are trying to use your own dataset.
 
 .. code:: ipython3
 
-    data_dict = mut.demo_datasets() # load example datasets
+    data_dict = mut.demo_datasets()  # load example datasets
     hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
     hras_enrichment_RBD = data_dict['array_hras_RBD']
 
@@ -70,10 +70,12 @@ are importing two datasets and creating two objects named
     
     # Define secondary structure
     secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25),
-                 ['β2']*(46-36), ['L3']*(48-46), ['β3']*(58-48), ['L4'] * (64-58), 
-                 ['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), ['L6']*(86-83), 
-                 ['α3']*(103-86), ['L7']*(110-103), ['β5']*(116-110), ['L8']*(126-116), 
-                 ['α4']*(137-126), ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), 
+                 ['β2']*(46-36), ['L3']*(48-46), ['β3']*(58-48), ['L4'] * (64-58),
+                 ['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), ['L6']*(86-83),
+                 ['α3']*(103-86), ['L7']*(110-103), ['β5'] *
+                 (116-110), ['L8']*(126-116),
+                 ['α4']*(137-126), ['L9']*(140-137), ['β6'] *
+                 (143-140), ['L10']*(151-143),
                  ['α5']*(172-151), ['L11']*(190-172)]
     
     # Substitute Nan values with 0
@@ -84,7 +86,6 @@ are importing two datasets and creating two objects named
                              aminoacids, start_position, fillna, secondary)
     hras_RBD = mut.Screen(hras_enrichment_RBD, hras_sequence,
                           aminoacids, start_position, fillna, secondary)
-
 
 Heatmaps
 --------
@@ -105,6 +106,15 @@ enrichment scores using the method ``object.heatmap``.
 
 .. image:: ../example/exported_images/hras_fullheatmap.png
 
+If you set the parameter ``hierarchical=True``, it will sort the columns
+using hierarchical clustering
+
+.. code:: ipython3
+
+    hras_RBD.heatmap(title='H-Ras 2-166', hierarchical=True, output_file=None)
+
+.. image:: ../example/exported_images/hras_fullheatmap_hierarchical.png
+
 You can change the scale and the color map using the parameters
 ``colorbar_scale`` and ``colormap``.
 
@@ -114,9 +124,8 @@ You can change the scale and the color map using the parameters
     colormap = copy.copy((plt.cm.get_cmap('PuOr')))
     
     # Change scale and colormap
-    hras_RBD.heatmap(title='H-Ras 2-166', colorbar_scale=(-2, 2), 
-                     colormap=colormap,show_cartoon=True,output_file = None)
-
+    hras_RBD.heatmap(title='H-Ras 2-166', colorbar_scale=(-2, 2),
+                     colormap=colormap, show_cartoon=True, output_file=None)
 
 .. image:: ../example/exported_images/hras_fullheatmap_colormap.png
 
@@ -144,7 +153,7 @@ specify which amino acids to show with ``selection``.
 .. code:: ipython3
 
     # Create heatmap of selected aminoacid substitutions
-    hras_RBD.heatmap_rows(title='H-Ras 2-166', selection=['E', 'Q', 'A', 'P', 'V', 'Y'], 
+    hras_RBD.heatmap_rows(title='H-Ras 2-166', selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
                           output_file=None)
 
 .. image:: ../example/exported_images/hras_selectionheatmap.png
@@ -156,7 +165,7 @@ will use the method ``object.heatmap_columns``. The parameter
 .. code:: ipython3
 
     # Create a heatmap of a subset region in the protein
-    hras_RBD.heatmap_columns(segment=[20, 40], output_file = None)
+    hras_RBD.heatmap_columns(segment=[20, 40], output_file=None)
 
 .. image:: ../example/exported_images/hras_subsetheatmap.png
    :width: 200px
@@ -168,7 +177,7 @@ global trends in the data. The command to use is ``object.miniheatmap``.
 .. code:: ipython3
 
     # Condensed heatmap
-    hras_RBD.miniheatmap(title='Wt residue H-Ras', output_file = None)
+    hras_RBD.miniheatmap(title='Wt residue H-Ras', output_file=None)
 
 .. image:: ../example/exported_images/hras_miniheatmap.png
    :width: 250px
@@ -198,15 +207,15 @@ replacements.
 
     # Plot kernel dist using sns.distplot.
     hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1],
-                    output_file = None)
+                    output_file=None)
     
     # Plot histogram of SNVs
     hras_RBD.histogram(population='SNV', title='H-Ras 2-166 SNV', xscale=[-2, 1],
-                       output_file = None)
+                       output_file=None)
     
     # Plot histogram of non-SNVs
     hras_RBD.histogram(population='nonSNV', title='H-Ras 2-166 non-SNV', xscale=[-2, 1],
-                       output_file = None)
+                       output_file=None)
 
 .. image:: ../example/exported_images/hras_kde.png
    :width: 240px
@@ -227,13 +236,12 @@ position level ``mode=mean``.
     # Plot a scatter plot of each mutation
     hras_RBD.scatter(hras_GAPGEF, title='Individual mutations', mode='pointmutant',
                      xscale=(-2.5, 1.5), yscale=(-2.5, 1.5), x_label='H-Ras Unregulated',
-                     y_label='H-Ras Regulated', output_file = None)
+                     y_label='H-Ras Regulated', output_file=None)
     
     # Plot a scatter plot of the mean position
-    hras_RBD.scatter(hras_GAPGEF, title='Positional average', mode='mean', xscale=(-2, 1), 
-                     yscale=(-2, 1),x_label='H-Ras Unregulated', y_label='H-Ras Regulated', 
-                     output_file = None)
-
+    hras_RBD.scatter(hras_GAPGEF, title='Positional average', mode='mean', xscale=(-2, 1),
+                     yscale=(-2, 1), x_label='H-Ras Unregulated', y_label='H-Ras Regulated',
+                     output_file=None)
 
 .. image:: ../example/exported_images/hras_scatter.png
    :width: 200px
@@ -243,14 +251,14 @@ position level ``mode=mean``.
 
 The method ``object.rank`` sorts each mutation (or position) by its
 enrichment score. If ``outdf=True``, it will return a dataframe with the
-mutations ranked.
+mutations ranked. This plot can now be done using plotly (see following
+chapter).
 
 .. code:: ipython3
 
     # Rank plot
     hras_RBD.rank(mode='pointmutant', outdf=True, title='Rank of mutations',
-                  output_file = None)
-
+                  output_file=None)
 
 .. image:: ../example/exported_images/hras_rank.png
    :width: 400px
@@ -268,8 +276,7 @@ follows the x=y line, suggestion a homogeneous mutational tolerance.
 
     # Cumulative plot
     hras_RBD.cumulative(mode='all', title='Cumulative Score',
-                        output_file = None)
-
+                        output_file=None)
 
 .. image:: ../example/exported_images/hras_cumulative.png
    :width: 300px
@@ -296,12 +303,11 @@ scan (bottom)
 
     # Plot a bar graph with the mean enrichment score
     hras_RBD.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[-2, 0.5],
-                  title='', output_file = None)
+                  title='', output_file=None)
     
     # Plot a bar graph with the alanine enrichment score
     hras_RBD.mean(figsize=[6, 2.5], mode='A', show_cartoon=True, yscale=[-2, 0.5],
-                  title='',output_file = None)
-
+                  title='', output_file=None)
 
 .. image:: ../example/exported_images/hras_bar_mean.png
    :width: 500px
@@ -322,7 +328,7 @@ sensitivity to mutations.
     # Plot the difference between H-Ras unregulated and H-Ras regulated datasets
     # The subtraction is hras_RBD - hrasGAPGEF
     hras_RBD.differential(hras_GAPGEF, figsize=[6, 2.5], show_cartoon=True,
-                          yscale=[-1, 1], title='', output_file = None)
+                          yscale=[-1, 1], title='', output_file=None)
 
 .. image:: ../example/exported_images/hras_diffenrichment.png
    :width: 500px
@@ -334,9 +340,8 @@ You can check the individual mutational profile of a residue by using
 .. code:: ipython3
 
     # Create plot for position 117
-    hras_RBD.position(position = 117, yscale = (-1.5, 0.8), figsize = (3.5,2), 
-                      title = 'Position 117', output_file = None)
-
+    hras_RBD.position(position=117, yscale=(-1.5, 0.8), figsize=(3.5, 2),
+                      title='Position 117', output_file=None)
 
 .. image:: ../example/exported_images/hras_position117.png
    :width: 350px
@@ -380,7 +385,8 @@ themselves but low correlation with hydrophobic amino acids.
 .. code:: ipython3
 
     # Correlation between amino acids
-    hras_RBD.correlation(colorbar_scale=[0.5, 1], title='Correlation',output_file = None)
+    hras_RBD.correlation(
+        colorbar_scale=[0.5, 1], title='Correlation', output_file=None)
 
 .. image:: ../example/exported_images/hras_correlation.png
    :width: 250px
@@ -394,7 +400,7 @@ rest of the dataset.
 
     # Explained variability by amino acid
     hras_RBD.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
-                                    output_file = None)
+                                    output_file=None)
 
 .. image:: ../example/exported_images/hras_variability.png
    :width: 300px
@@ -410,7 +416,7 @@ Grouping amino acids improves the predictive power. ``object.group_correlation``
     
     # Get list of all combinations and their associated R2 value
     df_r2 = hras_RBD.group_correlation(r2=0.75, groups=groups, output=True, title='',
-                                       output_file = None)
+                                       output_file=None)
     
     # Only show the top 5
     df_r2.sort_values(by='R2', ascending=False).head()
@@ -435,15 +441,15 @@ notation), but that can be changed by ``dimensions`` parameter.
 
     # PCA by amino acid substitution
     hras_RBD.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
-                 output_file = None)
+                 output_file=None)
     
     # PCA by secondary structure motif
     hras_RBD.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
-                 adjustlabels=True, output_file = None)
+                 adjustlabels=True, output_file=None)
     
     # PCA by each individual residue. Don't set adjustlabels = True unless really big figsize
     hras_RBD.pca(title='', mode='individual', dimensions=[0, 1], figsize=(5, 5),
-                 adjustlabels=False, output_file = None)
+                 adjustlabels=False, output_file=None)
 
 .. image:: ../example/exported_images/hras_pcaaminoacid.png
    :width: 200px
@@ -467,12 +473,12 @@ enrichment/conservation.
 
     # Calculate conservation score from MSA
     path = '../data/Ras_family_trimmed.fasta'
-    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
-                                             threshold=0.1)
+    df_shannon, df_freq = code_process_data.msa_enrichment(hras_RBD, path, start_position=1,
+                                                           threshold=0.1)
     
     # Plot ROC curve
     hras_RBD.roc(df_freq[['Variant', 'Class']], title='MSA predictive power',
-                 output_file = None)
+                 output_file=None)
 
 .. image:: ../example/exported_images/hras_roc.png
    :width: 250px
@@ -490,9 +496,13 @@ residues with a lower enrichment score are more conserved.
     binned_shannon = (2*df_shannon['Shannon']).round(0)/2
     
     # Plot box plot.
-    mut.plot_box(binned_x=binned_shannon, y=df_shannon['Score'],
-                 title='Shannon vs Enrichment', x_label='Shannon Entropy',
-                 y_label=r'$∆E^i_x$', output_file = None)
+    mut.box(binned_x=binned_shannon, y=df_shannon['Score'],
+            title='Shannon vs Enrichment', x_label='Shannon Entropy',
+            y_label=r'$∆E^i_x$', output_file=None)
+
+.. code:: ipython3
+
+    mut.
 
 .. image:: ../example/exported_images/hras_shannon.png
    :width: 300px
@@ -538,14 +548,13 @@ the origin. If you want to use the example pdbs, use the command
     #fasta_dict = demo_fasta()
     #path = fasta_dict['ras']
     
-    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
+    df_shannon, df_freq = code_process_data.msa_enrichment(hras_RBD, path, start_position=1,
                                              threshold=0.1)
     
     # Plot 3-D SASA, B-factor and Shannon Entropy
-    hras_RBD.scatter_3D_pdbprop(plot=['SASA', 'Score', 'Shannon'],custom = df_shannon['Shannon'],
+    hras_RBD.scatter_3D_pdbprop(plot=['SASA', 'Score', 'Shannon'], custom=df_shannon['Shannon'],
                                 pdb_path='../data/5p21.pdb', color_by_score=True,
                                 gof=0.15, lof=-0.5)
-
 
 .. image:: ../example/exported_images/hras_3dscatter.png
    :width: 500px
@@ -576,13 +585,13 @@ Leucine, right - Aspartate).
 .. code:: ipython3
 
     # Start pymol and color residues. Cut offs are set with gof and lof parameters.
-    hras_RBD.pymol(pdb='5p21_A', mode = 'mean', gof=0.2, lof=-0.5)
+    hras_RBD.pymol(pdb='5p21_A', mode='mean', gof=0.2, lof=-0.5)
     
     # Now check the mutational profile of Leucine (left image)
-    hras_RBD.pymol(pdb='5p21_A', mode = 'L', gof=0.2, lof=-0.5)
+    hras_RBD.pymol(pdb='5p21_A', mode='L', gof=0.2, lof=-0.5)
     
     # Now check the mutational profile of Aspartate (right image)
-    hras_RBD.pymol(pdb='5p21_A', mode = 'D', gof=0.2, lof=-0.5)
+    hras_RBD.pymol(pdb='5p21_A', mode='D', gof=0.2, lof=-0.5)
 
 .. image:: ../example/exported_images/hras_pymol_combLD.png
    :align: center
@@ -601,7 +610,7 @@ dataset.
 
     # Read excel file
     path = '../../example/exported_images/logo.xlsx'
-    usecols='A:BL'
+    usecols = 'A:BL'
     #df_logo = pd.read_excel(path, 'logo', usecols=usecols, nrows=21)
     #df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
     df_logo = pd.read_excel(path, 'logo_2', usecols=usecols, nrows=21)
@@ -618,15 +627,15 @@ dataset.
     
     # Define secondary structure
     secondary = [['L0']*5, ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-20), ['L2']*(32-25),
-                 ['β2']*(42-32), ['L3']*(50-42),['α2']*(58-50),['L4']*(70-58)]
+                 ['β2']*(42-32), ['L3']*(50-42), ['α2']*(58-50), ['L4']*(70-58)]
     
     # Create object
-    logo_obj = mut.Screen(df_mixed, sequence_logo, start_position=1, fillna=0, secondary=secondary)
+    logo_obj = mut.Screen(df_mixed, sequence_logo,
+                          start_position=1, fillna=0, secondary=secondary)
     
     # Create hetmap
-    logo_obj.heatmap(show_cartoon=True, title = '', 
-                     neworder_aminoacids='ACDEFGHIKLMNPQRSTVWY*',output_file = None)
-
+    logo_obj.heatmap(show_cartoon=True, title='',
+                     neworder_aminoacids='ACDEFGHIKLMNPQRSTVWY*', output_file=None)
 
 .. image:: ../example/exported_images/heatmap_intro.png
    :width: 350px
