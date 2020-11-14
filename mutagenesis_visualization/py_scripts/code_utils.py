@@ -295,7 +295,7 @@ def _select_SNV(df):
     return df
 
 
-def _aminoacids_snv(aa1, aa2, codontable):
+def _aminoacids_snv(aa1, aa2, codontable,same_aa_SNV=True):
     '''
     Determine if two amino acids are snv (one base difference)
 
@@ -304,14 +304,20 @@ def _aminoacids_snv(aa1, aa2, codontable):
     aa1 : str
     aa2 : str
     codontable : dict (did not want to generate each time I run the function)
-
+    same_aa_SNV : boolean, default True
+        If True, it will consider the same amino acid to be SNV of itself
+    
     Returns
     --------
     boolean, True/False
     '''
+    # Check if aa1 is aa2
+    if not(same_aa_SNV) and (aa1.upper() == aa2.upper()):
+        return False
+    
     # Convert amino acids to codons
-    codons1 = codontable[aa1]
-    codons2 = codontable[aa2]
+    codons1 = codontable[aa1.upper()]
+    codons2 = codontable[aa2.upper()]
 
     # Generate a list of combination pairs between all codons in aa1 and aa2
     codon_combinations = list(itertools.product(codons1, codons2))
@@ -346,25 +352,34 @@ def _add_SNV_boolean(df):
     return df
 
 
-def _codons_pointmutants(codon1, codon2):
+def _codons_pointmutants(codon1, codon2, same_codon_SNV=False):
     '''
-    Determine if two codons are SNV. Returns a boolean
+    Determine if two codons are SNV. Returns a boolean.
+    If the codon is the same, will return False.
+    Not case sensitive.
 
     Parameters
     -----------
     codon1 : str
     codon2 : str
+    same_codon_SNV : boolean, default False
+        If True, it will consider the same codon to be SNV of itself
 
     Returns
     --------
     boolean, True/False
     '''
+    
+    # Check if codons are the same
+    if same_codon_SNV and codon1.upper() == codon2.upper():
+        return True
+
     counter_occurrences = 0
-    for index, base1 in enumerate(codon1):
-        base2 = list(codon2)[index]
+    for index, base1 in enumerate(codon1.upper()):
+        base2 = list(codon2.upper())[index]
         if base1 == base2:
             counter_occurrences = counter_occurrences+1
-    if counter_occurrences > 1:
+    if counter_occurrences == 2:
         return True
     return False
 
@@ -481,6 +496,8 @@ def _aatocodons_df(df, namecolumn):
 
 
 def _process_bypointmutant(self, obj):
+    '''given two dataframes, it truncates the longer one. It also drops nan values.
+    Returns joined dataframe that contains the Scores and the Variants.'''
     # truncate so both datasets have same length and delete stop codons
     minlength = min(len(self.dataframe), len(obj.dataframe))
     df = pd.DataFrame()
@@ -494,6 +511,9 @@ def _process_bypointmutant(self, obj):
 
 
 def _process_meanresidue(self, obj):
+    '''given two dataframes, it groups by position and truncates the longer one. It also drops nan values.
+    Returns joined dataframe that contains the Scores, the position and the score of d1 - score of d2.'''
+
     # truncate so both datasets have same length and delete stop codons
     dataset_1 = self.dataframe.groupby(['Position'], as_index=False).mean()
     dataset_2 = obj.dataframe.groupby(['Position'], as_index=False).mean()
@@ -536,5 +556,6 @@ def _is_DNA(df):
     for aa in aminoacids:
         if aa in ''.join(list(df.index)):
             return False
-        return True
+    return True
+    
 
