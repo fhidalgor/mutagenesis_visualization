@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[ ]:
+# In[1]:
 
 
 import numpy as np
@@ -38,7 +38,7 @@ import code_utils
 
 # ### Full Heatmap
 
-# In[ ]:
+# In[7]:
 
 
 def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, hierarchical = False,
@@ -180,8 +180,15 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, hi
                        fontname="Arial", color='k', minor=False)
     ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6,
                        fontname="Arial", color='k', minor=False)
-    ax2.set_xticklabels(temp_kwargs['number_sequencelabels'][0:len(df.columns)],
-                        fontsize=10, fontname="Arial", color='k', minor=False)
+    # For numbering labels, change if hierarchical sorting is true
+    if not(hierarchical): 
+        ax2.set_xticklabels(temp_kwargs['number_sequencelabels'][0:len(df.columns)],
+                            fontsize=10, fontname="Arial", color='k', minor=False)
+    else:
+        ax2.tick_params(direction='out', pad=7)
+        ax2.set_xticklabels(sorted_columns_corrected,
+                            fontsize=5, fontname="Arial", color='k', minor=False,
+                            rotation=90)
     ax3.set_yticklabels(temp_kwargs['neworder_aminoacids'],
                         fontsize=6, fontname="Arial", color='k', minor=False)
     averageresidue.set_xticklabels(list(self.sequence_updated), fontsize=6.5,
@@ -226,8 +233,13 @@ def plot_heatmap(self, nancolor='lime', show_cartoon=False, show_snv = False, hi
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-    plt.show()
+    
+    if temp_kwargs['show']:
+        plt.show()
     return
+
+
+# In[3]:
 
 
 def _labels(start_position=1):
@@ -306,6 +318,7 @@ def _sheet(starting_aa, length_aa, color='lightgreen'):
 
 
 def _helix(starting_aa, length_aa, color='lavender'):
+    """produces matplotlib.Rectangle of length specified by length_aa """
     dx = length_aa  # so i can overlap tip
     helixstructure = plt.Rectangle(
         (starting_aa, -0.85), dx, 2.2, fc=color, ec='k')
@@ -336,7 +349,7 @@ def _hierarchical_sort(df):
 
 # ### Grouped Heatmap
 
-# In[ ]:
+# In[4]:
 
 
 def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
@@ -460,7 +473,7 @@ def plot_heatmap_rows(self, selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
 
 # ### Subset Heatmap
 
-# In[ ]:
+# In[5]:
 
 
 def plot_heatmap_columns(self, segment, ylabel_color='k', nancolor='lime', 
