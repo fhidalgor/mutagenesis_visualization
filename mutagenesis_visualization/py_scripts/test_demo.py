@@ -45,3 +45,27 @@ def test_demo():
     solutions = [_test_output_demo(argument) for argument in arguments]
     assert any(solutions)==False, 'error when running the demo figures'
 
+
+# In[ ]:
+
+
+def test_demo_pdbs():
+    '''test that function returns dictionary'''
+    assert (str(type(demo_pdbs()))) == "<class 'dict'>", "function demo_pdbs failed"
+
+
+# In[ ]:
+
+
+def test_demo_datasets():
+    '''test that function returns dictionary'''
+    assert (str(type(demo_datasets()))) == "<class 'dict'>", "function demo_datasets failed"
+
+
+# In[ ]:
+
+
+def test_demo_fasta():
+    '''test that function returns dictionary'''
+    assert (str(type(demo_fasta()))) == "<class 'dict'>", "function demo_fasta failed"
+
