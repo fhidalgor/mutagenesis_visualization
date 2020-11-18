@@ -173,7 +173,7 @@ def test_translate_codons():
             list_aminoacids), 'error when translating the codons of the dataframe index'
 
 
-# In[ ]:
+# In[34]:
 
 
 def test_is_DNA():
@@ -184,21 +184,4 @@ def test_is_DNA():
         df) == False), 'error determining if the index of the dataframe contains DNA'
     assert (code_utils._is_DNA(df2) ==
             True), 'error determining if the index of the dataframe contains DNA'
-
-
-# In[ ]:
-
-
-
-
-
-# In[25]:
-
-
-
-
-# In[ ]:
-
-
-
 

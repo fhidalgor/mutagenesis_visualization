@@ -25,7 +25,7 @@ import code_kwargs
 #test that kwargs outputs a default dictionary
 def test_kwargs(): 
     dictionary = type(code_kwargs.kwargs())
-    assert dictionary == dict, 'error'
+    assert dictionary == dict, 'error the kwarg type is not a dictionary'
 
 
 # In[8]:
@@ -40,11 +40,17 @@ test_kwargs()
 #test that _generatecolormap creates a matplotlib color map
 def test_generatecolormap(): 
     colormap = type(code_kwargs._generatecolormap())
-    assert colormap == matplotlib.colors.LinearSegmentedColormap, 'error nope'
+    assert colormap == matplotlib.colors.LinearSegmentedColormap, 'error the colormap type is not a matplotlib color map'
 
 
 # In[50]:
 
 
 test_generatecolormap()
+
+
+# In[54]:
+
+
+#!pytest ../py_scripts/test_kwargs.py
 
