@@ -1,0 +1,14 @@
+#https://docs.travis-ci.com/user/languages/python/
+language: python
+python:
+  - "3.7"
+script:
+  - pytest
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+
+# command to run tests
+script:
+  - pytest
