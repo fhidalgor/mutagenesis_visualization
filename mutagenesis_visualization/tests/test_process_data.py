@@ -9,7 +9,8 @@ try:
 except ModuleNotFoundError:
     pass
 
-from code_process_data import (
+#import mutagenesis_visualization.jupyter_notebooks.import_notebook
+from mutagenesis_visualization.scripts.code_process_data import (
     count_reads
 )
 from pathlib import Path
@@ -50,9 +51,9 @@ def test_count_reads():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location,'../data/for_tests', "short.fastq")
+        my_file = os.path.join(location,'../mutagenesis_visualization/data/for_tests', "short.fastq")
     except NameError:
-        my_file = os.path.join('../data/for_tests', "short.fastq")
+        my_file = os.path.join('../mutagenesis_visualization/data/for_tests', "short.fastq")
 
 
     # Create dataframe

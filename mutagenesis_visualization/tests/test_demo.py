@@ -10,8 +10,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from code_demo import (demo, demo_datasets, demo_pdbs, demo_fasta) 
-
+from mutagenesis_visualization.scripts.code_demo import (demo, demo_datasets, demo_pdbs, demo_fasta)
 
 # In[ ]:
 
