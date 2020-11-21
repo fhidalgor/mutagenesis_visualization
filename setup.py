@@ -31,7 +31,7 @@ setuptools.setup(
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',},
     install_requires=['numpy>=1.18.5', 'seaborn>=0.10.1', 'pandas>=1.0.5', 'scipy>=1.5.0', 'matplotlib>=3.2',
         'scikit-learn>=0.23.1', 'adjustText>=0.7.3', 'biopython>=1.77', 'logomaker>=0.8','freesasa>=2.1.0', 'plotly>=4.11.0]',
-    dependency_links=['https://github.com/cxhernandez/ipymol.git'],
+    dependency_links=['https://github.com/cxhernandez/ipymol/tarball/master'],
     zip_safe=True,
     include_package_data=True,
     python_requires='>=3.6',
