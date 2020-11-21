@@ -21,7 +21,9 @@ import plotly.graph_objects as go
 try:
     import import_notebook
 except ModuleNotFoundError:
-    pass
+    import sys
+    sys.path.append('mutagenesis_visualization/main/scripts/')
+
 
 import code_kwargs
 import code_utils

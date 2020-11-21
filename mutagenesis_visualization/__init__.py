@@ -1,3 +1,4 @@
+from mutagenesis_visualization.main.scripts.code_demo import (demo, demo_datasets, demo_pdbs, demo_fasta)
 from mutagenesis_visualization.main.scripts.code_process_data import (count_reads, count_fastq, calculate_enrichment, assemble_avengers, msa_enrichment)
 from mutagenesis_visualization.main.scripts.code_class import Screen, Counts
 from mutagenesis_visualization.main.scripts.code_heatmaps import (

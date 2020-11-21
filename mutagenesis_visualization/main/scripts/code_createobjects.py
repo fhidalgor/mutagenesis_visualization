@@ -17,7 +17,9 @@ import os
 try:
     import import_notebook
 except ModuleNotFoundError:
-    pass
+    import sys
+    sys.path.append('mutagenesis_visualization/main/scripts/')
+
 
 from code_class import Screen    
 import code_utils

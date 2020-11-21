@@ -21,7 +21,9 @@ from typing import Union
 try:
     import import_notebook
 except ModuleNotFoundError:
-    pass
+    import sys
+    sys.path.append('mutagenesis_visualization/main/scripts/')
+
 import code_kwargs
 import code_utils
 from code_heatmaps import _generate_cartoon

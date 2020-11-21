@@ -14,7 +14,9 @@ import itertools
 try:
     import import_notebook
 except ModuleNotFoundError:
-    pass
+    import sys
+    sys.path.append('mutagenesis_visualization/main/scripts/')
+
 
 # Package libraries
 from code_kernel import (plot_kernel, plot_hist)

@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[14]:
 
 
 import numpy as np
@@ -24,17 +24,18 @@ from Bio.PDB import PDBParser
 try:
     import import_notebook
 except ModuleNotFoundError:
-    pass
+    import sys
+    sys.path.append('mutagenesis_visualization/main/scripts/')
 
 try:
     import shannon
 except ModuleNotFoundError:
-    dummy = 0
+    pass
     
 try:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
-    dummy = 0
+    pass
     
 import code_kwargs
 import code_utils
@@ -46,7 +47,7 @@ import code_utils
 
 # ### 3D Scatter
 
-# In[2]:
+# In[5]:
 
 
 def plot_scatter_3D(self, mode='mean', pdb_path=None, df_coordinates=None,
@@ -259,7 +260,7 @@ def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False
 
 # ### 3D Scatter Second version
 
-# In[3]:
+# In[6]:
 
 
 def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
@@ -394,7 +395,7 @@ def plot_scatter_3D_pdbprop(self, plot=['Distance', 'SASA', 'B-factor'],
 
 # ## Map into Pymol
 
-# In[9]:
+# In[15]:
 
 
 def plot_pymol(self, pdb, mode = 'mean', residues=None, position_correction = 0,
@@ -565,4 +566,10 @@ def _light_parameters():
     pymol.set('sphere_scale', '0.2')
     pymol.set('sphere_quality', '4')
     return
+
+
+# In[16]:
+
+
+_light_parameters()
 
