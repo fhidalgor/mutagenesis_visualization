@@ -13,10 +13,10 @@ setuptools.setup(
     version="0.0.1.9",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
-    description="A package for analysis and visualization of saturation mutagenesis data",
+    description="A package for processing, analysis and visualization of site-saturation mutagenesis data",
     long_description=readme(),
     url="https://github.com/fhidalgor/mutagenesis_visualization",
-    keywords=['saturation','mutagenesis','deepsequencing', 'ras', 'site-saturation'],
+    keywords=['saturation','mutagenesis','deepsequencing', 'ras', 'site-saturation', 'nextgenseq', 'NGS'],
     packages=setuptools.find_packages(),
     #py_modules=['main.mutagenesis_visualization'],
     classifiers=[
