@@ -16,6 +16,7 @@ import os
 # Package libraries
 try:
     import import_notebook
+    __file__ = '__main__'
 except ModuleNotFoundError:
     import sys
     sys.path.append('mutagenesis_visualization/main/scripts/')
@@ -51,9 +52,9 @@ def demo(figure='heatmap', show=True):
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'HRas166_RBD.csv')
+        my_file = os.path.join(location, '../../data', 'HRas166_RBD.csv')
     except NameError:
-        my_file = os.path.join('../data', 'HRas166_RBD.csv')
+        my_file = os.path.join('../../data', 'HRas166_RBD.csv')
 
     # Load enrichment scores
     hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
@@ -131,58 +132,58 @@ def demo_datasets():
     data_dict = {}
 
     # Retrieve H-Ras datasets and store in dict
-    my_file = os.path.join(location, '../data', 'HRas166_RBD.csv')
+    my_file = os.path.join(location, '../../data', 'HRas166_RBD.csv')
     hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
     data_dict['array_hras_RBD'] = hras_enrichment_RBD
 
-    my_file = os.path.join(location, '../data', 'HRas166_GAPGEF.csv')
+    my_file = os.path.join(location, '../../data', 'HRas166_GAPGEF.csv')
     hras_enrichment_GAPGEF = np.genfromtxt(my_file, delimiter=',')
     data_dict['array_hras_GAPGEF'] = hras_enrichment_GAPGEF
 
     # Beta lactamase data
-    my_file = os.path.join(location, '../data', 'df_bla_raw.pkl')
+    my_file = os.path.join(location, '../../data', 'df_bla_raw.pkl')
     df_bla_raw = pd.read_pickle(my_file)
-    data_dict['df_bla'], sequence_bla = parse_pivot(
+    data_dict['df_bla'], sequence_bla = code_utils.parse_pivot(
         df_bla_raw, col_data='DMS_amp_625_(b)')
 
     # Sumo
-    my_file = os.path.join(location, '../data', 'df_sumo1_raw.pkl')
+    my_file = os.path.join(location, '../../data', 'df_sumo1_raw.pkl')
     df_sumo1_raw = pd.read_pickle(my_file)
-    data_dict['df_sumo1'], sequence_sumo1 = parse_pivot(
+    data_dict['df_sumo1'], sequence_sumo1 = code_utils.parse_pivot(
         df_sumo1_raw, col_data='DMS')
 
     # MAPK1
-    my_file = os.path.join(location, '../data', 'df_mapk1_raw.pkl')
+    my_file = os.path.join(location, '../../data', 'df_mapk1_raw.pkl')
     df_mapk1_raw = pd.read_pickle(my_file)
-    data_dict['df_mapk1'], sequence_mapk1 = parse_pivot(
+    data_dict['df_mapk1'], sequence_mapk1 = code_utils.parse_pivot(
         df_mapk1_raw, col_data='DMS_DOX')
 
     # UBE2I
-    my_file = os.path.join(location, '../data', 'df_ube2i_raw.pkl')
+    my_file = os.path.join(location, '../../data', 'df_ube2i_raw.pkl')
     df_ube2i_raw = pd.read_pickle(my_file)
-    data_dict['df_ube2i'], sequence_ube2i = parse_pivot(
+    data_dict['df_ube2i'], sequence_ube2i = code_utils.parse_pivot(
         df_ube2i_raw, col_data='DMS')
 
     # TAT
-    my_file = os.path.join(location, '../data', 'df_tat.pkl')
+    my_file = os.path.join(location, '../../data', 'df_tat.pkl')
     data_dict['df_tat'] = pd.read_pickle(my_file)
 
     # REV
-    my_file = os.path.join(location, '../data', 'df_rev.pkl')
+    my_file = os.path.join(location, '../../data', 'df_rev.pkl')
     data_dict['df_rev'] = pd.read_pickle(my_file)
 
     # asynuclein
-    my_file = os.path.join(location, '../data', 'df_asynuclein.pkl')
+    my_file = os.path.join(location, '../../data', 'df_asynuclein.pkl')
     data_dict['df_asynuclein'] = pd.read_pickle(my_file)
 
     # APH
-    my_file = os.path.join(location, '../data', 'df_aph.pkl')
+    my_file = os.path.join(location, '../../data', 'df_aph.pkl')
     data_dict['df_aph'] = pd.read_pickle(my_file)
 
     # b11L5
-    my_file = os.path.join(location, '../data', 'df_b11L5F_raw.pkl')
+    my_file = os.path.join(location, '../../data', 'df_b11L5F_raw.pkl')
     df_b11L5F_raw = pd.read_pickle(my_file)
-    data_dict['df_b11L5F'], sequence_b11L5F = parse_pivot(
+    data_dict['df_b11L5F'], sequence_b11L5F = code_utils.parse_pivot(
         df_b11L5F_raw, col_data='relative_tryp_stability_score')
 
     return data_dict
@@ -209,16 +210,16 @@ def demo_pdbs():
     pdb_dict = {}
 
     # H-Ras
-    pdb_dict['5p21'] = os.path.join(location, '../data', '5p21.pdb')
+    pdb_dict['5p21'] = os.path.join(location, '../../data', '5p21.pdb')
 
     # Beta lactamase data
-    pdb_dict['1erm'] = os.path.join(location, '../data', '1erm.pdb')
+    pdb_dict['1erm'] = os.path.join(location, '../../data', '1erm.pdb')
 
     # Sumo
-    pdb_dict['1a5r'] = os.path.join(location, '../data', '1a5r.pdb')
+    pdb_dict['1a5r'] = os.path.join(location, '../../data', '1a5r.pdb')
 
     # APH
-    pdb_dict['1nd4'] = os.path.join(location, '../data', '1nd4.pdb')
+    pdb_dict['1nd4'] = os.path.join(location, '../../data', '1nd4.pdb')
 
     return pdb_dict
 
@@ -239,11 +240,11 @@ def demo_fasta():
 
     # Use relative file import to access the data folder
     location = os.path.dirname(os.path.realpath(__file__))
-
+    print (location)
     # Create dictionary where to store data
     fasta_dict = {}
     fasta_dict['ras'] = os.path.join(
-        location, '../data', 'Ras_family_trimmed.fasta')
+        location, '../../data', 'Ras_family_trimmed.fasta')
 
     return fasta_dict
 
