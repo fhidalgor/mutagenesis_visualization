@@ -10,7 +10,10 @@ Import modules and load data
 .. code:: ipython3
 
     # Run only if you are using the code from jupyter notebooks instead of pypi
-    import import_notebook
+    try:
+        import import_notebook
+    except ModuleNotFoundError:
+        pass
 
 .. code:: ipython3
 
@@ -86,7 +89,7 @@ selected than in the pre-selected population, the center is >0.
     
 
 
-.. image:: ../example/exported_images/hras_kdesub1.png
+.. image:: images/exported_images/hras_kdesub1.png
    :width: 350px
    :align: center
 
@@ -119,7 +122,7 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = counts',
                             xscale=(-1, 1), output_file = None)
 
-.. image:: ../example/exported_images/hras_zeroingcounts.png
+.. image:: images/exported_images/hras_zeroingcounts.png
    :width: 350px
    :align: center
 
@@ -154,7 +157,7 @@ But in other datasets we have, it has been a source of error.
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = wt_allele only',
                             xscale=(-0.5, 0.5), output_file = None)
 
-.. image:: ../example/exported_images/hras_zeroingwtallele.png
+.. image:: images/exported_images/hras_zeroingwtallele.png
    :width: 350px
    :align: center
 
@@ -184,7 +187,7 @@ and then ``how='median', 'mean' or 'mode'``.
     
 
 
-.. image:: ../example/exported_images/hras_zeroingwtpop.png
+.. image:: images/exported_images/hras_zeroingwtpop.png
    :width: 350px
    :align: center
 
@@ -213,7 +216,7 @@ spread.
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = population',
                             xscale=(-1, 1), output_file = None)
 
-.. image:: ../example/exported_images/hras_zeroingpopulation.png
+.. image:: images/exported_images/hras_zeroingpopulation.png
    :width: 350px
    :align: center
 
@@ -242,7 +245,7 @@ standard deviation. Results are quite similar to setting
     mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = kernel',
                             xscale=(-1.5, 1), output_file = None)
 
-.. image:: ../example/exported_images/hras_zeroingkernel.png
+.. image:: images/exported_images/hras_zeroingkernel.png
    :width: 350px
    :align: center
 
@@ -274,7 +277,7 @@ shoulder.
                             xscale=(-5, 1.5), output_file = None)
 
 
-.. image:: ../example/exported_images/hras_baselinesubtr.png
+.. image:: images/exported_images/hras_baselinesubtr.png
    :width: 350px
    :align: center
 
@@ -308,7 +311,7 @@ spread.
                             xscale=(-5, 1.5), output_file = None)
 
 
-.. image:: ../example/exported_images/hras_scaling.png
+.. image:: images/exported_images/hras_scaling.png
    :width: 350px
    :align: center
 
@@ -359,16 +362,16 @@ get in touch if you have questions regarding data normalization.
                             output_file = None)
 
 
-.. image:: ../example/exported_images/hras_repA_zeroingpopulation.png
+.. image:: images/exported_images/hras_repA_zeroingpopulation.png
    :width: 350px
 
-.. image:: ../example/exported_images/hras_repA_zeroingcounts.png
+.. image:: images/exported_images/hras_repA_zeroingcounts.png
    :width: 350px
    
-.. image:: ../example/exported_images/hras_repA_zeroingwt.png
+.. image:: images/exported_images/hras_repA_zeroingwt.png
    :width: 350px
    
-.. image:: ../example/exported_images/hras_repA_zeroingkernel.png
+.. image:: images/exported_images/hras_repA_zeroingkernel.png
    :width: 350px
 
 Heatmaps
@@ -422,11 +425,11 @@ select the method of normalization that works with your data.
     for obj, title in zip(objects.values(), titles):
         obj.heatmap(title='Normalization by '+title+' method', output_file=None)
 
-.. image:: ../example/exported_images/hras_heatmap_norm_population.png
+.. image:: images/exported_images/hras_heatmap_norm_population.png
 
-.. image:: ../example/exported_images/hras_heatmap_norm_counts.png
+.. image:: images/exported_images/hras_heatmap_norm_counts.png
    
-.. image:: ../example/exported_images/hras_heatmap_norm_wt.png
+.. image:: images/exported_images/hras_heatmap_norm_wt.png
    
-.. image:: ../example/exported_images/hras_heatmap_norm_kernel.png
+.. image:: images/exported_images/hras_heatmap_norm_kernel.png
 

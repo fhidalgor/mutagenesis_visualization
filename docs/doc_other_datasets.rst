@@ -44,12 +44,18 @@ own.
 .. code:: ipython3
 
     # Run only if you are using the code from jupyter notebooks instead of pypi
-    import import_notebook
+    try:
+        import import_notebook
+    except ModuleNotFoundError:
+        pass
 
 .. code:: ipython3
 
     # Import Modules
-    import mutagenesis_visualization as mut
+    import code_class as mut
+    import code_utils
+    
+    # Standard libraries
     import numpy as np
     import pandas as pd
     import matplotlib as plt
@@ -83,7 +89,7 @@ of the nine examples.
     #df_bla_raw.to_pickle('../data/df_bla_raw.pkl')
     
     # Parse
-    df_bla, sequence_bla = mut.parse_pivot(df_bla_raw, col_data = 'DMS_amp_625_(b)')
+    df_bla, sequence_bla = code_utils.parse_pivot(df_bla_raw, col_data = 'DMS_amp_625_(b)')
     
 
 
@@ -164,35 +170,35 @@ Create object
     bla_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
                 adjustlabels=True,output_file = None)
 
-.. image:: ../example/other_examples/bla_fullheatmap.png
+.. image:: images/other_examples/bla_fullheatmap.png
 
-.. image:: ../example/other_examples/bla_miniheatmap.png
+.. image:: images/other_examples/bla_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/bla_bar_mean.png
+.. image:: images/other_examples/bla_bar_mean.png
    :align: center
    
-.. image:: ../example/other_examples/bla_kde.png
+.. image:: images/other_examples/bla_kde.png
    :width: 240px
    :align: center
 
-.. image:: ../example/other_examples/bla_secondary.png
+.. image:: images/other_examples/bla_secondary.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/bla_correlation.png
+.. image:: images/other_examples/bla_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/bla_variability.png
+.. image:: images/other_examples/bla_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/bla_pcaaminoacid.png
+.. image:: images/other_examples/bla_pcaaminoacid.png
    :width: 200px
 
-.. image:: ../example/other_examples/bla_pcasecondary.png
+.. image:: images/other_examples/bla_pcasecondary.png
    :width: 200px
 
 
@@ -216,11 +222,11 @@ call the method, do ``pdb_path=pdbs_dict['1erm']``.
                                pdb_path='../data/1erm.pdb', color_by_score=False, output_file=None)
 
 
-.. image:: ../example/other_examples/bla_3dscatter.png
+.. image:: images/other_examples/bla_3dscatter.png
    :width: 500px
    :align: center
 
-.. image:: ../example/other_examples/bla_3dscatter_sasa.png
+.. image:: images/other_examples/bla_3dscatter_sasa.png
    :width: 500px
    :align: center
 
@@ -232,7 +238,7 @@ call the method, do ``pdb_path=pdbs_dict['1erm']``.
                   gof=0.2, lof=-1, position_correction = 2)
 
 
-.. image:: ../example/other_examples/bla_pymol.png
+.. image:: images/other_examples/bla_pymol.png
    :align: center
 
 Sumo1
@@ -257,7 +263,7 @@ Load data
     #df_sumo1_raw.to_pickle('../data/df_sumo1_raw.pkl')
     ### 2D Plots
     # Parse
-    df_sumo1, sequence_sumo1 = mut.parse_pivot(df_sumo1_raw, col_data = 'DMS')
+    df_sumo1, sequence_sumo1 = code_utils.parse_pivot(df_sumo1_raw, col_data = 'DMS')
     
 
 
@@ -332,36 +338,36 @@ Create object
     sumo_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
                  adjustlabels=True, output_file = None)
 
-.. image:: ../example/other_examples/sumo_fullheatmap.png
+.. image:: images/other_examples/sumo_fullheatmap.png
 
-.. image:: ../example/other_examples/sumo_miniheatmap.png
+.. image:: images/other_examples/sumo_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/sumo_bar_mean.png
+.. image:: images/other_examples/sumo_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/sumo_kde.png
+.. image:: images/other_examples/sumo_kde.png
    :width: 240px
    :align: center
 
-.. image:: ../example/other_examples/sumo_secondary.png
+.. image:: images/other_examples/sumo_secondary.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/sumo_correlation.png
+.. image:: images/other_examples/sumo_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/sumo_variability.png
+.. image:: images/other_examples/sumo_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/sumo_pcaaminoacid.png
+.. image:: images/other_examples/sumo_pcaaminoacid.png
    :width: 200px
 
-.. image:: ../example/other_examples/sumo_pcasecondary.png
+.. image:: images/other_examples/sumo_pcasecondary.png
    :width: 200px
 
 
@@ -371,7 +377,7 @@ Create object
     sumo_obj.pymol(pdb='../data/1a5r.pdb', mode = 'mean', gof=1, lof=0.5)
 
 
-.. image:: ../example/other_examples/sumo_pymol.png
+.. image:: images/other_examples/sumo_pymol.png
    :align: center
 
 MAPK1
@@ -396,7 +402,7 @@ Load data
     #df_mapk1_raw.to_pickle('../data/df_mapk1_raw.pkl')
     
     # Parse
-    df_mapk1, sequence_mapk1 = mut.parse_pivot(df_mapk1_raw, col_data = col_data)
+    df_mapk1, sequence_mapk1 = code_utils.parse_pivot(df_mapk1_raw, col_data = col_data)
     
 
 
@@ -460,29 +466,29 @@ Create object
     mapk1_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
                   output_file = None)
 
-.. image:: ../example/other_examples/mapk1_fullheatmap.png
+.. image:: images/other_examples/mapk1_fullheatmap.png
 
-.. image:: ../example/other_examples/mapk1_miniheatmap.png
+.. image:: images/other_examples/mapk1_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/mapk1_bar_mean.png
+.. image:: images/other_examples/mapk1_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/mapk1_kde.png
+.. image:: images/other_examples/mapk1_kde.png
    :width: 240px
    :align: center
    
-.. image:: ../example/other_examples/mapk1_correlation.png
+.. image:: images/other_examples/mapk1_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/mapk1_variability.png
+.. image:: images/other_examples/mapk1_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/mapk1_pcaaminoacid.png
+.. image:: images/other_examples/mapk1_pcaaminoacid.png
    :width: 200px
    :align: center
 
@@ -510,7 +516,7 @@ Load data
     #df_ube2i_raw.to_pickle('../data/df_ube2i_raw.pkl')
     
     # Parse
-    df_ube2i, sequence_ube2i = mut.parse_pivot(df_ube2i_raw, col_data = col_data)
+    df_ube2i, sequence_ube2i = code_utils.parse_pivot(df_ube2i_raw, col_data = col_data)
     
 
 
@@ -589,36 +595,36 @@ Create object
     ube2i_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
                   adjustlabels=True, output_file = None)
 
-.. image:: ../example/other_examples/ube2i_fullheatmap.png
+.. image:: images/other_examples/ube2i_fullheatmap.png
 
-.. image:: ../example/other_examples/ube2i_miniheatmap.png
+.. image:: images/other_examples/ube2i_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/ube2i_bar_mean.png
+.. image:: images/other_examples/ube2i_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/ube2i_kde.png
+.. image:: images/other_examples/ube2i_kde.png
    :width: 240px
    :align: center
 
-.. image:: ../example/other_examples/ube2i_secondary.png
+.. image:: images/other_examples/ube2i_secondary.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/ube2i_correlation.png
+.. image:: images/other_examples/ube2i_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/ube2i_variability.png
+.. image:: images/other_examples/ube2i_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/ube2i_pcaaminoacid.png
+.. image:: images/other_examples/ube2i_pcaaminoacid.png
    :width: 200px
 
-.. image:: ../example/other_examples/ube2i_pcasecondary.png
+.. image:: images/other_examples/ube2i_pcasecondary.png
    :width: 200px
 
 
@@ -704,29 +710,29 @@ Create object
                 output_file = None)
 
 
-.. image:: ../example/other_examples/tat_fullheatmap.png
+.. image:: images/other_examples/tat_fullheatmap.png
 
-.. image:: ../example/other_examples/tat_miniheatmap.png
+.. image:: images/other_examples/tat_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/tat_bar_mean.png
+.. image:: images/other_examples/tat_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/tat_kde.png
+.. image:: images/other_examples/tat_kde.png
    :width: 240px
    :align: center
    
-.. image:: ../example/other_examples/tat_correlation.png
+.. image:: images/other_examples/tat_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/tat_variability.png
+.. image:: images/other_examples/tat_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/tat_pcaaminoacid.png
+.. image:: images/other_examples/tat_pcaaminoacid.png
    :width: 200px
    :align: center
 
@@ -816,29 +822,29 @@ Create object
     rev_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
                 output_file = None)
 
-.. image:: ../example/other_examples/rev_fullheatmap.png
+.. image:: images/other_examples/rev_fullheatmap.png
 
-.. image:: ../example/other_examples/rev_miniheatmap.png
+.. image:: images/other_examples/rev_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/rev_bar_mean.png
+.. image:: images/other_examples/rev_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/rev_kde.png
+.. image:: images/other_examples/rev_kde.png
    :width: 240px
    :align: center
    
-.. image:: ../example/other_examples/rev_correlation.png
+.. image:: images/other_examples/rev_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/rev_variability.png
+.. image:: images/other_examples/rev_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/rev_pcaaminoacid.png
+.. image:: images/other_examples/rev_pcaaminoacid.png
    :width: 200px
    :align: center
 
@@ -923,29 +929,29 @@ Create object
     asynuclein_obj.pca(title='', dimensions=[0, 1], figsize=(2, 2), adjustlabels=True,
                        output_file=None)
 
-.. image:: ../example/other_examples/asynuclein_fullheatmap.png
+.. image:: images/other_examples/asynuclein_fullheatmap.png
 
-.. image:: ../example/other_examples/asynuclein_miniheatmap.png
+.. image:: images/other_examples/asynuclein_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/asynuclein_bar_mean.png
+.. image:: images/other_examples/asynuclein_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/asynuclein_kde.png
+.. image:: images/other_examples/asynuclein_kde.png
    :width: 240px
    :align: center
    
-.. image:: ../example/other_examples/asynuclein_correlation.png
+.. image:: images/other_examples/asynuclein_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/asynuclein_variability.png
+.. image:: images/other_examples/asynuclein_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/asynuclein_pcaaminoacid.png
+.. image:: images/other_examples/asynuclein_pcaaminoacid.png
    :width: 200px
    :align: center
 
@@ -1050,35 +1056,35 @@ Create object
     aph_obj.pca(title='', mode='secondary', dimensions=[0, 1], figsize=(2, 2),
                 adjustlabels=True, output_file = None)
 
-.. image:: ../example/other_examples/aph_fullheatmap.png
+.. image:: images/other_examples/aph_fullheatmap.png
 
-.. image:: ../example/other_examples/aph_miniheatmap.png
+.. image:: images/other_examples/aph_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/aph_bar_mean.png
+.. image:: images/other_examples/aph_bar_mean.png
    :align: center
    
-.. image:: ../example/other_examples/aph_kde.png
+.. image:: images/other_examples/aph_kde.png
    :width: 240px
    :align: center
 
-.. image:: ../example/other_examples/aph_secondary.png
+.. image:: images/other_examples/aph_secondary.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/aph_correlation.png
+.. image:: images/other_examples/aph_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/aph_variability.png
+.. image:: images/other_examples/aph_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/aph_pcaaminoacid.png
+.. image:: images/other_examples/aph_pcaaminoacid.png
    :width: 200px
 
-.. image:: ../example/other_examples/aph_pcasecondary.png
+.. image:: images/other_examples/aph_pcasecondary.png
    :width: 200px
 
 
@@ -1102,7 +1108,7 @@ Create object
                   gof=0.25, lof=-0.5, position_correction = 0)
 
 
-.. image:: ../example/other_examples/aph_pymol.png
+.. image:: images/other_examples/aph_pymol.png
    :align: center
 
 b11L5F
@@ -1128,7 +1134,7 @@ Load data
     #df_b11L5F_raw.to_pickle('../data/df_b11L5F_raw.pkl')
     
     # Parse
-    df_b11L5F, sequence_b11L5F = mut.parse_pivot(df_b11L5F_raw, col_data = col_data)
+    df_b11L5F, sequence_b11L5F = code_utils.parse_pivot(df_b11L5F_raw, col_data = col_data)
     
 
 
@@ -1190,29 +1196,29 @@ Create object
                    neworder_aminoacids=neworder_aminoacids, output_file = None)
 
 
-.. image:: ../example/other_examples/b11L5F_fullheatmap.png
+.. image:: images/other_examples/b11L5F_fullheatmap.png
 
-.. image:: ../example/other_examples/b11L5F_miniheatmap.png
+.. image:: images/other_examples/b11L5F_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/other_examples/b11L5F_bar_mean.png
+.. image:: images/other_examples/b11L5F_bar_mean.png
    :width: 400px
    :align: center
    
-.. image:: ../example/other_examples/b11L5F_kde.png
+.. image:: images/other_examples/b11L5F_kde.png
    :width: 240px
    :align: center
    
-.. image:: ../example/other_examples/b11L5F_correlation.png
+.. image:: images/other_examples/b11L5F_correlation.png
    :width: 250px
    :align: center
    
-.. image:: ../example/other_examples/b11L5F_variability.png
+.. image:: images/other_examples/b11L5F_variability.png
    :width: 300px
    :align: center
    
-.. image:: ../example/other_examples/b11L5F_pcaaminoacid.png
+.. image:: images/other_examples/b11L5F_pcaaminoacid.png
    :width: 200px
    :align: center
 

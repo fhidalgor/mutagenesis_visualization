@@ -1,5 +1,5 @@
-Designing the libraries
-=======================
+Design DNA libraries
+====================
 
 In this section we will generate the primers that are used to do
 saturation mutagenesis on proteins (ie. NNS primers).
@@ -11,7 +11,10 @@ generate your site saturation library.
 .. code:: ipython3
 
     # Run only if you are using the code from jupyter notebooks instead of pypi
-    import import_notebook
+    try:
+        import import_notebook
+    except ModuleNotFoundError:
+        pass
 
 .. code:: ipython3
 
@@ -55,12 +58,12 @@ If you just want to export the file to excel:
     code_synthesis.generate_primers(dna, start, end, output_file='primers.xlsx',
                                     codon='NNS', tm=60, return_df=False)
 
-.. image:: ../example/exported_images/primers.png
+.. image:: images/exported_images/primers.png
    :width: 450px
    :align: center
 
 Design site-saturation sequences
-================================
+--------------------------------
 
 Define dna sequence and the list of codons that we want to use to
 generate the mutants.
@@ -86,7 +89,7 @@ If you just want to export the file to fasta:
     code_synthesis.create_variants(dna, codon_list, 
                                    output_file='sequences.fasta')
 
-.. image:: ../example/exported_images/fasta.png
+.. image:: images/exported_images/fasta.png
    :width: 300px
    :align: center
 

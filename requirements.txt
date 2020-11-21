@@ -9,4 +9,4 @@ biopython==1.77
 logomaker==0.8
 freesasa==2.1.0
 plotly==4.11.0
--e git://github.com/cxhernandez/ipymol.git
+-e git://github.com/cxhernandez/ipymol.git#egg=ipymol

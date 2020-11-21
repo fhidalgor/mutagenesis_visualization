@@ -118,7 +118,7 @@ Now that you have installed ``mutagenesis_visualization``, execute the following
 
 This command will load the ``mutagenesis_visualization`` package, create a ``Screen.object`` with sample data, call the ``object.heatmap`` method and show a heatmap plot of the sample data.
 
-.. image:: ../example/exported_images/hras_fullheatmap.png
+.. image:: images/exported_images/hras_fullheatmap.png
 
 There are four other demo plots, and can be invoked using the following command:
 
@@ -130,18 +130,18 @@ There are four other demo plots, and can be invoked using the following command:
 	mut.demo(figure = 'pca')
 
 
-.. image:: ../example/exported_images/hras_bar_mean.png
+.. image:: images/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center
    
-.. image:: ../example/exported_images/hras_miniheatmap.png
+.. image:: images/exported_images/hras_miniheatmap.png
    :width: 200px
    :align: center
    
-.. image:: ../example/exported_images/hras_pcaaminoacid.png
+.. image:: images/exported_images/hras_pcaaminoacid.png
    :width: 200px
      
-.. image:: ../example/exported_images/hras_kde.png
+.. image:: images/exported_images/hras_kde.png
    :width: 240px
 
 If you would like to play with the data yourself, execute the following command to retrieve the raw data:
