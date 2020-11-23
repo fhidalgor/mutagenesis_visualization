@@ -28,6 +28,14 @@ If you are working on a jupyter notebook, you may have to use the following comm
 .. note::
     The package folder is called "mutagenesis_visualization" (with underscore), but pip replaces the underscore with a hyphen. Thus, if you search for it on Pypi, it will show up as "mutagenesis-visualization". For installation purposes, both a hyphen and an underscore work.
     
+Installing from github
+=======================
+
+Execute the following command to install the library from Github:
+
+.. code:: ipython3
+
+	pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 
 Use mutagenesis_visualization locally 
 =======================================
