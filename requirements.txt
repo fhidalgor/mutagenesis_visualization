@@ -10,10 +10,6 @@ logomaker==0.8
 freesasa==2.1.0
 plotly==4.11.0
 
-# to avoid the pickle error when using pandas
-setuptools==49.2.0
-python-dateutil==2.8.1
-pytz==2020.1
 
 # to install the ipymol package which it is not in pypi
 -e git://github.com/cxhernandez/ipymol.git#egg=ipymol

@@ -5,7 +5,8 @@ import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
 from mutagenesis_visualization.main.scripts.code_synthesis import (
         generate_primers, create_variants
 )
-
+from mutagenesis_visualization.main.scripts.code_create_objects import (
+        hras_RBD, bla_obj, sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj, asynuclein_obj, aph_obj, b11L5F_obj)
 
 
 __author__ = "Frank Hidalgo"
