@@ -98,48 +98,47 @@ def kwargs():
     default_kwargs : dict
         Dictionary with the default kwargs.
     '''
-    
-    default_kwargs = {'colormap': _generatecolormap(),
-                  'colorbar_scale': [-1, 1],
-                  'color': 'k',
-                  'title': 'Title',
-                  'x_label': 'x_label',
-                  'y_label': 'y_label',
-                  'z_label': 'y_label',
-                  'xscale': (None, None),
-                  'yscale': (None, None),
-                  'tick_spacing': 1,
-                  'dpi': 600,
-                  'aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
-                  'neworder_aminoacids': list('DEKHRGNQASTPCVYMILFW*'),
-                  'gof': 1,
-                  'lof': -1,
-                  'color_gof' : 'red',
-                  'color_lof' : 'blue',
-                  'cartoon_colors': ['lightgreen', 'lavender', 'k'],
-                  'text_labels': None,
-                  'show': True,
-                  'random_state' : 554,
-                  'bins' : 50,
-                  }
-    
+
+    default_kwargs = {
+        'colormap': _generatecolormap(),
+        'colorbar_scale': [-1, 1],
+        'color': 'k',
+        'title': 'Title',
+        'x_label': 'x_label',
+        'y_label': 'y_label',
+        'z_label': 'y_label',
+        'xscale': (None, None),
+        'yscale': (None, None),
+        'tick_spacing': 1,
+        'dpi': 600,
+        'aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
+        'neworder_aminoacids': list('DEKHRGNQASTPCVYMILFW*'),
+        'gof': 1,
+        'lof': -1,
+        'color_gof': 'red',
+        'color_lof': 'blue',
+        'cartoon_colors': ['lightgreen', 'lavender', 'k'],
+        'text_labels': None,
+        'show': True,
+        'random_state': 554,
+        'bins': 50,
+    }
+
     return default_kwargs
+
 
 def _generatecolormap():
     cmap = LinearSegmentedColormap(
         'BlueWhiteRed',
         {
-            'red':  ((0.0, 0.0, 0.0),
-                     (0.15, 0.0, 0.0),
-                     (0.475, 1.0, 1), (0.525, 1.0, 1), (0.85, 1.0, 1.0), (1.0, .8, 1)),
-            'green': ((0.0, 0.0, .0),
-                      (0.15, 0.5, 0.5), (0.475, 1.0,
-                                         1), (0.525, 1.0, 1), (0.85, 0.0, 0.0),
-                      (1.0, 0.0, 0.0)),
-            'blue': ((0.0, .5, .5),
-                     (0.15, 1, 1),
-                     (0.475, 1.0, 1), (0.525, 1.0, 1), (0.85, 0.0, 0.0), (1.0, 0.0, 0.0))
-        },)
+            'red': ((0.0, 0.0, 0.0), (0.15, 0.0, 0.0), (0.475, 1.0, 1),
+                    (0.525, 1.0, 1), (0.85, 1.0, 1.0), (1.0, .8, 1)), 'green':
+            ((0.0, 0.0, .0), (0.15, 0.5, 0.5), (0.475, 1.0, 1), (0.525, 1.0, 1),
+             (0.85, 0.0, 0.0), (1.0, 0.0, 0.0)), 'blue':
+            ((0.0, .5, .5), (0.15, 1, 1), (0.475, 1.0, 1), (0.525, 1.0, 1),
+             (0.85, 0.0, 0.0), (1.0, 0.0, 0.0))
+        },
+    )
     return cmap
 
 
@@ -166,6 +165,7 @@ def _parameters():
     rcParams['xtick.labelsize'] = 9
     rcParams['ytick.labelsize'] = 9
     return
+
 
 def _font_parameters():
     # math font

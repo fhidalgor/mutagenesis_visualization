@@ -21,7 +21,7 @@ except ModuleNotFoundError:
     import import_notebook
     import os
     directory = os.getcwd()
-    new_directory = directory.replace('tests','main')
+    new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
     import code_kwargs as code_kwargs
     os.chdir(directory)
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 
 #test that kwargs outputs a default dictionary
-def test_kwargs(): 
+def test_kwargs():
     dictionary = type(code_kwargs.kwargs())
     assert dictionary == dict, 'error the kwarg type is not a dictionary'
 
@@ -48,7 +48,7 @@ test_kwargs()
 
 
 #test that _generatecolormap creates a matplotlib color map
-def test_generatecolormap(): 
+def test_generatecolormap():
     colormap = type(code_kwargs._generatecolormap())
     assert colormap == matplotlib.colors.LinearSegmentedColormap, 'error the colormap type is not a matplotlib color map'
 

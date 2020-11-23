@@ -26,7 +26,6 @@ try:
     import shannon
 except ModuleNotFoundError:
     pass
-    
 
 # kwargs and parameters
 try:
@@ -34,7 +33,6 @@ try:
 except ModuleNotFoundError:
     import sys
     sys.path.append('mutagenesis_visualization/main/scripts/')
-
 
 import code_kwargs
 import code_utils
@@ -48,8 +46,13 @@ from code_heatmaps import _labels
 # In[ ]:
 
 
-def plot_rank(self, mode='pointmutant', outdf=False, 
-              output_file: Union[None, str, Path] = None,**kwargs):
+def plot_rank(
+    self,
+    mode='pointmutant',
+    outdf=False,
+    output_file: Union[None, str, Path] = None,
+    **kwargs
+):
     '''
     DEPRECATED
     Generate a rank plot so every mutation/residue is sorted based on enrichment score.
@@ -81,13 +84,13 @@ def plot_rank(self, mode='pointmutant', outdf=False,
     temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
     temp_kwargs['x_label'] = kwargs.get('x_label', 'Rank')
     temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
-    
+
     # Sort by enrichment scores
     df = self.dataframe.sort_values(by=['Score']).copy()
-    
+
     # Chose mode:
     if mode == 'mean':
-        df = df.groupby(by=['Position'],as_index=False).mean()
+        df = df.groupby(by=['Position'], as_index=False).mean()
         df.sort_values(by=['Score'], inplace=True)
 
     # create figure
@@ -97,24 +100,29 @@ def plot_rank(self, mode='pointmutant', outdf=False,
     code_kwargs._parameters()
 
     # Scatter data points
-    plt.scatter(np.arange(len(df),0,-1), df['Score'], c='k', s=1)
+    plt.scatter(np.arange(len(df), 0, -1), df['Score'], c='k', s=1)
 
     # Titles
-    plt.title(temp_kwargs['title'], fontsize=12,
-              fontname='Arial', color='k', pad=8)
+    plt.title(
+        temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8
+    )
     # Labels
-    plt.ylabel(temp_kwargs['y_label'], fontsize=10,
-               fontname="Arial", color='k', labelpad=0)
-    plt.xlabel(temp_kwargs['x_label'], fontsize=10,
-               fontname="Arial", color='k')
-    
+    plt.ylabel(
+        temp_kwargs['y_label'],
+        fontsize=10,
+        fontname="Arial",
+        color='k',
+        labelpad=0
+    )
+    plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
+
     # other graph parameters
     plt.xlim(temp_kwargs['xscale'])
     plt.ylim(temp_kwargs['yscale'])
-    
+
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-    
+
     if temp_kwargs['show']:
         plt.show()
     if outdf:
@@ -128,8 +136,9 @@ def plot_rank(self, mode='pointmutant', outdf=False,
 # In[ ]:
 
 
-def plot_miniheatmap(self, offset=0, output_file: Union[None, str, Path] = None,
-                     **kwargs):
+def plot_miniheatmap(
+    self, offset=0, output_file: Union[None, str, Path] = None, **kwargs
+):
     '''
     Generate a miniheatmap plot enrichment scores of mutagenesis selection assays.
 
@@ -169,7 +178,8 @@ def plot_miniheatmap(self, offset=0, output_file: Union[None, str, Path] = None,
 
     # calculate condensed heatmap
     dataset = _condense_heatmap(
-        dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
+        dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
+    )
 
     _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
@@ -185,14 +195,14 @@ def _condense_heatmap(df, new_order):
     df.drop(['Position'], axis=1, inplace=True)
 
     # Group by sequence and aminoacid, and then pivot table
-    df_grouped = df.groupby(['Sequence', 'Aminoacid'], sort = False).mean()
-    df_pivoted = df_grouped.pivot_table(values='Score',
-                                        index='Aminoacid',  columns='Sequence')
+    df_grouped = df.groupby(['Sequence', 'Aminoacid'], sort=False).mean()
+    df_pivoted = df_grouped.pivot_table(
+        values='Score', index='Aminoacid', columns='Sequence'
+    )
     df_pivoted.reset_index(drop=False, inplace=True)
 
     # Sort in y axis desired order
-    df_pivoted['Aminoacid'] = pd.Categorical(
-        df_pivoted['Aminoacid'], new_order)
+    df_pivoted['Aminoacid'] = pd.Categorical(df_pivoted['Aminoacid'], new_order)
     df_pivoted = df_pivoted.sort_values(by=['Aminoacid'])
 
     # Sort in x axis desired order
@@ -221,13 +231,13 @@ def _offset_sequence(dataset, sequence, start_position, offset):
 
     # truncate sequence
     if offset > 0:
-        sequence = sequence+'X'*np.absolute(offset)
-        trimmedsequence = sequence[start_position-1 +
-                                   offset:len(dataset[0])+start_position-1+offset]
+        sequence = sequence + 'X' * np.absolute(offset)
+        trimmedsequence = sequence[start_position - 1 + offset:len(dataset[0]) +
+                                   start_position - 1 + offset]
     else:
-        sequence = 'X'*(np.absolute(offset))+sequence
-        trimmedsequence = sequence[start_position -
-                                   1:len(dataset[0])+start_position-1]
+        sequence = 'X' * (np.absolute(offset)) + sequence
+        trimmedsequence = sequence[start_position - 1:len(dataset[0]) +
+                                   start_position - 1]
 
     return trimmedsequence
 
@@ -237,16 +247,18 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
     Generate a dataframe with the sequence offset. Reutilizes _transform_dataset
     '''
     # Add offset sequence
-    offset_sequence = _offset_sequence(self.dataset, self.sequence_raw,
-                                       self.start_position, offset)
-    df = self.dataframe_stopcodons.copy() if stopcodons is True else self.dataframe.copy()
+    offset_sequence = _offset_sequence(
+        self.dataset, self.sequence_raw, self.start_position, offset
+    )
+    df = self.dataframe_stopcodons.copy(
+    ) if stopcodons is True else self.dataframe.copy()
 
     # Copy old sequence
     df['Sequence_old'] = df['Sequence']
     # Count amino acids
     aa_number = len(set(df['Aminoacid']))
     # Generate new offset sequence
-    df['Sequence'] = np.ravel([[aa]*aa_number for aa in offset_sequence])
+    df['Sequence'] = np.ravel([[aa] * aa_number for aa in offset_sequence])
 
     # Drop rows with X
     df.drop(df.index[df['Sequence'] == 'X'], inplace=True)
@@ -439,9 +451,11 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     df = _calculate_secondary(self.dataframe, self.secondary_dup)
 
     # Color
-    df['Color'] = df.apply(code_utils._color_data, axis=1,
-                           args=(temp_kwargs['color_gof'],
-                                 temp_kwargs['color_lof']))
+    df['Color'] = df.apply(
+        code_utils._color_data,
+        axis=1,
+        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
+    )
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -450,17 +464,40 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     labels = df['Secondary']
 
     # Plot figure
-    ax.bar(ticks, df['Score'], width, color=df['Color'], ec='k',)
+    ax.bar(
+        ticks,
+        df['Score'],
+        width,
+        color=df['Color'],
+        ec='k',
+    )
 
     # graph parameters
     ax.set_xticks(ticks)
-    ax.set_xticklabels(labels, fontsize=9, fontname="Arial",
-                       color='k', minor=False, rotation=0)
-    ax.set_ylabel(r'$∆E^i_x$', fontsize=10, fontname="Arial",
-                  color='k', labelpad=12, rotation=0)
+    ax.set_xticklabels(
+        labels,
+        fontsize=9,
+        fontname="Arial",
+        color='k',
+        minor=False,
+        rotation=0
+    )
+    ax.set_ylabel(
+        r'$∆E^i_x$',
+        fontsize=10,
+        fontname="Arial",
+        color='k',
+        labelpad=12,
+        rotation=0
+    )
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(temp_kwargs['title'], horizontalalignment='center',
-              fontname="Arial", fontsize=10, pad=5)
+    plt.title(
+        temp_kwargs['title'],
+        horizontalalignment='center',
+        fontname="Arial",
+        fontsize=10,
+        pad=5
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -487,8 +524,9 @@ def _calculate_secondary(df, secondary):
 # In[ ]:
 
 
-def plot_roc(self, df_class=None, output_file: Union[None, str, Path] = None,
-             **kwargs):
+def plot_roc(
+    self, df_class=None, output_file: Union[None, str, Path] = None, **kwargs
+):
     '''
     Generates ROC AUC plot. It compares enrichment scores to some labels that the user has specified.
 
@@ -537,19 +575,27 @@ def plot_roc(self, df_class=None, output_file: Union[None, str, Path] = None,
     plt.ylim([0.0, 1.05])
     tick_spacing = 0.2
     ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing))  # Plt ticks
+        ticker.MultipleLocator(tick_spacing)
+    )  # Plt ticks
     ax.yaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing))  # Plt ticks
+        ticker.MultipleLocator(tick_spacing)
+    )  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
-    plt.ylabel('True Positive Rate', fontsize=12,
-               fontname="Arial", color='k', labelpad=0)
+    plt.ylabel(
+        'True Positive Rate',
+        fontsize=12,
+        fontname="Arial",
+        color='k',
+        labelpad=0
+    )
     plt.xlabel('False Positive Rate', fontsize=12, fontname="Arial", color='k')
 
     # Legend
-    plt.legend(loc='lower right', handlelength=0,
-               handletextpad=0, frameon=False)
+    plt.legend(
+        loc='lower right', handlelength=0, handletextpad=0, frameon=False
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -565,7 +611,8 @@ def _rocauc(df):
     The input is a dataframe that contains [Variants,Class,Score]
     '''
     fpr, tpr, thresholds = metrics.roc_curve(
-        df['Class'], df['Score'], drop_intermediate=True)
+        df['Class'], df['Score'], drop_intermediate=True
+    )
     auc = metrics.roc_auc_score(df['Class'], df['Score'])
     return fpr, tpr, auc, thresholds
 
@@ -612,8 +659,9 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
 # In[ ]:
 
 
-def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None,
-                    **kwargs):
+def plot_cumulative(
+    self, mode='all', output_file: Union[None, str, Path] = None, **kwargs
+):
     '''
     Generates a cumulative plot of the enrichment scores by position. 
 
@@ -650,7 +698,7 @@ def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None
     # Get data filtered
     df = _filter_bySNV(self, mode)
     cumsum = df.cumsum(skipna=False)['Score']
-    plt.plot(df['Position'], cumsum/list(cumsum)[-1], color='red', lw=2)
+    plt.plot(df['Position'], cumsum / list(cumsum)[-1], color='red', lw=2)
 
     # y label
     y_label = 'Cumulative LoF'
@@ -658,22 +706,25 @@ def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None
         y_label = 'Cumulative GoF'
 
     # Graph limits
-    plt.xlim(self.dataframe['Position'].min(),
-             self.dataframe['Position'].max()+1)
+    plt.xlim(
+        self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1
+    )
     plt.ylim(0, 1.1)
 
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(
-        temp_kwargs['tick_spacing']))  # Plt ticks
+    ax.xaxis.set_major_locator(
+        ticker.MultipleLocator(temp_kwargs['tick_spacing'])
+    )  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
     plt.ylabel(y_label, fontsize=12, fontname="Arial", color='k', labelpad=5)
-    plt.xlabel('Position', fontsize=12,
-               fontname="Arial", color='k', labelpad=0)
+    plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
 
     # x=y line
     plt.plot([0, df['Position'].max()], [0, 1],
-             color='silver', lw=2, linestyle='--')
+             color='silver',
+             lw=2,
+             linestyle='--')
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -700,7 +751,7 @@ def _filter_bySNV(self, mode):
 # In[ ]:
 
 
-def plot_box(binned_x, y, output_file: Union[None, str, Path] = None,**kwargs):
+def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     '''
     Generates a boxplot. Data needs to be binned prior before using this function. 
 
@@ -730,7 +781,7 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None,**kwargs):
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
-    
+
     # Plot data
     ax = sns.boxplot(binned_x, y, color='white', fliersize=2)
 
@@ -738,12 +789,17 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None,**kwargs):
     plt.setp(ax.lines, color='k')
 
     # graph parameters
-    plt.title(temp_kwargs['title'], fontsize=10,
-              fontname='Arial', color='k', pad=8)
-    plt.ylabel(temp_kwargs['y_label'], fontsize=10,
-               fontname="Arial", color='k', labelpad=0)
-    plt.xlabel(temp_kwargs['x_label'], fontsize=10,
-               fontname="Arial", color='k')
+    plt.title(
+        temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8
+    )
+    plt.ylabel(
+        temp_kwargs['y_label'],
+        fontsize=10,
+        fontname="Arial",
+        color='k',
+        labelpad=0
+    )
+    plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
 
     # axes limits
     plt.xlim(temp_kwargs['xscale'])
@@ -752,7 +808,7 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None,**kwargs):
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-    
+
     if temp_kwargs['show']:
         plt.show()
 

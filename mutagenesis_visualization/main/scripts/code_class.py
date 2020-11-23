@@ -10,29 +10,43 @@
 import numpy as np
 import itertools
 
-# Package libraries
+# Local imports
 try:
     import import_notebook
 except ModuleNotFoundError:
     import sys
     sys.path.append('mutagenesis_visualization/main/scripts/')
 
-
-# Package libraries
+# Local imports
 from code_kernel import (plot_kernel, plot_hist)
 from code_heatmaps import (
-    plot_heatmap, plot_heatmap_rows, plot_heatmap_columns)
-from code_bar import (plot_mean, plot_meandifferential,
-                      plot_position, plot_meancounts, plot_library_representation)
+    plot_heatmap, plot_heatmap_rows, plot_heatmap_columns
+)
+from code_bar import (
+    plot_mean, plot_meandifferential, plot_position, plot_meancounts,
+    plot_library_representation
+)
 from code_scatter import (plot_scatter)
 from code_PCA import (
-    plot_correlation, plot_individual_correlation, plot_group_correlation, plot_pca)
-from code_other import (plot_rank, plot_miniheatmap,
-                        plot_neighboreffect, plot_secondary, plot_roc, plot_cumulative)
-from code_3D import (plot_scatter_3D, plot_scatter_3D_pdbprop, plot_pymol)
+    plot_correlation, plot_individual_correlation, plot_group_correlation,
+    plot_pca
+)
+from code_other import (
+    plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary, plot_roc,
+    plot_cumulative
+)
+from code_3D import (plot_scatter_3D, plot_scatter_3D_pdbprop)
+
 from code_plotly import (plot_rank_plotly, plot_scatter_plotly)
-from code_utils import (_is_DNA, _translate_codons, _transform_sequence,
-                        _transform_dataset, _select_SNV, _select_nonSNV, _transform_secondary)
+from code_utils import (
+    _is_DNA, _translate_codons, _transform_sequence, _transform_dataset,
+    _select_SNV, _select_nonSNV, _transform_secondary
+)
+
+try:
+    from code_3D import (plot_pymol)
+except:
+    pass
 
 
 # # Define Classes
@@ -199,9 +213,14 @@ class Screen:
     # code_3D
     scatter_3D = plot_scatter_3D
     scatter_3D_pdbprop = plot_scatter_3D_pdbprop
-    pymol = plot_pymol
 
     # code_plotly
     rank_plotly = plot_rank_plotly
     scatter_plotly = plot_scatter_plotly
+    
+    # pymol
+    try:
+        pymol = plot_pymol
+    except:
+        pass
 

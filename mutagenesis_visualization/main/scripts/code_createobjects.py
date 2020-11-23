@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import os
 
+# Local imports
 try:
     import import_notebook
 except ModuleNotFoundError:
@@ -46,16 +47,22 @@ def hras_RBD():
     hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
 
     # Define secondary structure
-    secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25), ['β2']*(46-36), ['L3']*(48-46),
-                 ['β3']*(58-48), ['L4'] * (64-58), ['α2'] *
-                 (74-64), ['L5']*(76-74), ['β4']*(83-76),
-                 ['L6']*(86-83), ['α3']*(103-86), ['L7']*(110-103), ['β5'] *
-                 (116-110), ['L8']*(126-116), ['α4']*(137-126),
-                 ['L9']*(140-137), ['β6']*(143-140), ['L10']*(151-143), ['α5']*(172-151), ['L11']*(190-172)]
+    secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9),
+                 ['α1'] * (25 - 15), ['L2'] * (36 - 25), ['β2'] * (46 - 36),
+                 ['L3'] * (48 - 46), ['β3'] * (58 - 48), ['L4'] * (64 - 58),
+                 ['α2'] * (74 - 64), ['L5'] * (76 - 74), ['β4'] * (83 - 76),
+                 ['L6'] * (86 - 83), ['α3'] * (103 - 86), ['L7'] * (110 - 103),
+                 ['β5'] * (116 - 110), ['L8'] * (126 - 116),
+                 ['α4'] * (137 - 126), ['L9'] * (140 - 137),
+                 ['β6'] * (143 - 140), ['L10'] * (151 - 143),
+                 ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
 
     # Create object
-    hras_RBD = Screen(dataset=hras_enrichment_RBD,
-                      sequence=hras_sequence, secondary=secondary)
+    hras_RBD = Screen(
+        dataset=hras_enrichment_RBD,
+        sequence=hras_sequence,
+        secondary=secondary
+    )
     return hras_RBD
 
 

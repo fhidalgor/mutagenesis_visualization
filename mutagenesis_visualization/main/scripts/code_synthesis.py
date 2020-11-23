@@ -17,8 +17,16 @@ import pandas as pd
 # In[2]:
 
 
-def generate_primers(dna, start, end, output_file: Union[str, Path],
-                     codon='NNS', length_primer=15, tm=None, return_df=False):
+def generate_primers(
+    dna,
+    start,
+    end,
+    output_file: Union[str, Path],
+    codon='NNS',
+    length_primer=15,
+    tm=None,
+    return_df=False
+):
     '''
     Generate primers for saturation mutagenesis.
 
@@ -73,14 +81,21 @@ def generate_primers(dna, start, end, output_file: Union[str, Path],
 
     # loop through DNA and make a list with fp and second list with rp
 
-    label_fp = ['fp '+str(i) for i in range(0, int((end_codon-start_codon)/3))]
-    label_rp = ['rp '+str(i) for i in range(0, int((end_codon-start_codon)/3))]
+    label_fp = [
+        'fp ' + str(i) for i in range(0, int((end_codon - start_codon) / 3))
+    ]
+    label_rp = [
+        'rp ' + str(i) for i in range(0, int((end_codon - start_codon) / 3))
+    ]
     forward_primers, reverse_primers = _create_primers_list(
-        dna, start_codon, end_codon, codon, length_primer, tm)
+        dna, start_codon, end_codon, codon, length_primer, tm
+    )
 
     # Create dataframe
-    dictionary = {'FP_label': label_fp, 'FP_seq': forward_primers,
-                  'RP_label': label_rp, 'RP_seq': reverse_primers}
+    dictionary = {
+        'FP_label': label_fp, 'FP_seq': forward_primers, 'RP_label': label_rp,
+        'RP_seq': reverse_primers
+    }
     df = pd.DataFrame(dictionary)
 
     # Export dataframe
@@ -181,8 +196,9 @@ df_prim = generate_primers(dna, start, end, output_file=None,
 # In[5]:
 
 
-def create_variants(dna, codon_list, output_file: Union[str, Path],
-                    return_df=False):
+def create_variants(
+    dna, codon_list, output_file: Union[str, Path], return_df=False
+):
     '''
     Generate a list of all point mutants given a dna sequence and a list of codons.
 
@@ -224,7 +240,8 @@ def create_variants(dna, codon_list, output_file: Union[str, Path],
     if output_file:
         if Path(output_file).suffix == '.xlsx':
             df.to_excel(Path(output_file), sheet_name='Variants', index=False)
-        elif Path(output_file).suffix == '.fasta' or Path(output_file).suffix == '.txt':
+        elif Path(output_file).suffix == '.fasta' or Path(output_file
+                                                          ).suffix == '.txt':
             _list_to_fasta(seq_list, output_file)
 
     # Return dataframe
@@ -238,7 +255,7 @@ def _enumerate_variants_2(dna, codon_list):
     as the first item of the list.
     '''
     # Create list with codons of sequence
-    wtSeqList = [dna[i:i+3] for i in range(0, len(dna), 3)]
+    wtSeqList = [dna[i:i + 3] for i in range(0, len(dna), 3)]
 
     # List of sequences
     seq_list = [dna]
@@ -254,7 +271,7 @@ def _enumerate_variants_2(dna, codon_list):
 
 def _list_to_fasta(seq_list, output_file):
     '''Export list to fasta format'''
-    
+
     # Open file
     ofile = open(str(output_file), "w")
 

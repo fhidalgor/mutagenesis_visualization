@@ -32,9 +32,15 @@ except ModuleNotFoundError:
 # In[12]:
 
 
-def count_reads(dna_sequence, input_file: Union[str, Path],
-                codon_list='NNS', counts_wt=True, start_position=2,
-                output_file: Union[None, str, Path] = None, full=False):
+def count_reads(
+    dna_sequence,
+    input_file: Union[str, Path],
+    codon_list='NNS',
+    counts_wt=True,
+    start_position=2,
+    output_file: Union[None, str, Path] = None,
+    full=False
+):
     '''
     Process a trimmed fastq file containing DNA reads and returns the counts of 
     each DNA sequence specified by the user.
@@ -84,25 +90,35 @@ def count_reads(dna_sequence, input_file: Union[str, Path],
         Present only if `full` = True. Contains the useful reads.
     '''
     # Assert messages
-    assert len(dna_sequence) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
-    
+    assert len(
+        dna_sequence
+    ) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
+
     # Make upper case in case input was lower case
     dna_sequence = dna_sequence.upper()
-    if isinstance(codon_list, str): #check if codon_list is a String
+    if isinstance(codon_list, str):  #check if codon_list is a String
         codon_list = codon_list.upper()
     else:
         codon_list = [item.upper() for item in codon_list]
 
     # Create list with codons of sequence
-    wtSeqList = [dna_sequence[i:i+3] for i in range(0, len(dna_sequence), 3)]
+    wtSeqList = [dna_sequence[i:i + 3] for i in range(0, len(dna_sequence), 3)]
 
     # codon_list
     if codon_list == 'NNS':
-        codon_list = ["GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG", "TTG", "ATG",
-                      "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"]
+        codon_list = [
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC",
+            "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG",
+            "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG",
+            "GTC", "GTG", "TGG", "TAC", "TAG"
+        ]
     elif codon_list == 'NNK':
-        codon_list = ['GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG',
-                      'AAT', 'CCG', 'CCT', 'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG', 'TAT', 'TAG']
+        codon_list = [
+            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT',
+            'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG', 'AAT', 'CCG', 'CCT',
+            'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT',
+            'GTG', 'GTT', 'TGG', 'TAT', 'TAG'
+        ]
 
     # Enumerate variants
     variants = _enumerate_variants(wtSeqList, codon_list, dna_sequence)
@@ -113,33 +129,39 @@ def count_reads(dna_sequence, input_file: Union[str, Path],
     # Convert to df
     wtProtein = Seq(dna_sequence).translate()
     df = pd.DataFrame()
-    df['Position'] = np.ravel([[pos]*len(codon_list)
-                               for pos in np.arange(start_position, len(wtProtein)+start_position).astype(int)])
-    df['Codon'] = codon_list*len(wtProtein)
-    df['WTCodon'] = np.ravel([[codon]*len(codon_list) for codon in wtSeqList])
-    df['Aminoacid'] = np.ravel([[aa]*len(codon_list) for aa in wtProtein])
-    df['SynWT'] = df.apply(lambda x: _are_syn(
-        x['Codon'], x['WTCodon'], _codon_table()), axis=1)
+    df['Position'] = np.ravel(
+        [[pos] * len(codon_list)
+         for pos in np.arange(start_position,
+                              len(wtProtein) + start_position).astype(int)]
+    )
+    df['Codon'] = codon_list * len(wtProtein)
+    df['WTCodon'] = np.ravel([[codon] * len(codon_list) for codon in wtSeqList])
+    df['Aminoacid'] = np.ravel([[aa] * len(codon_list) for aa in wtProtein])
+    df['SynWT'] = df.apply(
+        lambda x: _are_syn(x['Codon'], x['WTCodon'], _codon_table()), axis=1
+    )
     df['Counts'] = list(variants.values())
-    
+
     if counts_wt:
-        try: # try is to fix the Bug Che discovered
-            df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = variants[dna_sequence]
+        try:  # try is to fix the Bug Che discovered
+            df.loc[df['Codon'] == df['WTCodon'],
+                   'Counts'] = variants[dna_sequence]
         except:
             pass
     else:
         df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = np.nan
 
     # Pivot table and reindex
-    df_counts = df.pivot_table(values='Counts', index='Codon',
-                               columns=['Position'], dropna=False)
+    df_counts = df.pivot_table(
+        values='Counts', index='Codon', columns=['Position'], dropna=False
+    )
     df_counts = df_counts.reindex(index=codon_list)
-    
-    
+
     # Get WT counts
     df_wt = df.loc[df['SynWT'] == True][[
-        'Position', 'Codon', 'Aminoacid', 'Counts']]
-    
+        'Position', 'Codon', 'Aminoacid', 'Counts'
+    ]]
+
     # Export files
     if output_file:
         # Create a Pandas Excel writer using XlsxWriter as the engine.
@@ -161,22 +183,19 @@ def count_reads(dna_sequence, input_file: Union[str, Path],
 
 
 def _codon_table():
-    codontable = {'ATA': 'I', 'ATC': 'I', 'ATT': 'I', 'ATG': 'M',
-                  'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T',
-                  'AAC': 'N', 'AAT': 'N', 'AAA': 'K', 'AAG': 'K',
-                  'AGC': 'S', 'AGT': 'S', 'AGA': 'R', 'AGG': 'R',
-                  'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L',
-                  'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P',
-                  'CAC': 'H', 'CAT': 'H', 'CAA': 'Q', 'CAG': 'Q',
-                  'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R',
-                  'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
-                  'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A',
-                  'GAC': 'D', 'GAT': 'D', 'GAA': 'E', 'GAG': 'E',
-                  'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
-                  'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S',
-                  'TTC': 'F', 'TTT': 'F', 'TTA': 'L', 'TTG': 'L',
-                  'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*',
-                  'TGC': 'C', 'TGT': 'C', 'TGA': '*', 'TGG': 'W'}
+    codontable = {
+        'ATA': 'I', 'ATC': 'I', 'ATT': 'I', 'ATG': 'M', 'ACA': 'T', 'ACC': 'T',
+        'ACG': 'T', 'ACT': 'T', 'AAC': 'N', 'AAT': 'N', 'AAA': 'K', 'AAG': 'K',
+        'AGC': 'S', 'AGT': 'S', 'AGA': 'R', 'AGG': 'R', 'CTA': 'L', 'CTC': 'L',
+        'CTG': 'L', 'CTT': 'L', 'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P',
+        'CAC': 'H', 'CAT': 'H', 'CAA': 'Q', 'CAG': 'Q', 'CGA': 'R', 'CGC': 'R',
+        'CGG': 'R', 'CGT': 'R', 'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
+        'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', 'GAC': 'D', 'GAT': 'D',
+        'GAA': 'E', 'GAG': 'E', 'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
+        'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', 'TTC': 'F', 'TTT': 'F',
+        'TTA': 'L', 'TTG': 'L', 'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*',
+        'TGC': 'C', 'TGT': 'C', 'TGA': '*', 'TGG': 'W'
+    }
     return codontable
 
 
@@ -273,9 +292,24 @@ def _initialize_ordereddict(list_variants):
 # In[ ]:
 
 
-def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
-                         zeroing='population', how='median', norm_std=True, stopcodon=False, min_counts=25,
-                         min_countswt=100, std_scale=0.2, mpop=2, mwt=2, infinite=3, output_file: Union[None, str, Path] = None):
+def calculate_enrichment(
+    pre_lib,
+    post_lib,
+    pre_wt=None,
+    post_wt=None,
+    aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
+    zeroing='population',
+    how='median',
+    norm_std=True,
+    stopcodon=False,
+    min_counts=25,
+    min_countswt=100,
+    std_scale=0.2,
+    mpop=2,
+    mwt=2,
+    infinite=3,
+    output_file: Union[None, str, Path] = None
+):
     '''
     Determine the enrichment scores of a selection experiment, where there is a preselected population (input)
     and a selected population (output).
@@ -372,15 +406,18 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
         output_stopcodon = ''
 
     # Log10 of the counts for library and wt alleles
-    log10_counts = _get_enrichment(pre_lib, post_lib, input_stopcodon,
-                                   output_stopcodon, min_counts, stopcodon, infinite)
+    log10_counts = _get_enrichment(
+        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts,
+        stopcodon, infinite
+    )
     # Group by amino acid
     df = pd.DataFrame(data=log10_counts)
     log10_counts_grouped = _group_byaa(df, aminoacids)
 
     # MAD filtering
     log10_counts_mad = _MAD_filtering(
-        np.ravel(np.array(log10_counts_grouped)), mpop)
+        np.ravel(np.array(log10_counts_grouped)), mpop
+    )
     mean_pop = np.nanmean(log10_counts_mad)
     median_pop = np.nanmedian(log10_counts_mad)
     std_pop = np.nanstd(log10_counts_mad)
@@ -388,8 +425,10 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
 
     # Wt counts
     if pre_wt is not None:
-        log10_wtcounts = _get_enrichment(pre_wt, post_wt, input_stopcodon,
-                                         output_stopcodon, min_countswt, stopcodon, infinite)
+        log10_wtcounts = _get_enrichment(
+            pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt,
+            stopcodon, infinite
+        )
         # MAD filtering
         # If set to m=1, if tosses out about 50% of the values. the mean barely changes though
         log10_wtcounts = _MAD_filtering(log10_wtcounts, mwt)
@@ -407,7 +446,7 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_wt
         if norm_std == True:
-            zeroed = zeroed*std_scale/2/std_wt
+            zeroed = zeroed * std_scale / 2 / std_wt
     elif zeroing == 'population':
         if how == 'mean':
             zeroed = log10_counts_grouped - mean_pop
@@ -416,19 +455,20 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_pop
         if norm_std == True:
-            zeroed = zeroed*std_scale/std_pop
+            zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'counts':
         # Get the ratio of counts
-        ratio = np.log10(pre_lib.sum().sum()/post_lib.sum().sum())
+        ratio = np.log10(pre_lib.sum().sum() / post_lib.sum().sum())
         zeroed = log10_counts_grouped + ratio
         if norm_std == True:
-            zeroed = zeroed*std_scale/std_pop
+            zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':
         zeroed_0, kernel_std = _kernel_correction(
-            log10_counts_grouped, aminoacids)
+            log10_counts_grouped, aminoacids
+        )
         zeroed, kernel_std = _kernel_correction(zeroed_0, aminoacids, cutoff=1)
         if norm_std is True:
-            zeroed = zeroed*std_scale/kernel_std
+            zeroed = zeroed * std_scale / kernel_std
 
     # Export files
     if output_file:
@@ -443,8 +483,10 @@ def calculate_enrichment(pre_lib, post_lib, pre_wt=None, post_wt=None, aminoacid
 # In[ ]:
 
 
-def _get_enrichment(input_lib, output_lib, input_stopcodon, output_stopcodon,
-                    min_counts, stopcodon, infinite):
+def _get_enrichment(
+    input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts,
+    stopcodon, infinite
+):
     '''Calculate log10 enrichment scores from input and output counts'''
     # Copy data and replace low counts by np.nan
     input_lib = np.copy(input_lib.astype(float))
@@ -454,27 +496,32 @@ def _get_enrichment(input_lib, output_lib, input_stopcodon, output_stopcodon,
     # Stop codon correction
     if stopcodon:
         output_lib = _stopcodon_correction(
-            input_lib, output_lib, input_stopcodon, output_stopcodon)
+            input_lib, output_lib, input_stopcodon, output_stopcodon
+        )
 
     # log10 of library and replace infinite values
-    counts_log10_ratio = _replace_inf(np.log10(output_lib/input_lib), infinite)
+    counts_log10_ratio = _replace_inf(
+        np.log10(output_lib / input_lib), infinite
+    )
 
     return counts_log10_ratio
 
 
-def _stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodon):
+def _stopcodon_correction(
+    input_lib, output_lib, input_stopcodon, output_stopcodon
+):
     '''This aux function will take as an input the counts for pre and post selection (and also for wT subset), 
     and will return the corrected output counts'''
 
     # calculate stop codons frequencies
-    frequency_stopcodons = output_stopcodon/input_stopcodon
+    frequency_stopcodons = output_stopcodon / input_stopcodon
 
     # MAD filtering
     frequency_stopcodons_filtered = _MAD_filtering(frequency_stopcodons, m=2)
     median_frequency = np.nanmedian(frequency_stopcodons_filtered)
 
     # subtract to output counts
-    output_lib_corr = output_lib - input_lib*median_frequency
+    output_lib_corr = output_lib - input_lib * median_frequency
 
     # eliminate negative values so they wont get turned into np.nan
     output_lib_corr[output_lib_corr < 0] = 0
@@ -490,7 +537,7 @@ def _MAD_filtering(data, m=2):
     df = pd.DataFrame(np.array(data), columns=['Data'])
     median = df['Data'].median(axis=0)
     mad = df['Data'].mad(axis=0)
-    df['Abs_Dev'] = np.abs(data-median)/mad
+    df['Abs_Dev'] = np.abs(data - median) / mad
 
     # filter values m times away from median, by default m = 2
     df['Abs_Dev'].mask(df['Abs_Dev'] > m, inplace=True)  # mask values
@@ -533,8 +580,10 @@ def _nanmode(data):
     # Adjust kernel
     kernel_processed_data = stats.gaussian_kde(data_corrected)
     # Find mode
-    indexmax = np.where(kernel_processed_data(data_corrected)
-                        == kernel_processed_data(data_corrected).max())
+    indexmax = np.where(
+        kernel_processed_data(data_corrected) ==
+        kernel_processed_data(data_corrected).max()
+    )
     # Return mean in case there are two x values with equal y-axis height
     return data_corrected[indexmax].mean()
 
@@ -546,18 +595,22 @@ def _kernel_correction(data, aminoacids, cutoff=2):
 
     # Get data into right format
     data_corrected, kernel_processed_data = _kernel_datapreparation(
-        data, cutoff)
+        data, cutoff
+    )
 
     # Find max of kernel peak
-    indexmax = np.where(kernel_processed_data(data_corrected) ==
-                        kernel_processed_data(data_corrected).max())
+    indexmax = np.where(
+        kernel_processed_data(data_corrected) ==
+        kernel_processed_data(data_corrected).max()
+    )
 
     # Normalize the max of peak os it has an x = 0
-    data_final = data-data_corrected[indexmax].mean()
+    data_final = data - data_corrected[indexmax].mean()
 
     # find std of kernel. It uses the already max peak x=0 normalized data
     data_final_flatten, data_final_kernel_processed_data = _kernel_datapreparation(
-        data_final, cutoff)
+        data_final, cutoff
+    )
     std = _kernel_std(data_final_flatten, data_final_kernel_processed_data)
 
     return data_final, std
@@ -570,8 +623,8 @@ def _kernel_datapreparation(data, cutoff):
     data_corrected = np.array(data.drop('*', errors='ignore').copy())
 
     # Eliminate values lower than -1
-    data_corrected = data_corrected[(
-        data_corrected >= -cutoff) & (data_corrected <= cutoff)]
+    data_corrected = data_corrected[(data_corrected >= -cutoff)
+                                    & (data_corrected <= cutoff)]
 
     # Get rid of np.nan values and convert matrix into 1d matrix
     data_corrected = data_corrected[np.invert(np.isnan(data_corrected))]
@@ -598,12 +651,12 @@ def _kernel_std(data, kernel):
     y_temp = kernel(data)
 
     # left side
-    y_hw_l = (min(y_temp[data < 0], key=lambda x: abs(x-y_max/2)))
+    y_hw_l = (min(y_temp[data < 0], key=lambda x: abs(x - y_max / 2)))
     index_yhw_l = np.where(kernel(data) == y_hw_l)
     x_yhw_l = data[index_yhw_l].mean()
 
     # right side
-    y_hw_r = (min(y_temp[data > 0], key=lambda x: abs(x-y_max/2)))
+    y_hw_r = (min(y_temp[data > 0], key=lambda x: abs(x - y_max / 2)))
     index_yhw_r = np.where(kernel(data) == y_hw_r)
     x_yhw_r = data[index_yhw_r].mean()
 
@@ -612,8 +665,8 @@ def _kernel_std(data, kernel):
     hwhm_r = abs(x_yhw_r - x_ymax)
 
     # calculate std from fwhm
-    std_l = hwhm_l/((2*np.log(2))**0.5)
-    std_r = hwhm_r/((2*np.log(2))**0.5)
+    std_l = hwhm_l / ((2 * np.log(2))**0.5)
+    std_r = hwhm_r / ((2 * np.log(2))**0.5)
 
     return min(std_l, std_r)
 
@@ -629,13 +682,28 @@ def _array_to_df_enrichments(lib, aminoacids):
 # In[ ]:
 
 
-def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
-                      nrows_pop, nrows_wt, columns_wt=None, skiprows=1,
-                      aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
-                      zeroing='population', how='median', norm_std=True,
-                      stopcodon=False, min_counts=25, min_countswt=100,
-                      std_scale=0.2, mpop=2, mwt=2, infinite=3,
-                      output_file: Union[None, str, Path] = None):
+def assemble_avengers(
+    excel_path,
+    sheet_pre,
+    sheet_post,
+    columns,
+    nrows_pop,
+    nrows_wt,
+    columns_wt=None,
+    skiprows=1,
+    aminoacids=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
+    zeroing='population',
+    how='median',
+    norm_std=True,
+    stopcodon=False,
+    min_counts=25,
+    min_countswt=100,
+    std_scale=0.2,
+    mpop=2,
+    mwt=2,
+    infinite=3,
+    output_file: Union[None, str, Path] = None
+):
     '''
     Assembles different sublibraries into one. Uses calculate_enrichments. 
     Can only read from excel files that are in the same format as the example provided.
@@ -715,13 +783,17 @@ def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
     '''
 
     # Read reads from excel
-    list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(excel_path, sheet_pre, sheet_post, columns,
-                                                                nrows_pop, nrows_wt, columns_wt)
+    list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(
+        excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt,
+        columns_wt
+    )
 
     # Assemble sublibraries
-    df = _assemble_list(list_pre, list_sel, list_pre_wt, list_sel_wt,
-                        aminoacids, zeroing, how, norm_std, stopcodon, min_counts,
-                        min_countswt, std_scale, mpop, mwt, infinite)
+    df = _assemble_list(
+        list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing, how,
+        norm_std, stopcodon, min_counts, min_countswt, std_scale, mpop, mwt,
+        infinite
+    )
 
     # Export files
     if output_file:
@@ -730,46 +802,92 @@ def assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
     return df
 
 
-def _read_counts(excel_path, sheet_pre, sheet_post, columns,
-                 nrows_pop, nrows_wt, columns_wt=None, skiprows=1):
+def _read_counts(
+    excel_path,
+    sheet_pre,
+    sheet_post,
+    columns,
+    nrows_pop,
+    nrows_wt,
+    columns_wt=None,
+    skiprows=1
+):
     '''Aux'''
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     list_pre, list_sel, list_pre_wt, list_sel_wt = ([] for i in range(4))
 
     # Read counts from excel
     replicates = np.arange(0, len(sheet_pre))
-    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt, replicates):
+    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt,
+                                               replicates):
         # Pre counts
-        list_pre.append(pd.read_excel(excel_path, sheet_pre,
-                                      skiprows=skiprows, usecols=column, nrows=nrows_pop))
+        list_pre.append(
+            pd.read_excel(
+                excel_path,
+                sheet_pre,
+                skiprows=skiprows,
+                usecols=column,
+                nrows=nrows_pop
+            )
+        )
         # Sel counts
-        list_sel.append(pd.read_excel(excel_path, sheet_post,
-                                      skiprows=skiprows, usecols=column, nrows=nrows_pop))
+        list_sel.append(
+            pd.read_excel(
+                excel_path,
+                sheet_post,
+                skiprows=skiprows,
+                usecols=column,
+                nrows=nrows_pop
+            )
+        )
         if columns_wt is None:
             list_pre_wt.append(None)
             list_sel_wt.append(None)
         else:
             # Pre counts wild-type alleles
-            list_pre_wt.append(pd.read_excel(
-                excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt))
+            list_pre_wt.append(
+                pd.read_excel(
+                    excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt
+                )
+            )
             # Sel counts wild-type alleles
-            list_sel_wt.append(pd.read_excel(
-                excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt))
+            list_sel_wt.append(
+                pd.read_excel(
+                    excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt
+                )
+            )
     return list_pre, list_sel, list_pre_wt, list_sel_wt
 
 
-def _assemble_list(list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing,
-                   how, norm_std, stopcodon, min_counts,
-                   min_countswt, std_scale, mpop, mwt, infinite, output_file: Union[None, str, Path] = None):
+def _assemble_list(
+    list_pre,
+    list_sel,
+    list_pre_wt,
+    list_sel_wt,
+    aminoacids,
+    zeroing,
+    how,
+    norm_std,
+    stopcodon,
+    min_counts,
+    min_countswt,
+    std_scale,
+    mpop,
+    mwt,
+    infinite,
+    output_file: Union[None, str, Path] = None
+):
     '''gets the output from _read_counts and assembles the sublibraries'''
 
     enrichment_lib = []
 
-    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt, list_sel_wt):
+    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt,
+                                        list_sel_wt):
         # log 10
-        enrichment_log10 = calculate_enrichment(pre, sel, pre_wt, sel_wt, aminoacids, zeroing,
-                                                how, norm_std, stopcodon, min_counts,
-                                                min_countswt, std_scale, mpop, mwt, infinite)
+        enrichment_log10 = calculate_enrichment(
+            pre, sel, pre_wt, sel_wt, aminoacids, zeroing, how, norm_std,
+            stopcodon, min_counts, min_countswt, std_scale, mpop, mwt, infinite
+        )
         # Store in list
         enrichment_lib.append(enrichment_log10)
 
@@ -821,11 +939,13 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
 
     # Merge enrichment scores and MSA conservation
     df_freq = _merge_msa_enrichment(
-        self, _msa_to_df(msa), start_position, threshold)
+        self, _msa_to_df(msa), start_position, threshold
+    )
 
     # Merge shannon and mean enrichment score
     df_shannon = _merge_shannon_enrichment(
-        self, shannon_entropy, start_position)
+        self, shannon_entropy, start_position
+    )
 
     return df_shannon, df_freq
 
@@ -835,12 +955,13 @@ def _merge_shannon_enrichment(self, shannon_entropy, start_position):
     # Create df with shannon entropy by residue and average enrichment score by residue
     df_shannon = pd.DataFrame()
     df_shannon['Position'] = np.arange(
-        start_position, len(shannon_entropy)+start_position)
+        start_position,
+        len(shannon_entropy) + start_position
+    )
     df_shannon['Shannon'] = shannon_entropy
 
     # group by enrichment scores
-    df_enrichment = self.dataframe.groupby(
-        by='Position', as_index=False).mean()
+    df_enrichment = self.dataframe.groupby(by='Position', as_index=False).mean()
 
     # Merge Shannon with enrichment scores
     df_shannon = df_shannon.merge(df_enrichment, how='inner', on=['Position'])
@@ -865,7 +986,7 @@ def _msa_to_df(msa, correctionfactor=1):
     df = alignment_to_matrix(msa_flattened)
 
     # Reindex
-    df.index = np.arange(correctionfactor, len(df)+correctionfactor)
+    df.index = np.arange(correctionfactor, len(df) + correctionfactor)
 
     # Return only common aa
     aminoacids = list('ACDEFGHIKLMNPQRSTVWY')
@@ -873,7 +994,7 @@ def _msa_to_df(msa, correctionfactor=1):
     # Normalize by the total number of counts
     df_final = df[aminoacids].copy()
 
-    return df_final/df_final.sum(axis=1).max()
+    return df_final / df_final.sum(axis=1).max()
 
 
 def _merge_msa_enrichment(self, df_msa, start_position, threshold):
@@ -884,7 +1005,10 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
 
     # Create column with position and aminoacid label
     df['Position'] = np.ravel(
-        [[i]*len(df_msa.T) for i in range(start_position, len(df_msa)+start_position)])
+        [[i] * len(df_msa.T)
+         for i in range(start_position,
+                        len(df_msa) + start_position)]
+    )
     df['Aminoacid'] = list(df_msa.columns) * len(df_msa)
 
     # Add conservation from MSA
@@ -892,7 +1016,8 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
 
     # Merge with enrichment scores
     df_merged = self.dataframe.merge(
-        df, how='inner', on=['Position', 'Aminoacid'])
+        df, how='inner', on=['Position', 'Aminoacid']
+    )
 
     # Copycat conservation
     df_merged['Class'] = df_merged['Conservation']

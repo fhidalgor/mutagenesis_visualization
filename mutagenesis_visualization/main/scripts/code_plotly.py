@@ -24,7 +24,6 @@ except ModuleNotFoundError:
     import sys
     sys.path.append('mutagenesis_visualization/main/scripts/')
 
-
 import code_kwargs
 import code_utils
 
@@ -38,9 +37,13 @@ import code_utils
 # In[2]:
 
 
-def plot_rank_plotly(self, mode='pointmutant', outdf=False,
-                     output_file: Union[None, str, Path] = None,
-                     **kwargs):
+def plot_rank_plotly(
+    self,
+    mode='pointmutant',
+    outdf=False,
+    output_file: Union[None, str, Path] = None,
+    **kwargs
+):
     '''
     Generate a plotlu rank plot so every mutation/residue is sorted based on enrichment score.
 
@@ -81,27 +84,46 @@ def plot_rank_plotly(self, mode='pointmutant', outdf=False,
         df['Variant'] = df['Position']
 
     # Create figure
-    fig = px.scatter(x=np.arange(len(df), 0, -1), y=df['Score'],
-                     text=df['Variant'])
+    fig = px.scatter(
+        x=np.arange(len(df), 0, -1), y=df['Score'], text=df['Variant']
+    )
 
     # Style
     pio.templates.default = "plotly_white"
 
     # Axes https://plotly.com/python/axes/
-    fig.update_traces(mode="markers",
-                      hovertemplate='Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>')
-    fig.update_xaxes(title_text=temp_kwargs['x_label'], showline=True,
-                     linewidth=2, linecolor='black', ticks="outside", mirror=True)
-    fig.update_yaxes(title_text=temp_kwargs['y_label'], showline=True,
-                     linewidth=2, linecolor='black', ticks="outside", mirror=True)
+    fig.update_traces(
+        mode="markers",
+        hovertemplate=
+        'Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>'
+    )
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
-    fig.update_layout(width=temp_kwargs['figsize'][0]*120,
-                      height=temp_kwargs['figsize'][1]*120,
-                      font=dict(family="Arial, monospace", size=12,
-                                color="black"),
-                      title={'text': temp_kwargs['title'],
-                             'xanchor': 'center', 'yanchor': 'top', 'x': 0.5})
+    fig.update_layout(
+        width=temp_kwargs['figsize'][0] * 120,
+        height=temp_kwargs['figsize'][1] * 120,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        }
+    )
 
     if temp_kwargs['show']:
         fig.show()
@@ -115,9 +137,14 @@ def plot_rank_plotly(self, mode='pointmutant', outdf=False,
 # In[3]:
 
 
-def plot_scatter_plotly(self, obj2, mode='pointmutant',
-                        output_file: Union[None, str, Path] = None,
-                        show_results=False, **kwargs):
+def plot_scatter_plotly(
+    self,
+    obj2,
+    mode='pointmutant',
+    output_file: Union[None, str, Path] = None,
+    show_results=False,
+    **kwargs
+):
     '''
     Generate a scatter plot between object and a second object of the same class.
 
@@ -160,30 +187,51 @@ def plot_scatter_plotly(self, obj2, mode='pointmutant',
     pio.templates.default = "plotly_white"
 
     # create figure
-    fig = px.scatter(x=df['dataset_1'], y=df['dataset_2'],
-                     trendline="ols", trendline_color_override="red")
+    fig = px.scatter(
+        x=df['dataset_1'],
+        y=df['dataset_2'],
+        trendline="ols",
+        trendline_color_override="red"
+    )
 
     # Titles
     # hide text labels
     fig.update_traces(
-        hovertext=df['Variant'], hovertemplate='Position: %{x}<br>Score: %{y}<br>Variant: %{hovertext}<extra></extra>')
-    fig.update_xaxes(title_text=temp_kwargs['x_label'], showline=True,
-                     linewidth=2, linecolor='black', ticks="outside", mirror=True)
-    fig.update_yaxes(title_text=temp_kwargs['y_label'], showline=True,
-                     linewidth=2, linecolor='black', ticks="outside", mirror=True)
+        hovertext=df['Variant'],
+        hovertemplate=
+        'Position: %{x}<br>Score: %{y}<br>Variant: %{hovertext}<extra></extra>'
+    )
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
-    fig.update_layout(width=temp_kwargs['figsize'][0]*120,
-                      height=temp_kwargs['figsize'][1]*120,
-                      font=dict(family="Arial, monospace", size=12,
-                                color="black"),
-                      title={'text': temp_kwargs['title'],
-                             'xanchor': 'center', 'yanchor': 'top', 'x': 0.5})
+    fig.update_layout(
+        width=temp_kwargs['figsize'][0] * 120,
+        height=temp_kwargs['figsize'][1] * 120,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        }
+    )
 
     if temp_kwargs['show']:
         fig.show()
-    
+
     if show_results:
         return px.get_trendline_results(fig).px_fit_results.iloc[0].summary()
-        
 

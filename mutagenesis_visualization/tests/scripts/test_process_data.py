@@ -4,7 +4,7 @@
 # In[1]:
 
 
-try: 
+try:
     from mutagenesis_visualization.main.scripts.code_process_data import (
         count_reads
     )
@@ -12,7 +12,7 @@ except ModuleNotFoundError:
     import import_notebook
     import os
     directory = os.getcwd()
-    new_directory = directory.replace('tests','main')
+    new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
     from code_process_data import (count_reads)
     os.chdir(directory)
@@ -67,11 +67,12 @@ def test_count_reads():
         'CTG', 'CTT', 'GAA', 'GAC', 'GAG', 'GAT', 'GCA', 'GCC', 'GCG', 'GCT',
         'GGA', 'GGC', 'GGG', 'GGT', 'GTA', 'GTC', 'GTG', 'GTT', 'TAA', 'TAC',
         'TAG', 'TAT', 'TCA', 'TCC', 'TCG', 'TCT', 'TGA', 'TGC', 'TGG', 'TGT',
-        'TTA', 'TTC', 'TTG', 'TTT']
+        'TTA', 'TTC', 'TTG', 'TTT'
+    ]
     index = pd.Index(codon_list)
     column_counts = pd.Index([2])
     column_wt = pd.Index(["Position", "Codon", "Aminoacid", "Counts"])
-    values_cct = values_atc = [0]*23 + [1] + [0]*40
+    values_cct = values_atc = [0] * 23 + [1] + [0] * 40
 
     # Test ATG
     expected_atc_counts = pd.DataFrame(
@@ -85,25 +86,58 @@ def test_count_reads():
 
     # Test CCT
     expected_cct_counts = pd.DataFrame(
-        values_cct, index=index, columns=column_counts)
-    expected_cct_wt = pd.DataFrame([[2, 'CCA', 'P', 0], [2, 'CCC', 'P', 0], [2, 'CCG', 'P', 0]],
-                                   index=[20, 21, 22], columns=column_wt)
+        values_cct, index=index, columns=column_counts
+    )
+    expected_cct_wt = pd.DataFrame([[2, 'CCA', 'P', 0], [2, 'CCC', 'P', 0],
+                                    [2, 'CCG', 'P', 0]],
+                                   index=[20, 21, 22],
+                                   columns=column_wt)
     cct_counts, cct_wt = count_reads("cCt", my_file, codon_list)
     mut_assert_df_equal(cct_counts, expected_cct_counts)
     mut_assert_df_equal(cct_wt, expected_cct_wt)
 
     # Test CCT when not in codon list
     index = pd.Index([
-        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC",
-        "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC",
-        "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG",
-        "TAC", "TAG",
+        "GCC",
+        "GCG",
+        "TGC",
+        "GAC",
+        "GAG",
+        "TTC",
+        "GGC",
+        "GGG",
+        "CAC",
+        "ATC",
+        "AAG",
+        "CTC",
+        "CTG",
+        "TTG",
+        "ATG",
+        "AAC",
+        "CCC",
+        "CCG",
+        "CAG",
+        "CGC",
+        "CGG",
+        "AGG",
+        "TCC",
+        "TCG",
+        "AGC",
+        "ACC",
+        "ACG",
+        "GTC",
+        "GTG",
+        "TGG",
+        "TAC",
+        "TAG",
     ])
-    values_cct = [0]*32
+    values_cct = [0] * 32
     expected_cct_counts = pd.DataFrame(
-        values_cct, index=index, columns=column_counts)
+        values_cct, index=index, columns=column_counts
+    )
     expected_cct_wt = pd.DataFrame([[2, 'CCC', 'P', 0], [2, 'CCG', 'P', 0]],
-                                   index=[16, 17], columns=column_wt)
+                                   index=[16, 17],
+                                   columns=column_wt)
     cct_counts, cct_wt = count_reads("cCt", my_file, 'NNS')
     mut_assert_df_equal(cct_counts, expected_cct_counts)
     mut_assert_df_equal(cct_wt, expected_cct_wt)

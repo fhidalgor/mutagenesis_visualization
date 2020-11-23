@@ -38,8 +38,13 @@ import code_utils
 # In[ ]:
 
 
-def plot_scatter(self, obj2, mode='pointmutant',
-                 output_file: Union[None, str, Path] = None, **kwargs):
+def plot_scatter(
+    self,
+    obj2,
+    mode='pointmutant',
+    output_file: Union[None, str, Path] = None,
+    **kwargs
+):
     '''
     Generate a scatter plot between object and a second object of the same class.
 
@@ -81,41 +86,66 @@ def plot_scatter(self, obj2, mode='pointmutant',
     code_kwargs._parameters()
 
     # Scatter data points
-    plt.scatter(df['dataset_1'], df['dataset_2'], c='k', s=8,
-                alpha=0.5, rasterized=True, label='_nolegend_')
+    plt.scatter(
+        df['dataset_1'],
+        df['dataset_2'],
+        c='k',
+        s=8,
+        alpha=0.5,
+        rasterized=True,
+        label='_nolegend_'
+    )
 
     # Titles
-    plt.title(temp_kwargs['title'], fontsize=12,
-              fontname='Arial', color='k', pad=8)
-    plt.ylabel(temp_kwargs['y_label'], fontsize=10,
-               fontname="Arial", color='k', labelpad=0)
-    plt.xlabel(temp_kwargs['x_label'], fontsize=10,
-               fontname="Arial", color='k')
+    plt.title(
+        temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8
+    )
+    plt.ylabel(
+        temp_kwargs['y_label'],
+        fontsize=10,
+        fontname="Arial",
+        color='k',
+        labelpad=0
+    )
+    plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
 
     # correlation and R2
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-        df['dataset_1'], df['dataset_2'])
+        df['dataset_1'], df['dataset_2']
+    )
     R2 = str(round(r_value**2, 2))
     legend_label = "$R^2$ = {}".format(R2)
     # fit and graph line
     fit = np.polyfit(df['dataset_1'], df['dataset_2'], 1)
-    plt.plot(np.unique(df['dataset_1']), np.poly1d(fit)(
-        np.unique(df['dataset_1'])), color='r', linewidth=1, label=legend_label)
+    plt.plot(
+        np.unique(df['dataset_1']),
+        np.poly1d(fit)(np.unique(df['dataset_1'])),
+        color='r',
+        linewidth=1,
+        label=legend_label
+    )
     plt.grid()
 
     # other graph parameters
     plt.xlim(temp_kwargs['xscale'])
     plt.ylim(temp_kwargs['yscale'])
     ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(temp_kwargs['tick_spacing']))
+        ticker.MultipleLocator(temp_kwargs['tick_spacing'])
+    )
     ax.yaxis.set_major_locator(
-        ticker.MultipleLocator(temp_kwargs['tick_spacing']))
+        ticker.MultipleLocator(temp_kwargs['tick_spacing'])
+    )
     plt.gca().set_aspect('equal', adjustable='box')
     plt.draw()
 
     # Legend
-    plt.legend(loc='upper left', handlelength=0,
-               handletextpad=0, frameon=False, fontsize=10)
+    plt.legend(
+        loc='upper left',
+        handlelength=0,
+        handletextpad=0,
+        frameon=False,
+        fontsize=10
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
