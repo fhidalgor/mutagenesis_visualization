@@ -55,9 +55,9 @@ def test_count_reads():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data/for_tests', "short.fastq")
+        my_file = os.path.join(location, '../../data/for_tests', "short.fastq")
     except NameError:
-        my_file = os.path.join('../data/for_tests', "short.fastq")
+        my_file = os.path.join('../../data/for_tests', "short.fastq")
 
     # Create dataframe
     codon_list = [

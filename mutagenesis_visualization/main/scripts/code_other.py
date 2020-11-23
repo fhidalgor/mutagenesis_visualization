@@ -22,21 +22,20 @@ import os
 from pathlib import Path
 from typing import Union
 
-try:
-    import shannon
-except ModuleNotFoundError:
-    pass
 
-# kwargs and parameters
+
+# local modules
 try:
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+    from mutagenesis_visualization.main.scripts.code_heatmaps import _labels
+    import mutagenesis_visualization.main.scripts.shannon as shannon
+except ModuleNotFoundError:
     import import_notebook
-except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
-import code_kwargs
-import code_utils
-from code_heatmaps import _labels
+    import code_kwargs
+    import code_utils
+    from code_heatmaps import _labels
+    import shannon
 
 
 # # Plot Functions

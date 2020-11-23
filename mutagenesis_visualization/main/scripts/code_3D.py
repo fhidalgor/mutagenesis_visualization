@@ -18,18 +18,14 @@ from Bio.PDB import PDBParser
 
 # Local imports
 try:
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+    import mutagenesis_visualization.main.scripts.shannon as shannon
+except ModuleNotFoundError:
     import import_notebook
-except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
-try:
+    import code_kwargs
+    import code_utils
     import shannon
-except ModuleNotFoundError:
-    pass
-
-import code_kwargs
-import code_utils
 
 
 # # Plot Functions

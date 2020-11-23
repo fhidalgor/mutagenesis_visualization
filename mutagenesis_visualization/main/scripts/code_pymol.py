@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -15,27 +15,28 @@ from os import path
 from pathlib import Path
 from typing import Union
 
-# Local imports
+# local modules
 try:
-    import import_notebook
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
 except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
+    import import_notebook
+    import code_kwargs
+    import code_utils
+    
 try:
+    from mutagenesis_visualization.main.scripts.ipymol import viewer as pymol
+except ModuleNotFoundError:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
     pass
-
-import code_kwargs
-import code_utils
 
 
 # # Plot Functions
 
 # ## Map into Pymol
 
-# In[15]:
+# In[ ]:
 
 
 def plot_pymol(

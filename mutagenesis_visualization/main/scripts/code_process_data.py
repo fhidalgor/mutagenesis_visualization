@@ -20,9 +20,9 @@ from scipy import stats
 from logomaker import alignment_to_matrix
 
 try:
-    import shannon
+    import mutagenesis_visualization.main.scripts.shannon as shannon
 except ModuleNotFoundError:
-    pass
+    import shannon
 
 
 # # Data Process Functions

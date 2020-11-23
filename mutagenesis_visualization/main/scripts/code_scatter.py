@@ -20,15 +20,14 @@ from pathlib import Path
 from typing import Union
 from collections import defaultdict
 
-# kwargs and parameters
+# local modules
 try:
-    import import_notebook
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
 except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
-import code_kwargs
-import code_utils
+    import import_notebook
+    import code_kwargs
+    import code_utils
 
 
 # # Plot Functions

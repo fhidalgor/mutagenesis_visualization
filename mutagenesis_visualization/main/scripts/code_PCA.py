@@ -25,16 +25,16 @@ import logomaker
 from pathlib import Path
 from typing import Union
 
-# kwargs and parameters
+# local modules
 try:
-    import import_notebook
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+    from mutagenesis_visualization.main.scripts.code_heatmaps import _labels
 except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
-import code_kwargs
-import code_utils
-from code_heatmaps import _labels
+    import import_notebook
+    import code_kwargs
+    import code_utils
+    from code_heatmaps import _labels
 
 
 # # Plot Functions

@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[ ]:
+# In[1]:
 
 
 import numpy as np
@@ -19,14 +19,14 @@ from typing import Union
 
 # Local imports
 try:
-    import import_notebook
+    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+    from mutagenesis_visualization.main.scripts.code_heatmaps import _generate_cartoon
 except ModuleNotFoundError:
-    import sys
-    sys.path.append('mutagenesis_visualization/main/scripts/')
-
-import code_kwargs
-import code_utils
-from code_heatmaps import _generate_cartoon
+    import import_notebook
+    import code_kwargs
+    import code_utils
+    from code_heatmaps import _generate_cartoon
 
 
 # # Plot Functions

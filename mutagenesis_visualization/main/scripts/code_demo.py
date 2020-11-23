@@ -15,15 +15,13 @@ import os
 
 # Local imports
 try:
+    from mutagenesis_visualization.main.scripts.code_class import Screen
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+except ModuleNotFoundError:
     import import_notebook
     from code_class import Screen
     import code_utils
     __file__ = '__main__'
-except ModuleNotFoundError:
-    import sys
-    #sys.path.append('mutagenesis_visualization/main/scripts/')
-    from mutagenesis_visualization.main.scripts.code_class import Screen
-    import mutagenesis_visualization.main.scripts.code_utils
 
 
 # # Demo
