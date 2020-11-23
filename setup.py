@@ -1,7 +1,7 @@
 import setuptools
 import sys
 
-if sys.version_info[:2] < (3, 6):
+if sys.version_info[:2] < (3, 7):
     raise RuntimeError("Python version >= 3.7 required.")
 
 def readme():
