@@ -6,7 +6,6 @@
 
 from Bio.Seq import Seq
 from Bio.SeqUtils import MeltingTemp as mt
-from Bio.Alphabet import IUPAC
 from pathlib import Path
 from typing import Union
 import pandas as pd
@@ -128,7 +127,7 @@ def _reverse_complement(dna):
     Includes mixed-base code. More info in https://biopython.org/docs/1.75/api/Bio.Seq.html'''
 
     # Needs to be converted to str
-    reverse_dna = str(Seq(dna, IUPAC.ambiguous_dna).reverse_complement())
+    reverse_dna = str(Seq(dna).reverse_complement())
 
     return reverse_dna
 
