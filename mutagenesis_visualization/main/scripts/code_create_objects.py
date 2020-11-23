@@ -12,7 +12,7 @@
 
 import numpy as np
 import pandas as pd
-import os
+import os 
 
 # Local imports
 try:
@@ -34,9 +34,9 @@ def hras_RBD():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'HRas166_RBD.csv')
+        my_file = os.path.join(location, '../../data', 'HRas166_RBD.csv')
     except NameError:
-        my_file = os.path.join('../data', 'HRas166_RBD.csv')
+        my_file = os.path.join('../../data', 'HRas166_RBD.csv')
 
     # Load enrichment scores
     hras_enrichment_RBD = np.genfromtxt(my_file, delimiter=',')
@@ -66,7 +66,7 @@ def hras_RBD():
 
 # ## Beta Lactamase
 
-# In[3]:
+# In[4]:
 
 
 def bla_obj():
@@ -75,9 +75,9 @@ def bla_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_bla_raw.pkl')
+        my_file = os.path.join(location, '../../data', 'df_bla_raw.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_bla_raw.pkl')
+        my_file = os.path.join('../../data', 'df_bla_raw.pkl')
 
     # Load data
     df_bla_raw = pd.read_pickle(my_file)
@@ -129,9 +129,9 @@ def sumo_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_sumo1_raw.pkl')
+        my_file = os.path.join(location, '../../data', 'df_sumo1_raw.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_sumo1_raw.pkl')
+        my_file = os.path.join('../../data', 'df_sumo1_raw.pkl')
 
     df_sumo1_raw = pd.read_pickle(my_file)
 
@@ -173,9 +173,9 @@ def mapk1_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_mapk1_raw.pkl')
+        my_file = os.path.join(location, '../../data', 'df_mapk1_raw.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_mapk1_raw.pkl')
+        my_file = os.path.join('../../data', 'df_mapk1_raw.pkl')
 
     # Read excel file
     df_mapk1_raw = pd.read_pickle(my_file)
@@ -212,9 +212,9 @@ def ube2i_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_ube2i_raw.pkl')
+        my_file = os.path.join(location, '../../data', 'df_ube2i_raw.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_ube2i_raw.pkl')
+        my_file = os.path.join('../../data', 'df_ube2i_raw.pkl')
 
     # Read excel file
     col_data = 'DMS'
@@ -263,9 +263,9 @@ def tat_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_tat.pkl')
+        my_file = os.path.join(location, '../../data', 'df_tat.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_tat.pkl')
+        my_file = os.path.join('../../data', 'df_tat.pkl')
 
     # Read data
     df_tat = pd.read_pickle(my_file)
@@ -301,9 +301,9 @@ def rev_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_rev.pkl')
+        my_file = os.path.join(location, '../../data', 'df_rev.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_rev.pkl')
+        my_file = os.path.join('../../data', 'df_rev.pkl')
 
     # Read dataset
     df_rev = pd.read_pickle(my_file)
@@ -339,9 +339,9 @@ def asynuclein_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_asynuclein.pkl')
+        my_file = os.path.join(location, '../../data', 'df_asynuclein.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_asynuclein.pkl')
+        my_file = os.path.join('../../data', 'df_asynuclein.pkl')
     # Read dataset
     df_asynuclein = pd.read_pickle(my_file)
 
@@ -378,9 +378,9 @@ def aph_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_aph.pkl')
+        my_file = os.path.join(location, '../../data', 'df_aph.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_aph.pkl')
+        my_file = os.path.join('../../data', 'df_aph.pkl')
     # Read dataset
     df_aph = pd.read_pickle(my_file)
 
@@ -429,9 +429,9 @@ def b11L5F_obj():
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../data', 'df_b11L5F_raw.pkl')
+        my_file = os.path.join(location, '../../data', 'df_b11L5F_raw.pkl')
     except NameError:
-        my_file = os.path.join('../data', 'df_b11L5F_raw.pkl')
+        my_file = os.path.join('../../data', 'df_b11L5F_raw.pkl')
     # Read dataset
     df_b11L5F_raw = pd.read_pickle(my_file)
 

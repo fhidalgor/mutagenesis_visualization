@@ -9,7 +9,7 @@ The package main focus is to perform the statistical analysis and visualization 
 
 ## Key Features
 
-- Calculate enrichment scores from fastq files, allowing for different ways of data processing and normalization.
+- Calculate enrichment scores from FASTQ files, allowing for different ways of data processing and normalization.
 - Produce publication-quality heatmaps from enrichment scores as well as a wide range of visualization plots.
 - Principal component analysis (PCA), hierarchical clustering and receiver operating characteristic (ROC) curve tools.
 - Map enrichment scores effortlessly onto a PDB structure using Pymol. Structural properties such as SASA, B-factor or atom coordinates can be extracted from the PDB and visualized using a built-in method.
@@ -19,7 +19,13 @@ The package main focus is to perform the statistical analysis and visualization 
 Mutagenesis Visualization can be installed from PyPI by executing:
 
 ```
-pip install mutagenesis-visualization
+pip install mutagenesis_visualization
+```
+
+If you prefer to install from Github, use:
+
+```
+pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 ```
 
 ## Documentation

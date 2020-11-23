@@ -9,4 +9,7 @@ biopython==1.77
 logomaker==0.8
 freesasa==2.1.0
 plotly==4.11.0
+
+
+# to install the ipymol package which it is not in pypi
 -e git://github.com/cxhernandez/ipymol.git#egg=ipymol
