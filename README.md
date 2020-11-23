@@ -30,6 +30,6 @@ pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 
 ## Documentation
 
-You can find the documentation at mutagenesis-visualization.readthedocs.io
+You can find the documentation at `readthedocs <mutagenesis-visualization.readthedocs.io>`_
 
 
