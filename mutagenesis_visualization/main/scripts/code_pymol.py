@@ -25,8 +25,6 @@ except ModuleNotFoundError:
     import code_utils
     
 try:
-    from mutagenesis_visualization.main.scripts.ipymol import viewer as pymol
-except ModuleNotFoundError:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
     pass
