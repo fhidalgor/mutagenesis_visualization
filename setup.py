@@ -10,7 +10,7 @@ def readme():
 
 setuptools.setup(
     name="mutagenesis_visualization",
-    version="0.0.1.9",
+    version="0.0.2",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
     description="A package for processing, analysis and visualization of site-saturation mutagenesis data",
@@ -34,5 +34,5 @@ setuptools.setup(
     dependency_links=['https://github.com/cxhernandez/ipymol/tarball/master'],
     zip_safe=True,
     include_package_data=True,
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     )
