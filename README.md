@@ -2,7 +2,7 @@
 [![Documentation Status](https://readthedocs.org/projects/mutagenesis-visualization/badge/?version=latest)](https://mutagenesis-visualization.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/fhidalgor/mutagenesis_visualization.svg?branch=master)](https://travis-ci.org/fhidalgor/mutagenesis_visualization)
 [![PyPI version](https://badge.fury.io/py/mutagenesis-visualization.svg)](https://badge.fury.io/py/mutagenesis-visualization)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets.
 
