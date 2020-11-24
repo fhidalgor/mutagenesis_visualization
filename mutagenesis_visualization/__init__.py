@@ -7,6 +7,8 @@ from mutagenesis_visualization.main.scripts.code_synthesis import (
 )
 from mutagenesis_visualization.main.scripts.code_create_objects import (
         hras_RBD, bla_obj, sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj, asynuclein_obj, aph_obj, b11L5F_obj)
+from mutagenesis_visualization.main.scripts.code_utils import parse_pivot
+from mutagenesis_visualization.main.scripts.code_kernel import plot_multiplekernel
 
 
 __author__ = "Frank Hidalgo"
