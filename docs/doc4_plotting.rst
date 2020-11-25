@@ -309,15 +309,6 @@ scan (bottom)
     hras_RBD.mean(figsize=[6, 2.5], mode='A', show_cartoon=True, yscale=[-2, 0.5],
                   title='', output_file=None)
 
-
-
-.. image:: doc4_plotting_files/doc4_plotting_50_0.png
-
-
-
-.. image:: doc4_plotting_files/doc4_plotting_50_1.png
-
-
 .. image:: images/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center
@@ -351,11 +342,6 @@ You can check the individual mutational profile of a residue by using
     # Create plot for position 117
     hras_RBD.position(position=117, yscale=(-1.5, 0.8), figsize=(3.5, 2),
                       title='Position 117', output_file=None)
-
-
-
-.. image:: doc4_plotting_files/doc4_plotting_56_0.png
-
 
 .. image:: images/exported_images/hras_position117.png
    :width: 350px
@@ -415,11 +401,6 @@ rest of the dataset.
     # Explained variability by amino acid
     hras_RBD.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
                                     output_file=None)
-
-
-
-.. image:: doc4_plotting_files/doc4_plotting_68_0.png
-
 
 .. image:: images/exported_images/hras_variability.png
    :width: 300px
@@ -499,11 +480,6 @@ enrichment/conservation.
     hras_RBD.roc(df_freq[['Variant', 'Class']], title='MSA predictive power',
                  output_file=None)
 
-
-
-.. image:: doc4_plotting_files/doc4_plotting_77_0.png
-
-
 .. image:: images/exported_images/hras_roc.png
    :width: 250px
    :align: center
@@ -523,11 +499,6 @@ residues with a lower enrichment score are more conserved.
     mut.plot_box(binned_x=binned_shannon, y=df_shannon['Score'],
             title='Shannon vs Enrichment', x_label='Shannon Entropy',
             y_label=r'$∆E^i_x$', output_file=None)
-
-
-
-.. image:: doc4_plotting_files/doc4_plotting_80_0.png
-
 
 .. image:: images/exported_images/hras_shannon.png
    :width: 300px

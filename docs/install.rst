@@ -96,7 +96,7 @@ Required Dependencies
 
 - `xlsxwriter <https://pypi.org/project/XlsxWriter/>`_ (version 1.2.9)
 
-* More updated versions probably work too. In here, we have specified the versions we used when building the software.
+More updated versions probably work too. In here, we have specified the versions we used when building the software.
 
 If you want to manually install and/or upgrade the dependencies on your own, use:
 

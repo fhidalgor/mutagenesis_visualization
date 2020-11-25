@@ -1,4 +1,4 @@
-muting DNA reads
+Processing DNA reads
 ================
 
 This section will teach you how to use the built-in data muting

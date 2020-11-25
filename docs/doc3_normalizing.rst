@@ -95,25 +95,6 @@ selected than in the pre-selected population, the center is >0.
         output_file=None
     )
 
-
-::
-
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-2-9e68cbd98cb8> in <module>
-         10 
-         11 # calculate log10 enrichment for each replicate
-    ---> 12 for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
-         13                             list(dict_sel.keys())[:3]):
-         14     # log 10
-
-
-    NameError: name 'dict_pre' is not defined
-
-
 .. image:: images/exported_images/hras_kdesub1.png
    :width: 350px
    :align: center
