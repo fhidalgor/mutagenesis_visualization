@@ -1,4 +1,5 @@
 # Mutagenesis Visualization
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)]https://github.com/fhidalgor/mutagenesis_visualization/graphs/commit-activity
 [![Documentation Status](https://readthedocs.org/projects/mutagenesis-visualization/badge/?version=latest)](https://mutagenesis-visualization.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/fhidalgor/mutagenesis_visualization.svg?branch=master)](https://travis-ci.org/fhidalgor/mutagenesis_visualization)
 [![codecov](https://codecov.io/gh/fhidalgor/mutagenesis_visualization/branch/master/graph/badge.svg?token=QEAHI2DQDE)](https://codecov.io/gh/fhidalgor/mutagenesis_visualization)
