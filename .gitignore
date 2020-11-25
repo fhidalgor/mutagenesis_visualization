@@ -127,4 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-mutagenesis_visualization/data/hras.trimmed.fastq
+#mutagenesis_visualization/data/hras.trimmed.fastq
