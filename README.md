@@ -6,6 +6,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F)
 
+## Overview
 Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for site-saturation mutagenesis datasets.
 
 The package main focus is to perform the statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from FASTQ files.
@@ -38,7 +39,6 @@ pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 ## Documentation
 
 You can find the documentation [here](https://mutagenesis-visualization.readthedocs.io/en/latest/).
-
 
 ## Tutorial
 
