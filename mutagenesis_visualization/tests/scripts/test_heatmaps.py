@@ -9,16 +9,16 @@
 # In[1]:
 
 
-# kwargs and parameters
-try:
-    import import_notebook
-except ModuleNotFoundError:
-    pass
-
 import pandas as pd
+import numpy as np
+
 try:
     from mutagenesis_visualization.main.scripts.code_heatmaps import (
-        _hierarchical_sort, _helix, _labels, _sheet, _loop
+        _hierarchical_sort, _helix, _labels, _sheet, _loop, plot_heatmap,
+        plot_heatmap_rows, plot_heatmap_columns
+    )
+    from mutagenesis_visualization.main.scripts.code_create_objects import (
+        hras_RBD
     )
 except ModuleNotFoundError:
     import import_notebook
@@ -27,16 +27,55 @@ except ModuleNotFoundError:
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
     from code_heatmaps import (
-        _hierarchical_sort, _helix, _labels, _sheet, _loop
+        _hierarchical_sort, _helix, _labels, _sheet, _loop, plot_heatmap,
+        plot_heatmap_rows, plot_heatmap_columns
     )
+    from code_create_objects import (hras_RBD)
     os.chdir(directory)
 
 
 # ## Test main functions
 
+# In[2]:
+
+
+def test_plot_heatmap():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_heatmap_output(parameters):
+        error = False
+        try:
+            obj_test.heatmap(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [{'show': False}, {'hierarchical': True, 'show':
+                                     False}, {'show_snv': True, 'show': False},
+                   {'show_cartoon': True, 'show': False}]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_heatmap_output(
+            parameters
+        ) == False, "plot_heatmap failed with {} parameters".format(parameters)
+
+
+# In[3]:
+
+
+test_plot_heatmap()
+
+
 # ## Test aux functions
 
-# In[2]:
+# In[ ]:
 
 
 def test_hierarchical_sort():
@@ -46,7 +85,7 @@ def test_hierarchical_sort():
     assert (result == [2, 0, 1, 3]).all(), 'columns are not properly sorted out'
 
 
-# In[3]:
+# In[ ]:
 
 
 def test_helix():
@@ -56,7 +95,7 @@ def test_helix():
     ), "function _helix failed"
 
 
-# In[4]:
+# In[ ]:
 
 
 def test_labels():
@@ -66,7 +105,7 @@ def test_labels():
     ) == "<class 'tuple'>", "function _labels failed"
 
 
-# In[52]:
+# In[ ]:
 
 
 def test_sheet():
@@ -76,7 +115,7 @@ def test_sheet():
     ) == "<class 'matplotlib.patches.FancyArrow'>", "function _sheet failed"
 
 
-# In[6]:
+# In[ ]:
 
 
 def test_loop():

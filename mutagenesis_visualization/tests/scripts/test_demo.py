@@ -55,21 +55,6 @@ def test_demo():
     )
 
 
-# In[22]:
-
-
-arguments = ['heatmap', 'miniheatmap', 'mean', 'kernel', 'pca',
-             'position', 'secondary_mean', 'correlation', 'individual_correlation']
-solutions = [False]*(len(arguments)-2)+[True]*2
-
-
-# In[27]:
-
-
-failed = [arg for arg, sol in zip(arguments, solutions) if sol is True]
-failed
-
-
 # In[ ]:
 
 

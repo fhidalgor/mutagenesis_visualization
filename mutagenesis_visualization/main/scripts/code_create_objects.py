@@ -7,7 +7,7 @@
 
 # ## Import
 
-# In[1]:
+# In[ ]:
 
 
 import numpy as np
@@ -26,7 +26,7 @@ except ModuleNotFoundError:
 
 # ## HRas RBD
 
-# In[2]:
+# In[ ]:
 
 
 def hras_RBD():
@@ -66,7 +66,7 @@ def hras_RBD():
 
 # ## Beta Lactamase
 
-# In[4]:
+# In[ ]:
 
 
 def bla_obj():
@@ -120,7 +120,7 @@ def bla_obj():
 
 # ## Sumo1
 
-# In[14]:
+# In[ ]:
 
 
 def sumo_obj():
@@ -165,7 +165,7 @@ def sumo_obj():
 
 # ## MAPK1
 
-# In[5]:
+# In[ ]:
 
 
 def mapk1_obj():
@@ -204,7 +204,7 @@ def mapk1_obj():
 
 # ## UBE2I
 
-# In[6]:
+# In[ ]:
 
 
 def ube2i_obj():
@@ -255,7 +255,7 @@ def ube2i_obj():
 
 # ## TAT
 
-# In[7]:
+# In[ ]:
 
 
 def tat_obj():
@@ -293,7 +293,7 @@ def tat_obj():
 
 # ## REV
 
-# In[8]:
+# In[ ]:
 
 
 def rev_obj():
@@ -330,7 +330,7 @@ def rev_obj():
 
 # ## α-synuclein
 
-# In[9]:
+# In[ ]:
 
 
 def asynuclein_obj():
@@ -369,7 +369,7 @@ def asynuclein_obj():
 
 # ## APH(3) II
 
-# In[10]:
+# In[ ]:
 
 
 def aph_obj():
@@ -420,7 +420,7 @@ def aph_obj():
 
 # ## b11L5F
 
-# In[25]:
+# In[ ]:
 
 
 def b11L5F_obj():

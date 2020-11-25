@@ -45,7 +45,7 @@ def test_centroid():
 # should there be 5 columns?
 
 
-# In[ ]:
+# In[2]:
 
 
 def test_color_3D_scatter():

@@ -16,7 +16,6 @@ import matplotlib.gridspec as gridspec
 import matplotlib.patches as patches
 import matplotlib.ticker as ticker
 from os import path
-import os
 from pathlib import Path
 from typing import Union
 from collections import defaultdict, Counter

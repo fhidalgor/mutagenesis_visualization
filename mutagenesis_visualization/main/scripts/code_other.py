@@ -15,6 +15,7 @@ from scipy import stats
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import matplotlib.ticker as ticker
 from sklearn import metrics
 import freesasa
 from os import path

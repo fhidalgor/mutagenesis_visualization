@@ -76,7 +76,7 @@ In this chapter, we will walk the user through the different functions and metho
 	Processing DNA reads <doc_processing>
 	Normalizing datasets <doc_normalizing>
 	Creating plots <doc_plotting>
-	Using Plotly <doc_plotly>
+	Visualizing with plotly <doc_plotly>
 	Holistic testing <doc_other_datasets>
 
 About Us
