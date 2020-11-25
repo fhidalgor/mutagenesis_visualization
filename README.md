@@ -19,7 +19,7 @@ The package main focus is to perform the statistical analysis and visualization 
 
 ## Workflow
 
-![Worklfow] (/docs/_static/workflow_v3.png)
+![Workflow](/docs/_static/workflow_v3.png)
 
 ## Installation
 
@@ -42,5 +42,5 @@ You can find the documentation [here](https://mutagenesis-visualization.readthed
 
 ## Tutorial
 
-There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. You can access to them via [mybinder(https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F).
+There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. You can access to them via [mybinder](https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F).
 
