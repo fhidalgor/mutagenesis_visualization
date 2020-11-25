@@ -14,6 +14,7 @@ import copy
 from scipy import stats
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from os import path
 import os
 from pathlib import Path

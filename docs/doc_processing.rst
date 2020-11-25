@@ -1,28 +1,24 @@
-Processing DNA reads
-====================
+muting DNA reads
+================
 
-This section will teach you how to use the built-in data processing
-functions. If you already have your own processing pipeline built, you
-can skip this section and go to the plotting examples.
+This section will teach you how to use the built-in data muting
+functions. If you already have your own muting pipeline built, you can
+skip this section and go to the plotting examples.
 
 Import module
 -------------
 
 .. code:: ipython3
 
-    # Run only if you are using the code from jupyter notebooks instead of pypi
-    try:
-        import import_notebook
-    except ModuleNotFoundError:
-        passimport code_process_data as process
-    import code_demo as demo
-    import code_class
-
-.. code:: ipython3
-
-    import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
+    try:
+        import mutagenesis_visualization as mut
+    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+        import sys
+        sys.path.append('../../')
+        import mutagenesis_visualization as mut
+
 
 Count DNA reads from fastq file
 -------------------------------
@@ -64,7 +60,7 @@ file.
     start_position = 2
     
     # Execute count reads
-    df_counts_pre, wt_counts_pre = process.count_reads(hras_dnasequence, input_file,
+    df_counts_pre, wt_counts_pre = mut.count_reads(hras_dnasequence, input_file,
                                                        codon_list, counts_wt, start_position, 
                                                        output_file)
 
@@ -76,7 +72,7 @@ Create object of class ``Counts``.
 
 .. code:: ipython3
 
-    hras_obj = code_class.Counts(df_counts_pre)
+    hras_obj = mut.Counts(df_counts_pre)
 
 Once the reads have been counted, the method ``mean_counts`` can be used
 to evaluate the coverage by position. The method
@@ -103,12 +99,14 @@ Custom DNA list
 Use a custom input DNA list. That way it does not matter if you are
 using NNS or you have second order mutations. Create a list of variants
 on your own, and the software will count the frequency of each of those
-variants on the fastq file you provide as an input.
+variants on the fastq file you provide as an input. In the example non
+of the sequences we are specifying are found in the trimmed file, thus
+there are 0% of useful reads.
 
 .. code:: ipython3
 
     # Create your list of variants
-    list_variants = ['acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
+    variants = ['acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
                      + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
                      + 'tcattgatggggagacgtgcctgttggacatcctg', 'aaaaaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
                      + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
@@ -116,13 +114,10 @@ variants on the fastq file you provide as an input.
                      + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
                      + 'tcattgatggggagacgtgcctgttggacatcctg']
     
-    # Convert list of variants to ordered dictionary with values set to 0
-    variants = process._initialize_ordereddict(list_variants)
-    
     # Count DNA variants in the fastq file
     input_file = '../data/hras.trimmed.fastq'
     
-    variants, totalreads, usefulreads = process.count_fastq(variants, input_file)
+    variants, totalreads, usefulreads = mut.count_fastq(variants, input_file)
     
     # Evaluate how many variants in the fastq file were useful
     print('{}/{} useful reads ({}%)'.format(str(usefulreads),
@@ -140,7 +135,7 @@ If you are performing a selection experiment, where you sequence your
 library before and after selection, you will need to calculate the
 enrichment score of each mutant. The function to do so is
 ``calculate_enrichment``. This function allows for different parameters
-to tune how the data is processed and normalized.
+to tune how the data is muted and normalized.
 
 In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`Normalizing datasets`.
 
@@ -191,7 +186,7 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     # Different parameters can be used to calculate the enrichment scores. They are described in the implementation section
     
     # Zeroing using the median of the population, and not using stop codons to correct.
-    frequencies = process.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
+    frequencies = mut.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
                                            aminoacids=aminoacids_NNS,
                                            zeroing='population', how='median', norm_std=True,
                                            stopcodon=True, min_counts=25, min_countswt=100,
@@ -203,7 +198,7 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     hras_example1.heatmap(title='Normal distribution zeroing', output_file=None)
     
     # Zeroing using the median of the population, and not using stop codons to correct.
-    frequencies = process.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
+    frequencies = mut.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
                                            aminoacids=aminoacids_NNS,
                                            zeroing='kernel', how='median', norm_std=True,
                                            stopcodon=True, min_counts=25, min_countswt=100,
@@ -251,17 +246,17 @@ If you split your library into multiple pools, you can use ``assemble_avengers``
     excel_path = '../data/hrasGAPGEF_counts.xlsx'
     # Parameter for pd.read_excel function
     nrows_pop = 32  # For nrows of the sublibrary
-    nrows_wt = [50, 37, 57]  # For nrows of each of the three wild-type columns
+    nrows_wt = [50, 37, 57]  # For ncolumns of each of the three wild-type columns
     skiprows = 1  # Skip one row when reading the columns specified in the list `columns`
     
     # Normalization parameters also need to be specified. In here we
     # are using the default ones.
     
     # Call the function and return a df
-    df = process.assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
+    df = mut.assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
                                nrows_pop, nrows_wt, columns_wt, output_file=None)
     
-    # The output looks like calculate_enrichment
+    # The output is a combined dataframe
 
 Combine MSA with enrichment scores
 ----------------------------------
@@ -285,19 +280,16 @@ Function ``msa_enrichment`` will calculate the frequency of each substitution in
 
 Now we can get the frequency of each substituion in the MSA and the
 Shannon entropy. You can use the example fasta file by loading
-``fasta_dict = demo_fasta()`` and then ``path = fasta_dict['ras']``.
+``fasta_dict = mut_fasta()`` and then ``path = fasta_dict['ras']``.
 
 .. code:: ipython3
 
     # Calculate conservation score from MSA
-    path = '../data/Ras_family_trimmed.fasta'  # local file
-    
-    # Load example file (only if you are trying to reproduce the plots)
-    fasta_dict = demo.demo_fasta()
-    #path = fasta_dict['ras']
+    #path = '../data/Ras_family_trimmed.fasta'  # local file
+    path = mut.demo_fasta()['ras'] # Load example file (only if you are trying to reproduce the plots)
     
     # Calculate msa scores
-    df_shannon, df_freq = process.msa_enrichment(hras_RBD, path,
+    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path,
                                              start_position=1, threshold=0.1)
     
     # In the example, for position 2, in 3.63% of the cases there was an Ala.

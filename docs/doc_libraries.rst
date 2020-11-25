@@ -10,15 +10,12 @@ generate your site saturation library.
 
 .. code:: ipython3
 
-    # Run only if you are using the code from jupyter notebooks instead of pypi
     try:
-        import import_notebook
-    except ModuleNotFoundError:
-        pass
-
-.. code:: ipython3
-
-    import code_synthesis
+        import mutagenesis_visualization as mut
+    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+        import sys
+        sys.path.append('../../')
+        import mutagenesis_visualization as mut
 
 Design primers
 --------------
@@ -41,22 +38,37 @@ Set all primers to have the same base pair length.
 
 .. code:: ipython3
 
-    df_primers = code_synthesis.generate_primers(dna, start, end, output_file=None,
-                                                 codon='NNS', length_primer=15, return_df=True)
+    df_primers = mut.generate_primers(
+        dna,
+        start,
+        end,
+        output_file=None,
+        codon='NNS',
+        length_primer=15,
+        return_df=True
+    )
 
 Set all primers to have the same melting temperature.
 
 .. code:: ipython3
 
-    df_primers_tm = code_synthesis.generate_primers(dna, start, end, output_file=None,
-                                                    codon='NNS', tm=60, return_df=True)
+    df_primers_tm = mut.generate_primers(
+        dna, start, end, output_file=None, codon='NNS', tm=60, return_df=True
+    )
 
 If you just want to export the file to excel:
 
 .. code:: ipython3
 
-    code_synthesis.generate_primers(dna, start, end, output_file='primers.xlsx',
-                                    codon='NNS', tm=60, return_df=False)
+    mut.generate_primers(
+        dna,
+        start,
+        end,
+        output_file='primers.xlsx',
+        codon='NNS',
+        tm=60,
+        return_df=False
+    )
 
 .. image:: images/exported_images/primers.png
    :width: 450px
@@ -79,15 +91,13 @@ Get a dataframe with the sequences:
 
 .. code:: ipython3
 
-    df = code_synthesis.create_variants(
-        dna, codon_list, output_file=None, return_df=True)
+    df = mut.create_variants(dna, codon_list, output_file=None, return_df=True)
 
 If you just want to export the file to fasta:
 
 .. code:: ipython3
 
-    code_synthesis.create_variants(dna, codon_list, 
-                                   output_file='sequences.fasta')
+    mut.create_variants(dna, codon_list, output_file='sequences.fasta')
 
 .. image:: images/exported_images/fasta.png
    :width: 300px
@@ -97,5 +107,4 @@ If you just want to export the file to excel:
 
 .. code:: ipython3
 
-    code_synthesis.create_variants(dna, codon_list, 
-                                   output_file='sequences.xlsx')
+    mut.create_variants(dna, codon_list, output_file='sequences.xlsx')

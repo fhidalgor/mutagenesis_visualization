@@ -10,6 +10,9 @@ logomaker==0.8
 freesasa==2.1.0
 plotly==4.11.0
 openpyxl==3.0.4
+ipympl==0.5.7
+xlrd==1.2.0
+statsmodels==0.11.1
 
 # to install the ipymol package which it is not in pypi
 -e git://github.com/cxhernandez/ipymol.git#egg=ipymol

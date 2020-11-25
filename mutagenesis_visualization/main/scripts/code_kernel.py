@@ -188,7 +188,7 @@ output_file : str, default None
     '''
 
     # update kwargs
-    temp_kwargs = copy.deepcopy(default_kwargs)
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
     temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))

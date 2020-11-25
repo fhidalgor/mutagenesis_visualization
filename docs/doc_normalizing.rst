@@ -9,20 +9,16 @@ Import modules and load data
 
 .. code:: ipython3
 
-    # Run only if you are using the code from jupyter notebooks instead of pypi
-    try:
-        import import_notebook
-    except ModuleNotFoundError:
-        pass
-
-.. code:: ipython3
-
-    # Import modules
-    import mutagenesis_visualization as mut
     import numpy as np
     import pandas as pd
     import copy
-
+    
+    try:
+        import mutagenesis_visualization as mut
+    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+        import sys
+        sys.path.append('../../')
+        import mutagenesis_visualization as mut
 
 In here we are loading and assembling the data by hand instead of using the function ``assemble_avengers`` found in :ref:`Multiple sublibraries` so you can see how it is done. In case you have stored your data in another format different to us, you can tweak the following code. 
 
@@ -33,7 +29,7 @@ In here we are loading and assembling the data by hand instead of using the func
     sheets_sel = ['R1_after', 'R2_after', 'R3_after']
     columns = ['F:BG', 'BH:DK', 'DL:FN']
     columns_wt = ['A', 'B', 'C']
-    path = '../data/hrasRBD_counts.xlsx' # change path
+    path = '../data/hrasRBD_counts.xlsx'  # change path
     
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     dict_pre, dict_sel, dict_pre_wt, dict_sel_wt = ({} for i in range(4))
@@ -42,17 +38,24 @@ In here we are loading and assembling the data by hand instead of using the func
     for column, column_wt in zip(columns, columns_wt):
         for sheet_pre, sheet_sel in zip(sheets_pre, sheets_sel):
             # Pre counts
-            label_pre = str(sheet_pre+'_'+column_wt)
-            dict_pre[label_pre] = pd.read_excel(path, sheet_pre, skiprows=1,usecols=column, nrows=32)
+            label_pre = str(sheet_pre + '_' + column_wt)
+            dict_pre[label_pre] = pd.read_excel(
+                path, sheet_pre, skiprows=1, usecols=column, nrows=32
+            )
             # Pre counts wild-type alleles
-            dict_pre_wt[label_pre] = pd.read_excel(path, sheet_pre, usecols=column_wt)
+            dict_pre_wt[label_pre] = pd.read_excel(
+                path, sheet_pre, usecols=column_wt
+            )
     
             # Sel counts
-            label_sel = str(sheet_sel+'_'+column_wt)
-            dict_sel[label_sel] = pd.read_excel(path, sheet_sel, skiprows=1,usecols=column, nrows=32)
+            label_sel = str(sheet_sel + '_' + column_wt)
+            dict_sel[label_sel] = pd.read_excel(
+                path, sheet_sel, skiprows=1, usecols=column, nrows=32
+            )
             # Sel counts wild-type alleles
-            dict_sel_wt[label_sel] = pd.read_excel(path, sheet_sel, usecols=column_wt)
-            
+            dict_sel_wt[label_sel] = pd.read_excel(
+                path, sheet_sel, usecols=column_wt
+            )
 
 Calculate log10 enrichment
 --------------------------
@@ -77,16 +80,38 @@ selected than in the pre-selected population, the center is >0.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # log 10
-        enrichment_log10 = (np.log10(dict_sel[sel_key]/dict_pre[pre_key]))
+        enrichment_log10 = (np.log10(dict_sel[sel_key] / dict_pre[pre_key]))
         enrichment_log10['aminoacids'] = aminoacids
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, '+r'$log_{10}$'+'(sel/pre)',
-                            xscale=(-0.5, 0.75), output_file = None)
-    
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, ' + r'$log_{10}$' + '(sel/pre)',
+        xscale=(-0.5, 0.75),
+        output_file=None
+    )
+
+
+::
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-9e68cbd98cb8> in <module>
+         10 
+         11 # calculate log10 enrichment for each replicate
+    ---> 12 for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+         13                             list(dict_sel.keys())[:3]):
+         14     # log 10
+
+
+    NameError: name 'dict_pre' is not defined
 
 
 .. image:: images/exported_images/hras_kdesub1.png
@@ -112,15 +137,21 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    zeroing='counts', stopcodon=False)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key], dict_sel[sel_key], zeroing='counts', stopcodon=False
+        )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = counts',
-                            xscale=(-1, 1), output_file = None)
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, zeroing = counts',
+        xscale=(-1, 1),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_zeroingcounts.png
    :width: 350px
@@ -145,17 +176,25 @@ But in other datasets we have, it has been a source of error.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # log 10
         wt_ratio = np.log10(
-            dict_sel_wt[sel_key]['wt 2-56'][1]/dict_pre_wt[pre_key]['wt 2-56'][1])
-        enrichment_log10 = np.log10(dict_sel[sel_key]/dict_pre[pre_key])-wt_ratio
+            dict_sel_wt[sel_key]['wt 2-56'][1] / dict_pre_wt[pre_key]['wt 2-56'][1]
+        )
+        enrichment_log10 = np.log10(
+            dict_sel[sel_key] / dict_pre[pre_key]
+        ) - wt_ratio
         enrichment_log10['aminoacids'] = aminoacids
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = wt_allele only',
-                            xscale=(-0.5, 0.5), output_file = None)
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, zeroing = wt_allele only',
+        xscale=(-0.5, 0.5),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_zeroingwtallele.png
    :width: 350px
@@ -174,18 +213,27 @@ and then ``how='median', 'mean' or 'mode'``.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    dict_pre_wt[pre_key], dict_sel_wt[sel_key],
-                                                    zeroing='wt', how='mode', stopcodon=False)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key],
+            dict_sel[sel_key],
+            dict_pre_wt[pre_key],
+            dict_sel_wt[sel_key],
+            zeroing='wt',
+            how='mode',
+            stopcodon=False
+        )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = wt',
-                            xscale=(-1.5, 1), output_file = None)
-    
-
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, zeroing = wt',
+        xscale=(-1.5, 1),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_zeroingwtpop.png
    :width: 350px
@@ -206,15 +254,25 @@ spread.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    zeroing='population', how='mode', stopcodon=False)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key],
+            dict_sel[sel_key],
+            zeroing='population',
+            how='mode',
+            stopcodon=False
+        )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = population',
-                            xscale=(-1, 1), output_file = None)
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, zeroing = population',
+        xscale=(-1, 1),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_zeroingpopulation.png
    :width: 350px
@@ -235,15 +293,21 @@ standard deviation. Results are quite similar to setting
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    zeroing='kernel', stopcodon=False)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=False
+        )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, zeroing = kernel',
-                            xscale=(-1.5, 1), output_file = None)
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, zeroing = kernel',
+        xscale=(-1.5, 1),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_zeroingkernel.png
    :width: 350px
@@ -266,16 +330,21 @@ shoulder.
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3]):
+    for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
+                                list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    zeroing='kernel', stopcodon=True)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=True
+        )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment, title='Sublibrary 1, baseline subtraction',
-                            xscale=(-5, 1.5), output_file = None)
-
+    mut.plot_multiplekernel(
+        enrichment,
+        title='Sublibrary 1, baseline subtraction',
+        xscale=(-5, 1.5),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_baselinesubtr.png
    :width: 350px
@@ -300,16 +369,25 @@ spread.
     scalars = [0.1, 0.2, 0.3]
     
     # calculate log10 enrichment for each replicate
-    for pre_key, sel_key, scalar in zip(list(dict_pre.keys())[:3], list(dict_sel.keys())[:3],scalars):
+    for pre_key, sel_key, scalar in zip(list(dict_pre.keys())[:3],
+                                        list(dict_sel.keys())[:3], scalars):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                    zeroing='kernel', stopcodon=True, std_scale = scalar)
+        enrichment_log10 = mut.calculate_enrichment(
+            dict_pre[pre_key],
+            dict_sel[sel_key],
+            zeroing='kernel',
+            stopcodon=True,
+            std_scale=scalar
+        )
         enrichment_scalar[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(enrichment_scalar, title='Sublibrary 1, scaling',
-                            xscale=(-5, 1.5), output_file = None)
-
+    mut.plot_multiplekernel(
+        enrichment_scalar,
+        title='Sublibrary 1, scaling',
+        xscale=(-5, 1.5),
+        output_file=None
+    )
 
 .. image:: images/exported_images/hras_scaling.png
    :width: 350px
@@ -340,27 +418,36 @@ get in touch if you have questions regarding data normalization.
     df_lib = {}
     
     for option, xscale in zip(zeroing_options, xscales):
-        for pre_key, sel_key, label in zip(list(dict_pre.keys())[::3], list(dict_sel.keys())[::3], labels):
+        for pre_key, sel_key, label in zip(list(dict_pre.keys())[::3],
+                                           list(dict_sel.keys())[::3], labels):
             # log 10
-            enrichment_log10 = mut.calculate_enrichment(dict_pre[pre_key], dict_sel[sel_key],
-                                                        dict_pre_wt[pre_key], dict_sel_wt[sel_key],
-                                                        zeroing=option, how='mode', stopcodon=True,
-                                                        infinite=2)
+            enrichment_log10 = mut.calculate_enrichment(
+                dict_pre[pre_key],
+                dict_sel[sel_key],
+                dict_pre_wt[pre_key],
+                dict_sel_wt[sel_key],
+                zeroing=option,
+                how='mode',
+                stopcodon=True,
+                infinite=2
+            )
             # Store in dictionary
             enrichment_lib[label] = enrichment_log10
-            
+    
         # Concatenate sublibraries and store in dict
-        df = pd.concat([enrichment_lib['Sublibrary 1'],
-               enrichment_lib['Sublibrary 2'],
-               enrichment_lib['Sublibrary 3']],
-              ignore_index=True, axis=1)
-        
-        df_lib[option] = df   
-        
+        df = pd.concat([
+            enrichment_lib['Sublibrary 1'], enrichment_lib['Sublibrary 2'],
+            enrichment_lib['Sublibrary 3']
+        ],
+                       ignore_index=True,
+                       axis=1)
+    
+        df_lib[option] = df
+    
         # Plot
-        mut.plot_multiplekernel(enrichment_lib, title=title+option, xscale=xscale,
-                            output_file = None)
-
+        mut.plot_multiplekernel(
+            enrichment_lib, title=title + option, xscale=xscale, output_file=None
+        )
 
 .. image:: images/exported_images/hras_repA_zeroingpopulation.png
    :width: 350px
@@ -403,10 +490,9 @@ since can easily be changed by using ``std_scale``.
     
     # Create objects
     objects = {}
-    for key,value in df_lib.items():
+    for key, value in df_lib.items():
         temp = mut.Screen(value, hras_sequence, aminoacids, start_position)
-        objects[key] = temp 
-
+        objects[key] = temp
 
 Now that the objects are created and stored in a dictionary, we will use
 the method ``object.heatmap``. You will note that the first heatmap
@@ -423,7 +509,7 @@ select the method of normalization that works with your data.
     
     # Create objects
     for obj, title in zip(objects.values(), titles):
-        obj.heatmap(title='Normalization by '+title+' method', output_file=None)
+        obj.heatmap(title='Normalization by ' + title + ' method', output_file=None)
 
 .. image:: images/exported_images/hras_heatmap_norm_population.png
 

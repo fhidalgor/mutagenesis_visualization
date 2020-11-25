@@ -8,21 +8,18 @@ Import modules
 
 .. code:: ipython3
 
-    # Run only if you are using the code from jupyter notebooks instead of pypi
-    try:
-        import import_notebook
-    except ModuleNotFoundError:
-        pass
-
-.. code:: ipython3
-
-    # Import Modules
-    import code_class as mut
-    import code_process_data
+    # running locally, if you pip install then you just have to import the module
     import numpy as np
     import pandas as pd
     import matplotlib as plt
     import copy
+    
+    try:
+        import mutagenesis_visualization as mut
+    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+        import sys
+        sys.path.append('../../')
+        import mutagenesis_visualization as mut
 
 Create object of class Screen
 -----------------------------
@@ -312,6 +309,15 @@ scan (bottom)
     hras_RBD.mean(figsize=[6, 2.5], mode='A', show_cartoon=True, yscale=[-2, 0.5],
                   title='', output_file=None)
 
+
+
+.. image:: doc_plotting_files/doc_plotting_50_0.png
+
+
+
+.. image:: doc_plotting_files/doc_plotting_50_1.png
+
+
 .. image:: images/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center
@@ -345,6 +351,11 @@ You can check the individual mutational profile of a residue by using
     # Create plot for position 117
     hras_RBD.position(position=117, yscale=(-1.5, 0.8), figsize=(3.5, 2),
                       title='Position 117', output_file=None)
+
+
+
+.. image:: doc_plotting_files/doc_plotting_56_0.png
+
 
 .. image:: images/exported_images/hras_position117.png
    :width: 350px
@@ -404,6 +415,11 @@ rest of the dataset.
     # Explained variability by amino acid
     hras_RBD.individual_correlation(yscale=[0, 0.6], title='Explained variability by amino acid',
                                     output_file=None)
+
+
+
+.. image:: doc_plotting_files/doc_plotting_68_0.png
+
 
 .. image:: images/exported_images/hras_variability.png
    :width: 300px
@@ -476,12 +492,17 @@ enrichment/conservation.
 
     # Calculate conservation score from MSA
     path = '../data/Ras_family_trimmed.fasta'
-    df_shannon, df_freq = code_process_data.msa_enrichment(hras_RBD, path, start_position=1,
+    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
                                                            threshold=0.1)
     
     # Plot ROC curve
     hras_RBD.roc(df_freq[['Variant', 'Class']], title='MSA predictive power',
                  output_file=None)
+
+
+
+.. image:: doc_plotting_files/doc_plotting_77_0.png
+
 
 .. image:: images/exported_images/hras_roc.png
    :width: 250px
@@ -499,13 +520,14 @@ residues with a lower enrichment score are more conserved.
     binned_shannon = (2*df_shannon['Shannon']).round(0)/2
     
     # Plot box plot.
-    mut.box(binned_x=binned_shannon, y=df_shannon['Score'],
+    mut.plot_box(binned_x=binned_shannon, y=df_shannon['Score'],
             title='Shannon vs Enrichment', x_label='Shannon Entropy',
             y_label=r'$∆E^i_x$', output_file=None)
 
-.. code:: ipython3
 
-    mut.
+
+.. image:: doc_plotting_files/doc_plotting_80_0.png
+
 
 .. image:: images/exported_images/hras_shannon.png
    :width: 300px
@@ -548,10 +570,9 @@ the origin. If you want to use the example pdbs, use the command
     path = '../data/Ras_family_trimmed.fasta'
     
     # Load example MSA file (only if you are trying to reproduce the plots)
-    #fasta_dict = demo_fasta()
-    #path = fasta_dict['ras']
+    #path = demo_fasta()['ras']
     
-    df_shannon, df_freq = code_process_data.msa_enrichment(hras_RBD, path, start_position=1,
+    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path, start_position=1,
                                              threshold=0.1)
     
     # Plot 3-D SASA, B-factor and Shannon Entropy
@@ -611,8 +632,10 @@ dataset.
 
 .. code:: ipython3
 
+    %matplotlib inline
+    
     # Read excel file
-    path = '../images/exported_images/logo.xlsx'
+    path = '../data/logo.xlsx'
     usecols = 'A:BL'
     #df_logo = pd.read_excel(path, 'logo', usecols=usecols, nrows=21)
     #df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
