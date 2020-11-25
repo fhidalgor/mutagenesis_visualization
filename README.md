@@ -35,3 +35,7 @@ pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 You can find the documentation at `readthedocs <https://mutagenesis-visualization.readthedocs.io/en/latest/>`_
 
 
+## Tutorial
+
+There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. This notebooks also form part of the documentation.
+
