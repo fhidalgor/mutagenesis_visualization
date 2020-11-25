@@ -25,48 +25,6 @@ use this API.
         sys.path.append('../../')
         import mutagenesis_visualization as mut
 
-.. code:: ipython3
-
-    sys.builtin_module_names
-
-
-
-
-.. parsed-literal::
-
-    ('_abc',
-     '_ast',
-     '_codecs',
-     '_collections',
-     '_functools',
-     '_imp',
-     '_io',
-     '_locale',
-     '_operator',
-     '_signal',
-     '_sre',
-     '_stat',
-     '_string',
-     '_symtable',
-     '_thread',
-     '_tracemalloc',
-     '_warnings',
-     '_weakref',
-     'atexit',
-     'builtins',
-     'errno',
-     'faulthandler',
-     'gc',
-     'itertools',
-     'marshal',
-     'posix',
-     'pwd',
-     'sys',
-     'time',
-     'xxsubtype')
-
-
-
 The data used in this notebook is included as part of the package in two different ways. First, it is saved as ``data/DMS_others.xlsx``. You can find the excel spreadsheet on the Github repository. In addition, we are providing a command to quickly retrieve and load the data with :func:`mutagenesis_visualization.demo_datasets`.
 
 

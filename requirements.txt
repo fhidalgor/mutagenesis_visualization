@@ -13,6 +13,7 @@ openpyxl==3.0.4
 ipympl==0.5.7
 xlrd==1.2.0
 statsmodels==0.11.1
+xlsxwriter==1.2.9
 
 # to install the ipymol package which it is not in pypi
 -e git://github.com/cxhernandez/ipymol.git#egg=ipymol

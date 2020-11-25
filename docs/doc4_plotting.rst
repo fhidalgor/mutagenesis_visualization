@@ -311,11 +311,11 @@ scan (bottom)
 
 
 
-.. image:: doc_plotting_files/doc_plotting_50_0.png
+.. image:: doc4_plotting_files/doc4_plotting_50_0.png
 
 
 
-.. image:: doc_plotting_files/doc_plotting_50_1.png
+.. image:: doc4_plotting_files/doc4_plotting_50_1.png
 
 
 .. image:: images/exported_images/hras_bar_mean.png
@@ -354,7 +354,7 @@ You can check the individual mutational profile of a residue by using
 
 
 
-.. image:: doc_plotting_files/doc_plotting_56_0.png
+.. image:: doc4_plotting_files/doc4_plotting_56_0.png
 
 
 .. image:: images/exported_images/hras_position117.png
@@ -418,7 +418,7 @@ rest of the dataset.
 
 
 
-.. image:: doc_plotting_files/doc_plotting_68_0.png
+.. image:: doc4_plotting_files/doc4_plotting_68_0.png
 
 
 .. image:: images/exported_images/hras_variability.png
@@ -501,7 +501,7 @@ enrichment/conservation.
 
 
 
-.. image:: doc_plotting_files/doc_plotting_77_0.png
+.. image:: doc4_plotting_files/doc4_plotting_77_0.png
 
 
 .. image:: images/exported_images/hras_roc.png
@@ -526,7 +526,7 @@ residues with a lower enrichment score are more conserved.
 
 
 
-.. image:: doc_plotting_files/doc_plotting_80_0.png
+.. image:: doc4_plotting_files/doc4_plotting_80_0.png
 
 
 .. image:: images/exported_images/hras_shannon.png

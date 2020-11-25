@@ -43,13 +43,13 @@ Use mutagenesis_visualization locally
 .. note::
     Skip this section if you pip installed the package.
     
-You may decide to download the jupyter notebook called ``mutagenesis_visualization.ipynb`` also found on GitHub, which contains the code used in this package, and do some modifications of your own. If you do so, there is an easy way to use that same notebook without having to convert it every time to a .py file. Download the folder ``jupyter_notebooks`` and place your current notebook in that folder. The run the command shown below. Should you go through this route, you will need to manually install the required :ref:`dependencies`.
+You may decide to download the GitHub repository, do some modifications of your own. If you do so, there is an easy way to import notebooks without having to convert it every time to a .py file. The script ``import_notebook`` does the trick:
 
 .. code:: ipython3
 
-    import Import_notebook
-    import mutagenesis_visualization as mut	
-
+    import import_notebook
+    import notebook_of_your_choice
+     
 Dependencies
 ==============
 
@@ -72,8 +72,6 @@ Required Dependencies
 
 - `scikit-learn <http://scikit-learn.org/stable/>`_ (version 0.23.1)
 
-- `copy <https://docs.python.org/2/library/copy.html>`_ 
-
 - `itertools <https://docs.python.org/3/library/itertools.html>`_ (version 8.4.0)
 
 - `biopython <https://pypi.org/project/biopython/>`_ (version 1.77)
@@ -88,6 +86,17 @@ Required Dependencies
 
 - `plotly <https://plotly.com/>`_ (version 4.11.0)
 
+- `openpyxl <https://pypi.org/project/openpyxl/>`_ (version 3.0.4)
+
+- `ipympl <https://pypi.org/project/ipympl/>`_ (version 0.5.7)
+
+- `xlrd <https://pypi.org/project/xlrd/>`_ (version 1.2.0)
+
+- `statsmodels <https://pypi.org/project/statsmodels/>`_ (version 0.11.1)
+
+- `xlsxwriter <https://pypi.org/project/XlsxWriter/>`_ (version 1.2.9)
+
+* More updated versions probably work too. In here, we have specified the versions we used when building the software.
 
 If you want to manually install and/or upgrade the dependencies on your own, use:
 
@@ -167,7 +176,7 @@ Workflow
 
 Let's take a look to the workflow of this software:
 
-.. image:: _static/workflow_v2.png
+.. image:: _static/workflow_v3.png
    :align: center
    
 Mutagenesis_visualization will simplify the process of developing and analyzing mutagenesis experiments. To start, you can use this software to design site-saturation sequences using the create_variants function. From here, you will pause your work with Mutagenesis_visualization to synthesize the site-saturation sequences using Twist Bio, Agilent, etc. Once you have got your DNA library ready, you will perform the necessary experiments and sequence the samples. After that, you will use a bioinformatics software (ie Flash) to pair the unpaired reads. Then you will trim the adapters to generate FASTQ files.

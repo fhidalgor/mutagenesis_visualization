@@ -65,19 +65,19 @@ In here, you will find the :ref:`class`, methods and :ref:`functions` used in th
 Tutorial
 ===============
 
-In this chapter, we will walk the user through the different functions and methods of this Python library. We will start with :ref:`Design DNA libraries` by seeing how to generate the primers to synthesize the DNA library, or the input FASTA file containing all possible site-saturation sequences that companies like Twist Bioscience need in order to synthesize the library for you. Then, from a FASTQ file, we will process the data (:ref:`Processing DNA reads`) and we will do each type of plot (:ref:`Creating plots`). :ref:`Normalizing datasets` shows the different options of data normalization that the package allows for. :ref:`Holistic testing` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``doc_library.ipynb``, ``doc_processing.ipynb``, ``doc_normalizing.ipynb``, ``doc_plotting.ipynb``, ``doc_plotly.ipynb`` and ``doc_other_datasets.ipynb``. 
+In this chapter, we will walk the user through the different functions and methods of this Python library. We will start with :ref:`Design DNA libraries` by seeing how to generate the primers to synthesize the DNA library, or the input FASTA file containing all possible site-saturation sequences that companies like Twist Bioscience need in order to synthesize the library for you. Then, from a FASTQ file, we will process the data (:ref:`Processing DNA reads`) and we will do each type of plot (:ref:`Creating plots`). :ref:`Normalizing datasets` shows the different options of data normalization that the package allows for. :ref:`Holistic testing` uses other datasets to showcase the different options that the software gives you. The jupyter notebooks used to generate the examples can be found on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ and are named ``doc1_library.ipynb``, ``doc2_processing.ipynb``, ``doc3_normalizing.ipynb``, ``doc4_plotting.ipynb``, ``doc5_plotly.ipynb`` and ``doc6_other_datasets.ipynb``. 
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :Caption: Tutorial
 	
-	Design DNA libraries <doc_libraries>	
-	Processing DNA reads <doc_processing>
-	Normalizing datasets <doc_normalizing>
-	Creating plots <doc_plotting>
-	Visualizing with plotly <doc_plotly>
-	Holistic testing <doc_other_datasets>
+	Design DNA libraries <doc1_libraries>	
+	Processing DNA reads <doc2_processing>
+	Normalizing datasets <doc3_normalizing>
+	Creating plots <doc4_plotting>
+	Visualizing with plotly <doc5_plotly>
+	Holistic testing <doc6_other_datasets>
 
 About Us
 ===============
