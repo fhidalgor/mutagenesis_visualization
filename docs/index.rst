@@ -53,7 +53,7 @@ In this chapter, you will find how to install the package (:ref:`installation gu
 API Description
 ===============
 
-In here, you will find the :ref:`class`, methods and :ref:`functions` used in this API.
+In here, you will find the :ref:`classes`, methods and :ref:`functions` used in this API.
 
 .. toctree::
    :maxdepth: 2

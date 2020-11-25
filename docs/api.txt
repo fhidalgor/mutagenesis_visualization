@@ -5,41 +5,15 @@ Class
 
 *Screen* class
 ===============
-.. py:class:: mutagenesis_visualization.Counts
-   .. py:method:: mean_counts
-   .. py:method:: library_representation
 
-.. py:class:: mutagenesis_visualization.Screen
-   .. py:method:: kernel
-   .. py:method:: histogram
-   .. py:method:: heatmap
-   .. py:method:: heatmap_rows
-   .. py:method:: heatmap_columns
-   .. py:method:: mean
-   .. py:method:: differential
-   .. py:method:: position
-   .. py:method:: scatter
-   .. py:method:: correlation
-   .. py:method:: individual_correlation
-   .. py:method:: group_correlation
-   .. py:method:: pca
-   .. py:method:: rank
-   .. py:method:: miniheatmap
-   .. py:method:: neighboreffect
-   .. py:method:: secondary_mean
-   .. py:method:: roc
-   .. py:method:: cumulative
-   .. py:method:: scatter_3D
-   .. py:method:: scatter_3D_pdbprop
-   .. py:method:: rank_plotly
-   .. py:method:: scatter_plotly
-   .. py:method:: plot_pymol
-   
+.. autoclass:: mutagenesis_visualization.Screen
+    :members:
+
 Associated kwargs
 ===================
 .. _kwargs:
 
-.. autofunction:: mutagenesis_visualization.code_kwargs.kwargs
+.. autofunction:: mutagenesis_visualization.kwargs
 
 
 .. _Processing_counts_functions:
@@ -89,12 +63,5 @@ The following functions do not belong to the class *Screen*. Some of them are us
 
 .. autofunction:: mutagenesis_visualization.plot_multiplekernel
 
-.. _generate_primers:
-
-.. autofunction:: mutagenesis_visualization.generate_primers
-
-.. _create_variants:
-
-.. autofunction:: mutagenesis_visualization.create_variants
 
 

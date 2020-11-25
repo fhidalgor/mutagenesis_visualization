@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=build
-#set SPHINXPROJ=mutagenesis_visualization
+set SPHINXPROJ=mutagenesis_visualization
 
 if "%1" == "" goto help
 

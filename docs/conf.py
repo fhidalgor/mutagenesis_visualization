@@ -10,12 +10,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
 import sys
-sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
+sys.path.append('../')
+#sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 #sys.path.insert(0, os.path.abspath('../../mutagenesis_visualization/'))
-
-print (os. getcwd())
 
 # -- Project information -----------------------------------------------------
 project = 'Mutagenesis Visualization'
@@ -23,7 +21,7 @@ copyright = '2020, Frank Hidalgo'
 author = 'Frank Hidalgo'
 
 # The full version, including alpha/beta/rc tags
-version = '0.0.1'
+version = '0.0.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,7 +36,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon'
 
 # mock import modules
 autodoc_mock_imports = ['Bio', 'ipymol', 'shannon', 'logomaker', 'collections', 'adjustText', 'seaborn',
-'scipy', 'sklearn', 'pandas', 'Import_notebook','copy', 'itertools', 'freesasa', 'plotly']
+'scipy', 'sklearn', 'pandas', 'Import_notebook','copy', 'itertools', 'freesasa', 'plotly', 'statsmodels']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

@@ -4,7 +4,7 @@
 # You can set these variables from the command line
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-#SPHINXPROJ    = mutagenesis_visualization
+SPHINXPROJ    = mutagenesis_visualization
 SOURCEDIR     = .
 BUILDDIR      = build
 
