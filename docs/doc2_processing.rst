@@ -1,5 +1,5 @@
 Processing DNA reads
-================
+====================
 
 This section will teach you how to use the built-in data muting
 functions. If you already have your own muting pipeline built, you can
@@ -14,11 +14,10 @@ Import module
     import pandas as pd
     try:
         import mutagenesis_visualization as mut
-    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
         import sys
         sys.path.append('../../')
         import mutagenesis_visualization as mut
-
 
 Count DNA reads from fastq file
 -------------------------------
@@ -49,9 +48,11 @@ file.
         + 'tcattgatggggagacgtgcctgttggacatcctg'
     
     # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
-    codon_list = ["GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG",
-                  "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG",
-                  "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"]
+    codon_list = [
+        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG",
+        "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG",
+        "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
+    ]
     
     # Input and output files
     input_file = '../data/hras.trimmed.fastq'
@@ -60,9 +61,10 @@ file.
     start_position = 2
     
     # Execute count reads
-    df_counts_pre, wt_counts_pre = mut.count_reads(hras_dnasequence, input_file,
-                                                       codon_list, counts_wt, start_position, 
-                                                       output_file)
+    df_counts_pre, wt_counts_pre = mut.count_reads(
+        hras_dnasequence, input_file, codon_list, counts_wt, start_position,
+        output_file
+    )
 
 .. image:: images/exported_images/hras_tablecounts.png
    :width: 450px
@@ -81,9 +83,9 @@ amino acid per position.
 
 .. code:: ipython3
 
-    hras_obj.mean_counts(title = 'H-Ras mean counts per position')
+    hras_obj.mean_counts(title='H-Ras mean counts per position')
     
-    hras_obj.library_representation(title = 'H-Ras amino acid coverage')
+    hras_obj.library_representation(title='H-Ras amino acid coverage')
 
 .. image:: images/exported_images/hras_countspre.png
    :width: 500px
@@ -106,13 +108,17 @@ there are 0% of useful reads.
 .. code:: ipython3
 
     # Create your list of variants
-    variants = ['acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
-                     + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
-                     + 'tcattgatggggagacgtgcctgttggacatcctg', 'aaaaaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
-                     + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
-                     + 'tcattgatggggagacgtgcctgttggacatcctg', 'tttttttataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'
-                     + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'
-                     + 'tcattgatggggagacgtgcctgttggacatcctg']
+    variants = [
+        'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' +
+        'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' +
+        'tcattgatggggagacgtgcctgttggacatcctg',
+        'aaaaaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' +
+        'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' +
+        'tcattgatggggagacgtgcctgttggacatcctg',
+        'tttttttataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' +
+        'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' +
+        'tcattgatggggagacgtgcctgttggacatcctg'
+    ]
     
     # Count DNA variants in the fastq file
     input_file = '../data/hras.trimmed.fastq'
@@ -120,8 +126,12 @@ there are 0% of useful reads.
     variants, totalreads, usefulreads = mut.count_fastq(variants, input_file)
     
     # Evaluate how many variants in the fastq file were useful
-    print('{}/{} useful reads ({}%)'.format(str(usefulreads),
-                                            str(totalreads), str(int(usefulreads/totalreads*100))))
+    print(
+        '{}/{} useful reads ({}%)'.format(
+            str(usefulreads), str(totalreads),
+            str(int(usefulreads / totalreads * 100))
+        )
+    )
 
 Calculate enrichment scores
 ---------------------------
@@ -142,13 +152,23 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
 .. code:: ipython3
 
     # Read counts from file (could be txt, csv, xlsx, etc...)
-    df_counts_pre = pd.read_excel('../data/hrasGAPGEF_counts.xlsx',
-                                  'R1_before', skiprows=1, index_col='Codons',
-                                  usecols='E:FN', nrows=32)
+    df_counts_pre = pd.read_excel(
+        '../data/hrasGAPGEF_counts.xlsx',
+        'R1_before',
+        skiprows=1,
+        index_col='Codons',
+        usecols='E:FN',
+        nrows=32
+    )
     
-    df_counts_sel = pd.read_excel('../data/hrasGAPGEF_counts.xlsx',
-                                  'R1_after', skiprows=1, index_col='Codons',
-                                  usecols='E:FN', nrows=32)
+    df_counts_sel = pd.read_excel(
+        '../data/hrasGAPGEF_counts.xlsx',
+        'R1_after',
+        skiprows=1,
+        index_col='Codons',
+        usecols='E:FN',
+        nrows=32
+    )
 
 .. code:: ipython3
 
@@ -166,14 +186,14 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     start_position = 2
     
     # Define secondary structure
-    secondary = [['L0'], ['β1']*(9-1), ['L1']*(15-9), ['α1']*(25-15), ['L2']*(36-25),
-                 ['β2']*(46-36), ['L3']*(48-46), ['β3']*(58-48), ['L4'] * (64-58),
-                 ['α2']*(74-64), ['L5']*(76-74), ['β4']*(83-76), ['L6']*(86-83),
-                 ['α3']*(103-86), ['L7']*(110-103), ['β5'] *
-                 (116-110), ['L8']*(126-116),
-                 ['α4']*(137-126), ['L9']*(140-137), ['β6'] *
-                 (143-140), ['L10']*(151-143),
-                 ['α5']*(172-151), ['L11']*(190-172)]
+    secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15),
+                 ['L2'] * (36 - 25), ['β2'] * (46 - 36), ['L3'] * (48 - 46),
+                 ['β3'] * (58 - 48), ['L4'] * (64 - 58), ['α2'] * (74 - 64),
+                 ['L5'] * (76 - 74), ['β4'] * (83 - 76), ['L6'] * (86 - 83),
+                 ['α3'] * (103 - 86), ['L7'] * (110 - 103), ['β5'] * (116 - 110),
+                 ['L8'] * (126 - 116), ['α4'] * (137 - 126), ['L9'] * (140 - 137),
+                 ['β6'] * (143 - 140), ['L10'] * (151 - 143), ['α5'] * (172 - 151),
+                 ['L11'] * (190 - 172)]
     
     # Substitute Nan values with 0
     fillna = 0
@@ -186,26 +206,50 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     # Different parameters can be used to calculate the enrichment scores. They are described in the implementation section
     
     # Zeroing using the median of the population, and not using stop codons to correct.
-    frequencies = mut.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
-                                           aminoacids=aminoacids_NNS,
-                                           zeroing='population', how='median', norm_std=True,
-                                           stopcodon=True, min_counts=25, min_countswt=100,
-                                           mpop=2, mwt=2, infinite=3, std_scale=0.3)
+    frequencies = mut.calculate_enrichment(
+        df_counts_pre.iloc[:, :54],
+        df_counts_sel.iloc[:, :54],
+        aminoacids=aminoacids_NNS,
+        zeroing='population',
+        how='median',
+        norm_std=True,
+        stopcodon=True,
+        min_counts=25,
+        min_countswt=100,
+        mpop=2,
+        mwt=2,
+        infinite=3,
+        std_scale=0.3
+    )
     
-    hras_example1 = mut.Screen(np.array(frequencies), hras_sequence,
-                               aminoacids, start_position, fillna, secondary)
+    hras_example1 = mut.Screen(
+        np.array(frequencies), hras_sequence, aminoacids, start_position, fillna,
+        secondary
+    )
     
     hras_example1.heatmap(title='Normal distribution zeroing', output_file=None)
     
     # Zeroing using the median of the population, and not using stop codons to correct.
-    frequencies = mut.calculate_enrichment(df_counts_pre.iloc[:, :54], df_counts_sel.iloc[:, :54],
-                                           aminoacids=aminoacids_NNS,
-                                           zeroing='kernel', how='median', norm_std=True,
-                                           stopcodon=True, min_counts=25, min_countswt=100,
-                                           mpop=2, mwt=2, infinite=3, std_scale=0.15)
+    frequencies = mut.calculate_enrichment(
+        df_counts_pre.iloc[:, :54],
+        df_counts_sel.iloc[:, :54],
+        aminoacids=aminoacids_NNS,
+        zeroing='kernel',
+        how='median',
+        norm_std=True,
+        stopcodon=True,
+        min_counts=25,
+        min_countswt=100,
+        mpop=2,
+        mwt=2,
+        infinite=3,
+        std_scale=0.15
+    )
     
-    hras_example2 = mut.Screen(np.array(frequencies), hras_sequence,
-                               aminoacids, start_position, fillna, secondary)
+    hras_example2 = mut.Screen(
+        np.array(frequencies), hras_sequence, aminoacids, start_position, fillna,
+        secondary
+    )
     
     hras_example2.heatmap(title='KDE zeroing', output_file=None)
     
@@ -253,8 +297,16 @@ If you split your library into multiple pools, you can use ``assemble_avengers``
     # are using the default ones.
     
     # Call the function and return a df
-    df = mut.assemble_avengers(excel_path, sheet_pre, sheet_post, columns,
-                               nrows_pop, nrows_wt, columns_wt, output_file=None)
+    df = mut.assemble_avengers(
+        excel_path,
+        sheet_pre,
+        sheet_post,
+        columns,
+        nrows_pop,
+        nrows_wt,
+        columns_wt,
+        output_file=None
+    )
     
     # The output is a combined dataframe
 
@@ -286,11 +338,13 @@ Shannon entropy. You can use the example fasta file by loading
 
     # Calculate conservation score from MSA
     #path = '../data/Ras_family_trimmed.fasta'  # local file
-    path = mut.demo_fasta()['ras'] # Load example file (only if you are trying to reproduce the plots)
+    path = mut.demo_fasta()[
+        'ras']  # Load example file (only if you are trying to reproduce the plots)
     
     # Calculate msa scores
-    df_shannon, df_freq = mut.msa_enrichment(hras_RBD, path,
-                                             start_position=1, threshold=0.1)
+    df_shannon, df_freq = mut.msa_enrichment(
+        hras_RBD, path, start_position=1, threshold=0.1
+    )
     
     # In the example, for position 2, in 3.63% of the cases there was an Ala.
     df_freq.head(5)

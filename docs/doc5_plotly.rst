@@ -12,11 +12,10 @@ Plotly.
     
     try:
         import mutagenesis_visualization as mut
-    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
         import sys
         sys.path.append('../../')
         import mutagenesis_visualization as mut
-
 
 Load sample datasets.
 
@@ -103,8 +102,13 @@ point by putting the mouse pointer on top.
 
 .. code:: ipython3
 
-    hras_RBD.scatter_plotly(hras_GAPGEF, show_results=False, title='Scatter Point Mutants',
-                           x_label = 'hras_RBD', y_label = 'hras_GAPGEF')
+    hras_RBD.scatter_plotly(
+        hras_GAPGEF,
+        show_results=False,
+        title='Scatter Point Mutants',
+        x_label='hras_RBD',
+        y_label='hras_GAPGEF'
+    )
 
 .. image:: images/plotly_images/hras_scatterpointmutants.png
    :width: 300px
@@ -114,8 +118,13 @@ Now we just look at the positional average.
 
 .. code:: ipython3
 
-    hras_RBD.scatter_plotly(hras_GAPGEF, mode='mean', title='Scatter Positional Average',
-                           x_label = 'hras_RBD', y_label = 'hras_GAPGEF')
+    hras_RBD.scatter_plotly(
+        hras_GAPGEF,
+        mode='mean',
+        title='Scatter Positional Average',
+        x_label='hras_RBD',
+        y_label='hras_GAPGEF'
+    )
 
 .. image:: images/plotly_images/hras_scatterposition.png
    :width: 300px

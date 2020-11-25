@@ -4,4 +4,7 @@
 - Finish tests
 - Check for bugs
 - Capture probable input errors and write error messages
+- Add more features
+	+ More Pypi visualization plots
+		* 3-D 
 - Write manuscript

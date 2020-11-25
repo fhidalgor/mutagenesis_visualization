@@ -15,7 +15,7 @@ Import modules and load data
     
     try:
         import mutagenesis_visualization as mut
-    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
         import sys
         sys.path.append('../../')
         import mutagenesis_visualization as mut

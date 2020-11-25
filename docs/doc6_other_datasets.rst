@@ -20,13 +20,22 @@ use this API.
     
     try:
         import mutagenesis_visualization as mut
-    except ModuleNotFoundError: # This step is only for when I run the notebooks locally
+    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
         import sys
         sys.path.append('../../')
         import mutagenesis_visualization as mut
 
+Load datasets
+-------------
+
 The data used in this notebook is included as part of the package in two different ways. First, it is saved as ``data/DMS_others.xlsx``. You can find the excel spreadsheet on the Github repository. In addition, we are providing a command to quickly retrieve and load the data with :func:`mutagenesis_visualization.demo_datasets`.
 
+
+Load enrichment scores
+~~~~~~~~~~~~~~~~~~~~~~
+
+Now we will load the counts for each dataset. With the counts we will
+generate objects that we can analyzed and visualize.
 
 .. code:: ipython3
 
@@ -51,9 +60,26 @@ The data used in this notebook is included as part of the package in two differe
     # b11L5
     df_b11L5F = data_dict['df_b11L5F']
 
-Now we will import the modules. Note that this is being done on a local
-Jupyter notebook, you should change the path of output files to your
-own.
+Load objects
+~~~~~~~~~~~~
+
+For simplicity, we also have added the option of loading those datasets
+into objects automatically. The command to do that would be
+``mut.name_object()``. There are 10 objects to load (hras_RBD, bla_obj,
+sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj, asynuclein_obj,
+aph_obj, b11L5F_obj).
+
+.. code:: ipython3
+
+    mut.bla_obj()
+
+Load from excel or csv
+~~~~~~~~~~~~~~~~~~~~~~
+
+If you are working with your own data, the most probable workflow is
+that you load your dataset from an excel/csv file. Because of that, in
+the following examples we won’t use the preloaded datasets, we will load
+them from Excel or a pickle file instead.
 
 Beta Lactamase
 --------------
@@ -77,15 +103,14 @@ of the nine examples.
     
     # Read excel file
     #df_bla_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_bla_raw = pd.read_pickle('../data/df_bla_raw.pkl')
-    
     # Save into pickle so it is easier to read next time you need it
     #df_bla_raw.to_pickle('../data/df_bla_raw.pkl')
     
+    # Read from pickle to save time (same as reading from excel)
+    df_bla_raw = pd.read_pickle('../data/df_bla_raw.pkl')
+    
     # Parse
-    df_bla, sequence_bla = mut.parse_pivot(
-        df_bla_raw, col_data='DMS_amp_625_(b)'
-    )
+    df_bla, sequence_bla = mut.parse_pivot(df_bla_raw, col_data='DMS_amp_625_(b)')
 
 Create object
 ~~~~~~~~~~~~~
@@ -303,10 +328,12 @@ Load data
     
     # Read excel file
     #df_sumo1_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_sumo1_raw = pd.read_pickle('../data/df_sumo1_raw.pkl')
-    
     # Save into pickle so it is easier to read next time you need it
     #df_sumo1_raw.to_pickle('../data/df_sumo1_raw.pkl')
+    
+    # Read from pickle to save time (same as reading from excel)
+    df_sumo1_raw = pd.read_pickle('../data/df_sumo1_raw.pkl')
+    
     ### 2D Plots
     # Parse
     df_sumo1, sequence_sumo1 = mut.parse_pivot(df_sumo1_raw, col_data='DMS')
@@ -479,15 +506,14 @@ Load data
     
     # Read excel file
     #df_mapk1_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_mapk1_raw = pd.read_pickle('../data/df_mapk1_raw.pkl')
-    
     # Save into pickle so it is easier to read next time you need it
     #df_mapk1_raw.to_pickle('../data/df_mapk1_raw.pkl')
     
+    # Read from pickle to save time (same as reading from excel)
+    df_mapk1_raw = pd.read_pickle('../data/df_mapk1_raw.pkl')
+    
     # Parse
-    df_mapk1, sequence_mapk1 = mut.parse_pivot(
-        df_mapk1_raw, col_data=col_data
-    )
+    df_mapk1, sequence_mapk1 = mut.parse_pivot(df_mapk1_raw, col_data=col_data)
 
 Create object
 ~~~~~~~~~~~~~
@@ -620,15 +646,14 @@ Load data
     
     # Read excel file
     #df_ube2i_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_ube2i_raw = pd.read_pickle('../data/df_ube2i_raw.pkl')
-    
     # Save into pickle so it is easier to read next time you need it
     #df_ube2i_raw.to_pickle('../data/df_ube2i_raw.pkl')
     
+    # Read from pickle to save time (same as reading from excel)
+    df_ube2i_raw = pd.read_pickle('../data/df_ube2i_raw.pkl')
+    
     # Parse
-    df_ube2i, sequence_ube2i = mut.parse_pivot(
-        df_ube2i_raw, col_data=col_data
-    )
+    df_ube2i, sequence_ube2i = mut.parse_pivot(df_ube2i_raw, col_data=col_data)
 
 Create object
 ~~~~~~~~~~~~~
@@ -791,11 +816,13 @@ Load data
     sheet_name = 'TAT'
     usecols = 'A:V'
     col_data = 'DMS'
-    #df_tat = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
-    df_tat = pd.read_pickle('../data/df_tat.pkl')
     
+    #df_tat = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
     # Save into pickle so it is easier to read next time you need it
     #df_tat.to_pickle('../data/df_tat.pkl')
+    
+    # Read from pickle to save time (same as reading from excel)
+    df_tat = pd.read_pickle('../data/df_tat.pkl')
 
 Create object
 ~~~~~~~~~~~~~
@@ -924,11 +951,13 @@ Load data
     sheet_name = 'REV'
     usecols = 'A:V'
     col_data = 'DMS'
-    #df_rev = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
-    df_rev = pd.read_pickle('../data/df_rev.pkl')
     
+    #df_rev = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols).T
     # Save into pickle so it is easier to read next time you need it
     #df_rev.to_pickle('../data/df_rev.pkl')
+    
+    # Read from pickle to save time (same as reading from excel)
+    df_rev = pd.read_pickle('../data/df_rev.pkl')
 
 Create object
 ~~~~~~~~~~~~~
@@ -1063,11 +1092,13 @@ Load data
     path = '../Data/DMS_others.xlsx'
     sheet_name = 'a-synuclein'
     usecols = 'A:EK'
-    #df_asynuclein = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
-    df_asynuclein = pd.read_pickle('../data/df_asynuclein.pkl')
     
+    #df_asynuclein = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
     # Save into pickle so it is easier to read next time you need it
     #df_asynuclein.to_pickle('../data/df_asynuclein.pkl')
+    
+    # Read from pickle to save time (same as reading from excel)
+    df_asynuclein = pd.read_pickle('../data/df_asynuclein.pkl')
 
 Create object
 ~~~~~~~~~~~~~
@@ -1199,11 +1230,13 @@ Load data
     path = '../Data/DMS_others.xlsx'
     sheet_name = 'KKA2_S3_Kan18_L1'
     usecols = 'A:JE'
-    #df_aph = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
-    df_aph = pd.read_pickle('../data/df_aph.pkl')
     
+    #df_aph = pd.read_excel(path, sheet_name, index_col='Aminoacid',usecols=usecols)
     # Save into pickle so it is easier to read next time you need it
     #df_aph.to_pickle('../data/df_aph.pkl')
+    
+    # Read from pickle to save time (same as reading from excel)
+    df_aph = pd.read_pickle('../data/df_aph.pkl')
 
 Create object
 ~~~~~~~~~~~~~
@@ -1415,15 +1448,14 @@ Load data
     
     # Read excel file
     #df_b11L5F_raw = pd.read_excel(path, sheet_name, usecols=usecols)
-    df_b11L5F_raw = pd.read_pickle('../data/df_b11L5F_raw.pkl')
-    
     # Save into pickle so it is easier to read next time you need it
     #df_b11L5F_raw.to_pickle('../data/df_b11L5F_raw.pkl')
     
+    # Read from pickle to save time (same as reading from excel)
+    df_b11L5F_raw = pd.read_pickle('../data/df_b11L5F_raw.pkl')
+    
     # Parse
-    df_b11L5F, sequence_b11L5F = mut.parse_pivot(
-        df_b11L5F_raw, col_data=col_data
-    )
+    df_b11L5F, sequence_b11L5F = mut.parse_pivot(df_b11L5F_raw, col_data=col_data)
 
 Create object
 ~~~~~~~~~~~~~
