@@ -1,0 +1,7 @@
+- Documentation:
+	+ Figure out how to use sphinx
+	+
+- Finish tests
+- Check for bugs
+- Capture probable input errors and write error messages
+- Write manuscript

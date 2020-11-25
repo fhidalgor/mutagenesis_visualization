@@ -6,9 +6,9 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F)
 
-Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for saturation mutagenesis datasets.
+Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for site-saturation mutagenesis datasets.
 
-The package main focus is to perform the statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from fastq files.
+The package main focus is to perform the statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from FASTQ files.
 
 ## Key Features
 
@@ -16,6 +16,10 @@ The package main focus is to perform the statistical analysis and visualization 
 - Produce publication-quality heatmaps from enrichment scores as well as a wide range of visualization plots.
 - Principal component analysis (PCA), hierarchical clustering and receiver operating characteristic (ROC) curve tools.
 - Map enrichment scores effortlessly onto a PDB structure using Pymol. Structural properties such as SASA, B-factor or atom coordinates can be extracted from the PDB and visualized using a built-in method.
+
+## Workflow
+
+![Worklfow] (docs/_static/workflow_v3.png)
 
 ## Installation
 
@@ -33,10 +37,10 @@ pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 
 ## Documentation
 
-You can find the documentation at `readthedocs <https://mutagenesis-visualization.readthedocs.io/en/latest/>`_
+You can find the documentation [here] (https://mutagenesis-visualization.readthedocs.io/en/latest/)
 
 
 ## Tutorial
 
-There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. This notebooks also form part of the documentation.
+There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. You can access to them via [mybinder] (https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F)
 
