@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[1]:
 
 
 # Regular libraries
@@ -12,7 +12,9 @@ import itertools
 
 # Local imports
 try:
-    from mutagenesis_visualization.main.scripts.code_kernel import (plot_kernel, plot_hist)
+    from mutagenesis_visualization.main.scripts.code_kernel import (
+        plot_kernel, plot_hist
+    )
     from mutagenesis_visualization.main.scripts.code_heatmaps import (
         plot_heatmap, plot_heatmap_rows, plot_heatmap_columns
     )
@@ -20,18 +22,24 @@ try:
         plot_mean, plot_meandifferential, plot_position, plot_meancounts,
         plot_library_representation
     )
-    from mutagenesis_visualization.main.scripts.code_scatter import (plot_scatter)
+    from mutagenesis_visualization.main.scripts.code_scatter import (
+        plot_scatter
+    )
     from mutagenesis_visualization.main.scripts.code_PCA import (
         plot_correlation, plot_individual_correlation, plot_group_correlation,
         plot_pca
     )
     from mutagenesis_visualization.main.scripts.code_other import (
-        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary, plot_roc,
-        plot_cumulative
+        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary,
+        plot_roc, plot_cumulative
     )
-    from mutagenesis_visualization.main.scripts.code_3D import (plot_scatter_3D, plot_scatter_3D_pdbprop)
+    from mutagenesis_visualization.main.scripts.code_3D import (
+        plot_scatter_3D, plot_scatter_3D_pdbprop
+    )
 
-    from mutagenesis_visualization.main.scripts.code_plotly import (plot_rank_plotly, plot_scatter_plotly)
+    from mutagenesis_visualization.main.scripts.code_plotly import (
+        plot_rank_plotly, plot_scatter_plotly, plot_scatter_3D_plotly
+    )
     from mutagenesis_visualization.main.scripts.code_utils import (
         _is_DNA, _translate_codons, _transform_sequence, _transform_dataset,
         _select_SNV, _select_nonSNV, _transform_secondary
@@ -52,29 +60,30 @@ except ModuleNotFoundError:
         plot_pca
     )
     from code_other import (
-        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary, plot_roc,
-        plot_cumulative
+        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary,
+        plot_roc, plot_cumulative
     )
     from code_3D import (plot_scatter_3D, plot_scatter_3D_pdbprop)
 
-    from code_plotly import (plot_rank_plotly, plot_scatter_plotly)
+    from code_plotly import (
+        plot_rank_plotly, plot_scatter_plotly, plot_scatter_3D_plotly
+    )
     from code_utils import (
         _is_DNA, _translate_codons, _transform_sequence, _transform_dataset,
         _select_SNV, _select_nonSNV, _transform_secondary
     )
 
-
 try:
     from mutagenesis_visualization.main.scripts.code_pymol import (plot_pymol)
 except ModuleNotFoundError:
     from code_pymol import (plot_pymol)
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     pass
 
 
 # # Define Classes
 
-# In[ ]:
+# In[2]:
 
 
 class Counts:
@@ -98,13 +107,12 @@ class Counts:
         If none, it will use the index of the dataframe   
 
     '''
-
     def __init__(self, df, start_position=None, aminoacids=None):
         self.dataframe = df
 
         if start_position:
             self.start_position = start_position
-            self.positions = np.arange(start_position, len(df.columns)+1)
+            self.positions = np.arange(start_position, len(df.columns) + 1)
         else:  # if none, use the columns of the dataframe
             self.positions = list(df.columns)
             self.start_position = self.positions[0]
@@ -117,11 +125,12 @@ class Counts:
             else:
                 self.aminoacids = list(df.index)
         # bar plots
+
     mean_counts = plot_meancounts
     library_representation = plot_library_representation
 
 
-# In[ ]:
+# In[3]:
 
 
 class Screen:
@@ -174,18 +183,28 @@ class Screen:
     Other attributes are same as input parameters: dataset, aminoacids, start_position, roc_df, secondary
 
     '''
-
-    def __init__(self, dataset, sequence, aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
-                 start_position=2, fillna=0, secondary=None, roc_df=None):
+    def __init__(
+        self,
+        dataset,
+        sequence,
+        aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
+        start_position=2,
+        fillna=0,
+        secondary=None,
+        roc_df=None
+    ):
         self.dataset = np.array(dataset)
         self.aminoacids = aminoacids
         self.start_position = start_position
-        self.end_position = len(self.dataset[0])+start_position
+        self.end_position = len(self.dataset[0]) + start_position
         self.sequence_raw = ''.join(sequence)  # why I am doing this?
         self.sequence = _transform_sequence(
-            self.dataset, self.sequence_raw, self.start_position)
+            self.dataset, self.sequence_raw, self.start_position
+        )
         self.dataframe_stopcodons, self.dataframe = _transform_dataset(
-            self.dataset, self.sequence, self.aminoacids, self.start_position, fillna)
+            self.dataset, self.sequence, self.aminoacids, self.start_position,
+            fillna
+        )
         self.dataframe_SNV = _select_SNV(self.dataframe)
         self.dataframe_nonSNV = _select_nonSNV(self.dataframe)
 
@@ -194,11 +213,14 @@ class Screen:
         self.secondary = secondary
         if self.secondary is not None:
             self.secondary, self.secondary_dup = _transform_secondary(
-                self.dataset, self.secondary, self.start_position, self.aminoacids)
+                self.dataset, self.secondary, self.start_position,
+                self.aminoacids
+            )
 
         # Assert messages
         assert len(sequence) >= len(
-            self.dataset[0]), 'Input sequence is not long enough'
+            self.dataset[0]
+        ), 'Input sequence is not long enough'
 
     # Methods (Associated functions)
 
@@ -240,7 +262,8 @@ class Screen:
     # code_plotly
     rank_plotly = plot_rank_plotly
     scatter_plotly = plot_scatter_plotly
-    
+    scatter_3D_plotly = plot_scatter_3D_plotly
+
     # pymol
     try:
         pymol = plot_pymol

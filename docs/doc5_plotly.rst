@@ -17,14 +17,6 @@ Plotly.
         sys.path.append('../../')
         import mutagenesis_visualization as mut
 
-Load sample datasets.
-
-.. code:: ipython3
-
-    data_dict = mut.demo_datasets()  # load example datasets
-    hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
-    hras_enrichment_RBD = data_dict['array_hras_RBD']
-
 Create objects.
 
 .. code:: ipython3
@@ -73,25 +65,46 @@ Create objects.
 Rank
 ----
 
-Create an interactive rank figure that displays each mutant.
+Create an interactive rank figure that displays each mutant. You can
+export to an html file by giving a path to the variable ``output_html``.
 
 .. code:: ipython3
 
-    hras_RBD.rank_plotly(title='Rank of pointmutants')
+    hras_RBD.rank_plotly(
+        title='Rank of pointmutants',
+        output_html='../../docs/html/hras_rankpointmutants.html'
+    )
 
-.. image:: images/plotly_images/hras_rankpointmutants.png
-   :width: 300px
-   :align: center
+.. raw:: html
+    :file: html/hras_rankpointmutants.html
 
 Now display the rank of the positional mean.
 
 .. code:: ipython3
 
-    hras_RBD.rank_plotly(mode='mean', title='Rank of positions')
+    hras_RBD.rank_plotly(
+        mode='mean',
+        title='Rank of positions',
+        output_html='../../docs/html/hras_rankposition.html',
+    )
 
-.. image:: images/plotly_images/hras_rankposition.png
-   :width: 300px
-   :align: center
+.. raw:: html
+    :file: html/hras_rankposition.html
+
+The following property is applicable to any of the plotly figures. If
+you set ``return_plotly_object=True``, you will be able to get the
+plotly object and edit it.
+
+.. code:: ipython3
+
+    # Obtain the object
+    rank_plotly = hras_RBD.rank_plotly(
+        mode='mean', 
+        title='Rank of positions', 
+        return_plotly_object=True,
+    )
+    
+    # Then edit rank_plotly
 
 Scatter
 -------
@@ -107,12 +120,12 @@ point by putting the mouse pointer on top.
         show_results=False,
         title='Scatter Point Mutants',
         x_label='hras_RBD',
-        y_label='hras_GAPGEF'
+        y_label='hras_GAPGEF',
+        output_html='../../docs/html/hras_scatterpointmutants.html',
     )
 
-.. image:: images/plotly_images/hras_scatterpointmutants.png
-   :width: 300px
-   :align: center
+.. raw:: html
+    :file: html/hras_scatterpointmutants.html
 
 Now we just look at the positional average.
 
@@ -123,9 +136,90 @@ Now we just look at the positional average.
         mode='mean',
         title='Scatter Positional Average',
         x_label='hras_RBD',
-        y_label='hras_GAPGEF'
+        y_label='hras_GAPGEF',
+        output_html='../../docs/html/hras_scatterposition.html',
     )
 
-.. image:: images/plotly_images/hras_scatterposition.png
-   :width: 300px
-   :align: center
+.. raw:: html
+    :file: html/hras_scatterposition.html
+
+3D scatter plot
+---------------
+
+If there is an available PDB structure, you can input it and the
+software will plot a 3d plot of the c-alpha atoms, colored by their
+enrichment score.
+
+.. code:: ipython3
+
+    hras_RBD.scatter_3D_plotly(
+        mode='mean',
+        pdb_path='../data/5p21.pdb',
+        title='Scatter 3D',
+        squared=False,
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        output_html='../../docs/html/hras_3dscatter.html',
+    )
+
+.. raw:: html
+    :file: html/hras_3dscatter.html
+
+By setting up mode=‘V’, we can evaluate the impact of valine
+substitutions. Mode can be set up to any residue. In this example,
+residues in the core are tolerant to valine substitutions.
+
+.. code:: ipython3
+
+    hras_RBD.scatter_3D_plotly(
+        mode='V',
+        pdb_path='../data/5p21.pdb',
+        title='Scatter 3D - Valine substitution',
+        squared=False,
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        output_html='../../docs/html/hras_3dvalsubstitution.html',
+    )
+
+.. raw:: html
+    :file: html/hras_3dvalsubstitution.html
+
+When we set mode=‘D’, the core of the protein turns completely blue.
+
+.. code:: ipython3
+
+    hras_RBD.scatter_3D_plotly(
+        mode='D',
+        pdb_path='../data/5p21.pdb',
+        title='Scatter 3D - Aspartate substitution',
+        squared=False,
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        output_html='../../docs/html/hras_3daspsubstitution.html',
+    )
+
+.. raw:: html
+    :file: html/hras_3daspsubstitution.html
+
+By setting squared = True, we plot the distance to the center of the
+protein of each residue. In this example, we see that residues in the
+core of the protein are blue, indicating a sensitivity to mutations.
+
+.. code:: ipython3
+
+    hras_RBD.scatter_3D_plotly(
+        mode='mean',
+        pdb_path='../data/5p21.pdb',
+        title='Scatter 3D - Distance to center',
+        squared=True,
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        output_html='../../docs/html/hras_3ddistcenter.html',
+    )
+
+.. raw:: html
+    :file: html/hras_3ddistcenter.html
