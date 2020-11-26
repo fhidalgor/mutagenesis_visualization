@@ -359,7 +359,7 @@ def plot_scatter_3D_plotly(
         z=z,
         color=df['Score'],
         color_continuous_scale=_matplotlib_to_plotly(
-            code_kwargs.kwargs()['colormap'],
+            temp_kwargs['colormap'],
         ),
         range_color=temp_kwargs['colorbar_scale']
     )
@@ -547,7 +547,7 @@ def plot_scatter_3D_pdbprop_plotly(
         z=plot[2],
         color='Score',
         color_continuous_scale=_matplotlib_to_plotly(
-            code_kwargs.kwargs()['colormap'],
+            temp_kwargs['colormap'],
         ),
         range_color=temp_kwargs['colorbar_scale'],
     )
