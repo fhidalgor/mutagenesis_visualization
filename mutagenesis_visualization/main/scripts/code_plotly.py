@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -16,26 +16,24 @@ from typing import Union
 import plotly.express as px
 import plotly.io as pio
 import plotly.graph_objects as go
+from Bio.PDB import PDBParser
+import freesasa
 
 # local modules
 try:
     import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
-    from mutagenesis_visualization.main.scripts.code_3D import (
-        _color_3D_scatter, _parse_pdbcoordinates
-    )
 except ModuleNotFoundError:
     import import_notebook
     import code_kwargs
     import code_utils
-    from code_3D import (_color_3D_scatter, _parse_pdbcoordinates)
 
 
 # # Plotly plots
 
 # ## Rank
 
-# In[9]:
+# In[2]:
 
 
 def plot_rank_plotly(
@@ -134,19 +132,19 @@ def plot_rank_plotly(
 
     if temp_kwargs['show']:
         fig.show()
-    
+
     # save fig to html
     _save_html(fig, output_html)
-    
+
     # return plotly object
     if return_plotly_object:
         return fig
-    
+
     # return dataframe
     if outdf:
         return df
-    
-    
+
+
 # save file html
 def _save_html(fig, output_html):
     '''save to html'''
@@ -156,7 +154,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[ ]:
+# In[3]:
 
 
 def plot_scatter_plotly(
@@ -258,22 +256,21 @@ def plot_scatter_plotly(
 
     if temp_kwargs['show']:
         fig.show()
-        
+
     if show_results:
         px.get_trendline_results(fig).px_fit_results.iloc[0].summary()
-    
+
     # save fig to html
     _save_html(fig, output_html)
-    
+
     # return plotly object
     if return_plotly_object:
         return fig
-    
 
 
 # ## 3D
 
-# In[ ]:
+# In[4]:
 
 
 def plot_scatter_3D_plotly(
@@ -281,7 +278,6 @@ def plot_scatter_3D_plotly(
     mode='mean',
     pdb_path=None,
     df_coordinates=None,
-    df_color=None,
     position_correction=0,
     chain='A',
     squared=False,
@@ -310,9 +306,6 @@ def plot_scatter_3D_plotly(
     df_coordinates: pandas dataframe, default None
         If no pdb is included, the user must pass the 3-D coordinates of the residues to plot. 
         In here you have more flexibility and you can select other atoms besides the C-alpha.
-
-    df_color : pandas dataframe, default None     
-        The color of each residue can also be included. You must label that label column.
 
     position_correction : int, default 0
         If the pdb structure has a different numbering of positions than you dataset,
@@ -345,10 +338,9 @@ def plot_scatter_3D_plotly(
     temp_kwargs.update(kwargs)
 
     # Get Scores and colors
-    if df_color is None:
-        df = _color_3D_scatter(
-            self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
-        )
+    df = _color_3D_scatter(
+        self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
+    )
 
     # If coordinates is not an input, get it from the pdb
     if df_coordinates is None:
@@ -366,10 +358,49 @@ def plot_scatter_3D_plotly(
         y=y,
         z=z,
         color=df['Score'],
-        color_continuous_scale='RdBu_r',
+        color_continuous_scale=_matplotlib_to_plotly(
+            code_kwargs.kwargs()['colormap'],
+        ),
         range_color=temp_kwargs['colorbar_scale']
     )
 
+    # update axes
+    fig = _update_axes(fig, temp_kwargs)
+
+    # for the clickable part
+    fig.update_traces(
+        hovertext=df['Position'], hovertemplate='Position: %{hovertext}'
+    )
+    # title
+    fig = _update_title(fig, temp_kwargs)
+
+    # show only if asked
+    if temp_kwargs['show']:
+        fig.show()
+
+    # save fig to html
+    _save_html(fig, output_html)
+
+    # return plotly object
+    if return_plotly_object:
+        return fig
+
+
+def _update_title(fig, temp_kwargs):
+    fig.update_layout(
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        },
+        coloraxis_colorbar=dict(title="Enrichment Score")  # colorbar
+    )
+    return fig
+
+
+def _update_axes(fig, temp_kwargs):
+    '''Separeated this portion of the code because it is clumsy. It changes the
+    axes looks.'''
     # Layout and title parameters https://plotly.com/python/figure-labels/
     fig.update_layout(
         scene=dict(
@@ -402,28 +433,279 @@ def plot_scatter_3D_plotly(
             )
         )
     )
+    return fig
+
+
+# # PDB properties
+
+# In[5]:
+
+
+def plot_scatter_3D_pdbprop_plotly(
+    self,
+    plot=['Distance', 'SASA', 'B-factor'],
+    mode='mean',
+    pdb_path=None,
+    custom=None,
+    position_correction=0,
+    chain='A',
+    return_plotly_object=False,
+    output_df=False,
+    output_html: Union[None, str, Path] = None,
+    **kwargs
+):
+    '''
+    Generates a 3-D scatter plot of different properties obtained from the PDB. 
+    PDBs may have atoms missing, you should fix the PDB before using this
+    method. We recommend you use matplotlib for interactive plot. 
+
+    Parameters
+    -----------
+    self : object from class *Screen*
+        **kwargs : other keyword arguments.
+
+    plot : list, default ['Distance', 'SASA', 'B-factor']
+        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the 
+        label to the third element of the list ie ['Distance', 'SASA', 'Conservation']. 
+
+    mode : str, default 'mean'
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
+        used for each amino acid. Use the one-letter code and upper case.
+
+    pdb_path : str, default None
+        User should specify the path PDB.
+    
+    custom : list or dataframe or np.array, default None
+        If you want to add a custom dataset to plot, use custom. On the parameter
+        plot, the 3rd item of the list will be the label for your custom dataset.
+            
+    df_color : pandas dataframe, default None     
+        The color of each residue can also be included. You must label that label column.
+    
+    color_by_score : boolean, default True
+        If set to False, the points in the scatter will not be colored based on the enrichment score.
+
+    position_correction : int, default 0
+        If the pdb structure has a different numbering of positions than you dataset,
+        you can correct for that. If your start_position = 2, but in the PDB that same residue
+        is at position 20, position_correction needs to be set at 18.
+
+    chain : str, default 'A'
+        Chain of the PDB file to get the coordinates and SASA from.
+    
+    return_plotly_object : boolean, default False
+        If true, will return plotly object.
+        
+    output_df : boolean, default False
+        If true, this method will return the dataframe with the data.
+        Set return_plotly_object for this to work.
+    
+    output_html : str, default None
+        If you want to export the generated graph into html, add the path and name of the file.
+        Example: 'path/filename.html'.
+                        
+    **kwargs : other keyword arguments
+
+    Returns
+    ---------
+    fig : plotly object
+
+    df_items : pandas dataframe
+        Contains the plotted data. Needs to have output_df set to true.
+    '''
+
+    # Update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    temp_kwargs['x_label'] = kwargs.get('x_label', plot[0])
+    temp_kwargs['y_label'] = kwargs.get('y_label', plot[1])
+    temp_kwargs['z_label'] = kwargs.get('z_label', plot[2])
+
+    # Get Scores and colors
+    df_scores = _color_3D_scatter(
+        self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
+    )
+
+    # If coordinates is not an input, get it from the pdb
+    df_items = _parse_pdbcoordinates(
+        self, pdb_path, position_correction, chain, sasa=True
+    )
+
+    # Add scores
+    df_items['Score'] = list(df_scores['Score'])
+
+    # Custom data
+    if custom is not None:
+        df_items[plot[2]] = custom
+
+        # Plot figure
+    fig = px.scatter_3d(
+        df_items,
+        x=plot[0],
+        y=plot[1],
+        z=plot[2],
+        color='Score',
+        color_continuous_scale=_matplotlib_to_plotly(
+            code_kwargs.kwargs()['colormap'],
+        ),
+        range_color=temp_kwargs['colorbar_scale'],
+    )
+
+    # update axes
+    fig = _update_axes(fig, temp_kwargs)
+
     # for the clickable part
     fig.update_traces(
-        hovertext=df['Position'], hovertemplate='Position: %{hovertext}'
+        hovertext=df_items['Position'], hovertemplate='Position: %{hovertext}'
     )
     # title
-    fig.update_layout(
-        font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        },
-        coloraxis_colorbar=dict(title="Enrichment Score") # colorbar
-    )
+    fig = _update_title(fig, temp_kwargs)
 
     # show only if asked
     if temp_kwargs['show']:
         fig.show()
-        
+
     # save fig to html
     _save_html(fig, output_html)
-    
+
     # return plotly object
     if return_plotly_object:
         return fig
+
+    if output_df:
+        return df_items, df_scores
+
+
+# ## Aux functions (stolen from code_3D)
+
+# In[6]:
+
+
+def _color_3D_scatter(df, mode, lof, gof):
+    '''
+    Color the data points by enrichment scores.
+    
+    Parameters
+    -----------
+    df : pandas dataframe
+        The input is a dataframe that has colum with ['Position', 'Aminoacid', 'Score'].
+    
+    mode : str
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Can be used for each amino acid. Use the one-letter code and upper case.
+
+    gof : int, default is 1
+        cutoff for determining gain of function mutations based on mutagenesis data.
+    
+    lof : int, default is -1
+        cutoff for determining loss of function mutations based on mutagenesis data.
+    
+    Returns
+    ---------
+    df_grouped: pandas dataframe
+        New dataframe with added column of ['Color'] and the ['Score'] values of the 
+        mode you chose.
+    '''
+
+    # Copy df
+    df_grouped = df.copy()
+
+    # Select grouping.
+    if mode == 'mean':
+        df_grouped = df_grouped.groupby(['Position'], as_index=False).mean()
+    else:
+        df_grouped = df_grouped.loc[df_grouped['Aminoacid'] == mode]
+
+    # Select colors based on Score values
+    df_grouped['Color'] = 'green'
+    df_grouped.loc[df_grouped['Score'] < lof, 'Color'] = 'blue'
+    df_grouped.loc[df_grouped['Score'] > gof, 'Color'] = 'red'
+
+    return df_grouped
+
+
+def _centroid(df):
+    '''
+    Find center of x,y,z using centroid method. 
+    The input is a dataframe with columns x, y, z.
+    Returns the center of each of the three dimensions
+    '''
+    return df['x'].mean(), df['y'].mean(), df['z'].mean()
+
+
+def _parse_pdbcoordinates(
+    self, pdb_path, position_correction, chain, sasa=False
+):
+    '''parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
+    If PDB is missing atoms, it can handle it.'''
+
+    # Get structure from PDB
+    structure = PDBParser().get_structure('pdb', pdb_path)
+
+    coordinates = []
+    commands = []
+    bfactors = []
+    positions_worked = []  # positions present in pdb
+
+    # Iterate over each CA atom and geet coordinates
+    for i in np.arange(self.start_position + position_correction,
+                       self.end_position + position_correction):
+        # first check if atom exists
+        try:
+            structure[0][chain][int(i)].has_id("CA")
+            # Get atom from pdb and geet coordinates
+            atom = list(structure[0][chain][int(i)]["CA"].get_vector()) + [i]
+            coordinates.append(atom)
+            # Get SASA command for each residue and bfactor
+            residue = "s{}, chain {} and resi {}".format(str(i), chain, str(i))
+            commands.append(residue)
+            bfactor = (structure[0][chain][int(i)]["CA"].get_bfactor())
+            bfactors.append(np.log10(bfactor))
+            positions_worked.append(i)
+        except:
+            print("residue {} not found".format(str(i)))
+            coordinates.append([np.nan, np.nan, np.nan, i])
+
+    # Convert to df
+    df_coordinates = pd.DataFrame(
+        columns=['x', 'y', 'z', 'Position'], data=coordinates
+    )
+
+    # Center data
+    x, y, z = _centroid(df_coordinates)
+    df_coordinates['x_cent'] = (df_coordinates['x'] - x).abs()**2
+    df_coordinates['y_cent'] = (df_coordinates['y'] - y).abs()**2
+    df_coordinates['z_cent'] = (df_coordinates['z'] - z).abs()**2
+    df_coordinates['Distance'] = df_coordinates['x_cent'] +         df_coordinates['y_cent']+df_coordinates['z_cent']
+
+    # Add sasa values
+    if sasa:
+        # Get structure for SASA
+        structure_sasa = freesasa.Structure(pdb_path)
+        result = freesasa.calc(structure_sasa)
+        # Calculate sasa
+        sasa = freesasa.selectArea(commands, structure_sasa, result)
+        df_sasa = pd.DataFrame(columns=['SASA'], data=sasa.values())
+        df_sasa['log B-factor'] = bfactors
+        df_sasa['Position'] = positions_worked
+
+        # Merge
+        df_coordinates = df_coordinates.merge(
+            df_sasa, how='outer', on='Position'
+        )
+
+    return df_coordinates
+
+def _matplotlib_to_plotly(cmap, pl_entries=255):
+    '''convert a matplotlib colorscale into plotly rgb format'''
+    h = 1.0 / (pl_entries - 1)
+    pl_colorscale = []
+
+    for k in range(pl_entries):
+        C = list(map(np.uint8, np.array(cmap(k * h)[:3]) * 255))
+        pl_colorscale.append([k * h, 'rgb' + str((C[0], C[1], C[2]))])
+
+    return pl_colorscale
 

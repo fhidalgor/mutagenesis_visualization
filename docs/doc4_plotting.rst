@@ -594,73 +594,6 @@ residues with a lower enrichment score are more conserved.
    :width: 300px
    :align: center
 
-3-D scatter
------------
-
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.scatter_3D`
-    - :meth:`mutagenesis_visualization.Screen.scatter_3D_pdbprop`
-
-
-The user can plot a 3-D scatter using the atomic coordinates of the
-C-alpha atoms of a PDB file. The method ``object.scatter_3D`` will take
-as an input either a PDB file or the x,y,z coordinates and plot a
-color-coded scatter. In the example, we can appreciate how mutation at
-the inner residues (hydrophobic) are loss of function (blue), and
-surface residues (green) are more tolerant to mutations. For the second
-plot, we have centered and squared the data. The closer to (0,0,0), the
-higher the amoung of blue residues. We have colored in lightblue the
-residues of Switch I of Ras, which are known to interact with RBD, the
-effector used in the assay. They are all loss of function and away from
-the origin. If you want to use the example pdbs, use the command
-``pdbs_dict = mut.demo_pdbs()`` to retrieve the pdb_paths.
-
-.. code:: ipython3
-
-    %matplotlib widget
-    
-    # Plot 3-D plot
-    hras_RBD.scatter_3D(
-        mode='mean', pdb_path='../data/5p21.pdb', squared=False, lof=-0.5, gof=0.15
-    )
-    
-    # Plot 3-D plot, centering and squaring the distances
-    hras_RBD.scatter_3D(
-        mode='mean', pdb_path='../data/5p21.pdb', squared=True, lof=-0.5, gof=0.15
-    )
-    
-    # Calculate conservation score from MSA
-    path = '../data/Ras_family_trimmed.fasta'
-    
-    # Load example MSA file (only if you are trying to reproduce the plots)
-    #path = demo_fasta()['ras']
-    
-    df_shannon, df_freq = mut.msa_enrichment(
-        hras_RBD, path, start_position=1, threshold=0.1
-    )
-    
-    # Plot 3-D SASA, B-factor and Shannon Entropy
-    hras_RBD.scatter_3D_pdbprop(
-        plot=['SASA', 'Score', 'Shannon'],
-        custom=df_shannon['Shannon'],
-        pdb_path='../data/5p21.pdb',
-        color_by_score=True,
-        gof=0.15,
-        lof=-0.5
-    )
-
-.. image:: images/exported_images/hras_3dscatter.png
-   :width: 500px
-   :align: center
-   
-.. image:: images/exported_images/hras_3dscatter_squared.png
-   :width: 500px
-   :align: center
-   
-.. image:: images/exported_images/hras_3dscatter_shannon.png
-   :width: 500px
-   :align: center
-
 Pymol
 -----
 
@@ -668,9 +601,13 @@ Method reviewed in this section:
     - :meth:`mutagenesis_visualization.Screen.pymol`
 
 
-The data can be graphed on a Pymol object using ``object.pymol``. The
-parameter ``pdb`` will fetch the pdb that you want to use. Note that the
-protein chain needs to be specified (see example). Red for gain of
+The data can be visualized on a Pymol object using ``object.pymol``. It
+is important that not only Pymol is installed, but also on the same path
+as Python. You may have to manually install the ipymol API. See the
+Getting Started chapter for more information.
+
+The parameter ``pdb`` will fetch the pdb that you want to use. Note that
+the protein chain needs to be specified (see example). Red for gain of
 function and blue for loss of function. ``mode`` lets you specifiy
 whether to plot the mean or an individual amino acid profile (left -
 Leucine, right - Aspartate).

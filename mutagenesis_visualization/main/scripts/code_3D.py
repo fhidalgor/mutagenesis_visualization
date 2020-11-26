@@ -20,12 +20,10 @@ from Bio.PDB import PDBParser
 try:
     import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
-    import mutagenesis_visualization.main.scripts.shannon as shannon
 except ModuleNotFoundError:
     import import_notebook
     import code_kwargs
     import code_utils
-    import shannon
 
 
 # # Plot Functions
@@ -50,6 +48,8 @@ def plot_scatter_3D(
     **kwargs
 ):
     '''
+    DEPRECATED 
+    
     Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, 
     color coded by the enrichment scores. PDBs may have atoms missing, 
     you should fix the PDB before using this method. Use matplotlib for interactive plot.
@@ -289,6 +289,8 @@ def plot_scatter_3D_pdbprop(
     **kwargs
 ):
     '''
+    DEPRECATED
+    
     Generates a 3-D scatter plot of different properties obtained from the PDB. 
     PDBs may have atoms missing, you should fix the PDB before using this
     method. We recommend you use matplotlib for interactive plot. 

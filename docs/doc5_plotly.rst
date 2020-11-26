@@ -65,6 +65,10 @@ Create objects.
 Rank
 ----
 
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.rank_plotly`
+
+
 Create an interactive rank figure that displays each mutant. You can
 export to an html file by giving a path to the variable ``output_html``.
 
@@ -109,6 +113,10 @@ plotly object and edit it.
 Scatter
 -------
 
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.scatter_plotly`
+
+
 If you have two datasets, you can create a scatter plot. The advantage
 of using plotly over matplotlib is that you can visually check each data
 point by putting the mouse pointer on top.
@@ -146,9 +154,17 @@ Now we just look at the positional average.
 3D scatter plot
 ---------------
 
+Methods reviewed in this section:
+    - :meth:`mutagenesis_visualization.Screen.scatter_3D_plotly`
+
+
 If there is an available PDB structure, you can input it and the
-software will plot a 3d plot of the c-alpha atoms, colored by their
+software will plot a 3d plot of the C-alpha atoms, colored by their
 enrichment score.
+
+The method ``object.scatter_3D_plotly`` will take as an input either a
+PDB file (``pdb_path=/path/to/file``) or the x,y,z coordinates
+(``df_coordinates``).
 
 .. code:: ipython3
 
@@ -223,3 +239,33 @@ core of the protein are blue, indicating a sensitivity to mutations.
 
 .. raw:: html
     :file: html/hras_3ddistcenter.html
+
+PDB properties
+--------------
+
+From the PDB, properties such as B-factor or SASA can be extracted.
+Using plotly we allow the user to have a 3-D scatter plot colored by the
+enrichment scores. You can additionally include other properties to
+include such as the conservation scores using the parameter ``custom``.
+
+.. code:: ipython3
+
+    # Calculate conservation score from MSA
+    path = '../data/Ras_family_trimmed.fasta'
+    
+    # Calculate shannon scores
+    df_shannon, df_freq = mut.msa_enrichment(
+        hras_RBD, path, start_position=1, threshold=0.1
+    )
+    
+    # Plot 3-D SASA, log B-factor and Shannon Entropy
+    hras_RBD.scatter_3D_pdbprop_plotly(
+        plot=['SASA', 'log B-factor', 'Shannon'],
+        custom=df_shannon['Shannon'],
+        pdb_path='../data/5p21.pdb',
+        title='Scatter 3D - PDB properties',
+        output_html='../../docs/html/hras_3d_pdbprop.html',
+    )
+
+.. raw:: html
+    :file: html/hras_3d_pdbprop.html
