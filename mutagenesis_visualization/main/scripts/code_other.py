@@ -142,7 +142,7 @@ def plot_miniheatmap(
     output_file: Union[None, str, Path] = None,
     **kwargs,
 ):
-"""
+    """
     Generate a miniheatmap plot enrichment scores of mutagenesis selection
     assays.
 

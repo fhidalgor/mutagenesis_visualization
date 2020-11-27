@@ -92,7 +92,10 @@ def kwargs():
 
     bins : int, default 50
         Number of bins used for kernel and histograms.
-
+    
+    return_plot_object : boolean, default False
+        If true, will return plotting object.
+    
     Returns
     --------
     default_kwargs : dict
@@ -122,6 +125,7 @@ def kwargs():
         'show': True,
         'random_state': 554,
         'bins': 50,
+        'return_plot_object':False,
     }
 
     return default_kwargs

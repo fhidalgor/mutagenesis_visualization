@@ -40,7 +40,6 @@ def plot_rank_plotly(
     self,
     mode='pointmutant',
     outdf=False,
-    return_plotly_object=False,
     output_html: Union[None, str, Path] = None,
     **kwargs
 ):
@@ -57,9 +56,6 @@ def plot_rank_plotly(
 
     outdf : boolean, default False
         If set to true, will return the df with the rank of mutations.
-
-    return_plotly_object : boolean, default False
-        If true, will return plotly object.
         
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
@@ -138,7 +134,7 @@ def plot_rank_plotly(
     _save_html(fig, output_html)
 
     # return plotly object
-    if return_plotly_object:
+    if temp_kwargs['return_plot_object']:
         return fig
 
     # return dataframe
@@ -163,7 +159,6 @@ def plot_scatter_plotly(
     obj2,
     mode='pointmutant',
     show_results=False,
-    return_plotly_object=False,
     output_html: Union[None, str, Path] = None,
     **kwargs
 ):
@@ -182,9 +177,6 @@ def plot_scatter_plotly(
     
     show_results : boolean, default False
         If set to true, will export the details of the linear fit.
-    
-    return_plotly_object : boolean, default False
-        If true, will return plotly object.
         
     output_html : str, default None
         If you want to export the generated graph into html, add 
@@ -266,7 +258,7 @@ def plot_scatter_plotly(
     _save_html(fig, output_html)
 
     # return plotly object
-    if return_plotly_object:
+    if temp_kwargs['return_plot_object']:
         return fig
 
 
@@ -283,7 +275,6 @@ def plot_scatter_3D_plotly(
     position_correction=0,
     chain='A',
     squared=False,
-    return_plotly_object=False,
     output_html: Union[None, str, Path] = None,
     **kwargs
 ):
@@ -321,9 +312,6 @@ def plot_scatter_3D_plotly(
     squared : boolean, False
         If this parameter is True, the algorithm will center the data, and plot the square value of the
         distance.
-
-    return_plotly_object : boolean, default False
-        If true, will return plotly object.
 
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
@@ -386,7 +374,7 @@ def plot_scatter_3D_plotly(
     _save_html(fig, output_html)
 
     # return plotly object
-    if return_plotly_object:
+    if temp_kwargs['return_plot_object']:
         return fig
 
 
@@ -453,7 +441,6 @@ def plot_scatter_3D_pdbprop_plotly(
     custom=None,
     position_correction=0,
     chain='A',
-    return_plotly_object=False,
     output_df=False,
     output_html: Union[None, str, Path] = None,
     **kwargs
@@ -498,12 +485,9 @@ def plot_scatter_3D_pdbprop_plotly(
     chain : str, default 'A'
         Chain of the PDB file to get the coordinates and SASA from.
 
-    return_plotly_object : boolean, default False
-        If true, will return plotly object.
-
     output_df : boolean, default False
         If true, this method will return the dataframe with the data.
-        Set return_plotly_object for this to work.
+        Set return_plot_object for this to work.
 
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
@@ -574,7 +558,7 @@ def plot_scatter_3D_pdbprop_plotly(
     _save_html(fig, output_html)
 
     # return plotly object
-    if return_plotly_object:
+    if temp_kwargs['return_plot_object']:
         return fig
 
     if output_df:

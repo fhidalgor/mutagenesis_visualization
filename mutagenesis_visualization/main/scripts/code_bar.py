@@ -159,9 +159,14 @@ def plot_mean(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
+    
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+    
     if temp_kwargs['show']:
         plt.show()
-    return
+    
 
 
 def _parameters_mean():
@@ -179,6 +184,12 @@ def _parameters_mean():
     rcParams['ytick.labelsize'] = 9
 
     return
+
+
+# In[ ]:
+
+
+'''from code_create_objects import hras_RBD'''
 
 
 # ### Compare two proteins
