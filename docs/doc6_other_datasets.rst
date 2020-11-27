@@ -25,8 +25,21 @@ use this API.
         sys.path.append('../../')
         import mutagenesis_visualization as mut
 
+Load objects
+------------
+
+For simplicity, we also have added the option of loading those datasets
+into objects automatically. The command to do that would be
+``mut.name_object()``. There are 10 objects to load (hras_RBD, bla_obj,
+sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj, asynuclein_obj,
+aph_obj, b11L5F_obj).
+
+.. code:: ipython3
+
+    mut.bla_obj()
+
 Load datasets
--------------
+~~~~~~~~~~~~~
 
 The data used in this notebook is included as part of the package in two different ways. First, it is saved as ``data/DMS_others.xlsx``. You can find the excel spreadsheet on the Github repository. In addition, we are providing a command to quickly retrieve and load the data with :func:`mutagenesis_visualization.demo_datasets`.
 
@@ -34,8 +47,7 @@ The data used in this notebook is included as part of the package in two differe
 Load enrichment scores
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Now we will load the counts for each dataset. With the counts we will
-generate objects that we can analyzed and visualize.
+The function ``demo_datasets`` allows to load the example datasets.
 
 .. code:: ipython3
 
@@ -60,26 +72,14 @@ generate objects that we can analyzed and visualize.
     # b11L5
     df_b11L5F = data_dict['df_b11L5F']
 
-Load objects
-~~~~~~~~~~~~
-
-For simplicity, we also have added the option of loading those datasets
-into objects automatically. The command to do that would be
-``mut.name_object()``. There are 10 objects to load (hras_RBD, bla_obj,
-sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj, asynuclein_obj,
-aph_obj, b11L5F_obj).
-
-.. code:: ipython3
-
-    mut.bla_obj()
-
 Load from excel or csv
 ~~~~~~~~~~~~~~~~~~~~~~
 
 If you are working with your own data, the most probable workflow is
 that you load your dataset from an excel/csv file. Because of that, in
 the following examples we won’t use the preloaded datasets, we will load
-them from Excel or a pickle file instead.
+them from Excel or a pickle file instead. In the following examples, we
+are going to load the data from excel/pickle files.
 
 Beta Lactamase
 --------------
@@ -155,8 +155,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # Create full heatmap
     bla_obj.heatmap(
         colorbar_scale=(-3, 3),
@@ -271,36 +269,34 @@ call the method, do ``pdb_path=pdbs_dict['1erm']``.
 
 .. code:: ipython3
 
-    %matplotlib widget
-    
     # Plot 3-D plot
-    bla_obj.scatter_3D(
+    bla_obj.scatter_3D_plotly(
         mode='mean',
         pdb_path='../data/1erm.pdb',
         position_correction=2,
+        title='Scatter 3D',
         squared=False,
-        lof=-0.75,
-        gof=0.1,
-        output_file=None
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        output_html='../../docs/html/bla_3dscatter.html',
     )
     
     # Plot 3-D of distance to center of protein, SASA and B-factor
-    bla_obj.scatter_3D_pdbprop(
-        plot=['Distance', 'Score', 'SASA'],
+    bla_obj.scatter_3D_pdbprop_plotly(
+        plot=['Distance', 'SASA', 'log B-factor'],
         position_correction=2,
         pdb_path='../data/1erm.pdb',
-        color_by_score=False,
-        output_file=None
+        title='Scatter 3D - PDB properties',
+        output_html='../../docs/html/bla_3d_pdbprop.html',
     )
 
-.. image:: images/other_examples/bla_3dscatter.png
-   :width: 500px
-   :align: center
 
-.. image:: images/other_examples/bla_3dscatter_sasa.png
-   :width: 500px
-   :align: center
-
+.. raw:: html
+    :file: html/bla_3dscatter.html
+    
+.. raw:: html
+    :file: html/bla_3d_pdbprop.html
 
 .. code:: ipython3
 
@@ -370,8 +366,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # You can use your own colormap or import it from matplotlib
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
@@ -545,8 +539,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # Create full heatmap
     mapk1_obj.heatmap(
         colorbar_scale=(-2, 2),
@@ -690,7 +682,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
     # Create full heatmap
@@ -853,8 +844,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # Create full heatmap
     tat_obj.heatmap(
         colorbar_scale=(-0.75, 0.75),
@@ -996,8 +985,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # Create full heatmap
     rev_obj.heatmap(
         colorbar_scale=(-0.75, 0.75),
@@ -1131,8 +1118,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     # Create full heatmap
     asynuclein_obj.heatmap(
         colorbar_scale=(-0.75, 0.75),
@@ -1283,8 +1268,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
-    
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
     # Create full heatmap
@@ -1393,29 +1376,45 @@ Create object
    :width: 200px
 
 
+3D plots
+~~~~~~~~
+
 .. code:: ipython3
 
-    %matplotlib widget
+    colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
     # Plot 3-D plot
-    aph_obj.scatter_3D(
-        mode='A',
+    aph_obj.scatter_3D_plotly(
+        mode='mean',
         pdb_path='../data/1nd4.pdb',
-        position_correction=0,
+        title='Scatter 3D aph',
         squared=False,
-        lof=-0.5,
-        gof=0.25
+        position_correction=0,
+        x_label='x',
+        y_label='y',
+        z_label='z',
+        colormap = colormap,
+        colorbar_scale = (-.75, 0.25),
+        output_html='../../docs/html/aph_3dscatter.html',
     )
     
     # Plot 3-D of distance to center of protein, SASA and B-factor
-    aph_obj.scatter_3D_pdbprop(
-        mode='R',
-        plot=['Distance', 'Score', 'SASA'],
+    aph_obj.scatter_3D_pdbprop_plotly(
+        plot=['Distance', 'SASA', 'log B-factor'],
         position_correction=0,
         pdb_path='../data/1nd4.pdb',
-        output_df=False,
-        color_by_score=False
+        title='Scatter 3D - PDB properties',
+        colorbar_scale = (-.75, 0.25),
+        colormap = colormap,
+        output_html='../../docs/html/aph_3d_pdbprop.html',
     )
+
+
+.. raw:: html
+    :file: html/aph_3dscatter.html
+    
+.. raw:: html
+    :file: html/aph_3d_pdbprop.html
 
 .. code:: ipython3
 
@@ -1482,7 +1481,6 @@ Create object
 
 .. code:: ipython3
 
-    %matplotlib inline
     colormap = copy.copy((plt.cm.get_cmap('bwr')))
     
     # Create full heatmap

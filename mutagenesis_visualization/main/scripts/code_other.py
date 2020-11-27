@@ -147,10 +147,12 @@ def plot_miniheatmap(
     self : object from class *Screen*
     
     offset : int, default 0
-        if you want to study effects of a residue when is behind or in front of another residue.
-        offset of 1 means that you evaluate the effect of following residue n+1 on n.
-        offset of -1 means that you look at the previous residue (n-1 on n).
-    
+        If you want to study effects of a residue when is behind or in front of another residue.
+        For example, you may want to see what happens when you have a Proline in front of the mutated
+        residue.
+        Offset of 1 means that you evaluate the effect of following residue n+1 on n.
+        Offset of -1 means that you look at the previous residue (n-1 on n).
+        
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'. 
