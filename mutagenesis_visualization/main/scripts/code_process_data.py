@@ -40,13 +40,13 @@ def count_reads(
     output_file: Union[None, str, Path] = None,
     full=False
 ):
-    '''
-    Process a trimmed fastq file containing DNA reads and returns the counts of 
+    """
+    Process a trimmed fastq file containing DNA reads and returns the counts of
     each DNA sequence specified by the user.
 
     Parameters
     -----------
-    dna_sequence : str, 
+    dna_sequence : str,
         Contains the DNA sequence of the allele of reference (usually wild-type).
 
     input_file : str, default None
@@ -54,32 +54,32 @@ def count_reads(
 
     codon_list : list or str, default 'NNS'
         Input a list of the codons that were used to create point mutations. Example: ["GCC", "GCG", "TGC"].
-        If the library was built using NNS and NNK codons, it is enough to input 'NNS' or 'NNK' as a string. 
+        If the library was built using NNS and NNK codons, it is enough to input 'NNS' or 'NNK' as a string.
         It is important to know that the order of the codon_list will determine the output order.
 
     counts_wt : boolean, default True
         If true it will add the counts to the wt allele. If false, it will set it up to np.nan.
-    
+
     start_position : int, default 2
         First position in the protein sequence that will be used for the first column of the
         array. If a protein has been mutated only from residue 100-150, then if start_position = 100,
-        the algorithm will trim the first 99 amino acids in the input sequence. The last 
+        the algorithm will trim the first 99 amino acids in the input sequence. The last
         residue will be calculated based on the length of the input array. We have set the default value to 2
         because normally the Methionine in position 1 is not mutated.
-        
+
     output_file : str, default None
         If you want to export the generated files, add the path and name of the file without suffix.
         Example: 'path/filename.xlsx'.
 
     full: bool, optional
-        Switch determining nature of return value. 
-        When it is False (the default) just the reads are 
-        returned, when True diagnostic information from the 
+        Switch determining nature of return value.
+        When it is False (the default) just the reads are
+        returned, when True diagnostic information from the
         fastq analysis is also returned.
 
     Returns
     --------
-    df_counts : dataframe 
+    df_counts : dataframe
         Dataframe with the counts for each point mutant.
 
     wt_counts : list
@@ -87,7 +87,8 @@ def count_reads(
 
     useful_reads : str
         Present only if `full` = True. Contains the useful reads.
-    '''
+
+    """
     # Assert messages
     assert len(
         dna_sequence
@@ -315,9 +316,9 @@ def calculate_enrichment(
     infinite=3,
     output_file: Union[None, str, Path] = None
 ):
-    '''
-    Determine the enrichment scores of a selection experiment, where there is a preselected population (input)
-    and a selected population (output).
+    """
+    Determine the enrichment scores of a selection experiment, where there is a
+    preselected population (input) and a selected population (output).
 
     Parameters
     -----------
@@ -325,13 +326,13 @@ def calculate_enrichment(
         Can be filepath and name of the exported txt file, dataframe or np.array.
 
     post_lib : str, pandas dataframe or np.array
-        Can be filepath and name of the exported txt file, dataframe or np.array. 
+        Can be filepath and name of the exported txt file, dataframe or np.array.
 
-    pre_wt : str, or np.array, optional 
-        Str with filepath and name of the exported txt file or np.array.  
+    pre_wt : str, or np.array, optional
+        Str with filepath and name of the exported txt file or np.array.
 
-    post_wt : str, or np.array, optional 
-        Str with filepath and name of the exported txt file or np.array.  
+    post_wt : str, or np.array, optional
+        Str with filepath and name of the exported txt file or np.array.
 
     aminoacids : list, default ('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
         Index of aminoacids (in order). Stop codon needs to be '*'.
@@ -353,19 +354,19 @@ def calculate_enrichment(
     min_counts : int, default 25
         If mutant has less than the min_counts, it will be replaced by np.nan.
 
-    min_countswt : int, default 100 
+    min_countswt : int, default 100
         If synonymous wild-type mutant has less than the min_counts, it will be replaced by np.nan.
 
     std_scale : float, default 0.2
         Factor by which the population is scaled. Only works if norm_std is set to True.
 
-    mpop : int, default 2 
+    mpop : int, default 2
         When using the median absolute deviation (MAD) filtering, mpop is the number of medians away
         a data point must be to be discarded.
 
-    mwt : int, default 2 
-        When MAD filtering, mpop is the number of medians away a data point must be to 
-        be discarded. The difference with mpop is that mwt is only used when the population of wild-type 
+    mwt : int, default 2
+        When MAD filtering, mpop is the number of medians away a data point must be to
+        be discarded. The difference with mpop is that mwt is only used when the population of wild-type
         alleles is the reference for data zeroing.
 
     infinite : int, default 3
@@ -378,8 +379,9 @@ def calculate_enrichment(
     Returns
     --------
     zeroed : ndarray
-        A np.array containing the enrichment scores. 
-    '''
+        A np.array containing the enrichment scores.
+
+    """
 
     # Convert to numpy if libraries are in dataframe format.
     # If input is a filepath, then load the txt files
@@ -709,9 +711,10 @@ def assemble_avengers(
     infinite=3,
     output_file: Union[None, str, Path] = None
 ):
-    '''
-    Assembles different sublibraries into one. Uses calculate_enrichments. 
-    Can only read from excel files that are in the same format as the example provided.
+    """
+    Assembles different sublibraries into one. Uses calculate_enrichments. Can
+    only read from excel files that are in the same format as the example
+    provided.
 
     Parameters
     -----------
@@ -727,10 +730,10 @@ def assemble_avengers(
     columns : list
         List of columns for each sublibrary to read from the excel file.
 
-    nrows_pop : int, 
+    nrows_pop : int,
         Number of rows to read from the excel.
 
-    nrows_wt : list, 
+    nrows_wt : list,
         Contains a list of integers, with the number of rows to read from each wt subset.
 
     columns_wt : list,
@@ -759,19 +762,19 @@ def assemble_avengers(
     min_counts : int, default 25
         If mutant has less than the min_counts, it will be replaced by np.nan.
 
-    min_countswt : int, default 100 
+    min_countswt : int, default 100
         If synonymous wild-type mutant has less than the min_counts, it will be replaced by np.nan.
 
     std_scale : float, default 0.2
         Factor by which the population is scaled. Only works if norm_std is set to True.
 
-    mpop : int, default 2 
+    mpop : int, default 2
         When using the median absolute deviation (MAD) filtering, mpop is the number of medians away
         a data point must be to be discarded.
 
-    mwt : int, default 2 
-        When MAD filtering, mpop is the number of medians away a data point must be to 
-        be discarded. The difference with mpop is that mwt is only used when the population of wild-type 
+    mwt : int, default 2
+        When MAD filtering, mpop is the number of medians away a data point must be to
+        be discarded. The difference with mpop is that mwt is only used when the population of wild-type
         alleles is the reference for data zeroing.
 
     infinite : int, default 3
@@ -785,7 +788,9 @@ def assemble_avengers(
     --------
     df : Pandas dataframe
         A dataframe that contains the enrichment scores of the assembled sublibraries.
-    '''
+
+    """
+
 
     # Read reads from excel
     list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(
@@ -922,7 +927,7 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
         will be shifted by 1 residue.
 
     start_position : int
-        This is the position in the protein sequence of the first position in the MSA
+        This is the position in the protein sequence of the first position in the MSA.
 
     threshold : float, default 0.01
         The conservation frequency for each amino acid subsitution will be binarized, and a threshold between 0-1 

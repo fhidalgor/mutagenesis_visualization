@@ -38,10 +38,11 @@ def demo(figure='heatmap', show=True):
     figure : str, default 'heatmap'
         There are a few example plots that can be displayed to test the package is working on your station.
         The options are 'heatmap', 'miniheatmap', 'mean', 'kernel', 'pca'
-        'position', 'secondary_mean', 'correlation', 'individual_correlation'. Check the documentation for more information.
+        'position', 'secondary_mean', 'correlation', 'individual_correlation'. 
+        Check the documentation for more information.
     
     show : boolean, default True
-        If True, will do plt.show() for each figure
+        If True, will do plt.show() for each figure.
         
     Returns
     -------
@@ -144,7 +145,7 @@ def demo(figure='heatmap', show=True):
 
 
 def demo_datasets():
-    '''
+    """
     Loads example datasets so the user can play with it.
 
     Parameters
@@ -155,7 +156,8 @@ def demo_datasets():
     --------
     data_dict : dictionary
         Dictionary that contains the datasets used to create the plots on the documentation.
-    '''
+
+    """
 
     # Use relative file import to access the data folder
     location = os.path.dirname(os.path.realpath(__file__))
@@ -227,7 +229,7 @@ def demo_datasets():
 
 
 def demo_pdbs():
-    '''
+    """
     Loads example pdbs so the user can play with it (5p21, 1erm, 1a5r, 1nd4).
 
     Parameters
@@ -238,7 +240,8 @@ def demo_pdbs():
     --------
     data_dict : dictionary
         Dictionary that contains the pdbs used to create the plots on the documentation.
-    '''
+
+    """
 
     # Use relative file import to access the data folder
     location = os.path.dirname(os.path.realpath(__file__))
@@ -262,7 +265,7 @@ def demo_pdbs():
 
 
 def demo_fasta():
-    '''
+    """
     Loads example fasta so the user can play with it.
 
     Parameters
@@ -273,7 +276,8 @@ def demo_fasta():
     --------
     data_dict : dictionary
         Dictionary that contains the fasta used to extract the sequence conservation.
-    '''
+
+    """
 
     # Use relative file import to access the data folder
     location = os.path.dirname(os.path.realpath(__file__))

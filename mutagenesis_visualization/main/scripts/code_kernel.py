@@ -45,40 +45,42 @@ def plot_kernel(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Generate a kernel density plot. If specified it can also draw a histogram. Uses sns.distplot.
+    """
+    Generate a kernel density plot. If specified it can also draw a histogram.
+    Uses sns.distplot.
 
     Parameters
     ----------
     self : object from class *Screen*
-    
+
     kernel : str, default gau
         options are ['biw','cos','epa','gau','tri','triw']
-    
+
     kernel_label : str, default '_nolegend_'
-    
+
     histogram : boolean, default False
-    
+
     fit : boolean, optional
         ask sns.distplot to fit a function
-    
+
     fit_label : str, default '_nolegend_'
-    
+
     extra_dist : [x,y], optional
         fit any distribution you want. Input the x and y coordinates
-    
+
     extra_dist_label : str, default '_nolegend_'
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-        
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
-        
+
     Returns
     ----------
     None
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -160,8 +162,8 @@ def plot_multiplekernel(
 ):
     '''
     Generate a kernel density plot for multiple objects passed as a dictionary.
-    If specified it can also draw a histogram. Uses sns.distplot. Can manage either Screen objects
-    or dataframes out of the calculate_enrichments function.
+    If specified it can also draw a histogram. Uses sns.distplot. Can manage either 
+    Screen objects or dataframes out of the calculate_enrichments function.
 
     Parameters
     ----------
@@ -176,7 +178,7 @@ def plot_multiplekernel(
     colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
         List of the colors (in order of arguments) that the kernels will have.
 
-output_file : str, default None
+    output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'. 
         
@@ -185,6 +187,7 @@ output_file : str, default None
     Returns
     ----------
     None
+    
     '''
 
     # update kwargs
@@ -268,29 +271,30 @@ def plot_hist(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Generate a histogram plot. Can plot single nucleotide variants (SNVs) or non-SNVs only
+    """
+    Generate a histogram plot. Can plot single nucleotide variants (SNVs) or
+    non-SNVs only.
 
     Parameters
     ----------
-    population : str, default 'All'. 
+    population : str, default 'All'.
         Other options are 'SNV' and 'nonSNV'.
-    
-    loc : str, default 'upper left'. 
+
+    loc : str, default 'upper left'.
         Position of the legend.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
-        bins : int, default 50. 
+        bins : int, default 50.
             Number of bins for the histogram.
     Returns
     ----------
     None.
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)

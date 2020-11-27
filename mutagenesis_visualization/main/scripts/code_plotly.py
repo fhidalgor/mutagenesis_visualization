@@ -45,17 +45,18 @@ def plot_rank_plotly(
     **kwargs
 ):
     '''
-    Generate a plotlu rank plot so every mutation/residue is sorted based on enrichment score.
+    Generate a plotlu rank plot so every mutation/residue is sorted based 
+    on enrichment score.
 
     Parameters
     ----------
     self : object from class *Screen*z
 
     mode : str, default 'pointmutant'. 
-        Alternative set to "mean" for the mean of each position
+        Alternative set to "mean" for the mean of each position.
 
     outdf : boolean, default False
-        If set to true, will return the df with the rank of mutations
+        If set to true, will return the df with the rank of mutations.
 
     return_plotly_object : boolean, default False
         If true, will return plotly object.
@@ -167,7 +168,8 @@ def plot_scatter_plotly(
     **kwargs
 ):
     '''
-    Generate a scatter plot between object and a second object of the same class.
+    Generate a scatter plot between object and a second object of the 
+    same class.
 
     Parameters
     ----------
@@ -185,8 +187,8 @@ def plot_scatter_plotly(
         If true, will return plotly object.
         
     output_html : str, default None
-        If you want to export the generated graph into html, add the path and name of the file.
-        Example: 'path/filename.html'.
+        If you want to export the generated graph into html, add 
+        the path and name of the file. Example: 'path/filename.html'.
         
     **kwargs : other keyword arguments
 
@@ -285,10 +287,11 @@ def plot_scatter_3D_plotly(
     output_html: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, 
-    color coded by the enrichment scores. PDBs may have atoms missing, 
-    you should fix the PDB before using this method. Use matplotlib for interactive plot.
+    """
+    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms
+    of the residues, color coded by the enrichment scores. PDBs may have atoms
+    missing, you should fix the PDB before using this method. Use matplotlib
+    for interactive plot.
 
     Parameters
     -----------
@@ -296,15 +299,15 @@ def plot_scatter_3D_plotly(
         **kwargs : other keyword arguments.
 
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
         Can be used for each amino acid. Use the one-letter code and upper case.
 
     pdb : str, default None
         User should specify the path PDB chain.
 
     df_coordinates: pandas dataframe, default None
-        If no pdb is included, the user must pass the 3-D coordinates of the residues to plot. 
+        If no pdb is included, the user must pass the 3-D coordinates of the residues to plot.
         In here you have more flexibility and you can select other atoms besides the C-alpha.
 
     position_correction : int, default 0
@@ -316,23 +319,24 @@ def plot_scatter_3D_plotly(
         Chain of the PDB file to get the coordinates and SASA from.
 
     squared : boolean, False
-        If this parameter is True, the algorithm will center the data, and plot the square value of the 
+        If this parameter is True, the algorithm will center the data, and plot the square value of the
         distance.
-    
+
     return_plotly_object : boolean, default False
         If true, will return plotly object.
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
     ---------
     fig : plotly object
-    '''
 
+    """
+    
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -454,10 +458,10 @@ def plot_scatter_3D_pdbprop_plotly(
     output_html: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Generates a 3-D scatter plot of different properties obtained from the PDB. 
+    """
+    Generates a 3-D scatter plot of different properties obtained from the PDB.
     PDBs may have atoms missing, you should fix the PDB before using this
-    method. We recommend you use matplotlib for interactive plot. 
+    method. We recommend you use matplotlib for interactive plot.
 
     Parameters
     -----------
@@ -465,24 +469,24 @@ def plot_scatter_3D_pdbprop_plotly(
         **kwargs : other keyword arguments.
 
     plot : list, default ['Distance', 'SASA', 'B-factor']
-        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the 
-        label to the third element of the list ie ['Distance', 'SASA', 'Conservation']. 
+        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the
+        label to the third element of the list ie ['Distance', 'SASA', 'Conservation'].
 
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
-        used for each amino acid. Use the one-letter code and upper case.
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Can be used for each amino acid. Use the one-letter code and upper case.
 
     pdb_path : str, default None
         User should specify the path PDB.
-    
+
     custom : list or dataframe or np.array, default None
         If you want to add a custom dataset to plot, use custom. On the parameter
         plot, the 3rd item of the list will be the label for your custom dataset.
-            
-    df_color : pandas dataframe, default None     
+
+    df_color : pandas dataframe, default None
         The color of each residue can also be included. You must label that label column.
-    
+
     color_by_score : boolean, default True
         If set to False, the points in the scatter will not be colored based on the enrichment score.
 
@@ -493,18 +497,18 @@ def plot_scatter_3D_pdbprop_plotly(
 
     chain : str, default 'A'
         Chain of the PDB file to get the coordinates and SASA from.
-    
+
     return_plotly_object : boolean, default False
         If true, will return plotly object.
-        
+
     output_df : boolean, default False
         If true, this method will return the dataframe with the data.
         Set return_plotly_object for this to work.
-    
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-                        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -513,8 +517,8 @@ def plot_scatter_3D_pdbprop_plotly(
 
     df_items : pandas dataframe
         Contains the plotted data. Needs to have output_df set to true.
-    '''
 
+    """
     # Update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -583,31 +587,32 @@ def plot_scatter_3D_pdbprop_plotly(
 
 
 def _color_3D_scatter(df, mode, lof, gof):
-    '''
+    """
     Color the data points by enrichment scores.
-    
+
     Parameters
     -----------
     df : pandas dataframe
         The input is a dataframe that has colum with ['Position', 'Aminoacid', 'Score'].
-    
+
     mode : str
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
         Can be used for each amino acid. Use the one-letter code and upper case.
 
     gof : int, default is 1
         cutoff for determining gain of function mutations based on mutagenesis data.
-    
+
     lof : int, default is -1
         cutoff for determining loss of function mutations based on mutagenesis data.
-    
+
     Returns
     ---------
     df_grouped: pandas dataframe
-        New dataframe with added column of ['Color'] and the ['Score'] values of the 
+        New dataframe with added column of ['Color'] and the ['Score'] values of the
         mode you chose.
-    '''
+
+    """
 
     # Copy df
     df_grouped = df.copy()

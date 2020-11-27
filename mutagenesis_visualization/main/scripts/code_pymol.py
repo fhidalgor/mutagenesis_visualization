@@ -47,40 +47,43 @@ def plot_pymol(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Color pymol structure residues. User can specify the residues to color, or can use the mutagenesis data.
-    Activating mutations will be colored red and loss of function blue. Neutral mutations in green.
-    Only works if pymol is your $PATH as pymol or you can start PyMOL in server mode.
-    Uses the ipymol package, which needs to be installed from Github $pip install git+https://github.com/cxhernandez/ipymol , not from pypi (not updated there).
-    
+    """
+    Color pymol structure residues. User can specify the residues to color, or
+    can use the mutagenesis data. Activating mutations will be colored red and
+    loss of function blue. Neutral mutations in green. Only works if pymol is
+    your $PATH as pymol or you can start PyMOL in server mode. Uses the ipymol
+    package, which needs to be installed from Github $pip install
+    git+https://github.com/cxhernandez/ipymol , not from pypi (not updated
+    there).
+
     Parameters
     ----------
     pdb : str
         User should specify the PDB chain in the following format 4G0N_A.
         If you have internet connection, Pymol will download the pdb. Otherwise,
         include the path were your PDB is stored locally.
-        
+
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
-        used for each amino acid. Use the one-letter code and upper case.
-        
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Can be used for each amino acid. Use the one-letter code and upper case.
+
     residues : list , optional
         If user decides to pass custom arguments, use the following format
         residues = ['1,2,3,4-10','12-15,23,24,35','48,49,50,52-60'] which are [blue,red,green].
-    
+
     position_correction : int, default 0
         If the pdb structure has a different numbering of positions than you dataset,
         you can correct for that. If your start_position = 2, but in the PDB that same residue
         is at position 20, position_correction needs to be set at 18.
-    
+
     quit : boolean, default False
         if quit, close pymol after executing code.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         gof : int, default is 1
              cutoff for determining gain of function mutations based on mutagenesis data.
@@ -90,12 +93,13 @@ def plot_pymol(
             Choose color to color positions with an enrichment score > gof.
         color_lof : str, default 'neptunium'
             Choose color to color positions with an enrichment score < lof.
-    
-    
+
+
     Returns
     ----------
     Open pymol session with a fetched pdb structure where the residues are colored according to the enrichment scores.
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)

@@ -46,7 +46,8 @@ def plot_mean(
     **kwargs
 ):
     '''
-    Plot in a bargraph the mean enrichment for each residue of the protein. Red for gain of function, blue for loss of function
+    Plot in a bargraph the mean enrichment for each residue of the protein. 
+    Red for gain of function, blue for loss of function
 
     Parameters
     ----------
@@ -58,7 +59,8 @@ def plot_mean(
         used for each amino acid. Use the one-letter code and upper case.
 
     show_carton : boolean, default False
-        If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
+        If true, the plot will display a cartoon with the secondary structure. 
+        The user must have added the secondary structure to the object. 
 
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
@@ -191,28 +193,29 @@ def plot_meandifferential(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Plot the mean positional difference between two experiments
+    """
+    Plot the mean positional difference between two experiments.
 
     Parameters
     ----------
     self : object from class *Screen*
 
-    obj2 : another Screen object to compare with 
+    obj2 : another Screen object to compare with
 
     show_carton : boolean, default False
-        If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
+        If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object.
 
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
 
     Returns
     ----------
     None.
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -300,21 +303,22 @@ def plot_meandifferential(
 
 
 def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
-    '''
+    """
     Plot in a bargraph the mean counts for each residue of the protein.
 
     Parameters
     ----------
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
 
     Returns
     ----------
     None.
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -379,9 +383,9 @@ def _inputtext(text_entries):
 def plot_position(
     self, position, output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-    Choose a position and plot in a bargraph the enrichment score for each substitution.
-    Red for gain of function, blue for loss of function.
+    """
+    Choose a position and plot in a bargraph the enrichment score for each
+    substitution. Red for gain of function, blue for loss of function.
 
     Parameters
     ----------
@@ -392,14 +396,15 @@ def plot_position(
 
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
 
     Returns
     ----------
     None.
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -459,9 +464,9 @@ def plot_position(
 def plot_library_representation(
     self, output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-     Generates a cumulative stacked bar plot. Each bar represents an amino acid position,
-     and each color indicates the observed variant frequency.
+    """
+    Generates a cumulative stacked bar plot. Each bar represents an amino acid
+    position, and each color indicates the observed variant frequency.
 
     Parameters
     ----------
@@ -474,7 +479,8 @@ def plot_library_representation(
     Returns
     ----------
     None.
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -544,8 +550,12 @@ def plot_library_representation(
 
 
 def _group_codons_to_aa(self):
-    '''Group different codons that are synonymous. Returns sum of counts'''
-    # copy df
+    """
+    Group different codons that are synonymous.
+
+    Returns sum of counts
+
+    """    # copy df
     df = self.dataframe.copy()
 
     df['Aminoacid'] = self.aminoacids
@@ -556,6 +566,8 @@ def _group_codons_to_aa(self):
 
 
 def _percentage_column(df):
-    '''Make the percentage per column'''
+    """
+    Make the percentage per column.
+    """
     return df / df.sum(axis=0) * 100
 

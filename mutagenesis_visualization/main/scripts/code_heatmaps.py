@@ -60,7 +60,8 @@ def plot_heatmap(
         Will color np.nan values with the specified color.
     
     show_carton : boolean, default False
-        If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object. 
+        If true, the plot will display a cartoon with the secondary structure. 
+        The user must have added the secondary structure to the object. 
     
     show_snv : boolean, default False
         If true, it will only display mutants that are a single nucleotide variant (SNV) of the wild-type

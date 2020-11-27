@@ -47,22 +47,23 @@ except ModuleNotFoundError:
 def plot_correlation(
     self, output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-    Generate a correlation of each amino acid
+    """
+    Generate a correlation of each amino acid.
 
     Parameters
     ----------
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
 
     Returns
     ----------
     None.
-    '''
+
+    """
 
     # load font parameters
     code_kwargs._font_parameters()
@@ -186,25 +187,25 @@ def plot_correlation(
 def plot_individual_correlation(
     self, output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-    Generates a bar plot of the correlation of each amino acid mutational 
+    """
+    Generates a bar plot of the correlation of each amino acid mutational
     profile (row of the heatmap) with the rest of amino acids (rows)
-    
+
     Parameters
     -----------
     self : object from class *Screen*
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
 
     Returns
     ----------
     None.
 
-    '''
+    """
     # Load parameters
     code_kwargs._parameters()
 
@@ -282,32 +283,34 @@ def plot_group_correlation(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Determines which amino acids better represent the heatmap. Requires logomaker package.
+    """
+    Determines which amino acids better represent the heatmap. Requires
+    logomaker package.
 
     Parameters
     -----------
     self : object from class *Screen*
-    
+
     r2 : float
         cutoff of the r**2 correlation value. Only values above that will be plot at the sequence logo
-    
+
     groups : list, default ['DEHKR','QN','CASTG','ILMV','WYF']
         groups of aa to combine together
-    
+
     output : boolean, default False
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
 
     Returns
     --------
-    Use logomaker to plot the most frequent residues. 
+    Use logomaker to plot the most frequent residues.
     Optional gives back the different combinations of groups and the R**2 values
-    '''
+
+    """
 
     # Update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -426,36 +429,37 @@ def plot_pca(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    Generates a plot of two PCA dimensions
+    """
+    Generates a plot of two PCA dimensions.
 
     Parameters
     -----------
     self : object from class *Screen*
-    
+
     mode : list, default 'aminoacid'
-        Can also do PCA by secondary structure element if set to "secondary" or 
+        Can also do PCA by secondary structure element if set to "secondary" or
         by individual residue if set to "individual".
-    
+
     dimensions : list, default [0,1]
         Specify which two PCA dimensions to plot. By default PCA1 vs PCA2.
         Max dimension is 5.
-    
+
     adjustlabels : boolean, default False
         If set to true, it will adjust the text labels so there is no overlap. It is convenient to increase
         the size of the figure, otherwise the algorithm will not find a solution. Requires to install adjustText package.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         random_state : int, default 554
     Returns
     ----------
     None.
 
-    '''
+    """
+
 
     # load parameters
     code_kwargs._parameters()

@@ -47,11 +47,11 @@ def plot_scatter_3D(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    DEPRECATED 
-    
-    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues, 
-    color coded by the enrichment scores. PDBs may have atoms missing, 
+    """
+    DEPRECATED.
+
+    Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha atoms of the residues,
+    color coded by the enrichment scores. PDBs may have atoms missing,
     you should fix the PDB before using this method. Use matplotlib for interactive plot.
 
     Parameters
@@ -60,18 +60,18 @@ def plot_scatter_3D(
         **kwargs : other keyword arguments.
 
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
         Can be used for each amino acid. Use the one-letter code and upper case.
 
     pdb : str, default None
         User should specify the path PDB chain.
 
     df_coordinates: pandas dataframe, default None
-        If no pdb is included, the user must pass the 3-D coordinates of the residues to plot. 
+        If no pdb is included, the user must pass the 3-D coordinates of the residues to plot.
         In here you have more flexibility and you can select other atoms besides the C-alpha.
 
-    df_color : pandas dataframe, default None     
+    df_color : pandas dataframe, default None
         The color of each residue can also be included. You must label that label column.
 
     position_correction : int, default 0
@@ -83,13 +83,13 @@ def plot_scatter_3D(
         Chain of the PDB file to get the coordinates and SASA from.
 
     squared : booleand, False
-        If this parameter is True, the algorithm will center the data, and plot the square value of the 
+        If this parameter is True, the algorithm will center the data, and plot the square value of the
         distance.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
@@ -99,7 +99,8 @@ def plot_scatter_3D(
     Returns
     ---------
     None
-    '''
+
+    """
 
     # Load parameters
     code_kwargs._parameters()
@@ -176,6 +177,7 @@ def _color_3D_scatter(df, mode, lof, gof):
     df_grouped: pandas dataframe
         New dataframe with added column of ['Color'] and the ['Score'] values of the 
         mode you chose.
+        
     '''
 
     # Copy df
@@ -198,8 +200,10 @@ def _color_3D_scatter(df, mode, lof, gof):
 def _centroid(df):
     '''
     Find center of x,y,z using centroid method. 
+    
     The input is a dataframe with columns x, y, z.
     Returns the center of each of the three dimensions
+    
     '''
     return df['x'].mean(), df['y'].mean(), df['z'].mean()
 
@@ -207,8 +211,13 @@ def _centroid(df):
 def _parse_pdbcoordinates(
     self, pdb_path, position_correction, chain, sasa=False
 ):
-    '''parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
-    If PDB is missing atoms, it can handle it.'''
+    """
+    parse coordinate of CA atoms.
+
+    Will also return the bfactor and SASA using freesasa. If PDB is
+    missing atoms, it can handle it.
+
+    """
 
     # Get structure from PDB
     structure = PDBParser().get_structure('pdb', pdb_path)
@@ -288,12 +297,12 @@ def plot_scatter_3D_pdbprop(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    DEPRECATED
-    
-    Generates a 3-D scatter plot of different properties obtained from the PDB. 
+    """
+    DEPRECATED.
+
+    Generates a 3-D scatter plot of different properties obtained from the PDB.
     PDBs may have atoms missing, you should fix the PDB before using this
-    method. We recommend you use matplotlib for interactive plot. 
+    method. We recommend you use matplotlib for interactive plot.
 
     Parameters
     -----------
@@ -301,28 +310,28 @@ def plot_scatter_3D_pdbprop(
         **kwargs : other keyword arguments.
 
     plot : list, default ['Distance', 'SASA', 'B-factor']
-        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the 
-        label to the third element of the list ie ['Distance', 'SASA', 'Conservation']. 
+        List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the
+        label to the third element of the list ie ['Distance', 'SASA', 'Conservation'].
 
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of 
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be 
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. Can be
         used for each amino acid. Use the one-letter code and upper case.
 
     pdb_path : str, default None
         User should specify the path PDB.
-    
+
     custom : list or dataframe or np.array, default None
         If you want to add a custom dataset to plot, use custom. On the parameter
         plot, the 3rd item of the list will be the label for your custom dataset.
-    
+
     axis_scale : list, default ["linear", "linear", "linear"]
         Check matplotlib.axes.Axes.set_xscale documentation for more information.
         The axis scale type to apply. Some options are {"linear", "log", "symlog", "logit", ...}.
-        
-    df_color : pandas dataframe, default None     
+
+    df_color : pandas dataframe, default None
         The color of each residue can also be included. You must label that label column.
-    
+
     color_by_score : boolean, default True
         If set to False, the points in the scatter will not be colored based on the enrichment score.
 
@@ -336,11 +345,11 @@ def plot_scatter_3D_pdbprop(
 
     output_df : boolean, default False
         If true, this method will return the dataframe with the data.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                        
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
@@ -351,8 +360,8 @@ def plot_scatter_3D_pdbprop(
     ---------
     df_items : pandas dataframe
         Contains the plotted data. Needs to have output_df set to true.
-    '''
 
+    """
     # Load parameters
     code_kwargs._parameters()
 

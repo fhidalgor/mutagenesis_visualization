@@ -3,11 +3,10 @@
 	+ Check that function docstrings contain good explanation
 	+ format docsctring. Right now it looks ugly when you cal help(method).
 	+ specify kwargs in each doctoring of each function.
-	+ show plotly objects
 - Finish tests
 - Check for bugs
 - Capture probable input errors and write error messages
+- Fix issue with fonts in non-mac computers.
 - Add more features
 	+ More Pypi visualization plots
-		* 3-D 
 - Write manuscript

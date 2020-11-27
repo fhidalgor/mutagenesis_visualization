@@ -30,8 +30,9 @@ except ModuleNotFoundError:
 
 
 def hras_RBD():
-    '''Create object hras_RBD'''
-    # Use relative file import to access the data folder
+    """
+    Create object hras_RBD.
+    """    # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
         my_file = os.path.join(location, '../../data', 'HRas166_RBD.csv')
@@ -70,7 +71,9 @@ def hras_RBD():
 
 
 def bla_obj():
-    '''Create object for the beta lactamase dataset'''
+    """
+    Create object for the beta lactamase dataset.
+    """
 
     # Use relative file import to access the data folder
     try:
@@ -124,8 +127,9 @@ def bla_obj():
 
 
 def sumo_obj():
-    '''Create object for the sumo1 dataset'''
-
+    """
+    Create object for the sumo1 dataset.
+    """
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -169,7 +173,10 @@ def sumo_obj():
 
 
 def mapk1_obj():
-    '''Create object for the mapk1 dataset.'''
+    """
+    Create object for the mapk1 dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -208,7 +215,10 @@ def mapk1_obj():
 
 
 def ube2i_obj():
-    '''Create object for the ube2i dataset.'''
+    """
+    Create object for the ube2i dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -259,7 +269,10 @@ def ube2i_obj():
 
 
 def tat_obj():
-    '''Create object for the tat dataset.'''
+    """
+    Create object for the tat dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -297,7 +310,10 @@ def tat_obj():
 
 
 def rev_obj():
-    '''Create object for the rev dataset.'''
+    """
+    Create object for the rev dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -334,8 +350,10 @@ def rev_obj():
 
 
 def asynuclein_obj():
-    '''Create object for the synuclein dataset.'''
-
+    """
+    Create object for the synuclein dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -373,8 +391,10 @@ def asynuclein_obj():
 
 
 def aph_obj():
-    '''Create object for the aph dataset.'''
-
+    """
+    Create object for the aph dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -424,8 +444,10 @@ def aph_obj():
 
 
 def b11L5F_obj():
-    '''Create object for the aph dataset.'''
-
+    """
+    Create object for the aph dataset.
+    """
+    
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))

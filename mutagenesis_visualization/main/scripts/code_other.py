@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[ ]:
+# In[1]:
 
 
 import numpy as np
@@ -22,8 +22,6 @@ from os import path
 import os
 from pathlib import Path
 from typing import Union
-
-
 
 # local modules
 try:
@@ -53,31 +51,32 @@ def plot_rank(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
-    DEPRECATED
-    Generate a rank plot so every mutation/residue is sorted based on enrichment score.
+    """
+    DEPRECATED.
+    Generate a rank plot so every mutation/residue is sorted based
+    on enrichment score.
 
     Parameters
     ----------
     self : object from class *Screen*
-        
-    mode : str, default 'pointmutant'. 
+
+    mode : str, default 'pointmutant'.
         Alternative set to "mean" for the mean of each position
-    
+
     outdf : boolean, default False
         If set to true, will return the df with the rank of mutations
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                        
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
 
     Returns
     ----------
     Pandas dataframe
-    '''
 
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -133,36 +132,47 @@ def plot_rank(
 
 # ### Mean substitution heatmap
 
-# In[ ]:
+# In[6]:
 
 
 def plot_miniheatmap(
-    self, offset=0, output_file: Union[None, str, Path] = None, **kwargs
+    self,
+    offset=0,
+    background_correction=True,
+    output_file: Union[None, str, Path] = None,
+    **kwargs,
 ):
-    '''
-    Generate a miniheatmap plot enrichment scores of mutagenesis selection assays.
+"""
+    Generate a miniheatmap plot enrichment scores of mutagenesis selection
+    assays.
 
     Parameters
     ----------
     self : object from class *Screen*
-    
+
     offset : int, default 0
-        If you want to study effects of a residue when is behind or in front of another residue.
-        For example, you may want to see what happens when you have a Proline in front of the mutated
-        residue.
+        Will group columns by residues. If the offset is not 0, it will use the values
+        of the n+offset to group by. For example, you may want to see what happens when
+        you have a Proline in front of the mutated residue. The algorithm can report
+        the difference between the calculated value and the mean score for that particular
+        substitution.
         Offset of 1 means that you evaluate the effect of following residue n+1 on n.
         Offset of -1 means that you look at the previous residue (n-1 on n).
-        
+
+    background_correction : boolean, default True
+        If offset is nonzero, whether subtract the average effect of a substitution or not.
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
-    
+
     Returns
     ----------
     None.
-    '''
+
+    """
 
     # load font parameters
     code_kwargs._font_parameters()
@@ -182,10 +192,19 @@ def plot_miniheatmap(
     dataset = _condense_heatmap(
         dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
     )
+    
+    # if offset is not 0
+    if background_correction and offset != 0:
+        if '*' in temp_kwargs['neworder_aminoacids']:
+            temp_kwargs['neworder_aminoacids'].remove('*')
+        # do offset, no stop codons
+        dataset = _normalize_neighboreffect(
+            self, offset, temp_kwargs['neworder_aminoacids']
+        )
 
     _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
-    return
+    return dataset
 
 
 def _condense_heatmap(df, new_order):
@@ -217,8 +236,8 @@ def _condense_heatmap(df, new_order):
 
 
 def _offset_sequence(dataset, sequence, start_position, offset):
-    '''
-    Internal function that offsets the input sequence
+    """
+    Internal function that offsets the input sequence.
 
     Parameters
     -----------
@@ -227,7 +246,8 @@ def _offset_sequence(dataset, sequence, start_position, offset):
     Returns
     --------
     string containing trimmed sequence
-    '''
+
+    """
     # Deep copy sequence
     sequence = copy.deepcopy(sequence)
 
@@ -270,35 +290,38 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
 
 # ### Neighbor residues
 
-# In[ ]:
+# In[5]:
 
 
 def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = None,
                          **kwargs):
-   '''
+   """
+   DEPRECATED.
+
    Generate a miniheatmap plot telling you the effect of having a residue in front or behind.
    It corrects for the effect of that amino acid on the rest of the population.
 
    Parameters
    ----------
    self : object from class *Screen*
-   
+
    offset : int, default 1
-       if you want to study effects of a residue when is behind or in front of another residue.
-       offset of 1 means that you evaluate the effect of following residue n+1 on n. On a "MTEY..." sequence,
-       you would look at the effect of T on M, E on T, Y on E, etc.. and then group by residue (n+1).
-       offset of -1 means that you look at the previous residue (n-1 on n).
-   
+      if you want to study effects of a residue when is behind or in front of another residue.
+      offset of 1 means that you evaluate the effect of following residue n+1 on n. On a "MTEY..." sequence,
+      you would look at the effect of T on M, E on T, Y on E, etc.. and then group by residue (n+1).
+      offset of -1 means that you look at the previous residue (n-1 on n).
+
    output_file : str, default None
-       If you want to export the generated graph, add the path and name of the file.
-       Example: 'path/filename.png' or 'path/filename.svg'. 
-                   
+      If you want to export the generated graph, add the path and name of the file.
+      Example: 'path/filename.png' or 'path/filename.svg'.
+
    **kwargs : other keyword arguments
 
    Returns
    ----------
    None.
-   '''
+
+   """
    # load font parameters
    code_kwargs._font_parameters()
 
@@ -422,8 +445,9 @@ def _sort_yaxis_aminoacids(df,neworder,oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
 
 
 def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
-    '''
-    Generates a bar plot of data sorted by secondary elements (alpha helices and beta sheets).
+    """
+    Generates a bar plot of data sorted by secondary elements (alpha helices
+    and beta sheets).
 
     Parameters
     -----------
@@ -431,7 +455,7 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
 
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
 
@@ -439,7 +463,7 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     ----------
     None.
 
-    '''
+    """
     # Load parameters
     code_kwargs._parameters()
 
@@ -529,25 +553,27 @@ def _calculate_secondary(df, secondary):
 def plot_roc(
     self, df_class=None, output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-    Generates ROC AUC plot. It compares enrichment scores to some labels that the user has specified.
+    """
+    Generates ROC AUC plot. It compares enrichment scores to some labels that
+    the user has specified.
 
     Parameters
     -----------
     self : object from class *Screen*
-    
+
     df_class: Pandas dataframe
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
         containing the true class of that mutation. The true class can also be an input when creating the object.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     Returns
     --------
     None.
-    '''
+
+    """
     # Use default class
     if df_class is None:
         df_class = self.roc_df
@@ -664,26 +690,27 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
 def plot_cumulative(
     self, mode='all', output_file: Union[None, str, Path] = None, **kwargs
 ):
-    '''
-    Generates a cumulative plot of the enrichment scores by position. 
+    """
+    Generates a cumulative plot of the enrichment scores by position.
 
     Parameters
     -----------
     self : object from class *Screen*
-    
-    mode : str, default 'all' 
+
+    mode : str, default 'all'
         Options are 'all','SNV' and 'nonSNV'.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
 
     Returns
     --------
     None.
-    '''
+
+    """
 
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -754,25 +781,26 @@ def _filter_bySNV(self, mode):
 
 
 def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
-    '''
-    Generates a boxplot. Data needs to be binned prior before using this function. 
+    """
+    Generates a boxplot. Data needs to be binned prior before using this
+    function.
 
     Parameters
     -----------
     x, binned_y : arrays
         Contain the data is going to plot
-        
+
     **kwargs : other keyword arguments
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     Returns
     ----------
     None.
 
-    '''
+    """
     # Load parameters
     code_kwargs._parameters()
 

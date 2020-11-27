@@ -1,5 +1,5 @@
-Holistic testing
-================
+Other datasets
+==============
 
 Up to this moment, we have only shown how the package performs with our
 own dataset. The moment of truth is when we test our software with other
@@ -486,6 +486,10 @@ Create object
 
 MAPK1
 -----
+
+.. code:: ipython3
+
+    pip install docformatter
 
 Load data
 ~~~~~~~~~

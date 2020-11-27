@@ -26,14 +26,14 @@ def generate_primers(
     tm=None,
     return_df=False
 ):
-    '''
+    """
     Generate primers for saturation mutagenesis.
 
     Parameters
     -----------
     dna : string
-        DNA sequence containing the protein of study. 
-        The DNA sequence should also contain at least 15 base pairs before the 
+        DNA sequence containing the protein of study.
+        The DNA sequence should also contain at least 15 base pairs before the
         starting ATG and 15 base pairs after the stop codon.
 
     start : string
@@ -47,7 +47,7 @@ def generate_primers(
 
     output_file : str
         File where the list of primers will be exported to. Only exports to excel.
-        Example: 'path/primers.xlsx'. 
+        Example: 'path/primers.xlsx'.
 
     codon : str, default 'NNS'
         Degenerate codon that will be used to create the primers. Check idt's website for a list
@@ -70,7 +70,7 @@ def generate_primers(
     df : pandas dataframe, optional
         Dataframe containing the primers.
 
-    '''
+    """
     # Transform to upper case
     dna = dna.upper()
 
