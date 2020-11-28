@@ -4,6 +4,11 @@
 # In[1]:
 
 
+from pathlib import Path
+import pandas as pd
+from pandas.testing import assert_frame_equal
+import os
+
 try:
     from mutagenesis_visualization.main.scripts.code_process_data import (
         count_reads
@@ -16,11 +21,6 @@ except ModuleNotFoundError:
     os.chdir(new_directory)
     from code_process_data import (count_reads)
     os.chdir(directory)
-
-from pathlib import Path
-import pandas as pd
-from pandas.testing import assert_frame_equal
-import os
 
 
 # In[10]:

@@ -6,11 +6,6 @@
 # In[46]:
 
 
-try:
-    import import_notebook
-except ModuleNotFoundError:
-    pass
-
 import matplotlib
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import rcParams

@@ -91,6 +91,8 @@ def plot_scatter_3D(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
         lof : int, default is -1
@@ -98,8 +100,10 @@ def plot_scatter_3D(
 
     Returns
     ---------
-    None
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
 
     # Load parameters
@@ -145,11 +149,13 @@ def plot_scatter_3D(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-
+    
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+    
     if temp_kwargs['show']:
         plt.show()
-
-    return
 
 
 def _color_3D_scatter(df, mode, lof, gof):
@@ -351,6 +357,8 @@ def plot_scatter_3D_pdbprop(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
         gof : int, default is 1
                  cutoff for determining gain of function mutations based on mutagenesis data.
         lof : int, default is -1
@@ -358,6 +366,10 @@ def plot_scatter_3D_pdbprop(
 
     Returns
     ---------
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     df_items : pandas dataframe
         Contains the plotted data. Needs to have output_df set to true.
 
@@ -414,7 +426,11 @@ def plot_scatter_3D_pdbprop(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-
+    
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+    
     if temp_kwargs['show']:
         plt.show()
 

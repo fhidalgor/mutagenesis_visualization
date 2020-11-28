@@ -10,7 +10,6 @@ from mutagenesis_visualization.main.scripts.code_other import plot_box
 from mutagenesis_visualization.main.scripts.code_utils import parse_pivot
 from mutagenesis_visualization.main.scripts.code_kernel import plot_multiplekernel
 import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
-import mutagenesis_visualization.main.scripts.shannon as shannon
 
 __author__ = "Frank Hidalgo"
 __version__ = "0.0.2"

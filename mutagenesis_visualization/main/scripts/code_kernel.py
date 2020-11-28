@@ -75,10 +75,14 @@ def plot_kernel(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
 
     Returns
     ----------
-    None
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
 
     """
     # update kwargs
@@ -142,10 +146,12 @@ def plot_kernel(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-
-    return
 
 
 # ## Multiple Kernel plots
@@ -183,11 +189,15 @@ def plot_multiplekernel(
         Example: 'path/filename.png' or 'path/filename.svg'. 
         
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None
-    
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.    
+        
     '''
 
     # update kwargs
@@ -253,10 +263,12 @@ def plot_multiplekernel(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-
-    return
 
 
 # ## Plot Histogram
@@ -288,11 +300,16 @@ def plot_hist(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
         bins : int, default 50.
             Number of bins for the histogram.
+            
     Returns
     ----------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
 
     """
     # update kwargs
@@ -350,7 +367,11 @@ def plot_hist(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
+
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 

@@ -28,9 +28,10 @@ parameters fit your interests best (*doc3_normalizing.ipynb*).
 
 With the enrichment scores in hand, you will have multiple options to
 **plot and visualize the data**, including heatmaps, histograms, scatter
-plots, PCA analysis, Pymol figures, and more (*doc4_plotting.ipynb*) and
-(*doc5_plotly.ipynb*). We have compiled **other people’s datasets** and
-visualized them (*doc6_other_datasets.ipynb*).
+plots, PCA analysis, Pymol figures, and more (*doc4a_heatmaps.ipynb* and
+*doc4b_plotting.ipynb*) and (*doc5_plotly.ipynb*). We have compiled
+**other people’s datasets** and visualized them
+(*doc6_other_datasets.ipynb*).
 
 You can access the jupyter notebooks and play with the code in
 `mybinder <https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F>`__.

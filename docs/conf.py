@@ -35,7 +35,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon'
 'IPython.sphinxext.ipython_directive']
 
 # mock import modules
-autodoc_mock_imports = ['Bio', 'ipymol', 'shannon', 'logomaker', 'collections', 'adjustText', 'seaborn',
+autodoc_mock_imports = ['Bio', 'ipymol', 'math', 'logomaker', 'collections', 'adjustText', 'seaborn',
 'scipy', 'sklearn', 'pandas', 'Import_notebook','copy', 'itertools', 'freesasa', 'plotly', 'statsmodels']
 
 # Add any paths that contain templates here, relative to this directory.

@@ -73,10 +73,14 @@ def plot_heatmap(
         Example: 'path/filename.png' or 'path/filename.svg'. 
                 
     **kwargs : other keyword arguments
-        
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).        
     Returns
     ----------
-    None    
+    fig, ax, ax2, ax3, averageresidue : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     '''
     # load font parameters
     code_kwargs._font_parameters()
@@ -335,9 +339,12 @@ def plot_heatmap(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax, ax2, ax3, averageresidue
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # In[3]:
@@ -523,10 +530,14 @@ def plot_heatmap_rows(
         Example: 'path/filename.png' or 'path/filename.svg'. 
                     
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
     Returns
     ----------
-    None.
+    fig, ax, ax2 : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     '''
     # load font parameters
     code_kwargs._font_parameters()
@@ -659,9 +670,12 @@ def plot_heatmap_rows(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax, ax2
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # ### Subset Heatmap
@@ -698,10 +712,15 @@ def plot_heatmap_columns(
         Example: 'path/filename.png' or 'path/filename.svg'. 
                     
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+        
     Returns
     ----------
-    None    
+    fig, ax, ax2 : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     '''
 
     # load font parameters
@@ -811,7 +830,10 @@ def plot_heatmap_columns(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax, ax2
+
     if temp_kwargs['show']:
         plt.show()
-    return
 

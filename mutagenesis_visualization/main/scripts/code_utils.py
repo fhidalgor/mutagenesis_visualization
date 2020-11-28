@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[2]:
 
 
 # Regular libraries
@@ -14,13 +14,14 @@ from collections import defaultdict
 from Bio.Seq import Seq
 from pathlib import Path
 from typing import Union
+import math
 
 
 # # Internal Functions
 
 # ## Parse dataset
 
-# In[2]:
+# In[3]:
 
 
 def _transform_dataset(dataset, sequence, aminoacids, start_position, fillna):
@@ -249,7 +250,7 @@ def parse_pivot(
     df = df_imported.copy()
 
     # Extract position and amino acids that are being mutated
-    df['Position'] = df[col_variant].str.extract('(\d+)').astype(int)
+    df['Position'] = df[col_variant].str.extract(r'(\d+)').astype(int)
     df['Original'] = df[col_variant].str[0:1]
     df['Substitution'] = df[col_variant].str[-1:]
 
@@ -274,7 +275,7 @@ def parse_pivot(
 
 # ## SNV internal
 
-# In[ ]:
+# In[4]:
 
 
 def _select_nonSNV(df):
@@ -530,7 +531,7 @@ def _aatocodons_df(df, namecolumn):
 
 # ## Scatter Internal
 
-# In[ ]:
+# In[5]:
 
 
 def _process_bypointmutant(self, obj):
@@ -567,7 +568,7 @@ def _process_meanresidue(self, obj):
     return df
 
 
-# In[ ]:
+# In[6]:
 
 
 def _color_data(row, color_gof, color_lof):
@@ -579,7 +580,7 @@ def _color_data(row, color_gof, color_lof):
 
 # # To manipulate reads
 
-# In[1]:
+# In[7]:
 
 
 def _translate_codons(df):
@@ -595,4 +596,101 @@ def _is_DNA(df):
         if aa in ''.join(list(df.index)):
             return False
     return True
+
+
+# # Shannon entropy
+
+# Shannon's entropy equation (latex format):
+#     H=-\sum_{i=1}^{M} P_i\,log_2\,P_i
+#     Entropy is a measure of the uncertainty of a probability distribution (p1, ..... , pM)
+#     https://stepic.org/lesson/Scoring-Motifs-157/step/7?course=Bioinformatics-Algorithms&unit=436
+#     Where, Pi is the fraction of nuleotide bases of nuleotide base type i,
+#     and M is the number of nuleotide base types (A, T, G or C)
+#     H ranges from 0 (only one base/residue in present at that position) to 4.322 (all 20 residues are equally
+#     represented in that position).
+#     Typically, positions with H >2.0 are considerered variable, whereas those with H < 2 are consider conserved.
+#     Highly conserved positions are those with H <1.0 (Litwin and Jores, 1992).
+#     A minimum number of sequences is however required (~100) for H to describe the diversity of a protein family.
+#     Author : Joe R. J. Healey
+#     Version : 1.0.0
+#     Title : ShannonMSA
+#     License : GPLv3
+#     Email : J.R.J.Healey@warwick.ac.uk
+# 
+
+# In[8]:
+
+
+def _parseMSA(msa, alnformat, verbose):
+    """
+    Parse in the MSA file using Biopython's AlignIO
+    
+    """
+
+    from Bio import AlignIO
+    alignment = AlignIO.read(msa, alnformat)
+
+    # Do a little sanity checking:
+    seq_lengths_list = []
+    for record in alignment:
+        seq_lengths_list.append(len(record))
+
+    seq_lengths = set(seq_lengths_list)
+
+    if verbose > 0:
+        print("Alignment length is:" + str(list(seq_lengths)))
+
+    if len(seq_lengths) != 1:
+        sys.stderr.write(
+            "Your alignment lengths aren't equal. Check your alignment file."
+        )
+        sys.exit(1)
+
+    index = range(1, list(seq_lengths)[0] + 1)
+
+    return alignment, list(seq_lengths), index
+
+
+##################################################################
+# Function to calcuate the Shannon's entropy per alignment column
+# H=-\sum_{i=1}^{M} P_i\,log_2\,P_i (http://imed.med.ucm.es/Tools/svs_help.html)
+# Gaps and N's are included in the calculation
+##################################################################
+
+
+def _shannon_entropy(list_input):
+    """
+    Calculate Shannon's Entropy per column of the alignment 
+    
+    """
+
+    unique_base = set(list_input)
+    M = len(list_input)
+    entropy_list = []
+    # Number of residues in column
+    for base in unique_base:
+        n_i = list_input.count(base)  # Number of residues of type i
+        P_i = n_i / float(
+            M
+        )  # n_i(Number of residues of type i) / M(Number of residues in column)
+        entropy_i = P_i * (math.log(P_i, 2))
+        entropy_list.append(entropy_i)
+
+    sh_entropy = -(sum(entropy_list))
+
+    return sh_entropy
+
+
+def _shannon_entropy_list_msa(alignment):
+    """
+    Calculate Shannon Entropy across the whole MSA
+    
+    """
+
+    shannon_entropy_list = []
+    for col_no in range(len(list(alignment[0]))):
+        list_input = list(alignment[:, col_no])
+        shannon_entropy_list.append(_shannon_entropy(list_input))
+
+    return shannon_entropy_list
 

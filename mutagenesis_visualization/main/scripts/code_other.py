@@ -28,20 +28,18 @@ try:
     import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
     from mutagenesis_visualization.main.scripts.code_heatmaps import _labels
-    import mutagenesis_visualization.main.scripts.shannon as shannon
 except ModuleNotFoundError:
     import import_notebook
     import code_kwargs
     import code_utils
     from code_heatmaps import _labels
-    import shannon
 
 
 # # Plot Functions
 
 # ## Rank 
 
-# In[ ]:
+# In[2]:
 
 
 def plot_rank(
@@ -71,11 +69,20 @@ def plot_rank(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    Pandas dataframe
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+    
+    df : Pandas dataframe
+        Contains the mutations sorted by their performance.
+        Needs to have outdf==True. By default they do
+        not get returned.
+    
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -122,8 +129,13 @@ def plot_rank(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
+
     if outdf:
         return df
 
@@ -132,7 +144,7 @@ def plot_rank(
 
 # ### Mean substitution heatmap
 
-# In[6]:
+# In[3]:
 
 
 def plot_miniheatmap(
@@ -167,11 +179,15 @@ def plot_miniheatmap(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax, cb : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
 
     # load font parameters
@@ -192,7 +208,7 @@ def plot_miniheatmap(
     dataset = _condense_heatmap(
         dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
     )
-    
+
     # if offset is not 0
     if background_correction and offset != 0:
         if '*' in temp_kwargs['neworder_aminoacids']:
@@ -202,9 +218,11 @@ def plot_miniheatmap(
             self, offset, temp_kwargs['neworder_aminoacids']
         )
 
-    _plot_miniheatmap(dataset, output_file, temp_kwargs)
+    fig, ax, cb = _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
-    return dataset
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax, cb
 
 
 def _condense_heatmap(df, new_order):
@@ -290,7 +308,7 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
 
 # ### Neighbor residues
 
-# In[5]:
+# In[4]:
 
 
 def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = None,
@@ -316,11 +334,15 @@ def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = N
       Example: 'path/filename.png' or 'path/filename.svg'.
 
    **kwargs : other keyword arguments
-
+       return_plot_object : boolean, default False
+           If true, will return plotting objects (ie. fig, ax).
+           
    Returns
    ----------
-   None.
-
+   fig, ax, cb : matplotlib figure and subplots
+       Needs to have return_plot_object==True. By default they do
+       not get returned.
+       
    """
    # load font parameters
    code_kwargs._font_parameters()
@@ -334,11 +356,36 @@ def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = N
    df = _normalize_neighboreffect(self,offset,temp_kwargs['neworder_aminoacids'])
    
    # Plot
-   _plot_miniheatmap(df,temp_kwargs)
+   fig, ax, cb = _plot_miniheatmap(df,temp_kwargs)
    
-   return
+   # return matplotlib object
+   if temp_kwargs['return_plot_object']:
+       return fig, ax, cb
+   
+   # show figure    
+   if temp_kwargs['show']: 
+       plt.show()
    
 def _plot_miniheatmap(df,output_file, temp_kwargs):
+   """
+   Aux plot that will do the heavy lifting to plot a miniheatmap.
+   
+   Parameters
+   ------------
+   df: pandas dataframe
+       dataframe with the data to plot.
+   
+   output_file : str, default None
+       If you want to export the generated graph, add the path and name of the file.
+       Example: 'path/filename.png' or 'path/filename.svg'.
+   
+   temp_kwargs : kwargs
+   
+   Returns
+   --------
+   fig, ax, cb : matplotlib figure and subplots
+       
+   """
    # declare figure and subplots
    coeff = len(df.columns)/19*1.05
    fig = plt.figure(figsize=(2.5*coeff, 2.5))
@@ -394,8 +441,9 @@ def _plot_miniheatmap(df,output_file, temp_kwargs):
    # save file
    code_utils._save_work(fig, output_file, temp_kwargs)
    
-   if temp_kwargs['show']: plt.show()
-   return
+   # return matplotlib object
+   return fig, ax, cb
+
 
 def _normalize_neighboreffect(self,offset,neworder):
    '''
@@ -441,7 +489,7 @@ def _sort_yaxis_aminoacids(df,neworder,oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
 
 # ## Secondary Structure
 
-# In[ ]:
+# In[5]:
 
 
 def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
@@ -458,10 +506,14 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
 
     """
     # Load parameters
@@ -528,9 +580,12 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 def _calculate_secondary(df, secondary):
@@ -547,7 +602,7 @@ def _calculate_secondary(df, secondary):
 
 # ## ROC AUC
 
-# In[ ]:
+# In[6]:
 
 
 def plot_roc(
@@ -571,7 +626,9 @@ def plot_roc(
 
     Returns
     --------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
 
     """
     # Use default class
@@ -627,9 +684,13 @@ def plot_roc(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
+
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 def _rocauc(df):
@@ -684,7 +745,7 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
 
 # ## Cumulative
 
-# In[ ]:
+# In[7]:
 
 
 def plot_cumulative(
@@ -705,11 +766,15 @@ def plot_cumulative(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     --------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
 
     # update kwargs
@@ -757,9 +822,14 @@ def plot_cumulative(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
+
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 def _filter_bySNV(self, mode):
@@ -777,7 +847,7 @@ def _filter_bySNV(self, mode):
 
 # ## Box Plot
 
-# In[ ]:
+# In[8]:
 
 
 def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
@@ -790,16 +860,20 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     x, binned_y : arrays
         Contain the data is going to plot
 
-    **kwargs : other keyword arguments
-
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'.
-
+        
+    **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
     # Load parameters
     code_kwargs._parameters()
@@ -839,8 +913,11 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-
-    return
 

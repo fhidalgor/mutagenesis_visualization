@@ -3,14 +3,9 @@
 
 # # Import modules
 
-# In[6]:
+# In[1]:
 
 
-from Bio.Seq import Seq
-from Bio.SeqUtils import MeltingTemp as mt
-from Bio.Alphabet import IUPAC
-from pathlib import Path
-from typing import Union
 import pandas as pd
 
 try:
@@ -60,7 +55,7 @@ def test_generate_primers():
     ] == 'CGCCCCCAATGAAAAAANNSAAACGGGGTTTTAA', 'error the last primer is not mutated at the stop codon'
 
 
-# In[83]:
+# In[3]:
 
 
 def test_primerdesign():
@@ -101,7 +96,7 @@ def test_primerdesign():
     ), 'error the codon is not replaced after position 21'
 
 
-# In[107]:
+# In[4]:
 
 
 def test_create_primers_list():
@@ -115,7 +110,7 @@ def test_create_primers_list():
 
 # ## Generate Variants
 
-# In[52]:
+# In[5]:
 
 
 def test_create_variants():

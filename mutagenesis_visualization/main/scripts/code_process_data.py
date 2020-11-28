@@ -18,11 +18,6 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
-try:
-    import mutagenesis_visualization.main.scripts.shannon as shannon
-except ModuleNotFoundError:
-    import shannon
-
 
 # # Data Process Functions
 
@@ -942,10 +937,10 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
         Frequency of each susbsitution merged to the enrichment score.
     '''
     # Read MSA
-    msa, seq_lengths, index = shannon.parseMSA(path, "fasta", 0)
+    msa, seq_lengths, index = code_utils._parseMSA(path, "fasta", 0)
 
     # Calculate Shannon entropy from alignment
-    shannon_entropy = shannon.shannon_entropy_list_msa(msa)
+    shannon_entropy = code_utils._shannon_entropy_list_msa(msa)
 
     # Merge enrichment scores and MSA conservation
     df_freq = _merge_msa_enrichment(

@@ -62,10 +62,15 @@ def plot_scatter(
         Example: 'path/filename.png' or 'path/filename.svg'. 
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     '''
 
     # update kwargs
@@ -150,8 +155,11 @@ def plot_scatter(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-
-    return
 

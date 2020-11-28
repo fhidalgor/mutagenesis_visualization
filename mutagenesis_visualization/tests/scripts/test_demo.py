@@ -4,8 +4,6 @@
 # In[1]:
 
 
-# Package libraries
-
 try:
     from mutagenesis_visualization.main.scripts.code_demo import (
         demo, demo_datasets, demo_pdbs, demo_fasta

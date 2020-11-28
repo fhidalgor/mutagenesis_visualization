@@ -35,7 +35,7 @@ except ModuleNotFoundError:
 
 # ### Bar graph Enrichment
 
-# In[ ]:
+# In[7]:
 
 
 def plot_mean(
@@ -67,6 +67,9 @@ def plot_mean(
         Example: 'path/filename.png' or 'path/filename.svg'. 
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+        
         color_gof : str, default 'red'
             Choose color to color positions with an enrichment score > 0.
 
@@ -75,7 +78,10 @@ def plot_mean(
 
     Returns
     ----------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     '''
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -159,14 +165,13 @@ def plot_mean(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
-    
+
     # return matplotlib object
     if temp_kwargs['return_plot_object']:
         return fig, ax
-    
+
     if temp_kwargs['show']:
         plt.show()
-    
 
 
 def _parameters_mean():
@@ -186,15 +191,9 @@ def _parameters_mean():
     return
 
 
-# In[ ]:
-
-
-'''from code_create_objects import hras_RBD'''
-
-
 # ### Compare two proteins
 
-# In[ ]:
+# In[6]:
 
 
 def plot_meandifferential(
@@ -221,10 +220,14 @@ def plot_meandifferential(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
 
     """
     # update kwargs
@@ -303,14 +306,17 @@ def plot_meandifferential(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # ### Bar graph Counts
 
-# In[ ]:
+# In[9]:
 
 
 def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
@@ -324,11 +330,15 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -373,9 +383,12 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 def _inputtext(text_entries):
@@ -388,7 +401,7 @@ def _inputtext(text_entries):
 
 # ### Positional
 
-# In[ ]:
+# In[10]:
 
 
 def plot_position(
@@ -410,11 +423,15 @@ def plot_position(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -462,14 +479,17 @@ def plot_position(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # ## Stacked bar cumulative %AA representation
 
-# In[ ]:
+# In[11]:
 
 
 def plot_library_representation(
@@ -486,11 +506,15 @@ def plot_library_representation(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -552,12 +576,15 @@ def plot_library_representation(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
-# In[ ]:
+# In[12]:
 
 
 def _group_codons_to_aa(self):

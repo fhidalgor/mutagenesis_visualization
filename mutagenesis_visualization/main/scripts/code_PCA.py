@@ -58,11 +58,15 @@ def plot_correlation(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
 
     # load font parameters
@@ -174,9 +178,13 @@ def plot_correlation(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # ## Individual correlation
@@ -200,11 +208,15 @@ def plot_individual_correlation(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
     # Load parameters
     code_kwargs._parameters()
@@ -265,9 +277,14 @@ def plot_individual_correlation(
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
+
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 # ## Group correlation
@@ -304,7 +321,9 @@ def plot_group_correlation(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
-
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+            
     Returns
     --------
     Use logomaker to plot the most frequent residues.
@@ -364,6 +383,11 @@ def plot_group_correlation(
 
     # save file, cannot save logo file for now
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
 
@@ -453,13 +477,18 @@ def plot_pca(
         Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
+        return_plot_object : boolean, default False
+            If true, will return plotting objects (ie. fig, ax).
+        
         random_state : int, default 554
+        
     Returns
     ----------
-    None.
-
+    fig, ax : matplotlib figure and subplots
+        Needs to have return_plot_object==True. By default they do
+        not get returned.
+        
     """
-
 
     # load parameters
     code_kwargs._parameters()
@@ -532,9 +561,13 @@ def plot_pca(
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
 
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax
+
+    # show plt figure
     if temp_kwargs['show']:
         plt.show()
-    return
 
 
 def _auto_text(x, y, textlabels):
