@@ -80,7 +80,7 @@ def plot_kernel(
         self.dataframe['Score_NaN'],
         cumulative=cumulative,
         color='red',
-        lw = 2,
+        lw=2,
     )
 
     # tune graph
@@ -122,7 +122,7 @@ def plot_multiplekernel(
 ):
     '''
     Generate a kernel density plot for multiple objects passed as a dictionary.
-    If specified it can also draw a histogram. Uses sns.distplot. Can manage either 
+    If specified it can also draw a histogram. Uses sns.dispplot. Can manage either 
     Screen objects or dataframes out of the calculate_enrichments function.
 
     Parameters
@@ -169,24 +169,19 @@ def plot_multiplekernel(
     # plot (allows two types of data input)
     for (label, dataset, color) in zip(dict_copy.keys(), dict_copy.values(),
                                        colors[0:len(dict_copy)]):
-        if 'Score' in dataset.columns:
+        if isinstance(dataset,
+                      pd.core.frame.DataFrame):  # check if input is a dataframe
             # plot objects scores
             ax = sns.kdeplot(
-                dataset['Score_NaN'],
-                color = color, 
-                lw = 2, 
-                label = label
+                dataset['Score_NaN'], color=color, lw=2, label=label
             )
-        else:
+        else:  # otherwise assume its an array
             # get rid of stop codons
             dataset.drop('*', errors='ignore', inplace=True)
             dataset = dataset.stack()
             # plot stacked matrix
             ax = sns.kdeplot(
-                dataset[~np.isnan(dataset)],
-                color = color, 
-                lw = 2, 
-                label = label
+                dataset[~np.isnan(dataset)], color=color, lw=2, label=label
             )
 
     # tune graph
