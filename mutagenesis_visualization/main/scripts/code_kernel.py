@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[ ]:
+# In[1]:
 
 
 import numpy as np
@@ -30,46 +30,25 @@ except ModuleNotFoundError:
 
 # ## Kernel
 
-# In[ ]:
+# In[41]:
 
 
 def plot_kernel(
     self,
-    kernel='gau',
-    kernel_label='KDE',
-    histogram=False,
-    fit=None,
-    fit_label='_nolegend_',
-    extra_dist=None,
-    extra_dist_label='_nolegend_',
+    cumulative=False,
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
     """
-    Generate a kernel density plot. If specified it can also draw a histogram.
-    Uses sns.distplot.
+    Plot univariate or bivariate distributions using kernel density estimation.
 
     Parameters
     ----------
     self : object from class *Screen*
 
-    kernel : str, default gau
-        options are ['biw','cos','epa','gau','tri','triw']
-
-    kernel_label : str, default '_nolegend_'
-
-    histogram : boolean, default False
-
-    fit : boolean, optional
-        ask sns.distplot to fit a function
-
-    fit_label : str, default '_nolegend_'
-
-    extra_dist : [x,y], optional
-        fit any distribution you want. Input the x and y coordinates
-
-    extra_dist_label : str, default '_nolegend_'
-
+    cumulative : bool, optional, default False
+        If True, estimate a cumulative distribution function.
+    
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'.
@@ -81,7 +60,7 @@ def plot_kernel(
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
-        Needs to have return_plot_object==True. By default they do
+        Needs to have return_plot_object=True. By default they do
         not get returned.
 
     """
@@ -97,29 +76,12 @@ def plot_kernel(
     code_kwargs._parameters()
 
     # plot
-    ax = sns.distplot(
+    ax = sns.kdeplot(
         self.dataframe['Score_NaN'],
-        kde=True,
-        hist=histogram,
-        norm_hist=True,
-        kde_kws={
-            'kernel': kernel, 'color': temp_kwargs['color'], 'lw': 2, 'label':
-            kernel_label
-        },
-        fit=fit,
-        fit_kws={'label': fit_label, 'linestyle': 'dotted', 'color': 'red'}
+        cumulative=cumulative,
+        color='red',
+        lw = 2,
     )
-
-    # plot extra distribution
-    if extra_dist is not None:
-        plt.plot(
-            extra_dist[0],
-            extra_dist[1],
-            linewidth=2,
-            linestyle='dotted',
-            color='green',
-            label=extra_dist_label
-        )
 
     # tune graph
     plt.xlabel(
@@ -135,13 +97,6 @@ def plot_kernel(
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
     plt.xlim(temp_kwargs['xscale'])
     plt.grid()
-    ax.legend(
-        loc='best',
-        frameon=False,
-        fontsize=9,
-        handlelength=1,
-        handletextpad=0.5
-    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -156,12 +111,11 @@ def plot_kernel(
 
 # ## Multiple Kernel plots
 
-# In[ ]:
+# In[47]:
 
 
 def plot_multiplekernel(
     dict_entries,
-    kernel='gau',
     colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'],
     output_file: Union[None, str, Path] = None,
     **kwargs
@@ -178,9 +132,6 @@ def plot_multiplekernel(
         that come out of the calculate_enrichments function. If you use an object, 
         you need to say object.dataframe.
 
-    kernel : str, default gau
-        options are ['biw','cos','epa','gau','tri','triw'].
-
     colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
         List of the colors (in order of arguments) that the kernels will have.
 
@@ -195,7 +146,7 @@ def plot_multiplekernel(
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
-        Needs to have return_plot_object==True. By default they do
+        Needs to have return_plot_object=True. By default they do
         not get returned.    
         
     '''
@@ -220,21 +171,22 @@ def plot_multiplekernel(
                                        colors[0:len(dict_copy)]):
         if 'Score' in dataset.columns:
             # plot objects scores
-            sns.distplot(
+            ax = sns.kdeplot(
                 dataset['Score_NaN'],
-                hist=False,
-                kde_kws={"color": color, "lw": 2, "label": label}
+                color = color, 
+                lw = 2, 
+                label = label
             )
         else:
             # get rid of stop codons
             dataset.drop('*', errors='ignore', inplace=True)
             dataset = dataset.stack()
             # plot stacked matrix
-            sns.distplot(
+            ax = sns.kdeplot(
                 dataset[~np.isnan(dataset)],
-                kde=True,
-                hist=False,
-                kde_kws={"color": color, "lw": 2, "label": label}
+                color = color, 
+                lw = 2, 
+                label = label
             )
 
     # tune graph
@@ -307,7 +259,7 @@ def plot_hist(
             
     Returns
     ----------
-    fig, ax : matplotlib figure and subplots
+    fig : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
 
@@ -370,7 +322,7 @@ def plot_hist(
 
     # return matplotlib object
     if temp_kwargs['return_plot_object']:
-        return fig, ax
+        return fig
 
     if temp_kwargs['show']:
         plt.show()
