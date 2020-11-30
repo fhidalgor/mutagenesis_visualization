@@ -23,7 +23,7 @@ from logomaker import alignment_to_matrix
 
 # ## Process trimmed fastq file
 
-# In[12]:
+# In[7]:
 
 
 def count_reads(
@@ -48,9 +48,11 @@ def count_reads(
         Path and name of the fastq file (full name including suffix ".fastq").
 
     codon_list : list or str, default 'NNS'
-        Input a list of the codons that were used to create point mutations. Example: ["GCC", "GCG", "TGC"].
-        If the library was built using NNS and NNK codons, it is enough to input 'NNS' or 'NNK' as a string.
-        It is important to know that the order of the codon_list will determine the output order.
+        Input a list of the codons that were used to create point mutations. 
+        Example: ["GCC", "GCG", "TGC"].
+        If the library was built using NNS and NNK codons, it is enough to input 
+        'NNS' or 'NNK' as a string. It is important to know that the order of 
+        the codon_list will determine the output order.
 
     counts_wt : boolean, default True
         If true it will add the counts to the wt allele. If false, it will set it up to np.nan.
@@ -259,9 +261,9 @@ def count_fastq(variants, input_file):
         Total number of identified DNA chains. Calculated as the sum of all the key values.
     '''
     # if variant input is not an ordered dict, convert to ordered dict
-    if not(isinstance(variants, OrderedDict)):
+    if not (isinstance(variants, OrderedDict)):
         variants = _initialize_ordereddict(variants)
-    
+
     # iterate over fastq file and count reads
     totalreads = 0
     for nuc in SeqIO.parse(str(input_file), "fastq"):
@@ -274,10 +276,13 @@ def count_fastq(variants, input_file):
 
 
 def _initialize_ordereddict(list_variants):
-    '''Will return an ordered dictionary with variants initialized to 0 counts.
+    '''
+    Will return an ordered dictionary with variants initialized to 0 counts.
     Here the user specifies the variants as a list.
 
-    This function should be used when you want to use _count_fastq'''
+    This function should be used when you want to use _count_fastq
+    
+    '''
 
     # Create normal dictionary
     dictionary = dict(zip(list_variants, np.zeros(len(list_variants))))
@@ -333,8 +338,8 @@ def calculate_enrichment(
         Index of aminoacids (in order). Stop codon needs to be '*'.
 
     zeroing : str, default 'population'
-        Method to zero the data.
-        Can also use 'counts', wt' or 'kernel'.
+        Method to normalize the data.
+        Can also use 'zscore, 'counts', wt' or 'kernel'.
 
     how : str, default 'median'
         Metric to zero the data. Only works if zeroing='population' or 'wt'.
@@ -439,7 +444,7 @@ def calculate_enrichment(
         std_wt = np.nanstd(log10_wtcounts)
         mode_wt = _nanmode(log10_wtcounts)
 
-    # Zero data
+    # Zero data, select case
     if zeroing == 'wt':
         if how == 'mean':
             zeroed = log10_counts_grouped - mean_wt
@@ -447,7 +452,7 @@ def calculate_enrichment(
             zeroed = log10_counts_grouped - median_wt
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_wt
-        if norm_std == True:
+        elif norm_std == True:
             zeroed = zeroed * std_scale / 2 / std_wt
     elif zeroing == 'population':
         if how == 'mean':
@@ -456,7 +461,7 @@ def calculate_enrichment(
             zeroed = log10_counts_grouped - median_pop
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_pop
-        if norm_std == True:
+        elif norm_std == True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'counts':
         # Get the ratio of counts
@@ -471,6 +476,8 @@ def calculate_enrichment(
         zeroed, kernel_std = _kernel_correction(zeroed_0, aminoacids, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
+    elif zeroing == 'zscore':
+        zeroed = stats.zscore(zeroed, nan_policy='propagate')
 
     # Export files
     if output_file:
@@ -572,8 +579,11 @@ def _group_byaa(df, aminoacids):
 
 
 def _nanmode(data):
-    '''input is wt log enrichments, and return the mode of the histogram 
-    (aka the x coordinate at which y is max)'''
+    '''
+    Input is wt log enrichments, and return the mode of the histogram 
+    (aka the x coordinate at which y is max).
+    
+    '''
 
     # Copy data
     data = np.copy(data)
@@ -619,8 +629,12 @@ def _kernel_correction(data, aminoacids, cutoff=2):
 
 
 def _kernel_datapreparation(data, cutoff):
-    '''this function will copy the data, eliminate stop codon, eliminate values lower than -1, 
-    flatten and eliminate np.nan. Will return the data in that format + the adjusted kernel'''
+    '''
+    This function will copy the data, eliminate stop codon, eliminate values lower than -1, 
+    flatten and eliminate np.nan. Will return the data in that format + the adjusted kernel
+    
+    '''
+    
     # Eliminate stop codon
     data_corrected = np.array(data.drop('*', errors='ignore').copy())
 
@@ -638,10 +652,13 @@ def _kernel_datapreparation(data, cutoff):
 
 
 def _kernel_std(data, kernel):
-    '''input the library matrix (and wont count stop codon), and will return the std of the normal distribution.
+    '''
+    Input the library matrix (and wont count stop codon), and will return the std of the normal distribution.
     To calculate the std, it will find the FWHM and divide by 2.355
     https://en.wikipedia.org/wiki/Full_width_at_half_maximum
-    The algorithm will give back the min std between both sides of the peak'''
+    The algorithm will give back the min std between both sides of the peak.
+    
+    '''
 
     # find ymax and the x value of the max height
     y_max = kernel(data).max()
@@ -674,7 +691,11 @@ def _kernel_std(data, kernel):
 
 
 def _array_to_df_enrichments(lib, aminoacids):
-    '''aux function to transform array in df with index of amino acids'''
+    '''
+    aux function to transform array in df with index of amino acids.
+    
+    '''
+    
     df = pd.DataFrame(index=aminoacids, data=lib)
     return df.astype(float)
 
@@ -786,7 +807,6 @@ def assemble_avengers(
 
     """
 
-
     # Read reads from excel
     list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(
         excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt,
@@ -882,7 +902,10 @@ def _assemble_list(
     infinite,
     output_file: Union[None, str, Path] = None
 ):
-    '''gets the output from _read_counts and assembles the sublibraries'''
+    '''
+    gets the output from _read_counts and assembles the sublibraries
+    
+    '''
 
     enrichment_lib = []
 
@@ -1003,7 +1026,11 @@ def _msa_to_df(msa, correctionfactor=1):
 
 
 def _merge_msa_enrichment(self, df_msa, start_position, threshold):
-    '''merges msa conservation of each individual amino acid with the enrichment scores'''
+    '''
+    Merges msa conservation of each individual amino acid with the 
+    enrichment scores.
+    
+    '''
 
     # make a dataframe
     df = pd.DataFrame()

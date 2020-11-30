@@ -127,15 +127,15 @@ def plot_rank_plotly(
         }
     )
 
-    if temp_kwargs['show']:
-        fig.show()
-
     # save fig to html
     _save_html(fig, output_html)
 
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
+
+    if temp_kwargs['show']:
+        fig.show()
 
     # return dataframe
     if outdf:
@@ -248,8 +248,7 @@ def plot_scatter_plotly(
         }
     )
 
-    if temp_kwargs['show']:
-        fig.show()
+
 
     if show_results:
         px.get_trendline_results(fig).px_fit_results.iloc[0].summary()
@@ -260,6 +259,9 @@ def plot_scatter_plotly(
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
+    
+    if temp_kwargs['show']:
+        fig.show()
 
 
 # ## 3D
@@ -366,16 +368,16 @@ def plot_scatter_3D_plotly(
     # title
     fig = _update_title(fig, temp_kwargs)
 
-    # show only if asked
-    if temp_kwargs['show']:
-        fig.show()
-
     # save fig to html
     _save_html(fig, output_html)
 
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
+    
+    # show only if asked
+    if temp_kwargs['show']:
+        fig.show()
 
 
 def _update_title(fig, temp_kwargs):
@@ -550,19 +552,21 @@ def plot_scatter_3D_pdbprop_plotly(
     # title
     fig = _update_title(fig, temp_kwargs)
 
-    # show only if asked
-    if temp_kwargs['show']:
-        fig.show()
-
     # save fig to html
     _save_html(fig, output_html)
 
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
+    
+    # show only if asked
+    if temp_kwargs['show']:
+        fig.show()
 
     if output_df:
         return df_items, df_scores
+    
+    
 
 
 # ## Aux functions (stolen from code_3D)
