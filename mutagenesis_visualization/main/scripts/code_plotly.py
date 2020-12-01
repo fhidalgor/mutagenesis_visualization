@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[2]:
 
 
 import numpy as np
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 # ## Rank
 
-# In[2]:
+# In[18]:
 
 
 def plot_rank_plotly(
@@ -151,7 +151,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[3]:
+# In[4]:
 
 
 def plot_scatter_plotly(
@@ -248,8 +248,6 @@ def plot_scatter_plotly(
         }
     )
 
-
-
     if show_results:
         px.get_trendline_results(fig).px_fit_results.iloc[0].summary()
 
@@ -259,7 +257,124 @@ def plot_scatter_plotly(
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
+
+    if temp_kwargs['show']:
+        fig.show()
+
+
+# ## Histogram
+
+# In[ ]:
+
+
+#https://plotly.com/python/histograms/
+
+
+# In[6]:
+
+
+'''try:
+    import mutagenesis_visualization as mut
+except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
+    import sys
+    sys.path.append('../../../')
+    import mutagenesis_visualization as mut'''
+
+
+# In[25]:
+
+
+'''plot_histogram_plotly(mut.hras_RBD(), mode='mean', x_label='Enrichment score', title='') '''
+
+
+# In[24]:
+
+
+def plot_histogram_plotly(
+    self,
+    mode='pointmutant',
+    output_html: Union[None, str, Path] = None,
+    **kwargs
+):
+    '''
+    Generate a plotlu rank plot so every mutation/residue is sorted based 
+    on enrichment score.
+
+    Parameters
+    ----------
+    self : object from class *Screen*z
+
+    mode : str, default 'pointmutant'. 
+        Alternative set to "mean" for the mean of each position.
+        
+    output_html : str, default None
+        If you want to export the generated graph into html, add the path and name of the file.
+        Example: 'path/filename.html'.
+        
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    fig : plotly object
+
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
+    temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
+
+    # Copy dataframe
+    df = self.dataframe.copy()
+
+    # Chose mode:
+    if mode == 'mean':
+        df = df.groupby(by=['Position'], as_index=False).mean()
+        df['Variant'] = df['Position']  # change of name, makes things easier
+
+    # Create figure
+    fig = px.histogram(data_frame=df, x='Score', histnorm= 'probability density')
+
+    # Style
+    pio.templates.default = "plotly_white"
     
+    # UPDATE AXES
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+
+    # Layout and title parameters https://plotly.com/python/figure-labels/
+    fig.update_layout(
+        width=temp_kwargs['figsize'][0] * 120,
+        height=temp_kwargs['figsize'][1] * 120,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        }
+    )
+
+    # save fig to html
+    _save_html(fig, output_html)
+
+    # return plotly object
+    if temp_kwargs['return_plot_object']:
+        return fig
+
     if temp_kwargs['show']:
         fig.show()
 
@@ -326,7 +441,7 @@ def plot_scatter_3D_plotly(
     fig : plotly object
 
     """
-    
+
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -352,9 +467,7 @@ def plot_scatter_3D_plotly(
         y=y,
         z=z,
         color=df['Score'],
-        color_continuous_scale=_matplotlib_to_plotly(
-            temp_kwargs['colormap'],
-        ),
+        color_continuous_scale=_matplotlib_to_plotly(temp_kwargs['colormap'], ),
         range_color=temp_kwargs['colorbar_scale']
     )
 
@@ -374,7 +487,7 @@ def plot_scatter_3D_plotly(
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
-    
+
     # show only if asked
     if temp_kwargs['show']:
         fig.show()
@@ -536,9 +649,7 @@ def plot_scatter_3D_pdbprop_plotly(
         y=plot[1],
         z=plot[2],
         color='Score',
-        color_continuous_scale=_matplotlib_to_plotly(
-            temp_kwargs['colormap'],
-        ),
+        color_continuous_scale=_matplotlib_to_plotly(temp_kwargs['colormap'], ),
         range_color=temp_kwargs['colorbar_scale'],
     )
 
@@ -558,15 +669,13 @@ def plot_scatter_3D_pdbprop_plotly(
     # return plotly object
     if temp_kwargs['return_plot_object']:
         return fig
-    
+
     # show only if asked
     if temp_kwargs['show']:
         fig.show()
 
     if output_df:
         return df_items, df_scores
-    
-    
 
 
 # ## Aux functions (stolen from code_3D)
@@ -690,6 +799,7 @@ def _parse_pdbcoordinates(
         )
 
     return df_coordinates
+
 
 def _matplotlib_to_plotly(cmap, pl_entries=255):
     '''convert a matplotlib colorscale into plotly rgb format'''

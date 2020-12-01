@@ -68,6 +68,8 @@ def plot_kernel(
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
+    temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
 
     # create figure
     fig = plt.figure(figsize=temp_kwargs['figsize'])
@@ -85,15 +87,17 @@ def plot_kernel(
 
     # tune graph
     plt.xlabel(
-        r'$∆E^i_x$', fontsize=10, fontname='Arial', color='k', labelpad=0
-    )
-    plt.ylabel(
-        'Probability density',
+        temp_kwargs['x_label'],
         fontsize=10,
         fontname='Arial',
         color='k',
-        labelpad=3
+        labelpad=0
     )
+    plt.ylabel(['y_label'],
+               fontsize=10,
+               fontname='Arial',
+               color='k',
+               labelpad=3)
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
     plt.xlim(temp_kwargs['xscale'])
     plt.grid()
