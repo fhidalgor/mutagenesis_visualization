@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 # ## Rank
 
-# In[18]:
+# In[12]:
 
 
 def plot_rank_plotly(
@@ -44,12 +44,12 @@ def plot_rank_plotly(
     **kwargs
 ):
     '''
-    Generate a plotlu rank plot so every mutation/residue is sorted based 
+    Generate a plotly rank plot so every mutation/residue is sorted based 
     on enrichment score.
 
     Parameters
     ----------
-    self : object from class *Screen*z
+    self : object from class *Screen*
 
     mode : str, default 'pointmutant'. 
         Alternative set to "mean" for the mean of each position.
@@ -151,7 +151,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[4]:
+# In[13]:
 
 
 def plot_scatter_plotly(
@@ -264,13 +264,7 @@ def plot_scatter_plotly(
 
 # ## Histogram
 
-# In[ ]:
-
-
-#https://plotly.com/python/histograms/
-
-
-# In[6]:
+# In[3]:
 
 
 '''try:
@@ -290,6 +284,7 @@ except ModuleNotFoundError:  # This step is only for when I run the notebooks lo
 # In[24]:
 
 
+#https://plotly.com/python/histograms/
 def plot_histogram_plotly(
     self,
     mode='pointmutant',
@@ -297,12 +292,11 @@ def plot_histogram_plotly(
     **kwargs
 ):
     '''
-    Generate a plotlu rank plot so every mutation/residue is sorted based 
-    on enrichment score.
+    Generate a plotly histogram plot.
 
     Parameters
     ----------
-    self : object from class *Screen*z
+    self : object from class *Screen*
 
     mode : str, default 'pointmutant'. 
         Alternative set to "mean" for the mean of each position.
@@ -322,8 +316,8 @@ def plot_histogram_plotly(
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
-    temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
-    temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
+    temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')
 
     # Copy dataframe
     df = self.dataframe.copy()
@@ -377,6 +371,127 @@ def plot_histogram_plotly(
 
     if temp_kwargs['show']:
         fig.show()
+
+
+# ## Mean
+
+# In[52]:
+
+
+def plot_mean_plotly(
+    self,
+    mode='mean',
+    output_html: Union[None, str, Path] = None,
+    **kwargs
+):
+    '''
+    Generate a plotlu mean plot.
+
+    Parameters
+    ----------
+    self : object from class *Screen*
+
+    mode : str, default 'mean'
+        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
+        each position. If mode = 'A', it will show the alanine substitution profile. Can be 
+        used for each amino acid. Use the one-letter code and upper case.
+        
+    output_html : str, default None
+        If you want to export the generated graph into html, add the path and name of the file.
+        Example: 'path/filename.html'.
+        
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    fig : plotly object
+
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
+    temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')
+    temp_kwargs['title'] = kwargs.get('title', 'Grouped by: {}'.format(mode))
+
+    # Chose mode:
+    df = _select_grouping(self, mode)
+    
+    # Calculate colors
+    df['Color'] = df.apply(
+    code_utils._color_data,
+    axis=1,
+    args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
+)
+
+    # Create figure
+    fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
+
+    # Style
+    pio.templates.default = "plotly_white"
+    
+    # UPDATE AXES
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
+    )
+
+    # Color and width of bars
+    fig.update_traces(
+                  marker_line_width=0,
+    )
+    
+    # Layout and title parameters https://plotly.com/python/figure-labels/
+    fig.update_layout(
+        width=temp_kwargs['figsize'][0] * 120,
+        height=temp_kwargs['figsize'][1] * 120,
+        showlegend=False,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        }
+    )
+
+    # save fig to html
+    _save_html(fig, output_html)
+
+    # return plotly object
+    if temp_kwargs['return_plot_object']:
+        return fig
+
+    if temp_kwargs['show']:
+        fig.show()
+
+def _select_grouping(self, mode):
+    '''
+    Choose the subset of substitutions based on mode input.
+    For example, if mode=='A', then return data for Alanine.
+
+    '''
+    # convert to upper case
+    mode = mode.upper()
+    
+    # Select grouping
+    if mode == 'MEAN':
+        df = self.dataframe.groupby('Position', as_index=False).mean()
+    else:
+        df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
+        
+    return df
 
 
 # ## 3D

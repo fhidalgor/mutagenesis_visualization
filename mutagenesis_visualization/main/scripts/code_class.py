@@ -36,7 +36,7 @@ try:
 
     from mutagenesis_visualization.main.scripts.code_plotly import (
         plot_rank_plotly, plot_scatter_plotly, plot_scatter_3D_plotly,
-        plot_histogram_plotly,
+        plot_histogram_plotly, plot_mean_plotly,
         plot_scatter_3D_pdbprop_plotly,
     )
     from mutagenesis_visualization.main.scripts.code_utils import (
@@ -258,6 +258,7 @@ class Screen:
     rank_plotly = plot_rank_plotly
     scatter_plotly = plot_scatter_plotly
     histogram_plotly = plot_histogram_plotly
+    mean_plotly = plot_mean_plotly
     scatter_3D_plotly = plot_scatter_3D_plotly
     scatter_3D_pdbprop_plotly = plot_scatter_3D_pdbprop_plotly
 
