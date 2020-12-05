@@ -198,9 +198,11 @@ def plot_scatter_plotly(
     # Chose mode:
     if mode == 'pointmutant':
         df = code_utils._process_bypointmutant(self, obj2)
-    else:
+    elif mode =='mean':
         df = code_utils._process_meanresidue(self, obj2)
         df['Variant'] = df['Position']
+    # raise error if mode is not "mean" or "pointmutant"
+        
 
     # Style
     pio.templates.default = "plotly_white"
@@ -426,10 +428,6 @@ def _plot_heatmap_plotly_imshow(
     temp_kwargs['figsize'] = kwargs.get('figsize', (8, 3))
     temp_kwargs['x_label'] = kwargs.get('x_label', '')
     temp_kwargs['y_label'] = kwargs.get('y_label', '')
-
-    # load labels
-    #temp_kwargs['color_sequencelabels'] = _labels(self.start_position)[0]
-    #temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # sort data by rows in specified order by user
     df = code_utils._df_rearrange(

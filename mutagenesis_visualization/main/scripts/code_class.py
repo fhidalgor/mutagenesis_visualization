@@ -11,7 +11,7 @@ import numpy as np
 import itertools
 
 # Local imports
-try:
+try: # Work with .py files
     from mutagenesis_visualization.main.scripts.code_kernel import (
         plot_kernel,
         plot_hist,
@@ -59,7 +59,7 @@ try:
         _is_DNA, _translate_codons, _transform_sequence, _transform_dataset,
         _select_SNV, _select_nonSNV, _transform_secondary
     )
-except ModuleNotFoundError:
+except ModuleNotFoundError: # Work on jupyter notebook
     import import_notebook
     from code_kernel import (plot_kernel, plot_hist)
     from code_heatmaps import (
@@ -229,6 +229,7 @@ class Screen:
         secondary=None,
         roc_df=None
     ):
+        # Instances
         self.dataset = np.array(dataset)
         self.aminoacids = aminoacids
         self.start_position = start_position
