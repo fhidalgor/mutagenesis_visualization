@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 # ## Rank
 
-# In[12]:
+# In[16]:
 
 
 def plot_rank_plotly(
@@ -151,7 +151,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[13]:
+# In[17]:
 
 
 def plot_scatter_plotly(
@@ -262,9 +262,268 @@ def plot_scatter_plotly(
         fig.show()
 
 
+# ## Heatmap
+
+# In[483]:
+
+
+def plot_heatmap_plotly(
+    self, output_html: Union[None, str, Path] = None, **kwargs
+):
+    '''
+    Generate a plotly histogram plot.
+
+    Parameters
+    ----------
+    self : object from class *Screen*
+        
+    output_html : str, default None
+        If you want to export the generated graph into html, add the path and name of the file.
+        Example: 'path/filename.html'.
+        
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    fig : plotly object
+
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (8, 3))
+    temp_kwargs['x_label'] = kwargs.get('x_label', '')
+    temp_kwargs['y_label'] = kwargs.get('y_label', '')
+
+    # sort data by rows in specified order by user
+    df = code_utils._df_rearrange(
+        code_utils._add_SNV_boolean(self.dataframe_stopcodons.copy()),
+        temp_kwargs['neworder_aminoacids'],
+        values='Score_NaN',
+        show_snv=False
+    )
+    
+    # get labels for texthover and reindex
+    text_hover = self.dataframe_stopcodons.pivot(values='Variant',index='Aminoacid',columns='Position')
+    text_hover = text_hover.reindex(list(df.index))
+    
+    # Create figure
+    fig = go.Figure(data=go.Heatmap(
+        z = np.around(df.to_numpy(),2),
+        x = list(df.columns),
+        y = list(df.index),
+        zmin=temp_kwargs['colorbar_scale'][0],
+        zmax=temp_kwargs['colorbar_scale'][1],
+        colorscale=_matplotlib_to_plotly(temp_kwargs['colormap']),
+        text = text_hover,
+        colorbar=dict( # modify colorbar properties
+            len=0.8,
+            thickness=10,
+            outlinewidth=2,
+            outlinecolor='rgb(0,0,0)',
+            showticklabels=True,
+            xpad=0,
+        ),
+    ))
+    
+    fig.update_traces(
+        hovertemplate=
+        'Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>'
+    )
+    
+    # Style
+    pio.templates.default = "plotly_white"
+
+    # UPDATE AXES
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks=None,
+        mirror=True,
+        side="top",
+        dtick = 1, #frequency of ticks
+        tickangle = 0,
+        tickvals = list(df.columns),
+        ticktext= list(self.sequence),
+        tickfont = dict(
+            size = 8,
+            color = 'black'
+      )
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks=None,
+        mirror=True,
+        dtick = 1, #frequency of ticks
+        autorange = "reversed",
+        #tickvals = list(df.columns),
+        #ticktext= ['Healthy', 'Healthy', 'Moderate', 'Diseased', 'Diseased'],
+        tickfont = dict(
+            size = 8,
+            color = 'black'
+      ),
+    )
+
+    # Layout and title parameters https://plotly.com/python/figure-labels/
+    fig.update_layout(
+        width=14 * len(df.columns) / 165 * 90,
+        height=2.65 * 120,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        },
+    )
+    
+    # save fig to html
+    _save_html(fig, output_html)
+
+    # return plotly object
+    if temp_kwargs['return_plot_object']:
+        return fig
+
+    if temp_kwargs['show']:
+        fig.show()
+        
+# Still want to add extra axis with original amino acids
+
+
+# ### Deprecated
+
+# In[481]:
+
+
+def _plot_heatmap_plotly_imshow(
+    self, output_html: Union[None, str, Path] = None, **kwargs
+):
+    '''
+    DEPRECATED. THIS VERSION USES IMSHOW INSTEAD OF GO.HEATMAP.
+    Generate a plotly histogram plot.
+
+    Parameters
+    ----------
+    self : object from class *Screen*
+        
+    output_html : str, default None
+        If you want to export the generated graph into html, add the path and name of the file.
+        Example: 'path/filename.html'.
+        
+    **kwargs : other keyword arguments
+
+    Returns
+    ----------
+    fig : plotly object
+
+    '''
+    # update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    temp_kwargs['figsize'] = kwargs.get('figsize', (8, 3))
+    temp_kwargs['x_label'] = kwargs.get('x_label', '')
+    temp_kwargs['y_label'] = kwargs.get('y_label', '')
+
+    # load labels
+    #temp_kwargs['color_sequencelabels'] = _labels(self.start_position)[0]
+    #temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
+
+    # sort data by rows in specified order by user
+    df = code_utils._df_rearrange(
+        code_utils._add_SNV_boolean(self.dataframe_stopcodons.copy()),
+        temp_kwargs['neworder_aminoacids'],
+        values='Score_NaN',
+        show_snv=False
+    )
+
+    # Create figure
+    fig = px.imshow(
+        df,
+        color_continuous_scale=_matplotlib_to_plotly(temp_kwargs['colormap'], ),
+        range_color=temp_kwargs['colorbar_scale'],
+        labels={'x': 'Original', 'y': 'Substitution', 'color': 'Score'},
+    )
+
+    # Style
+    pio.templates.default = "plotly_white"
+
+    # UPDATE AXES
+    fig.update_xaxes(
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks=None,
+        mirror=True,
+        side="top",
+        dtick=1,  #frequency of ticks
+        tickangle=0,
+        tickvals=list(df.columns),
+        ticktext=list(self.sequence),
+        tickfont=dict(size=10, color='black')
+    )
+    fig.update_yaxes(
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks=None,
+        mirror=True,
+        dtick=1,  #frequency of ticks
+        #tickvals = [0, 1, 2, 3, 4],
+        #ticktext= ['Healthy', 'Healthy', 'Moderate', 'Diseased', 'Diseased'],
+        tickfont=dict(size=10, color='black'),
+    )
+
+    # Layout and title parameters https://plotly.com/python/figure-labels/
+    fig.update_layout(
+        width=14 * len(df.columns) / 165 * 120,
+        height=2.65 * 120,
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        },
+        coloraxis_colorbar=dict( # modify colorbar properties
+            title = 'Fitness',
+            len=0.65,
+            thickness=20,
+            outlinewidth=2,
+            outlinecolor='rgb(0,0,0)',
+            showticklabels=True,
+        )
+    )
+
+    # save fig to html
+    _save_html(fig, output_html)
+
+    # return plotly object
+    if temp_kwargs['return_plot_object']:
+        return fig
+
+    if temp_kwargs['show']:
+        fig.show()
+
+
+# Still want to add extra axis with original amino acids
+
+
+# In[484]:
+
+
+'''fig = plot_heatmap_plotly(
+    mut.hras_RBD(),
+    return_plot_object=True,
+)
+fig.show()'''
+
+
 # ## Histogram
 
-# In[3]:
+# In[2]:
 
 
 '''try:
@@ -273,12 +532,6 @@ except ModuleNotFoundError:  # This step is only for when I run the notebooks lo
     import sys
     sys.path.append('../../../')
     import mutagenesis_visualization as mut'''
-
-
-# In[25]:
-
-
-'''plot_histogram_plotly(mut.hras_RBD(), mode='mean', x_label='Enrichment score', title='') '''
 
 
 # In[24]:
@@ -316,8 +569,8 @@ def plot_histogram_plotly(
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
-    temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
-    temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')
+    temp_kwargs['x_label'] = kwargs.get('x_label', 'Enrichment score')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
 
     # Copy dataframe
     df = self.dataframe.copy()
@@ -328,11 +581,11 @@ def plot_histogram_plotly(
         df['Variant'] = df['Position']  # change of name, makes things easier
 
     # Create figure
-    fig = px.histogram(data_frame=df, x='Score', histnorm= 'probability density')
+    fig = px.histogram(data_frame=df, x='Score', histnorm='probability density')
 
     # Style
     pio.templates.default = "plotly_white"
-    
+
     # UPDATE AXES
     fig.update_xaxes(
         title_text=temp_kwargs['x_label'],
@@ -379,10 +632,7 @@ def plot_histogram_plotly(
 
 
 def plot_mean_plotly(
-    self,
-    mode='mean',
-    output_html: Union[None, str, Path] = None,
-    **kwargs
+    self, mode='mean', output_html: Union[None, str, Path] = None, **kwargs
 ):
     '''
     Generate a plotlu mean plot.
@@ -417,20 +667,20 @@ def plot_mean_plotly(
 
     # Chose mode:
     df = _select_grouping(self, mode)
-    
+
     # Calculate colors
     df['Color'] = df.apply(
-    code_utils._color_data,
-    axis=1,
-    args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-)
+        code_utils._color_data,
+        axis=1,
+        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
+    )
 
     # Create figure
     fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
 
     # Style
     pio.templates.default = "plotly_white"
-    
+
     # UPDATE AXES
     fig.update_xaxes(
         title_text=temp_kwargs['x_label'],
@@ -450,10 +700,8 @@ def plot_mean_plotly(
     )
 
     # Color and width of bars
-    fig.update_traces(
-                  marker_line_width=0,
-    )
-    
+    fig.update_traces(marker_line_width=0, )
+
     # Layout and title parameters https://plotly.com/python/figure-labels/
     fig.update_layout(
         width=temp_kwargs['figsize'][0] * 120,
@@ -476,6 +724,7 @@ def plot_mean_plotly(
     if temp_kwargs['show']:
         fig.show()
 
+
 def _select_grouping(self, mode):
     '''
     Choose the subset of substitutions based on mode input.
@@ -484,19 +733,19 @@ def _select_grouping(self, mode):
     '''
     # convert to upper case
     mode = mode.upper()
-    
+
     # Select grouping
     if mode == 'MEAN':
         df = self.dataframe.groupby('Position', as_index=False).mean()
     else:
         df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
-        
+
     return df
 
 
 # ## 3D
 
-# In[4]:
+# In[20]:
 
 
 def plot_scatter_3D_plotly(
@@ -795,7 +1044,7 @@ def plot_scatter_3D_pdbprop_plotly(
 
 # ## Aux functions (stolen from code_3D)
 
-# In[6]:
+# In[23]:
 
 
 def _color_3D_scatter(df, mode, lof, gof):
@@ -926,4 +1175,10 @@ def _matplotlib_to_plotly(cmap, pl_entries=255):
         pl_colorscale.append([k * h, 'rgb' + str((C[0], C[1], C[2]))])
 
     return pl_colorscale
+
+
+# In[ ]:
+
+
+
 

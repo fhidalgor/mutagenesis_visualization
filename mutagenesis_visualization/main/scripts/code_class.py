@@ -13,30 +13,46 @@ import itertools
 # Local imports
 try:
     from mutagenesis_visualization.main.scripts.code_kernel import (
-        plot_kernel, plot_hist,
+        plot_kernel,
+        plot_hist,
     )
     from mutagenesis_visualization.main.scripts.code_heatmaps import (
-        plot_heatmap, plot_heatmap_rows, plot_heatmap_columns,
+        plot_heatmap,
+        plot_heatmap_rows,
+        plot_heatmap_columns,
     )
     from mutagenesis_visualization.main.scripts.code_bar import (
-        plot_mean, plot_meandifferential, plot_position, plot_meancounts,
+        plot_mean,
+        plot_meandifferential,
+        plot_position,
+        plot_meancounts,
         plot_library_representation,
     )
     from mutagenesis_visualization.main.scripts.code_scatter import (
         plot_scatter,
     )
     from mutagenesis_visualization.main.scripts.code_PCA import (
-        plot_correlation, plot_individual_correlation, plot_group_correlation,
+        plot_correlation,
+        plot_individual_correlation,
+        plot_group_correlation,
         plot_pca,
     )
     from mutagenesis_visualization.main.scripts.code_other import (
-        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary,
-        plot_roc, plot_cumulative,
+        plot_rank,
+        plot_miniheatmap,
+        plot_neighboreffect,
+        plot_secondary,
+        plot_roc,
+        plot_cumulative,
     )
 
     from mutagenesis_visualization.main.scripts.code_plotly import (
-        plot_rank_plotly, plot_scatter_plotly, plot_scatter_3D_plotly,
-        plot_histogram_plotly, plot_mean_plotly,
+        plot_mean_plotly,
+        plot_heatmap_plotly,
+        plot_histogram_plotly,
+        plot_rank_plotly,
+        plot_scatter_plotly,
+        plot_scatter_3D_plotly,
         plot_scatter_3D_pdbprop_plotly,
     )
     from mutagenesis_visualization.main.scripts.code_utils import (
@@ -47,29 +63,50 @@ except ModuleNotFoundError:
     import import_notebook
     from code_kernel import (plot_kernel, plot_hist)
     from code_heatmaps import (
-        plot_heatmap, plot_heatmap_rows, plot_heatmap_columns,
+        plot_heatmap,
+        plot_heatmap_rows,
+        plot_heatmap_columns,
     )
     from code_bar import (
-        plot_mean, plot_meandifferential, plot_position, plot_meancounts,
+        plot_mean,
+        plot_meandifferential,
+        plot_position,
+        plot_meancounts,
         plot_library_representation,
     )
     from code_scatter import (plot_scatter)
     from code_PCA import (
-        plot_correlation, plot_individual_correlation, plot_group_correlation,
+        plot_correlation,
+        plot_individual_correlation,
+        plot_group_correlation,
         plot_pca,
     )
     from code_other import (
-        plot_rank, plot_miniheatmap, plot_neighboreffect, plot_secondary,
-        plot_roc, plot_cumulative,
+        plot_rank,
+        plot_miniheatmap,
+        plot_neighboreffect,
+        plot_secondary,
+        plot_roc,
+        plot_cumulative,
     )
 
     from code_plotly import (
-        plot_rank_plotly, plot_scatter_plotly, plot_scatter_3D_plotly,
+        plot_mean_plotly,
+        plot_heatmap_plotly,
+        plot_histogram_plotly,
+        plot_rank_plotly,
+        plot_scatter_plotly,
+        plot_scatter_3D_plotly,
         plot_scatter_3D_pdbprop_plotly,
     )
     from code_utils import (
-        _is_DNA, _translate_codons, _transform_sequence, _transform_dataset,
-        _select_SNV, _select_nonSNV, _transform_secondary,
+        _is_DNA,
+        _translate_codons,
+        _transform_sequence,
+        _transform_dataset,
+        _select_SNV,
+        _select_nonSNV,
+        _transform_secondary,
     )
 
 try:
@@ -261,7 +298,9 @@ class Screen:
     mean_plotly = plot_mean_plotly
     scatter_3D_plotly = plot_scatter_3D_plotly
     scatter_3D_pdbprop_plotly = plot_scatter_3D_pdbprop_plotly
+    heatmap_plotly = plot_heatmap_plotly
 
+ 
     # pymol
     try:
         pymol = plot_pymol
