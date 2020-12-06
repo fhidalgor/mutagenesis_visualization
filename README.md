@@ -43,5 +43,5 @@ You can find the documentation [here](https://mutagenesis-visualization.readthed
 
 ## Tutorial
 
-There are 6 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. You can play with them online via [mybinder](https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F) without having to download anything.
+There are 7 jupyter notebooks in the folder mutagenesis_visualization/tutorial that go through the basics on how to use the software. You can play with them online via [mybinder](https://mybinder.org/v2/gh/fhidalgor/mutagenesis_visualization/HEAD?filepath=mutagenesis_visualization%2Ftutorial%2F) without having to download anything.
 
