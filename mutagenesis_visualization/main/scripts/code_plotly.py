@@ -515,7 +515,7 @@ def _plot_heatmap_plotly_imshow(
 fig.show(config = {'displayModeBar': False})'''
 
 
-# In[147]:
+# In[155]:
 
 
 '''plot_histogram_plotly(hras_RBD(), mode='A', figsize=(3, 2.5))'''
@@ -523,7 +523,7 @@ fig.show(config = {'displayModeBar': False})'''
 
 # ## Histogram
 
-# In[146]:
+# In[154]:
 
 
 #https://plotly.com/python/histograms/
@@ -560,7 +560,7 @@ def plot_histogram_plotly(
     temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
     temp_kwargs['x_label'] = kwargs.get('x_label', 'Enrichment score')
     temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
-    temp_kwargs['title'] = kwargs.get('title', 'filter by: {}'.format(mode))
+    temp_kwargs['title'] = kwargs.get('title', 'Histogram')
 
     # Copy dataframe
     df = self.dataframe.copy()
@@ -606,7 +606,9 @@ def plot_histogram_plotly(
         )
         # Reduce opacity to see both histograms
         fig.update_traces(opacity=0.75)
-
+        # Title
+        temp_kwargs['title'] = 'Histogram filtered by: {}'.format(mode)
+        
     # Style
     pio.templates.default = "plotly_white"
 
@@ -797,7 +799,7 @@ def _select_grouping(self, mode):
 
 # ## 3D
 
-# In[11]:
+# In[159]:
 
 
 def plot_scatter_3D_plotly(
@@ -895,7 +897,7 @@ def plot_scatter_3D_plotly(
         hovertext=df['Position'], hovertemplate='Position: %{hovertext}'
     )
     # title
-    fig = _update_title(fig, temp_kwargs)
+    fig = _update_layout(fig, temp_kwargs)
 
     # save fig to html
     _save_html(fig, output_html)
@@ -909,14 +911,21 @@ def plot_scatter_3D_plotly(
         fig.show(config = {'displayModeBar': False})
 
 
-def _update_title(fig, temp_kwargs):
+def _update_layout(fig, temp_kwargs):
     fig.update_layout(
         font=dict(family="Arial, monospace", size=12, color="black"),
         title={
             'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
             'x': 0.5
         },
-        coloraxis_colorbar=dict(title="Enrichment Score")  # colorbar
+        coloraxis_colorbar=dict( # modify colorbar properties
+        title = 'Fitness',
+        len=0.65,
+        thickness=20,
+        outlinewidth=2,
+        outlinecolor='rgb(0,0,0)',
+        showticklabels=True,
+        )
     )
     return fig
 
@@ -1077,7 +1086,7 @@ def plot_scatter_3D_pdbprop_plotly(
         hovertext=df_items['Position'], hovertemplate='Position: %{hovertext}'
     )
     # title
-    fig = _update_title(fig, temp_kwargs)
+    fig = _update_layout(fig, temp_kwargs)
 
     # save fig to html
     _save_html(fig, output_html)
