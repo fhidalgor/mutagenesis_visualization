@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[5]:
 
 
 import numpy as np
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 # ## Rank
 
-# In[16]:
+# In[9]:
 
 
 def plot_rank_plotly(
@@ -151,7 +151,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[17]:
+# In[10]:
 
 
 def plot_scatter_plotly(
@@ -198,11 +198,10 @@ def plot_scatter_plotly(
     # Chose mode:
     if mode == 'pointmutant':
         df = code_utils._process_bypointmutant(self, obj2)
-    elif mode =='mean':
+    elif mode == 'mean':
         df = code_utils._process_meanresidue(self, obj2)
         df['Variant'] = df['Position']
     # raise error if mode is not "mean" or "pointmutant"
-        
 
     # Style
     pio.templates.default = "plotly_white"
@@ -266,7 +265,7 @@ def plot_scatter_plotly(
 
 # ## Heatmap
 
-# In[483]:
+# In[11]:
 
 
 def plot_heatmap_plotly(
@@ -304,11 +303,13 @@ def plot_heatmap_plotly(
         values='Score_NaN',
         show_snv=False
     )
-    
+
     # get labels for texthover and reindex
-    text_hover = self.dataframe_stopcodons.pivot(values='Variant',index='Aminoacid',columns='Position')
+    text_hover = self.dataframe_stopcodons.pivot(
+        values='Variant', index='Aminoacid', columns='Position'
+    )
     text_hover = text_hover.reindex(list(df.index))
-    
+
     # Create figure
     fig = go.Figure(data=go.Heatmap(
         z = np.around(df.to_numpy(),2),
@@ -327,12 +328,12 @@ def plot_heatmap_plotly(
             xpad=0,
         ),
     ))
-    
+
     fig.update_traces(
         hovertemplate=
         'Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>'
     )
-    
+
     # Style
     pio.templates.default = "plotly_white"
 
@@ -345,14 +346,11 @@ def plot_heatmap_plotly(
         ticks=None,
         mirror=True,
         side="top",
-        dtick = 1, #frequency of ticks
-        tickangle = 0,
-        tickvals = list(df.columns),
-        ticktext= list(self.sequence),
-        tickfont = dict(
-            size = 8,
-            color = 'black'
-      )
+        dtick=1,  #frequency of ticks
+        tickangle=0,
+        tickvals=list(df.columns),
+        ticktext=list(self.sequence),
+        tickfont=dict(size=8, color='black')
     )
     fig.update_yaxes(
         title_text=temp_kwargs['y_label'],
@@ -361,14 +359,11 @@ def plot_heatmap_plotly(
         linecolor='black',
         ticks=None,
         mirror=True,
-        dtick = 1, #frequency of ticks
-        autorange = "reversed",
+        dtick=1,  #frequency of ticks
+        autorange="reversed",
         #tickvals = list(df.columns),
         #ticktext= ['Healthy', 'Healthy', 'Moderate', 'Diseased', 'Diseased'],
-        tickfont = dict(
-            size = 8,
-            color = 'black'
-      ),
+        tickfont=dict(size=8, color='black'),
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -381,7 +376,7 @@ def plot_heatmap_plotly(
             'x': 0.5
         },
     )
-    
+
     # save fig to html
     _save_html(fig, output_html)
 
@@ -391,7 +386,8 @@ def plot_heatmap_plotly(
 
     if temp_kwargs['show']:
         fig.show()
-        
+
+
 # Still want to add extra axis with original amino acids
 
 
@@ -626,7 +622,20 @@ def plot_histogram_plotly(
 
 # ## Mean
 
-# In[52]:
+# In[1]:
+
+
+'''    import import_notebook
+    import os
+    directory = os.getcwd()
+    new_directory = directory.replace('tests', 'main')
+    os.chdir(new_directory)
+
+    from code_create_objects import (hras_RBD)
+    os.chdir(directory)'''
+
+
+# In[44]:
 
 
 def plot_mean_plotly(
@@ -662,6 +671,8 @@ def plot_mean_plotly(
     temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
     temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')
     temp_kwargs['title'] = kwargs.get('title', 'Grouped by: {}'.format(mode))
+    temp_kwargs['color_gof'] = kwargs.get('color_gof', '#FD3216')
+    temp_kwargs['color_lof'] = kwargs.get('color_lof', '#6A76FC')
 
     # Chose mode:
     df = _select_grouping(self, mode)
@@ -674,7 +685,19 @@ def plot_mean_plotly(
     )
 
     # Create figure
-    fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
+    #fig = px.bar(data_frame=df, x='Position', y='Score', color='Color') 
+    #px.bar was switching colors when the first value of Score was negative
+
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=df['Position'],
+                y=df['Score'],
+                marker_color=df['Color'],
+                marker_line_width=0,
+            )
+        ]
+    )
 
     # Style
     pio.templates.default = "plotly_white"
@@ -686,7 +709,6 @@ def plot_mean_plotly(
         linewidth=2,
         linecolor='black',
         ticks="outside",
-        mirror=True
     )
     fig.update_yaxes(
         title_text=temp_kwargs['y_label'],
@@ -694,11 +716,10 @@ def plot_mean_plotly(
         linewidth=2,
         linecolor='black',
         ticks="outside",
-        mirror=True
     )
 
     # Color and width of bars
-    fig.update_traces(marker_line_width=0, )
+    #fig.update_traces(marker_line_width=0, )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
     fig.update_layout(
@@ -721,6 +742,8 @@ def plot_mean_plotly(
 
     if temp_kwargs['show']:
         fig.show()
+
+    return df
 
 
 def _select_grouping(self, mode):
