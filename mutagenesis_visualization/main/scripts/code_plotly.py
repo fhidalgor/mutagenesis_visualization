@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[5]:
+# In[1]:
 
 
 import numpy as np
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 
 # ## Rank
 
-# In[9]:
+# In[2]:
 
 
 def plot_rank_plotly(
@@ -135,7 +135,7 @@ def plot_rank_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
     # return dataframe
     if outdf:
@@ -151,7 +151,7 @@ def _save_html(fig, output_html):
 
 # ## Scatter
 
-# In[10]:
+# In[3]:
 
 
 def plot_scatter_plotly(
@@ -260,12 +260,12 @@ def plot_scatter_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
 
 # ## Heatmap
 
-# In[11]:
+# In[4]:
 
 
 def plot_heatmap_plotly(
@@ -385,7 +385,7 @@ def plot_heatmap_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
 
 # Still want to add extra axis with original amino acids
@@ -393,7 +393,7 @@ def plot_heatmap_plotly(
 
 # ### Deprecated
 
-# In[481]:
+# In[5]:
 
 
 def _plot_heatmap_plotly_imshow(
@@ -499,36 +499,31 @@ def _plot_heatmap_plotly_imshow(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
 
 # Still want to add extra axis with original amino acids
 
 
-# In[484]:
+# In[6]:
 
 
 '''fig = plot_heatmap_plotly(
     mut.hras_RBD(),
     return_plot_object=True,
 )
-fig.show()'''
+fig.show(config = {'displayModeBar': False})'''
+
+
+# In[147]:
+
+
+'''plot_histogram_plotly(hras_RBD(), mode='A', figsize=(3, 2.5))'''
 
 
 # ## Histogram
 
-# In[2]:
-
-
-'''try:
-    import mutagenesis_visualization as mut
-except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
-    import sys
-    sys.path.append('../../../')
-    import mutagenesis_visualization as mut'''
-
-
-# In[24]:
+# In[146]:
 
 
 #https://plotly.com/python/histograms/
@@ -565,17 +560,52 @@ def plot_histogram_plotly(
     temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
     temp_kwargs['x_label'] = kwargs.get('x_label', 'Enrichment score')
     temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
+    temp_kwargs['title'] = kwargs.get('title', 'filter by: {}'.format(mode))
 
     # Copy dataframe
     df = self.dataframe.copy()
 
-    # Chose mode:
-    if mode == 'mean':
-        df = df.groupby(by=['Position'], as_index=False).mean()
-        df['Variant'] = df['Position']  # change of name, makes things easier
+    #fig = px.histogram(data_frame=df, x='Score', histnorm='probability density')
+    # px.histogram doesnt plot 2 traces
 
     # Create figure
-    fig = px.histogram(data_frame=df, x='Score', histnorm='probability density')
+    fig = go.Figure()
+    fig.add_trace(
+        go.Histogram(
+            x=df['Score'],
+            histnorm='probability density',
+            name='Population',
+            marker_color='black',
+        )
+    )
+
+    # Create second histogram
+    if mode != 'pointmutant':
+        df = _select_grouping(self, mode)
+        # Add second trace
+        fig.add_trace(
+            go.Histogram(
+                x=df['Score'],
+                histnorm='probability density',
+                name=mode.capitalize(),
+                marker_color='green',
+            ),
+        )
+        # Overlay both histograms
+        fig.update_layout(
+            barmode='overlay',
+            legend=dict(
+                orientation="h",
+                y=(
+                    1 + (
+                        1.5 / temp_kwargs['figsize'][1]**2
+                    )
+                ),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+        )
+        # Reduce opacity to see both histograms
+        fig.update_traces(opacity=0.75)
 
     # Style
     pio.templates.default = "plotly_white"
@@ -587,7 +617,8 @@ def plot_histogram_plotly(
         linewidth=2,
         linecolor='black',
         ticks="outside",
-        mirror=True
+        mirror=True,
+        automargin=True,
     )
     fig.update_yaxes(
         title_text=temp_kwargs['y_label'],
@@ -617,25 +648,25 @@ def plot_histogram_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
 
 # ## Mean
 
-# In[1]:
+# In[20]:
 
 
-'''    import import_notebook
-    import os
+'''    import os
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
 
     from code_create_objects import (hras_RBD)
-    os.chdir(directory)'''
+    os.chdir(directory)
+    plot_mean_plotly(hras_RBD())'''
 
 
-# In[44]:
+# In[19]:
 
 
 def plot_mean_plotly(
@@ -670,7 +701,7 @@ def plot_mean_plotly(
     temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
     temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
     temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')
-    temp_kwargs['title'] = kwargs.get('title', 'Grouped by: {}'.format(mode))
+    temp_kwargs['title'] = kwargs.get('title', 'Filtered by: {}'.format(mode))
     temp_kwargs['color_gof'] = kwargs.get('color_gof', '#FD3216')
     temp_kwargs['color_lof'] = kwargs.get('color_lof', '#6A76FC')
 
@@ -685,7 +716,7 @@ def plot_mean_plotly(
     )
 
     # Create figure
-    #fig = px.bar(data_frame=df, x='Position', y='Score', color='Color') 
+    #fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
     #px.bar was switching colors when the first value of Score was negative
 
     fig = go.Figure(
@@ -709,6 +740,7 @@ def plot_mean_plotly(
         linewidth=2,
         linecolor='black',
         ticks="outside",
+        mirror=True,
     )
     fig.update_yaxes(
         title_text=temp_kwargs['y_label'],
@@ -716,6 +748,7 @@ def plot_mean_plotly(
         linewidth=2,
         linecolor='black',
         ticks="outside",
+        mirror=True,
     )
 
     # Color and width of bars
@@ -741,9 +774,7 @@ def plot_mean_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show()
-
-    return df
+        fig.show(config = {'displayModeBar': False})
 
 
 def _select_grouping(self, mode):
@@ -766,7 +797,7 @@ def _select_grouping(self, mode):
 
 # ## 3D
 
-# In[20]:
+# In[11]:
 
 
 def plot_scatter_3D_plotly(
@@ -875,7 +906,7 @@ def plot_scatter_3D_plotly(
 
     # show only if asked
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
 
 def _update_title(fig, temp_kwargs):
@@ -930,7 +961,7 @@ def _update_axes(fig, temp_kwargs):
 
 # # PDB properties
 
-# In[5]:
+# In[12]:
 
 
 def plot_scatter_3D_pdbprop_plotly(
@@ -1057,7 +1088,7 @@ def plot_scatter_3D_pdbprop_plotly(
 
     # show only if asked
     if temp_kwargs['show']:
-        fig.show()
+        fig.show(config = {'displayModeBar': False})
 
     if output_df:
         return df_items, df_scores
@@ -1065,7 +1096,7 @@ def plot_scatter_3D_pdbprop_plotly(
 
 # ## Aux functions (stolen from code_3D)
 
-# In[23]:
+# In[13]:
 
 
 def _color_3D_scatter(df, mode, lof, gof):
