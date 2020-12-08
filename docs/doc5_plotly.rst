@@ -62,6 +62,70 @@ Create objects.
         secondary
     )
 
+Heatmap
+-------
+
+Plot an interactive heatmap. Hopover individual pixels to get their
+characteristics.
+
+.. code:: ipython3
+
+    hras_RBD.heatmap_plotly(
+        title='H-Ras Heatmap',
+        output_html='../../docs/html/hras_heatmap.html',
+        figsize=(6, 2.5),
+    )
+
+.. raw:: html
+    :file: html/hras_heatmap.html
+
+Mean
+----
+
+Analogous function to ``object.mean`` but rendered using plotly. Will
+plot the mean enrichment score for every position on a bar chart. It
+will be colored blue for loss of function and red for gain of function.
+Additionally, setting the parameter ``mode`` to an amino acid (using the
+one letter code) will plot the enrichment for that particular amino acid
+along the protein. In this example, we are showing the mean enrichment
+scores (top) and an alanine scan (bottom)
+
+.. code:: ipython3
+
+    hras_RBD.mean_plotly(
+        title='Mean',
+        output_html='../../docs/html/hras_mean.html',
+        figsize=(6, 2.5),
+    )
+    
+    hras_RBD.mean_plotly(
+        title='A scan',
+        mode='A',
+        output_html='../../docs/html/hras_mean_A.html',
+        figsize=(6, 2.5),
+    )
+
+.. raw:: html
+    :file: html/hras_mean.html
+.. raw:: html
+    :file: html/hras_mean_A.html
+
+Histogram
+---------
+
+Plot a histogram.
+
+.. code:: ipython3
+
+    hras_RBD.histogram_plotly(
+        title='Histogram',
+        output_html='../../docs/html/hras_histogram.html',
+        figsize=(3, 2.5),
+    )
+
+.. raw:: html
+    :file: html/hras_histogram.html
+
 Rank
 ----
 
@@ -103,8 +167,8 @@ plotly object and edit it.
 
     # Obtain the object
     rank_plotly = hras_RBD.rank_plotly(
-        mode='mean', 
-        title='Rank of positions', 
+        mode='mean',
+        title='Rank of positions',
         return_plotly_object=True,
     )
     

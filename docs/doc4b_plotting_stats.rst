@@ -59,7 +59,7 @@ replacements.
 
     # Plot kernel dist using sns.distplot.
     hras_RBD.kernel(
-        histogram=True, title='H-Ras 2-166', xscale=[-2, 1], output_file=None
+        title='H-Ras 2-166', xscale=[-2, 1], output_file=None
     )
     
     # Plot histogram of SNVs

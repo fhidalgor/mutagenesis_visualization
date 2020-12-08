@@ -109,7 +109,7 @@ def kwargs():
         'title': 'Title',
         'x_label': 'x_label',
         'y_label': 'y_label',
-        'z_label': 'y_label',
+        'z_label': 'z_label',
         'xscale': (None, None),
         'yscale': (None, None),
         'tick_spacing': 1,

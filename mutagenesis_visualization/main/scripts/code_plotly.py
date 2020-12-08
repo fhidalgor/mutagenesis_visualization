@@ -863,7 +863,10 @@ def plot_scatter_3D_plotly(
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
-
+    temp_kwargs['x_label'] = kwargs.get('x_label', 'x (Å)')
+    temp_kwargs['y_label'] = kwargs.get('y_label', 'y (Å)')
+    temp_kwargs['z_label'] = kwargs.get('z_label', 'z (Å)')
+    
     # Get Scores and colors
     df = _color_3D_scatter(
         self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
@@ -920,8 +923,8 @@ def _update_layout(fig, temp_kwargs):
         },
         coloraxis_colorbar=dict( # modify colorbar properties
         title = 'Fitness',
-        len=0.65,
-        thickness=20,
+        len=0.4,
+        thickness=15,
         outlinewidth=2,
         outlinecolor='rgb(0,0,0)',
         showticklabels=True,
