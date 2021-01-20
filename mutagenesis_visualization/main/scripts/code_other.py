@@ -356,7 +356,7 @@ def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = N
    df = _normalize_neighboreffect(self,offset,temp_kwargs['neworder_aminoacids'])
    
    # Plot
-   fig, ax, cb = _plot_miniheatmap(df,temp_kwargs)
+   fig, ax, cb = _plot_miniheatmap(df,output_file, temp_kwargs)
    
    # return matplotlib object
    if temp_kwargs['return_plot_object']:

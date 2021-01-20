@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[2]:
 
 
 # Regular libraries
@@ -119,7 +119,7 @@ except ModuleNotFoundError:
 
 # # Define Classes
 
-# In[ ]:
+# In[2]:
 
 
 class Counts:
@@ -166,7 +166,7 @@ class Counts:
     library_representation = plot_library_representation
 
 
-# In[ ]:
+# In[3]:
 
 
 class Screen:
@@ -274,6 +274,8 @@ class Screen:
     mean = plot_mean
     differential = plot_meandifferential
     position = plot_position
+    meancounts = plot_meancounts
+    library_representation = plot_library_representation
 
     # code_scatter
     scatter = plot_scatter
@@ -307,4 +309,10 @@ class Screen:
         pymol = plot_pymol
     except:
         pass
+
+
+# In[ ]:
+
+
+
 

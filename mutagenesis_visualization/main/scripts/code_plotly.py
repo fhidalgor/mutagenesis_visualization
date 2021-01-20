@@ -219,7 +219,7 @@ def plot_scatter_plotly(
     fig.update_traces(
         hovertext=df['Variant'],
         hovertemplate=
-        'Position: %{x}<br>Score: %{y}<br>Variant: %{hovertext}<extra></extra>'
+        'Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>'
     )
     fig.update_xaxes(
         title_text=temp_kwargs['x_label'],

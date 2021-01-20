@@ -7,7 +7,7 @@
 
 # ## Import
 
-# In[ ]:
+# In[2]:
 
 
 import numpy as np
@@ -19,6 +19,7 @@ try:
     from mutagenesis_visualization.main.scripts.code_class import Screen
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
 except ModuleNotFoundError:
+    print(os.getcwd())
     import import_notebook
     from code_class import Screen
     import code_utils
@@ -26,7 +27,7 @@ except ModuleNotFoundError:
 
 # ## HRas RBD
 
-# In[ ]:
+# In[3]:
 
 
 def hras_RBD():
@@ -387,7 +388,7 @@ def asynuclein_obj():
 
 # ## APH(3) II
 
-# In[ ]:
+# In[4]:
 
 
 def aph_obj():

@@ -58,7 +58,7 @@ def plot_mean(
         each position. If mode = 'A', it will show the alanine substitution profile. Can be 
         used for each amino acid. Use the one-letter code and upper case.
 
-    show_carton : boolean, default False
+    show_cartoon : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. 
         The user must have added the secondary structure to the object. 
 
@@ -212,7 +212,7 @@ def plot_meandifferential(
 
     obj2 : another Screen object to compare with
 
-    show_carton : boolean, default False
+    show_cartoon : boolean, default False
         If true, the plot will display a cartoon with the secondary structure. The user must have added the secondary structure to the object.
 
     output_file : str, default None
