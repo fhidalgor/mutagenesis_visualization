@@ -8,23 +8,26 @@
 
 import pandas as pd
 import numpy as np
+import os
 
 try:
     from mutagenesis_visualization.main.scripts.code_create_objects import (
         hras_RBD
     )
+    location = os.path.dirname(os.path.realpath(__file__))
+    pdb_path = os.path.join(location, '../../data', '5p21.pdb')
+
 except ModuleNotFoundError:
     import import_notebook
-    import os
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
-
+    pdb_path = '../../data/5p21.pdb'
     from code_create_objects import (hras_RBD)
     os.chdir(directory)
 
 
-# In[3]:
+# In[2]:
 
 
 '''class Student:
@@ -43,7 +46,7 @@ Kate = Student('Kate', 3.8, 'Dec 2021', 14)'''
 
 # ## Test heatmap
 
-# In[4]:
+# In[3]:
 
 
 def test_plot_heatmap_plotly():
@@ -82,7 +85,7 @@ def test_plot_heatmap_plotly():
 
 # ## Test scatter
 
-# In[7]:
+# In[4]:
 
 
 def test_plot_scatter_plotly():  # change
@@ -123,7 +126,7 @@ def test_plot_scatter_plotly():  # change
 
 # ## Test Rank
 
-# In[8]:
+# In[5]:
 
 
 def test_plot_rank_plotly():
@@ -160,15 +163,9 @@ def test_plot_rank_plotly():
         ) == False, "rank_plotly failed with {} parameters".format(parameters)
 
 
-# In[9]:
-
-
-test_plot_rank_plotly()
-
-
 # ## Test Histogram 
 
-# In[10]:
+# In[7]:
 
 
 def test_plot_histogram_plotly():
@@ -207,15 +204,9 @@ def test_plot_histogram_plotly():
         )
 
 
-# In[11]:
-
-
-test_plot_histogram_plotly()
-
-
 # ## Test Mean
 
-# In[12]:
+# In[9]:
 
 
 def test_plot_mean_plotly():
@@ -252,15 +243,9 @@ def test_plot_mean_plotly():
         ) == False, "mean_plotly failed with {} parameters".format(parameters)
 
 
-# In[13]:
-
-
-test_plot_mean_plotly()
-
-
 # ## Test 3D Scatter
 
-# In[13]:
+# In[11]:
 
 
 def test_plot_scatter_3D_plotly():
@@ -283,7 +268,7 @@ def test_plot_scatter_3D_plotly():
     list_params = [
         {
             'mode': 'mean',
-            'pdb_path': '../../data/5p21.pdb',
+            'pdb_path': pdb_path,
             'title': 'Scatter 3D',
             'squared': False,
             'x_label': 'x',
@@ -300,16 +285,4 @@ def test_plot_scatter_3D_plotly():
         ) == False, "scatter_3D_plotly failed with {} parameters".format(
             parameters
         )
-
-
-# In[14]:
-
-
-test_plot_scatter_3D_plotly()
-
-
-# In[ ]:
-
-
-
 
