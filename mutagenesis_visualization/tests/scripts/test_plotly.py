@@ -24,7 +24,7 @@ except ModuleNotFoundError:
     os.chdir(directory)
 
 
-# In[12]:
+# In[3]:
 
 
 '''class Student:
@@ -43,7 +43,7 @@ Kate = Student('Kate', 3.8, 'Dec 2021', 14)'''
 
 # ## Test heatmap
 
-# In[23]:
+# In[4]:
 
 
 def test_plot_heatmap_plotly():
@@ -63,12 +63,14 @@ def test_plot_heatmap_plotly():
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}, {
-        'show': False,
-        'title': 'Changing this parameter for fun',
-    },]
+    list_params = [
+        {'show': False},
+        {
+            'show': False,
+            'title': 'Changing this parameter for fun',
+        },
+    ]
 
-    
     # Assert
     for parameters in list_params:
         assert _test_plot_heatmap_plotly_output(
@@ -80,18 +82,59 @@ def test_plot_heatmap_plotly():
 
 # ## Test scatter
 
-# In[ ]:
+# In[7]:
 
 
-def test_plot_heatmap_plotly(): # change
+def test_plot_scatter_plotly():  # change
     # Get object
     obj_test = hras_RBD()
 
     # Define aux function
-    def _test_plot_heatmap_plotly_output(parameters): # change
+    def _test_plot_scatter_plotly_output(parameters):  # change
         error = False
         try:
-            obj_test.heatmap_plotly( # change
+            obj_test.scatter_plotly(
+                obj_test, **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [
+        {'show': False},
+        {
+            'show': False,
+            'title': 'Changing this parameter for fun',
+        },
+        {'mode': 'mean', 'show': False, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+    ]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_scatter_plotly_output(
+            parameters
+        ) == False, "scatter_plotly failed with {} parameters".format(
+            parameters
+        )
+
+
+# ## Test Rank
+
+# In[8]:
+
+
+def test_plot_rank_plotly():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_rank_plotly_output(parameters):
+        error = False
+        try:
+            obj_test.rank_plotly(
                 **parameters
             )  # pass dictionary as arguments of method
         except:
@@ -100,17 +143,173 @@ def test_plot_heatmap_plotly(): # change
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}, { # change
-        'show': False,
-        'title': 'Changing this parameter for fun',
-    },]
+    list_params = [
+        {'show': False},
+        {
+            'show': False,
+            'title': 'Changing this parameter for fun',
+        },
+        {'mode': 'mean', 'show': False, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+    ]
 
-    
     # Assert
     for parameters in list_params:
-        assert _test_plot_heatmap_plotly_output( # change
+        assert _test_plot_rank_plotly_output(
             parameters
-        ) == False, "heatmap_plotly failed with {} parameters".format( # change
+        ) == False, "rank_plotly failed with {} parameters".format(parameters)
+
+
+# In[9]:
+
+
+test_plot_rank_plotly()
+
+
+# ## Test Histogram 
+
+# In[10]:
+
+
+def test_plot_histogram_plotly():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_histogram_plotly_output(parameters):
+        error = False
+        try:
+            obj_test.histogram_plotly(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [
+        {'show': False},
+        {
+            'show': False,
+            'title': 'Changing this parameter for fun',
+        },
+        {'mode': 'mean', 'show': False, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+    ]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_histogram_plotly_output(
+            parameters
+        ) == False, "histogram_plotly failed with {} parameters".format(
             parameters
         )
+
+
+# In[11]:
+
+
+test_plot_histogram_plotly()
+
+
+# ## Test Mean
+
+# In[12]:
+
+
+def test_plot_mean_plotly():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_mean_plotly_output(parameters):
+        error = False
+        try:
+            obj_test.mean_plotly(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [
+        {'show': False},
+        {
+            'show': False,
+            'title': 'Changing this parameter for fun',
+        },
+        {'mode': 'mean', 'show': False, 'title': 'hello world'},
+        {'mode': 'A', 'show': False, 'title': 'go bears'},
+    ]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_mean_plotly_output(
+            parameters
+        ) == False, "mean_plotly failed with {} parameters".format(parameters)
+
+
+# In[13]:
+
+
+test_plot_mean_plotly()
+
+
+# ## Test 3D Scatter
+
+# In[13]:
+
+
+def test_plot_scatter_3D_plotly():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_scatter_3D_plotly_output(parameters):
+        error = False
+        try:
+            obj_test.scatter_3D_plotly(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [
+        {
+            'mode': 'mean',
+            'pdb_path': '../../data/5p21.pdb',
+            'title': 'Scatter 3D',
+            'squared': False,
+            'x_label': 'x',
+            'y_label': 'y',
+            'z_label': 'z',
+            'show': False,
+        },
+    ]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_scatter_3D_plotly_output(
+            parameters
+        ) == False, "scatter_3D_plotly failed with {} parameters".format(
+            parameters
+        )
+
+
+# In[14]:
+
+
+test_plot_scatter_3D_plotly()
+
+
+# In[ ]:
+
+
+
 
