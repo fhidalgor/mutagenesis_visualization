@@ -115,28 +115,6 @@ def _transform_secondary(dataset, secondary, start_position, aminoacids):
 
     return trimmedsecondary, secondary_dup
 
-
-def _convert_to_df(dataset, sequence, aminoacids, startposition):
-    '''
-    Convertds np.array with stored enrichment scores into a dataframe
-    Makes a copy of data
-
-    Returns dataframe
-
-    '''
-    df = pd.DataFrame()
-    df['Aminoacid'] = list(aminoacids) * len(dataset[0])
-    df['Position'] = np.ravel(
-        [[i] * len(aminoacids)
-         for i in range(startposition,
-                        len(dataset[0]) + startposition)]
-    )
-    df['Sequence'] = np.ravel([[i] * len(aminoacids)
-                               for i in sequence[:len(dataset[0])]])
-    df['Score'] = np.copy(dataset.T).ravel()
-    return df
-
-
 def _df_rearrange(df, new_order, values='Score', show_snv=False):
     '''
     convert a df into a numpy array for mutagenesis data. 
