@@ -67,10 +67,66 @@ def test_plot_heatmap():
         ) == False, "plot_heatmap failed with {} parameters".format(parameters)
 
 
-# In[3]:
+# ## Test plot_heatmap_rows
+
+# In[2]:
 
 
-test_plot_heatmap()
+def test_plot_heatmap_rows():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_heatmap_rows_output(parameters):
+        error = False
+        try:
+            obj_test.heatmap_rows(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [{'show': False}]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_heatmap_rows_output(
+            parameters
+        ) == False, "plot_heatmap_rows failed with {} parameters".format(parameters)
+
+
+# ## Test plot_heatmap_columns
+
+# In[5]:
+
+
+def test_plot_heatmap_columns():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_heatmap_columns_output(parameters):
+        error = False
+        try:
+            obj_test.heatmap_columns(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except:
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [{'segment':[20,40],'show': False}]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_heatmap_columns_output(
+            parameters
+        ) == False, "plot_heatmap_columns failed with {} parameters".format(parameters)
 
 
 # ## Test aux functions
