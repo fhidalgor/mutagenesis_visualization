@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# This notebook has been deprecated. The functions have been implemented using Plotly. No tests for this functions.
+
 # # Import Modules
 
 # In[2]:

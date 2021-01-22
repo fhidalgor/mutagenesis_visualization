@@ -396,7 +396,7 @@ def plot_heatmap_plotly(
 # In[5]:
 
 
-def _plot_heatmap_plotly_imshow(
+"""def _plot_heatmap_plotly_imshow(
     self, output_html: Union[None, str, Path] = None, **kwargs
 ):
     '''
@@ -502,23 +502,7 @@ def _plot_heatmap_plotly_imshow(
         fig.show(config = {'displayModeBar': False})
 
 
-# Still want to add extra axis with original amino acids
-
-
-# In[6]:
-
-
-'''fig = plot_heatmap_plotly(
-    mut.hras_RBD(),
-    return_plot_object=True,
-)
-fig.show(config = {'displayModeBar': False})'''
-
-
-# In[155]:
-
-
-'''plot_histogram_plotly(hras_RBD(), mode='A', figsize=(3, 2.5))'''
+# Still want to add extra axis with original amino acids"""
 
 
 # ## Histogram
@@ -978,7 +962,7 @@ def _update_axes(fig, temp_kwargs):
 
 def plot_scatter_3D_pdbprop_plotly(
     self,
-    plot=['Distance', 'SASA', 'B-factor'],
+    plot=['Distance', 'SASA', 'log B-factor'],
     mode='mean',
     pdb_path=None,
     custom=None,
@@ -998,7 +982,7 @@ def plot_scatter_3D_pdbprop_plotly(
     self : object from class *Screen*
         **kwargs : other keyword arguments.
 
-    plot : list, default ['Distance', 'SASA', 'B-factor']
+    plot : list, default ['Distance', 'SASA', 'log B-factor']
         List of 3 elements to plot. Other options are 'Score' and Custom. If custom, add the
         label to the third element of the list ie ['Distance', 'SASA', 'Conservation'].
 

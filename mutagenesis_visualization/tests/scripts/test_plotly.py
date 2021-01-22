@@ -3,13 +3,13 @@
 
 # # Test of code_plotly
 
-# In[1]:
+# In[8]:
 
 
 import pandas as pd
 import numpy as np
 import os
-
+import traceback
 try:
     from mutagenesis_visualization.main.scripts.code_create_objects import (
         hras_RBD
@@ -283,6 +283,48 @@ def test_plot_scatter_3D_plotly():
         assert _test_plot_scatter_3D_plotly_output(
             parameters
         ) == False, "scatter_3D_plotly failed with {} parameters".format(
+            parameters
+        )
+
+
+# ## test plot_scatter_3D_pdbprop_plotly
+
+# In[15]:
+
+
+def test_plot_scatter_3D_pdbprop_plotly():
+    # Get object
+    obj_test = hras_RBD()
+
+    # Define aux function
+    def _test_plot_scatter_3D_pdbprop_plotly_output(parameters):
+        error = False
+        try:
+            obj_test.scatter_3D_pdbprop_plotly(
+                **parameters
+            )  # pass dictionary as arguments of method
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(e)
+            print(tb)
+            error = True
+        return error
+
+    # Define dictionary of parameters
+    # Each dict in the list will be a different set of parameters
+    list_params = [
+        {
+            'plot':['Distance', 'SASA', 'log B-factor'],
+            'pdb_path': pdb_path,
+            'show': False,
+        },
+    ]
+
+    # Assert
+    for parameters in list_params:
+        assert _test_plot_scatter_3D_pdbprop_plotly_output(
+            parameters
+        ) == False, "scatter_3D_pdbprop_plotly failed with {} parameters".format(
             parameters
         )
 

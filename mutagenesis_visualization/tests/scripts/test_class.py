@@ -85,15 +85,3 @@ def test_Screen():
             parameters
         ) == False, "class Screen failed with {} parameters".format(parameters)
 
-
-# In[7]:
-
-
-test_Screen()
-
-
-# In[ ]:
-
-
-
-
