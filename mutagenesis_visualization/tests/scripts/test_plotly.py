@@ -3,7 +3,7 @@
 
 # # Test of code_plotly
 
-# In[8]:
+# In[3]:
 
 
 import pandas as pd
@@ -27,7 +27,7 @@ except ModuleNotFoundError:
     os.chdir(directory)
 
 
-# In[2]:
+# In[4]:
 
 
 '''class Student:
@@ -46,7 +46,7 @@ Kate = Student('Kate', 3.8, 'Dec 2021', 14)'''
 
 # ## Test heatmap
 
-# In[3]:
+# In[5]:
 
 
 def test_plot_heatmap_plotly():
@@ -71,6 +71,7 @@ def test_plot_heatmap_plotly():
         {
             'show': False,
             'title': 'Changing this parameter for fun',
+            'return_plot_object': True,
         },
     ]
 
@@ -110,6 +111,7 @@ def test_plot_scatter_plotly():  # change
         {
             'show': False,
             'title': 'Changing this parameter for fun',
+            'return_plot_object': True,
         },
         {'mode': 'mean', 'show': False, 'title': 'hello world'},
         {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
@@ -151,6 +153,7 @@ def test_plot_rank_plotly():
         {
             'show': False,
             'title': 'Changing this parameter for fun',
+            'return_plot_object': True,
         },
         {'mode': 'mean', 'show': False, 'title': 'hello world'},
         {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
@@ -190,6 +193,7 @@ def test_plot_histogram_plotly():
         {
             'show': False,
             'title': 'Changing this parameter for fun',
+            'return_plot_object': True,
         },
         {'mode': 'mean', 'show': False, 'title': 'hello world'},
         {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
@@ -231,6 +235,7 @@ def test_plot_mean_plotly():
         {
             'show': False,
             'title': 'Changing this parameter for fun',
+            'return_plot_object': True,
         },
         {'mode': 'mean', 'show': False, 'title': 'hello world'},
         {'mode': 'A', 'show': False, 'title': 'go bears'},
@@ -267,6 +272,17 @@ def test_plot_scatter_3D_plotly():
     # Each dict in the list will be a different set of parameters
     list_params = [
         {
+            'mode': 'A',
+            'pdb_path': pdb_path,
+            'title': 'Scatter 3D',
+            'squared': True,
+            'x_label': 'x',
+            'y_label': 'y',
+            'z_label': 'z',
+            'show': False,
+            'return_plot_object': True,
+        },
+        {
             'mode': 'mean',
             'pdb_path': pdb_path,
             'title': 'Scatter 3D',
@@ -275,6 +291,7 @@ def test_plot_scatter_3D_plotly():
             'y_label': 'y',
             'z_label': 'z',
             'show': False,
+            'return_plot_object': True,
         },
     ]
 
@@ -314,9 +331,16 @@ def test_plot_scatter_3D_pdbprop_plotly():
     # Each dict in the list will be a different set of parameters
     list_params = [
         {
-            'plot':['Distance', 'SASA', 'log B-factor'],
+            'mode':'A'
+            'plot': ['Distance', 'SASA', 'log B-factor'],
             'pdb_path': pdb_path,
             'show': False,
+            'return_plot_object': True,
+        },        {
+            'plot': ['Distance', 'SASA', 'log B-factor'],
+            'pdb_path': pdb_path,
+            'show': False,
+            'return_plot_object': True,
         },
     ]
 

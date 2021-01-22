@@ -7,6 +7,7 @@
 
 
 import pandas as pd
+import tempfile
 
 try:
     from mutagenesis_visualization.main.scripts.code_synthesis import (
@@ -28,24 +29,26 @@ except ModuleNotFoundError:
 
 # # Generate NNS primers
 
-# In[2]:
+# In[13]:
 
 
 def test_generate_primers():
     dna = 'GGCAATGCGcccccaATGaaaaaaTAAaaACGGGGTTTTaaa'
     start = ('GGCAATGCGccccca')
     end = ('aaACGGGGTTTTaaa')
-
-    df_prim = generate_primers(
-        dna,
-        start,
-        end,
-        output_file=None,
-        codon='NNS',
-        length_primer=18,
-        tm=60,
-        return_df=True
-    )
+    
+    #create a temporary directory using the context manager
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        df_prim = generate_primers(
+            dna,
+            start,
+            end,
+            output_file=tmpdirname+'/primers.xlsx',
+            codon='NNS',
+            length_primer=18,
+            tm=60,
+            return_df=True
+        )
     assert len(df_prim) == 9, 'error the primer length does not match'
     assert df_prim.iloc[
         1, 1
@@ -110,7 +113,7 @@ def test_create_primers_list():
 
 # ## Generate Variants
 
-# In[5]:
+# In[10]:
 
 
 def test_create_variants():
@@ -130,15 +133,22 @@ def test_create_variants():
     assert variants1.iloc[
         2, 0
     ] == 'TAAAAGAAG', 'error the third output is not replaced with the second codon'
-
-    codon_list2 = ['CAA', 'CCC', 'TTT', 'AAA']
-    variants2 = create_variants(
-        dna, codon_list2, output_file=None, return_df=True
-    )
+    
+    #create a temporary directory using the context manager
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        codon_list2 = ['CAA', 'CCC', 'TTT', 'AAA']
+        variants2 = create_variants(
+            dna, codon_list2, output_file=tmpdirname+'/test.fasta', return_df=True
+        )
+        variants2 = create_variants(
+            dna, codon_list2, output_file=tmpdirname+'/test.xlsx', return_df=True
+        )        
     assert variants2.iloc[
         1, 0
     ] == 'CAAAAGAAG', 'error the second output is not replaced with the first codon'
     assert variants2.shape == (
         13, 1
     ), 'error there are an incorrect number of variants'
+    
+    
 
