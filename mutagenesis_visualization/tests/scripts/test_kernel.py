@@ -14,8 +14,7 @@ import numpy as np
 
 try:
     from mutagenesis_visualization.main.scripts.code_create_objects import (
-        hras_RBD,
-        aph_obj
+        hras_RBD, aph_obj
     )
     from mutagenesis_visualization.main.scripts.code_kernel import (
         plot_multiplekernel,
@@ -53,8 +52,10 @@ def test_plot_kernel():
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}, {'cumulative': True, 'show':
-                                     False},]
+    list_params = [
+        {'show': False},
+        {'cumulative': True, 'show': False},
+    ]
 
     # Assert
     for parameters in list_params:
@@ -83,22 +84,29 @@ def test_plot_histogram():
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}, {'population': 'SNV', 'show':
-                                     False},]
+    list_params = [
+        {'show': False},
+        {'population': 'SNV', 'show': False},
+        {'population': 'nonSNV', 'show': False},
+    ]
 
     # Assert
     for parameters in list_params:
         assert _test_plot_histogram_output(
             parameters
-        ) == False, "plot_histogram failed with {} parameters".format(parameters)
+        ) == False, "plot_histogram failed with {} parameters".format(
+            parameters
+        )
 
 
 # In[28]:
 
 
 import traceback
+
+
 def test_plot_multiplekernel():
-      # Create dictionary with objects
+    # Create dictionary with objects
     dict_obj = {
         'obj_test_1': hras_RBD().dataframe,
         'obj_test_2': aph_obj().dataframe,
@@ -108,10 +116,7 @@ def test_plot_multiplekernel():
     def _test_plot_multiplekernel(parameters):
         error = False
         try:
-            plot_multiplekernel(
-                dict_obj,
-                **parameters
-            )
+            plot_multiplekernel(dict_obj, **parameters)
         except Exception as e:
             tb = traceback.format_exc()
             print(e)
@@ -126,25 +131,17 @@ def test_plot_multiplekernel():
             'show': False,
         },
         {
-            'figsize': (3, 2.5), 
-            'y_label': r'$∆E^i_x$', 
-            'show': False,
-            'title':'go bears'
+            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False, 'title':
+            'go bears'
         },
     ]
 
     # Assert
-    for parameters in list_params: # Loop over the parameters
+    for parameters in list_params:  # Loop over the parameters
         assert _test_plot_multiplekernel( # Assert that that set of parameters works on that object
             parameters,
         ) == False, "plot_multiplekernel failed with {} object and {} parameters".format(
                 obj_label,
                 parameters,
             )
-
-
-# In[29]:
-
-
-test_plot_multiplekernel()
 

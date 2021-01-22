@@ -15,6 +15,8 @@ try:
         hras_RBD,
         aph_obj,
     )
+    from mutagenesis_visualization.main.scripts.code_other import plot_box
+
 except ModuleNotFoundError:
     import import_notebook
     import os
@@ -22,7 +24,7 @@ except ModuleNotFoundError:
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
 
-    import code_create_objects
+    from code_other import plot_box
     from code_create_objects import (
          hras_RBD,
          aph_obj,
@@ -32,7 +34,7 @@ except ModuleNotFoundError:
 
 # # Test for plot_rank
 
-# In[ ]:
+# In[2]:
 
 
 def test_plot_rank():
@@ -64,6 +66,7 @@ def test_plot_rank():
             'show': False,
         },
         {
+            'mode':'mean',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
@@ -84,7 +87,7 @@ def test_plot_rank():
 
 # # Test for plot_miniheatmap
 
-# In[ ]:
+# In[3]:
 
 
 def test_plot_miniheatmap():
@@ -116,6 +119,7 @@ def test_plot_miniheatmap():
             'show': False,
         },
         {
+            'neworder_aminoacids':list('ACDEFGHIKLMNPQRSTVWY*'),
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
@@ -136,7 +140,7 @@ def test_plot_miniheatmap():
 
 # # Test for plot_neighboreffect
 
-# In[ ]:
+# In[5]:
 
 
 def test_plot_neighboreffect():
@@ -188,7 +192,7 @@ def test_plot_neighboreffect():
 
 # # Test for plot_secondary
 
-# In[ ]:
+# In[6]:
 
 
 def test_plot_secondary():
@@ -240,7 +244,7 @@ def test_plot_secondary():
 
 # # Test for plot_roc
 
-# In[18]:
+# In[7]:
 
 
 def test_plot_roc():
@@ -297,7 +301,7 @@ def test_plot_roc():
 
 # # Test for plot_cumulative
 
-# In[21]:
+# In[8]:
 
 
 def test_plot_cumulative():
@@ -329,6 +333,10 @@ def test_plot_cumulative():
             'show': False,
         },
         {
+            'mode':'nonSNV',
+            'show': False,
+        },        {
+            'mode':'SNV',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
@@ -345,4 +353,26 @@ def test_plot_cumulative():
                 obj_label,
                 parameters,
             )
+
+
+# ## test plot_box
+
+# In[12]:
+
+
+def test_plot_box():
+    # At some point, arguments cannot be vectors, only labels of dataframe
+    # Define aux function
+    def _test_plot_box():
+        error = False
+        try:
+            plot_box([0,1,2,3],[4,3,2,1])
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(e)
+            print(tb)
+            error = True
+        return error
+    
+    assert _test_plot_box() == False
 
