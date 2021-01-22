@@ -7,7 +7,7 @@
 
 # ## Import
 
-# In[2]:
+# In[7]:
 
 
 import numpy as np
@@ -16,12 +16,22 @@ import os
 
 # Local imports
 try:
-    from mutagenesis_visualization.main.scripts.code_class import Screen
+    from mutagenesis_visualization.main.scripts.code_class import Screen, Counts
+    from mutagenesis_visualization.main.scripts.code_process_data import (
+        count_reads,
+        count_fastq,
+        _enumerate_variants,
+    )
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
 except ModuleNotFoundError:
     print(os.getcwd())
     import import_notebook
-    from code_class import Screen
+    from code_class import Screen, Counts
+    from code_process_data import (
+        count_reads,
+        count_fastq,
+        _enumerate_variants,
+    )
     import code_utils
 
 
@@ -479,4 +489,34 @@ def b11L5F_obj():
     )
 
     return b11L5F_obj
+
+
+# # HRas RBD Counts
+
+# In[25]:
+
+
+def hras_counts():
+    try:
+        location = os.path.dirname(os.path.realpath(__file__))
+        my_file = os.path.join(location, '../../data', 'hras.trimmed.fastq')
+    except NameError:
+        my_file = os.path.join('../../data', 'hras.trimmed.fastq')
+
+    # H-Ras dna sequence
+    hras_dnasequence = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'        + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg'        + 'tcattgatggggagacgtgcctgttggacatcctg'
+
+    # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
+    codon_list = [
+        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG",
+        "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG",
+        "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
+    ]
+    
+    df_counts_pre, wt_counts_pre = count_reads(
+        hras_dnasequence, my_file, codon_list, counts_wt = False , start_position = 2)
+    
+    hras_counts = Counts(df = df_counts_pre)
+    return hras_counts
+    
 
