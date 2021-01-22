@@ -8,6 +8,7 @@
 
 import pandas as pd
 import numpy as np
+import traceback
 
 try:
     from mutagenesis_visualization.main.scripts.code_create_objects import (
@@ -23,9 +24,9 @@ except ModuleNotFoundError:
 
     import code_create_objects
     from code_create_objects import (
-         hras_RBD,
-         aph_obj,
-     )
+        hras_RBD,
+        aph_obj,
+    )
     os.chdir(directory)
 
 
@@ -34,9 +35,8 @@ except ModuleNotFoundError:
 # In[5]:
 
 
-import traceback
 def test_plot_correlation():
-    
+
     # Create dictionary with objects
     dict_obj = {
         'obj_test_1': hras_RBD(),
@@ -69,8 +69,8 @@ def test_plot_correlation():
     ]
 
     # Assert
-    for obj_label, obj_test in dict_obj.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
+    for obj_label, obj_test in dict_obj.items():  # Loop over the dictionary
+        for parameters in list_params:  # Loop over the parameters
             assert _test_plot_correlation( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,
@@ -85,9 +85,8 @@ def test_plot_correlation():
 # In[4]:
 
 
-import traceback
 def test_plot_individual_correlation():
-    
+
     # Create dictionary with objects
     dict_obj = {
         'obj_test_1': hras_RBD(),
@@ -122,8 +121,8 @@ def test_plot_individual_correlation():
     ]
 
     # Assert
-    for obj_label, obj_test in dict_obj.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
+    for obj_label, obj_test in dict_obj.items():  # Loop over the dictionary
+        for parameters in list_params:  # Loop over the parameters
             assert _test_plot_individual_correlation( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,
@@ -138,9 +137,8 @@ def test_plot_individual_correlation():
 # In[10]:
 
 
-import traceback
 def test_plot_group_correlation():
-    
+
     # Create dictionary with objects
     dict_obj = {
         'obj_test_1': hras_RBD(),
@@ -151,8 +149,9 @@ def test_plot_group_correlation():
     def _test_plot_group_correlation(obj_test, parameters):
         error = False
         try:
-            obj_test.group_correlation(r2=0.75,
-                groups = ['DE', 'HKR', 'QN', 'CST', 'AG', 'ILMV', 'WYF', 'P'],
+            obj_test.group_correlation(
+                r2=0.75,
+                groups=['DE', 'HKR', 'QN', 'CST', 'AG', 'ILMV', 'WYF', 'P'],
                 **parameters
             )  # pass dictionary as arguments of method
         except Exception as e:
@@ -174,8 +173,8 @@ def test_plot_group_correlation():
     ]
 
     # Assert
-    for obj_label, obj_test in dict_obj.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
+    for obj_label, obj_test in dict_obj.items():  # Loop over the dictionary
+        for parameters in list_params:  # Loop over the parameters
             assert _test_plot_group_correlation( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,
@@ -187,12 +186,11 @@ def test_plot_group_correlation():
 
 # # Test of plot_pca
 
-# In[8]:
+# In[2]:
 
 
-import traceback
 def test_plot_pca():
-    
+
     # Create dictionary with objects
     dict_obj = {
         'obj_test_1': hras_RBD(),
@@ -203,9 +201,7 @@ def test_plot_pca():
     def _test_plot_pca(obj_test, parameters):
         error = False
         try:
-            obj_test.pca(
-                **parameters
-            )  # pass dictionary as arguments of method
+            obj_test.pca(**parameters)  # pass dictionary as arguments of method
         except Exception as e:
             tb = traceback.format_exc()
             print(e)
@@ -220,6 +216,11 @@ def test_plot_pca():
             'show': False,
         },
         {
+            'mode': 'individual',
+            'show': False,
+        },
+        {
+            'mode': 'secondary',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
@@ -227,8 +228,8 @@ def test_plot_pca():
     ]
 
     # Assert
-    for obj_label, obj_test in dict_obj.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
+    for obj_label, obj_test in dict_obj.items():  # Loop over the dictionary
+        for parameters in list_params:  # Loop over the parameters
             assert _test_plot_pca( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,
@@ -236,4 +237,10 @@ def test_plot_pca():
                 obj_label,
                 parameters,
             )
+
+
+# In[ ]:
+
+
+
 
