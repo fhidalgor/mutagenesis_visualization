@@ -34,7 +34,7 @@ except ModuleNotFoundError:
 
 # # Test bar graph with mean enrichment
 
-# In[4]:
+# In[3]:
 
 
 def test_plot_mean():
@@ -63,9 +63,11 @@ def test_plot_mean():
             'show': False,
         },
         {
+            'mode':'A',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'return_plot_object':True,
         },
     ]
 
@@ -113,6 +115,7 @@ def test_plot_meandifferential():
             'show': False,
         },
         {
+            'show_cartoon':True,
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
@@ -133,7 +136,7 @@ def test_plot_meandifferential():
 
 # ## Test Plot Mean Counts Graph
 
-# In[2]:
+# In[15]:
 
 
 def test_plot_meancounts():
@@ -168,6 +171,7 @@ def test_plot_meancounts():
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'text_labels':[[1,1,'label']]
         },
     ]
 
@@ -181,12 +185,6 @@ def test_plot_meancounts():
                 obj_label,
                 parameters,
             )
-
-
-# In[3]:
-
-
-test_plot_meancounts()
 
 
 # ## Test Plot Positional Graph

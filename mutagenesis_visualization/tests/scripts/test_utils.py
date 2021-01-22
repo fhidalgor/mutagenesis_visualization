@@ -26,7 +26,7 @@ except ModuleNotFoundError:
 
 # ### Parse dataset
 
-# In[2]:
+# In[ ]:
 
 
 def test_common():
@@ -47,7 +47,7 @@ def test_common():
 
 # ### SNV internal
 
-# In[3]:
+# In[ ]:
 
 
 def test_aminoacids_snv():
@@ -75,7 +75,7 @@ def test_aminoacids_snv():
     assert  expected_answer == True, 'Error in determining SNV when the two amino acids are the same'
 
 
-# In[4]:
+# In[ ]:
 
 
 def test_codons_snv():
@@ -100,9 +100,30 @@ def test_codons_snv():
     assert  expected_answer == True, 'Error in determining SNV when the two codons are the same'
 
 
+# ### _are_pointmutants
+
+# In[9]:
+
+
+def test_are_pointmutants():
+    assert code_utils._are_pointmutants('M', 'ATG')==False
+    assert code_utils._are_pointmutants('A', 'ATG')==False
+    assert code_utils._are_pointmutants('F', 'TTA')==True
+
+
+# ### test _are_pointmutants_list
+
+# In[23]:
+
+
+def test_are_pointmutants_list():
+    assert code_utils._are_pointmutants_list('A', ['ATG', 'ATT', 'ACT'])==[False, False,True]
+    
+
+
 # ### Scatter Internal
 
-# In[5]:
+# In[ ]:
 
 
 def test_process_bypointmutant():
@@ -124,7 +145,7 @@ def test_process_bypointmutant():
     assert len(df) == 2, 'truncation of longer dataset is not working properly'
 
 
-# In[6]:
+# In[ ]:
 
 
 def test_process_meanresidue():
@@ -147,7 +168,7 @@ def test_process_meanresidue():
     assert df.equals(expected_answer), 'error in _process_meanresidue'
 
 
-# In[7]:
+# In[ ]:
 
 
 def test_color_data():
@@ -163,7 +184,7 @@ def test_color_data():
 
 # ## To manipulate reads
 
-# In[8]:
+# In[ ]:
 
 
 def test_translate_codons():
@@ -178,7 +199,7 @@ def test_translate_codons():
             list_aminoacids), 'error when translating the codons of the dataframe index'
 
 
-# In[9]:
+# In[ ]:
 
 
 def test_is_DNA():
@@ -189,4 +210,16 @@ def test_is_DNA():
         df) == False), 'error determining if the index of the dataframe contains DNA'
     assert (code_utils._is_DNA(df2) ==
             True), 'error determining if the index of the dataframe contains DNA'
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 

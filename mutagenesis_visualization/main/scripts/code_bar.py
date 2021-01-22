@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[ ]:
 
 
 import numpy as np
@@ -35,7 +35,7 @@ except ModuleNotFoundError:
 
 # ### Bar graph Enrichment
 
-# In[7]:
+# In[ ]:
 
 
 def plot_mean(
@@ -193,7 +193,7 @@ def _parameters_mean():
 
 # ### Compare two proteins
 
-# In[6]:
+# In[ ]:
 
 
 def plot_meandifferential(
@@ -316,7 +316,7 @@ def plot_meandifferential(
 
 # ### Bar graph Counts
 
-# In[9]:
+# In[ ]:
 
 
 def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
@@ -332,6 +332,9 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
+        text_labels : list of lists, default empty
+            If you want to add a label to the graph, add the coordinates and the text.
+            Example: text_labels = [[x0,y0,text0],[x1,y1,text1]].
             
     Returns
     ----------
@@ -401,7 +404,7 @@ def _inputtext(text_entries):
 
 # ### Positional
 
-# In[10]:
+# In[ ]:
 
 
 def plot_position(
@@ -489,7 +492,7 @@ def plot_position(
 
 # ## Stacked bar cumulative %AA representation
 
-# In[11]:
+# In[ ]:
 
 
 def plot_library_representation(
@@ -584,7 +587,7 @@ def plot_library_representation(
         plt.show()
 
 
-# In[12]:
+# In[ ]:
 
 
 def _group_codons_to_aa(self):

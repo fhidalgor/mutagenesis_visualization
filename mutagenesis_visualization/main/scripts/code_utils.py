@@ -15,6 +15,7 @@ from Bio.Seq import Seq
 from pathlib import Path
 from typing import Union
 import math
+from Bio import AlignIO
 
 
 # # Internal Functions
@@ -414,7 +415,7 @@ def _are_pointmutants(aa, seqbase):
     '''
     codontoaadict = _dict_codontoaa()
     pointmutants = False
-    for codon in _codontoaadict[aa]:
+    for codon in codontoaadict[aa]:
         if _codons_pointmutants(seqbase, codon):
             pointmutants = True
     return pointmutants
@@ -605,7 +606,6 @@ def _parseMSA(msa, alnformat, verbose):
     
     """
 
-    from Bio import AlignIO
     alignment = AlignIO.read(msa, alnformat)
 
     # Do a little sanity checking:
