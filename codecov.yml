@@ -1,0 +1,4 @@
+ignore:
+  - "mutagenesis_visualization/main/scripts/code_3D.py"
+  - "mutagenesis_visualization/main/scripts/code_pymol.py"
+  - "mutagenesis_visualization/main/tests/"
