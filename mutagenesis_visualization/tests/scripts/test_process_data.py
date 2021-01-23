@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[17]:
 
 
 from pathlib import Path
 import pandas as pd
 from pandas.testing import assert_frame_equal
 import os
+from itertools import product
+from random import randint, random
+import logging
+
+log: logging.Logger = logging.getLogger('test_process_data')
+
 
 try:
     from mutagenesis_visualization.main.scripts.code_process_data import (
-        count_reads
+        count_reads, calculate_enrichment
     )
 except ModuleNotFoundError:
     import import_notebook
@@ -19,11 +25,11 @@ except ModuleNotFoundError:
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
-    from code_process_data import (count_reads)
+    from code_process_data import count_reads, calculate_enrichment
     os.chdir(directory)
 
 
-# In[10]:
+# In[3]:
 
 
 """
@@ -98,38 +104,10 @@ def test_count_reads():
 
     # Test CCT when not in codon list
     index = pd.Index([
-        "GCC",
-        "GCG",
-        "TGC",
-        "GAC",
-        "GAG",
-        "TTC",
-        "GGC",
-        "GGG",
-        "CAC",
-        "ATC",
-        "AAG",
-        "CTC",
-        "CTG",
-        "TTG",
-        "ATG",
-        "AAC",
-        "CCC",
-        "CCG",
-        "CAG",
-        "CGC",
-        "CGG",
-        "AGG",
-        "TCC",
-        "TCG",
-        "AGC",
-        "ACC",
-        "ACG",
-        "GTC",
-        "GTG",
-        "TGG",
-        "TAC",
-        "TAG",
+        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC",
+        "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG",
+        "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG",
+        "GTC", "GTG", "TGG", "TAC", "TAG",
     ])
     values_cct = [0] * 32
     expected_cct_counts = pd.DataFrame(
@@ -141,4 +119,158 @@ def test_count_reads():
     cct_counts, cct_wt = count_reads("cCt", my_file, 'NNS')
     mut_assert_df_equal(cct_counts, expected_cct_counts)
     mut_assert_df_equal(cct_wt, expected_cct_wt)
+
+
+# In[23]:
+
+
+def test_calculate_enrichment():
+    # Read counts from file (could be txt, csv, xlsx, etc...)
+    prefix = "mutagenesis_visualization/"
+    # prefix = "../../"
+    df_counts_pre = pd.read_excel(
+        prefix + 'data/hrasGAPGEF_counts.xlsx',
+        'R1_before',
+        skiprows=1,
+        index_col='Codons',
+        usecols='E:FN',
+        nrows=32
+    )
+
+    df_counts_sel = pd.read_excel(
+        prefix + 'data/hrasGAPGEF_counts.xlsx',
+        'R1_after',
+        skiprows=1,
+        index_col='Codons',
+        usecols='E:FN',
+        nrows=32
+    )
+
+    # Ras parameters to create an object
+
+    # Order of amino acids (from count_reads)
+    aminoacids_NNS = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+
+    # TODO: do 0 and then a random number from 100 - 1000
+    stopcodon = ["True", "False"]
+    min_counts = [0, randint(100, 1000)]
+    mpop = [0.01, (random() + 0.01) * 10]  # mpop 0 causes an error
+    common_args = [stopcodon, min_counts, mpop]
+
+    # "wt" requires pre_wt
+    zeroing_compatible = ["population"]
+    # "zscore" zeroing broken at "elif zeroing == "zscore""
+    zeroing_other = ["kernel", "counts"]
+    how = ["median", "mean", "mode"]
+    std_scale = [0.1, randint(0, 100)]
+
+    log.info(f"{min_counts=}")
+    log.info(f"{mpop=}")
+    log.info(f"{std_scale=}")
+
+    args_how_scale = product(
+        zeroing_compatible, how, [True], std_scale, *common_args
+    )
+    args_how_no_scale = product(
+        zeroing_compatible, how, [False], *common_args
+    )
+    args_no_how_scale = product(
+        zeroing_other, [True], std_scale, *common_args
+    )
+    args_no_how_no_scale = product(
+        zeroing_other, [False], *common_args
+    )
+
+    for args in args_how_scale:
+        print(args)
+        zeroing, how, norm_std, std_scale, *common_args = args
+        stopcodon, min_counts, mpop = common_args
+        frequencies = calculate_enrichment(
+            df_counts_pre.iloc[:, :54],
+            df_counts_sel.iloc[:, :54],
+
+            zeroing=zeroing,
+            how=how,
+            norm_std=norm_std,
+            std_scale=std_scale,
+
+            aminoacids=aminoacids_NNS,
+            stopcodon=stopcodon,
+            min_counts=min_counts,
+            min_countswt=100,
+            mpop=mpop,
+            mwt=2,
+            infinite=3
+        )
+    for args in args_no_how_scale:
+        print(args)
+        zeroing, how, norm_std, *common_args = args
+        stopcodon, min_counts, mpop = common_args
+        frequencies = calculate_enrichment(
+            df_counts_pre.iloc[:, :54],
+            df_counts_sel.iloc[:, :54],
+
+            zeroing=zeroing,
+            how=how,
+            norm_std=norm_std,
+
+            aminoacids=aminoacids_NNS,
+            stopcodon=stopcodon,
+            min_counts=min_counts,
+            min_countswt=100,
+            mpop=mpop,
+            mwt=2,
+            infinite=3
+        )
+    for args in args_how_no_scale:
+        print(args)
+        zeroing, norm_std, std_scale, *common_args = args
+        stopcodon, min_counts, mpop = common_args
+        frequencies = calculate_enrichment(
+            df_counts_pre.iloc[:, :54],
+            df_counts_sel.iloc[:, :54],
+
+            zeroing=zeroing,
+            norm_std=norm_std,
+            std_scale=std_scale,
+
+            aminoacids=aminoacids_NNS,
+            stopcodon=stopcodon,
+            min_counts=min_counts,
+            min_countswt=100,
+            mpop=mpop,
+            mwt=2,
+            infinite=3
+        )
+    for args in args_how_scale:
+        print(args)
+        zeroing, norm_std, *common_args = args
+        stopcodon, min_counts, mpop = common_args
+        frequencies = calculate_enrichment(
+            df_counts_pre.iloc[:, :54],
+            df_counts_sel.iloc[:, :54],
+
+            zeroing=zeroing,
+            norm_std=norm_std,
+
+            aminoacids=aminoacids_NNS,
+            stopcodon=stopcodon,
+            min_counts=min_counts,
+            min_countswt=100,
+            mpop=mpop,
+            mwt=2,
+            infinite=3
+        )
+
+
+# In[21]:
+
+
+test_calculate_enrichment()
+
+
+# In[ ]:
+
+
+
 

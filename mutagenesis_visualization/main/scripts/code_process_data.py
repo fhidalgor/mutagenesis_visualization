@@ -339,7 +339,7 @@ def calculate_enrichment(
 
     zeroing : str, default 'population'
         Method to normalize the data.
-        Can also use 'zscore, 'counts', wt' or 'kernel'.
+        Can also use 'zscore, 'counts', 'wt' or 'kernel'. If 'wt' is used 'pre_wt' must not be set to None.
 
     how : str, default 'median'
         Metric to zero the data. Only works if zeroing='population' or 'wt'.
@@ -489,7 +489,7 @@ def calculate_enrichment(
 # 
 # ## Aux functions
 
-# In[ ]:
+# In[2]:
 
 
 def _get_enrichment(
@@ -508,10 +508,11 @@ def _get_enrichment(
             input_lib, output_lib, input_stopcodon, output_stopcodon
         )
 
-    # log10 of library and replace infinite values
-    counts_log10_ratio = _replace_inf(
-        np.log10(output_lib / input_lib), infinite
-    )
+    # log10 of library and replace infinite values. This will potentially divide by zero.
+    with np.errstate(divide='ignore'):
+        counts_log10_ratio = _replace_inf(
+            np.log10(output_lib / input_lib), infinite
+        )
 
     return counts_log10_ratio
 
