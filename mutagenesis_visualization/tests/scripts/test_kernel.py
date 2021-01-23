@@ -6,7 +6,7 @@
 
 # ## Import modules
 
-# In[27]:
+# In[2]:
 
 
 import pandas as pd
@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 
 # ## Test main functions
 
-# In[2]:
+# In[13]:
 
 
 def test_plot_kernel():
@@ -55,6 +55,7 @@ def test_plot_kernel():
     list_params = [
         {'show': False},
         {'cumulative': True, 'show': False},
+        {'y_label': 'testing', 'title':'this is a test', 'x_label':'testing', 'xscale':2, 'show': False} #y_label does not change
     ]
 
     # Assert
@@ -62,6 +63,12 @@ def test_plot_kernel():
         assert _test_plot_kernel_output(
             parameters
         ) == False, "plot_kernel failed with {} parameters".format(parameters)
+
+
+# In[14]:
+
+
+test_plot_kernel()
 
 
 # In[10]:
