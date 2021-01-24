@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[2]:
+# In[1]:
 
 
 # Regular libraries
@@ -22,7 +22,7 @@ from Bio import AlignIO
 
 # ## Parse dataset
 
-# In[3]:
+# In[2]:
 
 
 def _transform_dataset(dataset, sequence, aminoacids, start_position, fillna):
@@ -254,7 +254,7 @@ def parse_pivot(
 
 # ## SNV internal
 
-# In[4]:
+# In[3]:
 
 
 def _select_nonSNV(df):
@@ -510,7 +510,7 @@ def _aatocodons_df(df, namecolumn):
 
 # ## Scatter Internal
 
-# In[5]:
+# In[4]:
 
 
 def _process_bypointmutant(self, obj):
@@ -547,7 +547,7 @@ def _process_meanresidue(self, obj):
     return df
 
 
-# In[6]:
+# In[5]:
 
 
 def _color_data(row, color_gof, color_lof):
@@ -559,7 +559,7 @@ def _color_data(row, color_gof, color_lof):
 
 # # To manipulate reads
 
-# In[7]:
+# In[6]:
 
 
 def _translate_codons(df):
@@ -597,7 +597,7 @@ def _is_DNA(df):
 #     Email : J.R.J.Healey@warwick.ac.uk
 # 
 
-# In[8]:
+# In[7]:
 
 
 def _parseMSA(msa, alnformat, verbose):

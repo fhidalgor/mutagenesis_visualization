@@ -719,6 +719,9 @@ def _mergeclassvariants(df_score, df_class):
     return df_merged
 
 
+"""
+DEPRECATED
+
 def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
     '''
     Concat a df containing the true positive variants and the true negative variants
@@ -741,6 +744,7 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
     df_true.drop_duplicates(subset=subset, keep=keep, inplace=True)
 
     return df_true
+    """
 
 
 # ## Cumulative
