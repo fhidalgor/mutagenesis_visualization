@@ -20,7 +20,7 @@ Import modules and load data
         sys.path.append('../../')
         import mutagenesis_visualization as mut
 
-In here we are loading and assembling the data by hand instead of using the function ``assemble_avengers`` found in :ref:`Multiple sublibraries` so you can see how it is done. In case you have stored your data in another format different to us, you can tweak the following code. 
+In here we are loading and assembling the data by hand instead of using the function ``assemble_sublibraries`` found in :ref:`Multiple sublibraries` so you can see how it is done. In case you have stored your data in another format different to us, you can tweak the following code. 
 
 .. code:: ipython3
 

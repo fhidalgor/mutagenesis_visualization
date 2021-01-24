@@ -272,9 +272,9 @@ Assemble multiple sublibraries
 ------------------------------
 
 Function reviewed in this section:
-    - :func:`mutagenesis_visualization.assemble_avengers`
+    - :func:`mutagenesis_visualization.assemble_sublibraries`
 
-If you split your library into multiple pools, you can use ``assemble_avengers`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`Normalizing datasets` for more details.
+If you split your library into multiple pools, you can use ``assemble_sublibraries`` to use ``calculate_enrichment`` in an automated loop and return the assembled dataframe. To use this function, you need to import the data in an excel file in the same format as the provided in Example/hrasGAPGEF_counts.xlsx. Note that the parameters for normalization used in ``calculate_enrichment`` also apply here. See :ref:`Normalizing datasets` for more details.
 
 .. code:: ipython3
 
@@ -297,7 +297,7 @@ If you split your library into multiple pools, you can use ``assemble_avengers``
     # are using the default ones.
     
     # Call the function and return a df
-    df = mut.assemble_avengers(
+    df = mut.assemble_sublibraries(
         excel_path,
         sheet_pre,
         sheet_post,

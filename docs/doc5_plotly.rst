@@ -133,7 +133,10 @@ Methods reviewed in this section:
     - :meth:`mutagenesis_visualization.Screen.rank_plotly`
 
 
-Create an interactive rank figure that displays each mutant. You can
+Create an interactive rank figure that displays each mutant. The default
+mode is set to pointmutant to provide the ranking on the mutation level.
+You can download the plot as a png file by clicking the camera icon
+which appears on the far left when our cursor is over the plot. You can
 export to an html file by giving a path to the variable ``output_html``.
 
 .. code:: ipython3
@@ -183,7 +186,10 @@ Methods reviewed in this section:
 
 If you have two datasets, you can create a scatter plot. The advantage
 of using plotly over matplotlib is that you can visually check each data
-point by putting the mouse pointer on top.
+point by hovoring your cursor over a point. By setting show_results =
+True, the OLS regression results will also be printed as output. The
+mode = ‘pointmutant’ is default which shows a comparison as mutation by
+mutation.
 
 .. code:: ipython3
 

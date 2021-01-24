@@ -331,12 +331,13 @@ def test_plot_scatter_3D_pdbprop_plotly():
     # Each dict in the list will be a different set of parameters
     list_params = [
         {
-            'mode':'A'
+            'mode':'A',
             'plot': ['Distance', 'SASA', 'log B-factor'],
             'pdb_path': pdb_path,
             'show': False,
             'return_plot_object': True,
-        },        {
+        },
+        {
             'plot': ['Distance', 'SASA', 'log B-factor'],
             'pdb_path': pdb_path,
             'show': False,

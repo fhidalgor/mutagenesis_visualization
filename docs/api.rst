@@ -14,7 +14,7 @@ Classes
 Functions
 ****************
 
-.. autofunction:: mutagenesis_visualization.assemble_avengers
+.. autofunction:: mutagenesis_visualization.assemble_sublibraries
 
 .. autofunction:: mutagenesis_visualization.calculate_enrichment
 

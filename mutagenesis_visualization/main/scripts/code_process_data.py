@@ -706,7 +706,7 @@ def _array_to_df_enrichments(lib, aminoacids):
 # In[ ]:
 
 
-def assemble_avengers(
+def assemble_sublibraries(
     excel_path,
     sheet_pre,
     sheet_post,
