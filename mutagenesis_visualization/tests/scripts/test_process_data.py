@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 from pathlib import Path
@@ -17,7 +17,7 @@ log: logging.Logger = logging.getLogger('test_process_data')
 
 try:
     from mutagenesis_visualization.main.scripts.code_process_data import (
-        count_reads, calculate_enrichment, assemble_avengers
+        count_reads, calculate_enrichment, assemble_sublibraries
     )
 except ModuleNotFoundError:
     import import_notebook
@@ -25,7 +25,7 @@ except ModuleNotFoundError:
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
-    from code_process_data import count_reads, calculate_enrichment, assemble_avengers
+    from code_process_data import count_reads, calculate_enrichment, assemble_sublibraries
     os.chdir(directory)
 
 
@@ -263,10 +263,10 @@ def test_calculate_enrichment():
         )
 
 
-# In[1]:
+# In[2]:
 
 
-def test_assemble_avengers():
+def test_assemble_sublibraries():
     # There aren't actually very many arguments to test here.  Once you remove
     # - all arguments that are just forwarded to calculate_enrichment
     # - the filename and excel sheet arguments
@@ -297,7 +297,7 @@ def test_assemble_avengers():
     for columns, columns_wt, nrows_aminos in args:
         nrows_pop, aminos = nrows_aminos
         print(f"{columns=}\t{columns_wt=}\t{nrows_pop=}")
-        df = assemble_avengers(
+        df = assemble_sublibraries(
             excel_path=filename,
             sheet_pre=sheet_pre,
             sheet_post=sheet_post,
