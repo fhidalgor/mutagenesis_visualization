@@ -9,12 +9,12 @@
 
 import pandas as pd
 import numpy as np
+import os
 
 try:
     import mutagenesis_visualization.main.scripts.code_utils as code_utils
 except ModuleNotFoundError:
     import import_notebook
-    import os
     directory = os.getcwd()
     new_directory = directory.replace('tests','main')
     os.chdir(new_directory)
@@ -102,7 +102,7 @@ def test_codons_snv():
 
 # ### _are_pointmutants
 
-# In[9]:
+# In[ ]:
 
 
 def test_are_pointmutants():
@@ -113,7 +113,7 @@ def test_are_pointmutants():
 
 # ### test _are_pointmutants_list
 
-# In[23]:
+# In[ ]:
 
 
 def test_are_pointmutants_list():
@@ -212,14 +212,40 @@ def test_is_DNA():
             True), 'error determining if the index of the dataframe contains DNA'
 
 
-# In[ ]:
+# ## Shannon
+
+# In[2]:
 
 
+def test_parseMSA():
+    # Load file
+    try:
+        location = os.path.dirname(os.path.realpath(__file__))
+        my_file = os.path.join(location, '../../data/for_tests', "msa.fasta")
+    except NameError:
+        my_file = os.path.join('../../data/for_tests', "msa.fasta")
+    # Read MSA
+    msa, seq_lengths, index = code_utils._parseMSA(my_file, "fasta", 0)
+                                                   
+    assert seq_lengths == [20]                                        
 
 
-
-# In[ ]:
-
+# In[8]:
 
 
+def test_shannon_entropy_list_msa():
+    # Load file
+    try:
+        location = os.path.dirname(os.path.realpath(__file__))
+        my_file = os.path.join(location, '../../data/for_tests', "msa.fasta")
+    except NameError:
+        my_file = os.path.join('../../data/for_tests', "msa.fasta")
+        
+    # Read MSA
+    msa, seq_lengths, index = code_utils._parseMSA(my_file, "fasta", 0)
+    
+    # Calculate entropy
+    shannon = code_utils._shannon_entropy_list_msa(msa)
+                                                   
+    assert code_utils._shannon_entropy_list_msa(msa) == [-0.0]*20                                        
 

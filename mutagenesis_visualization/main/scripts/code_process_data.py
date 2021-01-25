@@ -18,6 +18,17 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
+try:
+    import mutagenesis_visualization.main.scripts.code_utils as code_utils
+except ModuleNotFoundError:
+    import import_notebook
+    import os
+    directory = os.getcwd()
+    new_directory = directory.replace('tests', 'main')
+    os.chdir(new_directory)
+    import code_utils as code_utils
+    os.chdir(directory)
+
 
 # # Data Process Functions
 

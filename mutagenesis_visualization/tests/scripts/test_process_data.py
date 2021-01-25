@@ -11,13 +11,16 @@ import os
 from itertools import product
 from random import randint, random
 import logging
+import tempfile
+from collections import OrderedDict
+import numpy as np
 
 log: logging.Logger = logging.getLogger('test_process_data')
 
-
 try:
     from mutagenesis_visualization.main.scripts.code_process_data import (
-        count_reads, calculate_enrichment, assemble_sublibraries
+        count_reads, calculate_enrichment, assemble_sublibraries,
+        _initialize_ordereddict, msa_enrichment
     )
 except ModuleNotFoundError:
     import import_notebook
@@ -25,11 +28,11 @@ except ModuleNotFoundError:
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
-    from code_process_data import count_reads, calculate_enrichment, assemble_sublibraries
+    from code_process_data import count_reads, calculate_enrichment, assemble_sublibraries, _initialize_ordereddict, msa_enrichment
     os.chdir(directory)
 
 
-# In[3]:
+# In[ ]:
 
 
 """
@@ -104,10 +107,38 @@ def test_count_reads():
 
     # Test CCT when not in codon list
     index = pd.Index([
-        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC",
-        "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG",
-        "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG",
-        "GTC", "GTG", "TGG", "TAC", "TAG",
+        "GCC",
+        "GCG",
+        "TGC",
+        "GAC",
+        "GAG",
+        "TTC",
+        "GGC",
+        "GGG",
+        "CAC",
+        "ATC",
+        "AAG",
+        "CTC",
+        "CTG",
+        "TTG",
+        "ATG",
+        "AAC",
+        "CCC",
+        "CCG",
+        "CAG",
+        "CGC",
+        "CGG",
+        "AGG",
+        "TCC",
+        "TCG",
+        "AGC",
+        "ACC",
+        "ACG",
+        "GTC",
+        "GTG",
+        "TGG",
+        "TAC",
+        "TAG",
     ])
     values_cct = [0] * 32
     expected_cct_counts = pd.DataFrame(
@@ -120,8 +151,35 @@ def test_count_reads():
     mut_assert_df_equal(cct_counts, expected_cct_counts)
     mut_assert_df_equal(cct_wt, expected_cct_wt)
 
+    # Now check with NNK
+    # Create a temporary directory using the context manager
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        cct_counts, cct_wt, info = count_reads(
+            dna_sequence="cCt",
+            input_file=my_file,
+            codon_list='NNK',
+            output_file=tmpdirname + '/counts.xlsx',
+            full=True,
+        )
 
-# In[23]:
+    values_cct = [0] * 17 + [1] + [0] * 14
+    index = [
+        'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT',
+        'AAG', 'CTG', 'CTT', 'TTG', 'ATG', 'AAT', 'CCG', 'CCT', 'CAG', 'AGG',
+        'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG',
+        'TAT', 'TAG'
+    ]
+    expected_cct_counts = pd.DataFrame(
+        values_cct, index=index, columns=column_counts
+    )
+    expected_cct_wt = pd.DataFrame([[2, 'CCG', 'P', 0]],
+                                   index=[16],
+                                   columns=column_wt)
+    mut_assert_df_equal(cct_counts, expected_cct_counts)
+    mut_assert_df_equal(cct_wt, expected_cct_wt)
+
+
+# In[ ]:
 
 
 def test_calculate_enrichment():
@@ -171,29 +229,21 @@ def test_calculate_enrichment():
     args_how_scale = product(
         zeroing_compatible, how, [True], std_scale, *common_args
     )
-    args_how_no_scale = product(
-        zeroing_compatible, how, [False], *common_args
-    )
-    args_no_how_scale = product(
-        zeroing_other, [True], std_scale, *common_args
-    )
-    args_no_how_no_scale = product(
-        zeroing_other, [False], *common_args
-    )
+    args_how_no_scale = product(zeroing_compatible, how, [False], *common_args)
+    args_no_how_scale = product(zeroing_other, [True], std_scale, *common_args)
+    args_no_how_no_scale = product(zeroing_other, [False], *common_args)
 
     for args in args_how_scale:
-        print(args)
+        #print(args)
         zeroing, how, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
             df_counts_pre.iloc[:, :54],
             df_counts_sel.iloc[:, :54],
-
             zeroing=zeroing,
             how=how,
             norm_std=norm_std,
             std_scale=std_scale,
-
             aminoacids=aminoacids_NNS,
             stopcodon=stopcodon,
             min_counts=min_counts,
@@ -203,17 +253,15 @@ def test_calculate_enrichment():
             infinite=3
         )
     for args in args_no_how_scale:
-        print(args)
+        #print(args)
         zeroing, how, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
             df_counts_pre.iloc[:, :54],
             df_counts_sel.iloc[:, :54],
-
             zeroing=zeroing,
             how=how,
             norm_std=norm_std,
-
             aminoacids=aminoacids_NNS,
             stopcodon=stopcodon,
             min_counts=min_counts,
@@ -223,17 +271,15 @@ def test_calculate_enrichment():
             infinite=3
         )
     for args in args_how_no_scale:
-        print(args)
+        #print(args)
         zeroing, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
             df_counts_pre.iloc[:, :54],
             df_counts_sel.iloc[:, :54],
-
             zeroing=zeroing,
             norm_std=norm_std,
             std_scale=std_scale,
-
             aminoacids=aminoacids_NNS,
             stopcodon=stopcodon,
             min_counts=min_counts,
@@ -243,16 +289,14 @@ def test_calculate_enrichment():
             infinite=3
         )
     for args in args_how_scale:
-        print(args)
+        #print(args)
         zeroing, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
             df_counts_pre.iloc[:, :54],
             df_counts_sel.iloc[:, :54],
-
             zeroing=zeroing,
             norm_std=norm_std,
-
             aminoacids=aminoacids_NNS,
             stopcodon=stopcodon,
             min_counts=min_counts,
@@ -263,7 +307,7 @@ def test_calculate_enrichment():
         )
 
 
-# In[2]:
+# In[ ]:
 
 
 def test_assemble_sublibraries():
@@ -296,7 +340,7 @@ def test_assemble_sublibraries():
 
     for columns, columns_wt, nrows_aminos in args:
         nrows_pop, aminos = nrows_aminos
-        print(f"{columns=}\t{columns_wt=}\t{nrows_pop=}")
+        #print(f"{columns=}\t{columns_wt=}\t{nrows_pop=}")
         df = assemble_sublibraries(
             excel_path=filename,
             sheet_pre=sheet_pre,
@@ -309,7 +353,7 @@ def test_assemble_sublibraries():
             output_file=None
         )
 
-        
+
 def partition_list(array, num_partitions):
     """Partition array randomly where each partition has at least one item."""
     if num_partitions < 2:
@@ -340,5 +384,40 @@ def partition_list(array, num_partitions):
 # In[ ]:
 
 
+def test_initialize_ordereddict():
+    variants = _initialize_ordereddict(['ACC', 'CCT'])
+    assert (isinstance(variants, OrderedDict))
 
+
+# # Shannon tests
+
+# In[2]:
+
+
+def test_msa_enrichment():
+
+    # File location
+    # Use relative file import to access the data folder
+    try:
+        location = os.path.dirname(os.path.realpath(__file__))
+        my_file = os.path.join(location, '../../data/for_tests', "msa.fasta")
+    except NameError:
+        my_file = os.path.join('../../data/for_tests', "msa.fasta")
+    
+    # Create fake data
+    class test_obj:
+        dataframe = pd.DataFrame(
+            index=[
+                'Q', 'V', 'W', 'L', 'I', 'M', 'K', 'C', 'N', 'S', 'Y', 'D', 'F',
+                'G', 'R', 'E', 'H', 'P', 'T', 'A'
+            ]
+        )
+        dataframe['Position'] = np.arange(0,20)
+        dataframe['Score'] = [0]*20
+        dataframe['Aminoacid'] = list('ACDEFGHIKLMNPQRSTVWY')
+    # Create test object
+    test = test_obj()
+    # Get df
+    df, df_freq = msa_enrichment(test, my_file, 0)
+    assert df['Shannon'].sum() == 0
 
