@@ -10,7 +10,7 @@
 ## Overview
 Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for site-saturation mutagenesis datasets.
 
-The package main focus is to perform the statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from FASTQ files.
+The package main focus is to perform the processing, statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from FASTQ files.
 
 ## Key Features
 
@@ -18,6 +18,7 @@ The package main focus is to perform the statistical analysis and visualization 
 - Produce publication-quality heatmaps from enrichment scores as well as a wide range of visualization plots.
 - Principal component analysis (PCA), hierarchical clustering and receiver operating characteristic (ROC) curve tools.
 - Map enrichment scores effortlessly onto a PDB structure using Pymol. Structural properties such as SASA, B-factor or atom coordinates can be extracted from the PDB and visualized using a built-in method.
+- Generate dashboards.
 
 ## Workflow
 
