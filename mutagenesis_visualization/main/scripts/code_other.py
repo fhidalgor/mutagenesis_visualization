@@ -636,7 +636,7 @@ def plot_roc(
         df_class = self.roc_df
 
     # Merge dataframe with classes
-    df = _mergeclassvariants(df_class, self.dataframe)
+    df = _mergeclassvariants(self.dataframe, df_class)
 
     # Calculate ROC parameters
     fpr, tpr, auc, _ = _rocauc(df)
@@ -711,7 +711,7 @@ def _mergeclassvariants(df_score, df_class):
     Merge the input dataframe containing the class (true score) for variants and the enrichment scores
     '''
     # Merge DMS with true score dataset
-    df_merged = pd.merge(df_class, df_score, on=['Variant'], how='left')
+    df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
 
     # Drop rows with Nan values
     df_merged.dropna(inplace=True)
