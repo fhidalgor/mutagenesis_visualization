@@ -602,11 +602,11 @@ def _calculate_secondary(df, secondary):
 
 # ## ROC AUC
 
-# In[6]:
+# In[3]:
 
 
 def plot_roc(
-    self, df_class=None, output_file: Union[None, str, Path] = None, **kwargs
+    self, df_class=None, mode='pointmutant',output_file: Union[None, str, Path] = None, **kwargs
 ):
     """
     Generates ROC AUC plot. It compares enrichment scores to some labels that
@@ -619,7 +619,12 @@ def plot_roc(
     df_class: Pandas dataframe
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
         containing the true class of that mutation. The true class can also be an input when creating the object.
-
+    
+    mode : str, default 'pointmutant'
+        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
+        each position. If mode = 'A', it will show the alanine substitution profile. Can be 
+        used for each amino acid. Use the one-letter code and upper case.
+        
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'.
@@ -631,13 +636,16 @@ def plot_roc(
         not get returned.
 
     """
+    # Chose mode:
+    df_grouped = _select_grouping(self.dataframe, mode)
+    
     # Use default class
     if df_class is None:
         df_class = self.roc_df
-
+    
     # Merge dataframe with classes
-    df = _mergeclassvariants(self.dataframe, df_class)
-
+    df = _mergeclassvariants(self.dataframe, df_class, mode)
+           
     # Calculate ROC parameters
     fpr, tpr, auc, _ = _rocauc(df)
 
@@ -691,7 +699,25 @@ def plot_roc(
 
     if temp_kwargs['show']:
         plt.show()
+        
+def _select_grouping(df, mode):
+    '''
+    Choose the subset of substitutions based on mode input.
+    For example, if mode=='A', then return data for Alanine.
 
+    '''
+    # convert to upper case
+    mode = mode.upper()
+
+    # Select grouping
+    if mode =='POINTMUTANT':
+        pass
+    elif mode == 'MEAN':
+        df = df.groupby('Position', as_index=False).mean()
+    else:
+        df = df.loc[self.dataframe['Aminoacid'] == mode].copy()
+
+    return df
 
 def _rocauc(df):
     '''
@@ -706,12 +732,22 @@ def _rocauc(df):
     return fpr, tpr, auc, thresholds
 
 
-def _mergeclassvariants(df_score, df_class):
+def _mergeclassvariants(df_score, df_class, mode):
     '''
     Merge the input dataframe containing the class (true score) for variants and the enrichment scores
     '''
-    # Merge DMS with true score dataset
-    df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
+    # convert to upper case
+    mode = mode.upper()
+    
+    if mode == 'POINTMUTANT':
+        # Cut other data
+        df_class = df_class[['Variant', 'Class']].copy()
+        # Merge DMS with true score dataset
+        df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
+    else:
+            # Cut other data
+        df_class = df_class[['Position','Class']].copy()
+        df_merged = pd.merge(df_score, df_class, on=['Position'], how='left')
 
     # Drop rows with Nan values
     df_merged.dropna(inplace=True)
