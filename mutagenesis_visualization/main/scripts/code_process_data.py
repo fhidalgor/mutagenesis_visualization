@@ -488,7 +488,7 @@ def calculate_enrichment(
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
     elif zeroing == 'zscore':
-        zeroed = stats.zscore(zeroed, nan_policy='propagate')
+        zeroed = stats.zscore(log10_counts_grouped, nan_policy='omit')
 
     # Export files
     if output_file:

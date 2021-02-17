@@ -96,6 +96,11 @@ def kwargs():
     return_plot_object : boolean, default False
         If true, will return plotting object.
     
+    figsize_x : int
+    
+    figsize_y : int
+    
+    
     Returns
     --------
     default_kwargs : dict
@@ -103,6 +108,8 @@ def kwargs():
 
     """
     default_kwargs = {
+        'figsize_x': None,
+        'figsize_y': None,
         'colormap': _generatecolormap(),
         'colorbar_scale': [-1, 1],
         'color': 'k',

@@ -37,7 +37,7 @@ except ModuleNotFoundError:
 
 # ### Full Heatmap
 
-# In[7]:
+# In[41]:
 
 
 def plot_heatmap(
@@ -106,7 +106,11 @@ def plot_heatmap(
         code_utils._add_SNV_boolean(self.dataframe.copy()
                                     ).groupby(by='Position').mean()['Score_NaN']
     ]
-
+    # For 1 column case
+    #return (average)
+    if len(average) == 1: 
+        average = [np.array(average[0])]
+    
     # Create new sequence that we may to change order later
     self.sequence_updated = self.sequence
 
@@ -126,11 +130,12 @@ def plot_heatmap(
 
     # declare figure and subplots
     figwidth = 14 * len(df.columns) / 165
-
+    temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
     # Change parameters depending on whether cartoon is on or off
     if show_cartoon:
         figheight = 2.45
-        fig = plt.figure(figsize=(figwidth, figheight))
+        temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
+        fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
         gs = gridspec.GridSpec(
             nrows=3,
             ncols=2,
@@ -139,7 +144,8 @@ def plot_heatmap(
         )
     else:
         figheight = 2
-        fig = plt.figure(figsize=(figwidth, figheight))
+        temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
+        fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
         gs = gridspec.GridSpec(
             nrows=2,
             ncols=2,
@@ -347,7 +353,7 @@ def plot_heatmap(
         plt.show()
 
 
-# In[3]:
+# In[5]:
 
 
 def _labels(start_position=1):
@@ -503,7 +509,7 @@ def _hierarchical_sort(df):
 
 # ### Grouped Heatmap
 
-# In[4]:
+# In[6]:
 
 
 def plot_heatmap_rows(
@@ -559,7 +565,10 @@ def plot_heatmap_rows(
     # The size can be changed. I found it empirically
     figwidth = 14 * len(dataset[0]) / 165
     figheight = 2 / 21 * len(selection)
-    fig = plt.figure(figsize=(figwidth, figheight))
+    temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
+    temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
+
+    fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
     gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[len(dataset[0]), 1])
     ax = plt.subplot(gs[0, 0])
     cbar1 = plt.subplot(gs[0, 1])
@@ -680,7 +689,7 @@ def plot_heatmap_rows(
 
 # ### Subset Heatmap
 
-# In[5]:
+# In[7]:
 
 
 def plot_heatmap_columns(
@@ -729,7 +738,8 @@ def plot_heatmap_columns(
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
-
+    
+    
     # load labels
     temp_kwargs['color_sequencelabels'] = _labels(self.start_position)[0]
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
@@ -749,7 +759,10 @@ def plot_heatmap_columns(
     # the size can be changed
     figwidth = 2 * len(df.columns) / 22
     figheight = 2
-    fig = plt.figure(figsize=(figwidth, figheight))
+    temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
+    temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
+
+    fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
     gs = gridspec.GridSpec(nrows=1, ncols=1)
     # needed to set autoscale off to avoid missalignment
     ax = plt.subplot(gs[0])
