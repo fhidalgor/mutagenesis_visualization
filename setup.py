@@ -35,5 +35,5 @@ setuptools.setup(
     dependency_links=['https://github.com/cxhernandez/ipymol/tarball/master'],
     zip_safe=True,
     include_package_data=True,
-    python_requires='>=3.8',
+    python_requires='>=3.6',
     )
