@@ -1,8 +1,8 @@
 import setuptools
 import sys
 
-if sys.version_info[:2] < (3, 8):
-    raise RuntimeError("Python version >= 3.8 required.")
+if sys.version_info[:2] < (3, 6):
+    raise RuntimeError("Python version >= 3.6 required.")
 
 def readme():
     with open("README.md", "r") as fh:
