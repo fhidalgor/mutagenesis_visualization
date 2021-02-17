@@ -107,9 +107,6 @@ def plot_heatmap(
                                     ).groupby(by='Position').mean()['Score_NaN']
     ]
     # For 1 column case
-    #return (average)
-    if len(average) == 1: 
-        average = [np.array(average[0])]
     
     # Create new sequence that we may to change order later
     self.sequence_updated = self.sequence
@@ -127,7 +124,9 @@ def plot_heatmap(
         self.sequence_updated = pd.DataFrame(list(self.sequence)
                                              ).T[sorted_columns]
         self.sequence_updated = list(self.sequence_updated.iloc[0])
-
+    elif len(average) == 1: 
+        average = [np.array(average[0])]
+        
     # declare figure and subplots
     figwidth = 14 * len(df.columns) / 165
     temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)

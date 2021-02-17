@@ -12,7 +12,7 @@ from mutagenesis_visualization.main.scripts.code_kernel import plot_multiplekern
 import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
 
 __author__ = "Frank Hidalgo"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __title__ = "Mutagenesis Visualization"
 __license__ = "GPLv3"
 __author_email__ = "fhidalgoruiz@berkeley.edu"
