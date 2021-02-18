@@ -3,7 +3,7 @@
 
 # # Import Modules
 
-# In[1]:
+# In[ ]:
 
 
 import numpy as np
@@ -34,7 +34,7 @@ except ModuleNotFoundError:
 
 # ## Process trimmed fastq file
 
-# In[7]:
+# In[ ]:
 
 
 def count_reads(
@@ -165,9 +165,9 @@ def count_reads(
     )
     df_counts = df_counts.reindex(index=codon_list)
 
-    # Get WT counts
-    df_wt = df.loc[df['SynWT'] == True][[
-        'Position', 'Codon', 'Aminoacid', 'Counts'
+    # Get WT counts syn. Added or operator so also chooses WT codon
+    df_wt = df.loc[(df['SynWT'] == True) | (df['SynWT'] == 'wt codon')][[ # perhaps I need to remove this again
+        'Counts' # removed
     ]]
 
     # Export files
@@ -210,7 +210,7 @@ def _codon_table():
 def _are_syn(codon1, codon2, codontable):
     '''Determine if 2 codons are synonymous'''
     if codon1 == codon2:
-        return False
+        return 'wt codon' # changed from False
     if _translate(codon1, codontable) is not _translate(codon2, codontable):
         return False
     return True
@@ -323,6 +323,7 @@ def calculate_enrichment(
     min_countswt=100,
     std_scale=0.2,
     mpop=2,
+    mad_filtering=True,
     mwt=2,
     infinite=3,
     output_file: Union[None, str, Path] = None
@@ -350,7 +351,7 @@ def calculate_enrichment(
 
     zeroing : str, default 'population'
         Method to normalize the data.
-        Can also use 'zscore, 'counts', 'wt' or 'kernel'. If 'wt' is used 'pre_wt' must not be set to None.
+        Can also use 'none', 'zscore', 'counts', 'wt' or 'kernel'. If 'wt' is used 'pre_wt' must not be set to None.
 
     how : str, default 'median'
         Metric to zero the data. Only works if zeroing='population' or 'wt'.
@@ -374,7 +375,10 @@ def calculate_enrichment(
     mpop : int, default 2
         When using the median absolute deviation (MAD) filtering, mpop is the number of medians away
         a data point must be to be discarded.
-
+    
+    mad_filtering : boolean, default True
+        Will apply MAD filtering to data.
+        
     mwt : int, default 2
         When MAD filtering, mpop is the number of medians away a data point must be to
         be discarded. The difference with mpop is that mwt is only used when the population of wild-type
@@ -433,9 +437,14 @@ def calculate_enrichment(
     log10_counts_grouped = _group_byaa(df, aminoacids)
 
     # MAD filtering
-    log10_counts_mad = _MAD_filtering(
-        np.ravel(np.array(log10_counts_grouped)), mpop
-    )
+    if mad_filtering:
+        log10_counts_mad = _MAD_filtering(
+            np.ravel(np.array(log10_counts_grouped)), mpop
+        )
+    else:
+        log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
+    
+    # Statistics population using mad filtered data
     mean_pop = np.nanmean(log10_counts_mad)
     median_pop = np.nanmedian(log10_counts_mad)
     std_pop = np.nanstd(log10_counts_mad)
@@ -449,12 +458,17 @@ def calculate_enrichment(
         )
         # MAD filtering
         # If set to m=1, if tosses out about 50% of the values. the mean barely changes though
-        log10_wtcounts = _MAD_filtering(log10_wtcounts, mwt)
+        if mad_filtering:
+            log10_wtcounts = _MAD_filtering(log10_wtcounts, mwt)
+            
         mean_wt = np.nanmean(log10_wtcounts)
         median_wt = np.nanmedian(log10_wtcounts)
         std_wt = np.nanstd(log10_wtcounts)
-        mode_wt = _nanmode(log10_wtcounts)
-
+        if len(log10_wtcounts)>1:
+            mode_wt = _nanmode(log10_wtcounts)
+        else: #case for only 1 wt
+            mode_wt = log10_wtcounts
+            
     # Zero data, select case
     if zeroing == 'wt':
         if how == 'mean':
@@ -489,7 +503,10 @@ def calculate_enrichment(
             zeroed = zeroed * std_scale / kernel_std
     elif zeroing == 'zscore':
         zeroed = stats.zscore(log10_counts_grouped, nan_policy='omit')
-
+    elif zeroing == 'none':
+        zeroed = log10_counts_grouped
+    else:
+        raise ValueError('Wrong zeroed parameter')
     # Export files
     if output_file:
         np.savetxt(Path(output_file), zeroed, fmt='%i', delimiter='\t')
@@ -500,7 +517,7 @@ def calculate_enrichment(
 # 
 # ## Aux functions
 
-# In[2]:
+# In[ ]:
 
 
 def _get_enrichment(
