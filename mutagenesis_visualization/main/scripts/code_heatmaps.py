@@ -569,7 +569,6 @@ def plot_heatmap_rows(
         y_labels = list(df.T.columns)
         dataset = df.to_numpy()
     
-    print (dataset)
     # The size can be changed. I found it empirically
     figwidth = 14 * len(dataset[0]) / 165
     figheight = 2 / 21 * len(selection)
