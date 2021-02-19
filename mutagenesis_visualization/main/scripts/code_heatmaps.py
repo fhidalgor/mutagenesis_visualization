@@ -526,6 +526,7 @@ def plot_heatmap_rows(
     self : object from class *Screen*
     
     selection : list of aa to show, default ['E','Q','A','P','V','Y']. 
+        If you only want the mean displayed, type selection = 'mean'.
     
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
@@ -555,12 +556,20 @@ def plot_heatmap_rows(
     temp_kwargs['color_sequencelabels'] = _labels(self.start_position)[0]
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
-    # Add group and pivot df
-    df = code_utils._select_aa(
-        self.dataframe_stopcodons, selection, values='Score_NaN'
-    )
-    dataset = df.to_numpy()
-
+    # Check if mean or not. Add group and pivot df.
+    if selection == 'mean':
+        df = code_utils._add_SNV_boolean(self.dataframe.copy()
+                                    ).groupby(by='Position').mean()['Score_NaN']
+        y_labels = [""]
+        dataset = np.array([df.to_numpy()])
+    else:
+        df = code_utils._select_aa(
+            self.dataframe_stopcodons, selection, values='Score_NaN'
+        )
+        y_labels = list(df.T.columns)
+        dataset = df.to_numpy()
+    
+    print (dataset)
     # The size can be changed. I found it empirically
     figwidth = 14 * len(dataset[0]) / 165
     figheight = 2 / 21 * len(selection)
@@ -617,7 +626,7 @@ def plot_heatmap_rows(
         minor=False
     )
     ax.set_yticklabels(
-        list(df.T.columns),
+        y_labels,
         fontsize=6,
         fontname="Arial",
         color='k',
