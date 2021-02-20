@@ -10,7 +10,7 @@ def readme():
 
 setuptools.setup(
     name="mutagenesis_visualization",
-    version="0.0.3",
+    version="0.0.4",
     author="Frank Hidalgo",
     author_email="fhidalgoruiz@berkeley.edu",
     description="A package for processing, analysis and visualization of site-saturation mutagenesis data",
