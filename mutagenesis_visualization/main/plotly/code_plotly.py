@@ -5,7 +5,6 @@
 
 # In[1]:
 
-
 import numpy as np
 import pandas as pd
 import copy
@@ -28,7 +27,6 @@ except ModuleNotFoundError:
     import code_kwargs
     import code_utils
 
-
 # # Plotly plots
 
 # ## Rank
@@ -36,31 +34,25 @@ except ModuleNotFoundError:
 # In[2]:
 
 
-def plot_rank_plotly(
-    self,
-    mode='pointmutant',
-    outdf=False,
-    output_html: Union[None, str, Path] = None,
-    **kwargs
-):
+def plot_rank_plotly(self, mode='pointmutant', outdf=False, output_html: Union[None, str, Path] = None, **kwargs):
     '''
-    Generate a plotly rank plot so every mutation/residue is sorted based 
+    Generate a plotly rank plot so every mutation/residue is sorted based
     on enrichment score.
 
     Parameters
     ----------
     self : object from class *Screen*
 
-    mode : str, default 'pointmutant'. 
+    mode : str, default 'pointmutant'.
         Alternative set to "mean" for the mean of each position.
 
     outdf : boolean, default False
         If set to true, will return the df with the rank of mutations.
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -86,34 +78,18 @@ def plot_rank_plotly(
         df['Variant'] = df['Position']
 
     # Create figure
-    fig = px.scatter(
-        x=np.arange(len(df), 0, -1), y=df['Score'], text=df['Variant']
-    )
+    fig = px.scatter(x=np.arange(len(df), 0, -1), y=df['Score'], text=df['Variant'])
 
     # Style
     pio.templates.default = "plotly_white"
 
     # Axes https://plotly.com/python/axes/
-    fig.update_traces(
-        mode="markers",
-        hovertemplate=
-        'Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>'
-    )
+    fig.update_traces(mode="markers", hovertemplate='Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>')
     fig.update_xaxes(
-        title_text=temp_kwargs['x_label'],
-        showline=True,
-        linewidth=2,
-        linecolor='black',
-        ticks="outside",
-        mirror=True
+        title_text=temp_kwargs['x_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'],
-        showline=True,
-        linewidth=2,
-        linecolor='black',
-        ticks="outside",
-        mirror=True
+        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -121,10 +97,7 @@ def plot_rank_plotly(
         width=temp_kwargs['figsize'][0] * 120,
         height=temp_kwargs['figsize'][1] * 120,
         font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        }
+        title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
     )
 
     # save fig to html
@@ -135,7 +108,7 @@ def plot_rank_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
     # return dataframe
     if outdf:
@@ -155,15 +128,10 @@ def _save_html(fig, output_html):
 
 
 def plot_scatter_plotly(
-    self,
-    obj2,
-    mode='pointmutant',
-    show_results=False,
-    output_html: Union[None, str, Path] = None,
-    **kwargs
+    self, obj2, mode='pointmutant', show_results=False, output_html: Union[None, str, Path] = None, **kwargs
 ):
     '''
-    Generate a scatter plot between object and a second object of the 
+    Generate a scatter plot between object and a second object of the
     same class.
 
     Parameters
@@ -172,16 +140,16 @@ def plot_scatter_plotly(
 
     obj2 : object from class *Screen* to do the scatter with
 
-    mode : str, default 'pointmutant'. 
+    mode : str, default 'pointmutant'.
         Alternative set to "mean" for the mean of each position.
-    
+
     show_results : boolean, default False
         If set to true, will export the details of the linear fit.
-        
+
     output_html : str, default None
-        If you want to export the generated graph into html, add 
+        If you want to export the generated graph into html, add
         the path and name of the file. Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -207,35 +175,18 @@ def plot_scatter_plotly(
     pio.templates.default = "plotly_white"
 
     # create figure
-    fig = px.scatter(
-        x=df['dataset_1'],
-        y=df['dataset_2'],
-        trendline="ols",
-        trendline_color_override="red"
-    )
+    fig = px.scatter(x=df['dataset_1'], y=df['dataset_2'], trendline="ols", trendline_color_override="red")
 
     # Titles
     # hide text labels
     fig.update_traces(
-        hovertext=df['Variant'],
-        hovertemplate=
-        'Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>'
+        hovertext=df['Variant'], hovertemplate='Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>'
     )
     fig.update_xaxes(
-        title_text=temp_kwargs['x_label'],
-        showline=True,
-        linewidth=2,
-        linecolor='black',
-        ticks="outside",
-        mirror=True
+        title_text=temp_kwargs['x_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'],
-        showline=True,
-        linewidth=2,
-        linecolor='black',
-        ticks="outside",
-        mirror=True
+        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -243,10 +194,7 @@ def plot_scatter_plotly(
         width=temp_kwargs['figsize'][0] * 120,
         height=temp_kwargs['figsize'][1] * 120,
         font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        }
+        title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
     )
 
     if show_results:
@@ -260,7 +208,7 @@ def plot_scatter_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 # ## Heatmap
@@ -268,20 +216,18 @@ def plot_scatter_plotly(
 # In[4]:
 
 
-def plot_heatmap_plotly(
-    self, output_html: Union[None, str, Path] = None, **kwargs
-):
+def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwargs):
     '''
     Generate a plotly histogram plot.
 
     Parameters
     ----------
     self : object from class *Screen*
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -305,9 +251,7 @@ def plot_heatmap_plotly(
     )
 
     # get labels for texthover and reindex
-    text_hover = self.dataframe_stopcodons.pivot(
-        values='Variant', index='Aminoacid', columns='Position'
-    )
+    text_hover = self.dataframe_stopcodons.pivot(values='Variant', index='Aminoacid', columns='Position')
     text_hover = text_hover.reindex(list(df.index))
 
     # Create figure
@@ -329,10 +273,7 @@ def plot_heatmap_plotly(
         ),
     ))
 
-    fig.update_traces(
-        hovertemplate=
-        'Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>'
-    )
+    fig.update_traces(hovertemplate='Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>')
 
     # Style
     pio.templates.default = "plotly_white"
@@ -371,10 +312,7 @@ def plot_heatmap_plotly(
         width=14 * len(df.columns) / 165 * 90,
         height=2.65 * 120,
         font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        },
+        title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5},
     )
 
     # save fig to html
@@ -385,17 +323,14 @@ def plot_heatmap_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 # Still want to add extra axis with original amino acids
 
-
 # ### Deprecated
 
 # In[5]:
-
-
 """def _plot_heatmap_plotly_imshow(
     self, output_html: Union[None, str, Path] = None, **kwargs
 ):
@@ -406,11 +341,11 @@ def plot_heatmap_plotly(
     Parameters
     ----------
     self : object from class *Screen*
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -504,19 +439,13 @@ def plot_heatmap_plotly(
 
 # Still want to add extra axis with original amino acids"""
 
-
 # ## Histogram
 
 # In[154]:
 
 
 #https://plotly.com/python/histograms/
-def plot_histogram_plotly(
-    self,
-    mode='pointmutant',
-    output_html: Union[None, str, Path] = None,
-    **kwargs
-):
+def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str, Path] = None, **kwargs):
     '''
     Generate a plotly histogram plot.
 
@@ -524,13 +453,13 @@ def plot_histogram_plotly(
     ----------
     self : object from class *Screen*
 
-    mode : str, default 'pointmutant'. 
+    mode : str, default 'pointmutant'.
         Alternative set to "mean" for the mean of each position.
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -578,21 +507,13 @@ def plot_histogram_plotly(
         # Overlay both histograms
         fig.update_layout(
             barmode='overlay',
-            legend=dict(
-                orientation="h",
-                y=(
-                    1 + (
-                        1.5 / temp_kwargs['figsize'][1]**2
-                    )
-                ),
-                bgcolor='rgba(0,0,0,0)'
-            ),
+            legend=dict(orientation="h", y=(1 + (1.5 / temp_kwargs['figsize'][1]**2)), bgcolor='rgba(0,0,0,0)'),
         )
         # Reduce opacity to see both histograms
         fig.update_traces(opacity=0.75)
         # Title
         temp_kwargs['title'] = 'Histogram filtered by: {}'.format(mode)
-        
+
     # Style
     pio.templates.default = "plotly_white"
 
@@ -607,12 +528,7 @@ def plot_histogram_plotly(
         automargin=True,
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'],
-        showline=True,
-        linewidth=2,
-        linecolor='black',
-        ticks="outside",
-        mirror=True
+        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -620,10 +536,7 @@ def plot_histogram_plotly(
         width=temp_kwargs['figsize'][0] * 120,
         height=temp_kwargs['figsize'][1] * 120,
         font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        }
+        title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
     )
 
     # save fig to html
@@ -634,14 +547,12 @@ def plot_histogram_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 # ## Mean
 
 # In[20]:
-
-
 '''    import os
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
@@ -651,29 +562,26 @@ def plot_histogram_plotly(
     os.chdir(directory)
     plot_mean_plotly(hras_RBD())'''
 
-
 # In[19]:
 
 
-def plot_mean_plotly(
-    self, mode='mean', output_html: Union[None, str, Path] = None, **kwargs
-):
+def plot_mean_plotly(self, mode='mean', output_html: Union[None, str, Path] = None, **kwargs):
     '''
-    Generate a plotlu mean plot.
+    Generate a plotly mean plot.
 
     Parameters
     ----------
     self : object from class *Screen*
 
     mode : str, default 'mean'
-        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
-        each position. If mode = 'A', it will show the alanine substitution profile. Can be 
+        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of
+        each position. If mode = 'A', it will show the alanine substitution profile. Can be
         used for each amino acid. Use the one-letter code and upper case.
-        
+
     output_html : str, default None
         If you want to export the generated graph into html, add the path and name of the file.
         Example: 'path/filename.html'.
-        
+
     **kwargs : other keyword arguments
 
     Returns
@@ -695,26 +603,18 @@ def plot_mean_plotly(
     df = _select_grouping(self, mode)
 
     # Calculate colors
-    df['Color'] = df.apply(
-        code_utils._color_data,
-        axis=1,
-        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-    )
+    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
 
     # Create figure
     #fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
     #px.bar was switching colors when the first value of Score was negative
 
-    fig = go.Figure(
-        data=[
-            go.Bar(
-                x=df['Position'],
-                y=df['Score'],
-                marker_color=df['Color'],
-                marker_line_width=0,
-            )
-        ]
-    )
+    fig = go.Figure(data=[go.Bar(
+        x=df['Position'],
+        y=df['Score'],
+        marker_color=df['Color'],
+        marker_line_width=0,
+    )])
 
     # Style
     pio.templates.default = "plotly_white"
@@ -746,10 +646,7 @@ def plot_mean_plotly(
         height=temp_kwargs['figsize'][1] * 120,
         showlegend=False,
         font=dict(family="Arial, monospace", size=12, color="black"),
-        title={
-            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
-            'x': 0.5
-        }
+        title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
     )
 
     # save fig to html
@@ -760,7 +657,7 @@ def plot_mean_plotly(
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 def _select_grouping(self, mode):
@@ -850,17 +747,13 @@ def plot_scatter_3D_plotly(
     temp_kwargs['x_label'] = kwargs.get('x_label', 'x (Å)')
     temp_kwargs['y_label'] = kwargs.get('y_label', 'y (Å)')
     temp_kwargs['z_label'] = kwargs.get('z_label', 'z (Å)')
-    
+
     # Get Scores and colors
-    df = _color_3D_scatter(
-        self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
-    )
+    df = _color_3D_scatter(self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof'])
 
     # If coordinates is not an input, get it from the pdb
     if df_coordinates is None:
-        df_coordinates = _parse_pdbcoordinates(
-            self, pdb_path, position_correction, chain
-        )
+        df_coordinates = _parse_pdbcoordinates(self, pdb_path, position_correction, chain)
 
     # Plot figure
     x, y, z = ('x', 'y', 'z')
@@ -880,9 +773,7 @@ def plot_scatter_3D_plotly(
     fig = _update_axes(fig, temp_kwargs)
 
     # for the clickable part
-    fig.update_traces(
-        hovertext=df['Position'], hovertemplate='Position: %{hovertext}'
-    )
+    fig.update_traces(hovertext=df['Position'], hovertemplate='Position: %{hovertext}')
     # title
     fig = _update_layout(fig, temp_kwargs)
 
@@ -895,7 +786,7 @@ def plot_scatter_3D_plotly(
 
     # show only if asked
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 def _update_layout(fig, temp_kwargs):
@@ -988,7 +879,7 @@ def plot_scatter_3D_pdbprop_plotly(
 
     mode : str, default 'mean'
         Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
         Can be used for each amino acid. Use the one-letter code and upper case.
 
     pdb_path : str, default None
@@ -1038,14 +929,10 @@ def plot_scatter_3D_pdbprop_plotly(
     temp_kwargs['z_label'] = kwargs.get('z_label', plot[2])
 
     # Get Scores and colors
-    df_scores = _color_3D_scatter(
-        self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof']
-    )
+    df_scores = _color_3D_scatter(self.dataframe, mode, temp_kwargs['lof'], temp_kwargs['gof'])
 
     # If coordinates is not an input, get it from the pdb
-    df_items = _parse_pdbcoordinates(
-        self, pdb_path, position_correction, chain, sasa=True
-    )
+    df_items = _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=True)
 
     # Add scores
     df_items['Score'] = list(df_scores['Score'])
@@ -1069,9 +956,7 @@ def plot_scatter_3D_pdbprop_plotly(
     fig = _update_axes(fig, temp_kwargs)
 
     # for the clickable part
-    fig.update_traces(
-        hovertext=df_items['Position'], hovertemplate='Position: %{hovertext}'
-    )
+    fig.update_traces(hovertext=df_items['Position'], hovertemplate='Position: %{hovertext}')
     # title
     fig = _update_layout(fig, temp_kwargs)
 
@@ -1084,7 +969,7 @@ def plot_scatter_3D_pdbprop_plotly(
 
     # show only if asked
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
     if output_df:
         return df_items, df_scores
@@ -1142,16 +1027,14 @@ def _color_3D_scatter(df, mode, lof, gof):
 
 def _centroid(df):
     '''
-    Find center of x,y,z using centroid method. 
+    Find center of x,y,z using centroid method.
     The input is a dataframe with columns x, y, z.
     Returns the center of each of the three dimensions
     '''
     return df['x'].mean(), df['y'].mean(), df['z'].mean()
 
 
-def _parse_pdbcoordinates(
-    self, pdb_path, position_correction, chain, sasa=False
-):
+def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False):
     '''parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
     If PDB is missing atoms, it can handle it.'''
 
@@ -1164,8 +1047,7 @@ def _parse_pdbcoordinates(
     positions_worked = []  # positions present in pdb
 
     # Iterate over each CA atom and geet coordinates
-    for i in np.arange(self.start_position + position_correction,
-                       self.end_position + position_correction):
+    for i in np.arange(self.start_position + position_correction, self.end_position + position_correction):
         # first check if atom exists
         try:
             structure[0][chain][int(i)].has_id("CA")
@@ -1183,16 +1065,14 @@ def _parse_pdbcoordinates(
             coordinates.append([np.nan, np.nan, np.nan, i])
 
     # Convert to df
-    df_coordinates = pd.DataFrame(
-        columns=['x', 'y', 'z', 'Position'], data=coordinates
-    )
+    df_coordinates = pd.DataFrame(columns=['x', 'y', 'z', 'Position'], data=coordinates)
 
     # Center data
     x, y, z = _centroid(df_coordinates)
     df_coordinates['x_cent'] = (df_coordinates['x'] - x).abs()**2
     df_coordinates['y_cent'] = (df_coordinates['y'] - y).abs()**2
     df_coordinates['z_cent'] = (df_coordinates['z'] - z).abs()**2
-    df_coordinates['Distance'] = df_coordinates['x_cent'] +         df_coordinates['y_cent']+df_coordinates['z_cent']
+    df_coordinates['Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
 
     # Add sasa values
     if sasa:
@@ -1206,9 +1086,7 @@ def _parse_pdbcoordinates(
         df_sasa['Position'] = positions_worked
 
         # Merge
-        df_coordinates = df_coordinates.merge(
-            df_sasa, how='outer', on='Position'
-        )
+        df_coordinates = df_coordinates.merge(df_sasa, how='outer', on='Position')
 
     return df_coordinates
 
@@ -1219,14 +1097,10 @@ def _matplotlib_to_plotly(cmap, pl_entries=255):
     pl_colorscale = []
 
     for k in range(pl_entries):
-        C = list(map(np.uint8, np.array(cmap(k * h)[:3]) * 255))
+        C = list(map(np.uint8, np.array(cmap(k * h)[: 3]) * 255))
         pl_colorscale.append([k * h, 'rgb' + str((C[0], C[1], C[2]))])
 
     return pl_colorscale
 
 
 # In[ ]:
-
-
-
-

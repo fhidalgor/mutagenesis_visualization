@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Import modules
-
-# In[ ]:
-
-
-# Regular libraries
 import numpy as np
 import pandas as pd
 import itertools
@@ -24,11 +15,6 @@ except ModuleNotFoundError:
     __file__ = '__main__'
 
 
-# # Demo
-
-# In[ ]:
-
-
 def demo(figure='heatmap', show=True):
     """
     Performs a demonstration of the mutagenesis_visualization software.
@@ -38,12 +24,12 @@ def demo(figure='heatmap', show=True):
     figure : str, default 'heatmap'
         There are a few example plots that can be displayed to test the package is working on your station.
         The options are 'heatmap', 'miniheatmap', 'mean', 'kernel', 'pca'
-        'position', 'secondary_mean', 'correlation', 'individual_correlation'. 
+        'position', 'secondary_mean', 'correlation', 'individual_correlation'.
         Check the documentation for more information.
-    
+
     show : boolean, default True
         If True, will do plt.show() for each figure.
-        
+
     Returns
     -------
     None.
@@ -289,4 +275,3 @@ def demo_fasta():
     )
 
     return fasta_dict
-

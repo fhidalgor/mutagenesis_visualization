@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Import Modules
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import copy
@@ -15,26 +7,10 @@ from os import path
 from pathlib import Path
 from typing import Union
 
-# local modules
-try:
-    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
-    import mutagenesis_visualization.main.scripts.code_utils as code_utils
-except ModuleNotFoundError:
-    import import_notebook
-    import code_kwargs
-    import code_utils
-    
 try:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
     pass
-
-
-# # Plot Functions
-
-# ## Map into Pymol
-
-# In[ ]:
 
 
 def plot_pymol(
@@ -64,31 +40,36 @@ def plot_pymol(
         include the path were your PDB is stored locally.
 
     mode : str, default 'mean'
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile. 
-        Can be used for each amino acid. Use the one-letter code and upper case.
+        Specify what enrichment scores to use. If mode = 'mean', it will
+        use the mean of each position to classify the residues. If
+        mode = 'A', it will use the Alanine substitution profile. Can be
+        used for each amino acid. Use the one-letter code and upper case.
 
     residues : list , optional
         If user decides to pass custom arguments, use the following format
-        residues = ['1,2,3,4-10','12-15,23,24,35','48,49,50,52-60'] which are [blue,red,green].
+        residues = ['1,2,3,4-10','12-15,23,24,35','48,49,50,52-60'] which
+        are [blue,red,green].
 
     position_correction : int, default 0
-        If the pdb structure has a different numbering of positions than you dataset,
-        you can correct for that. If your start_position = 2, but in the PDB that same residue
-        is at position 20, position_correction needs to be set at 18.
+        If the pdb structure has a different numbering of positions than
+        you dataset, you can correct for that. If your start_position = 2,
+        but in the PDB that same residue is at position 20, position_correction
+        needs to be set at 18.
 
     quit : boolean, default False
         if quit, close pymol after executing code.
 
     output_file : str, default None
-        If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'.
+        If you want to export the generated graph, add the path and name
+        of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
         gof : int, default is 1
-             cutoff for determining gain of function mutations based on mutagenesis data.
+             cutoff for determining gain of function mutations based on
+             mutagenesis data.
         lof : int, default is -1
-             cutoff for determining loss of function mutations based on mutagenesis data.
+             cutoff for determining loss of function mutations based on
+             mutagenesis data.
         color_gof : str, default 'red'
             Choose color to color positions with an enrichment score > gof.
         color_lof : str, default 'neptunium'
@@ -97,7 +78,8 @@ def plot_pymol(
 
     Returns
     ----------
-    Open pymol session with a fetched pdb structure where the residues are colored according to the enrichment scores.
+    Open pymol session with a fetched pdb structure where the residues
+    are colored according to the enrichment scores.
 
     """
     # update kwargs
@@ -156,12 +138,10 @@ def plot_pymol(
     return
 
 
-# Convert fitness scores into pymol residues
-
-
 def _pymol_fitness(df, gof, lof, mode, position_correction):
-    '''You input the dataframe. Removes stop codons. 
-    Returns the positions that are going to be colored blue,red and white'''
+    '''
+    You input the dataframe. Removes stop codons.
+    Returns the positions that are going to be colored blue,red and white.'''
 
     # Select grouping
     if mode == 'mean':
@@ -195,7 +175,9 @@ def _pymol_fitness(df, gof, lof, mode, position_correction):
 
 
 def _array_to_pymol(array):
-    '''Input an array with positions of aminoacids, return it in pymol format'''
+    '''
+    Input an array with positions of aminoacids, return it in pymol format.
+    '''
     pymol = ''
     for aminoacid in array:
         pymol += str(aminoacid) + '+'
@@ -206,7 +188,9 @@ def _array_to_pymol(array):
 
 
 def _light_parameters():
-    '''Group the light and ray parameters for pymol figures'''
+    '''
+    Group the light and ray parameters for pymol figures.
+    '''
     # Light parameters
     pymol.set('antialias', '3')
     pymol.set('ambient', '0.15')
@@ -225,4 +209,3 @@ def _light_parameters():
     pymol.set('sphere_scale', '0.2')
     pymol.set('sphere_quality', '4')
     return
-

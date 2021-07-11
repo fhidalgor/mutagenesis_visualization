@@ -1,0 +1,221 @@
+"""
+This module contains utils for the plotly figures.
+"""
+
+from pathlib import Path
+from typing import Union, Dict, Any
+import numpy as np
+import pandas as pd
+from Bio.PDB import PDBParser
+import freesasa
+
+
+def save_html(fig, output_html: Union[None, str, Path]) -> None:
+    '''
+    Save figure to html.
+    '''
+    if output_html:
+        fig.write_html(str(Path(output_html)))
+
+
+def select_grouping(self, mode):
+    '''
+    Choose the subset of substitutions based on mode input.
+    For example, if mode=='A', then return data for Alanine.
+    '''
+    # convert to upper case
+    mode = mode.upper()
+
+    # Select grouping
+    if mode == 'MEAN':
+        df = self.dataframe.groupby('Position', as_index=False).mean()
+    else:
+        df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
+
+    return df
+
+
+def color_3d_scatter(df, mode, lof, gof):
+    """
+    Color the data points by enrichment scores.
+
+    Parameters
+    -----------
+    df : pandas dataframe
+        The input is a dataframe that has colum with ['Position', 'Aminoacid', 'Score'].
+
+    mode : str
+        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
+        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
+        Can be used for each amino acid. Use the one-letter code and upper case.
+
+    gof : int, default is 1
+        cutoff for determining gain of function mutations based on mutagenesis data.
+
+    lof : int, default is -1
+        cutoff for determining loss of function mutations based on mutagenesis data.
+
+    Returns
+    ---------
+    df_grouped: pandas dataframe
+        New dataframe with added column of ['Color'] and the ['Score'] values of the
+        mode you chose.
+
+    """
+
+    # Copy df
+    df_grouped = df.copy()
+
+    # Select grouping.
+    if mode == 'mean':
+        df_grouped = df_grouped.groupby(['Position'], as_index=False).mean()
+    else:
+        df_grouped = df_grouped.loc[df_grouped['Aminoacid'] == mode]
+
+    # Select colors based on Score values
+    df_grouped['Color'] = 'green'
+    df_grouped.loc[df_grouped['Score'] < lof, 'Color'] = 'blue'
+    df_grouped.loc[df_grouped['Score'] > gof, 'Color'] = 'red'
+
+    return df_grouped
+
+
+def centroid(df):
+    '''
+    Find center of x,y,z using centroid method.
+    The input is a dataframe with columns x, y, z.
+    Returns the center of each of the three dimensions
+    '''
+    return df['x'].mean(), df['y'].mean(), df['z'].mean()
+
+
+def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False):
+    '''
+    Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
+    If PDB is missing atoms, it can handle it.
+    '''
+
+    # Get structure from PDB
+    structure = PDBParser().get_structure('pdb', pdb_path)
+
+    coordinates = []
+    commands = []
+    bfactors = []
+    positions_worked = []  # positions present in pdb
+
+    # Iterate over each CA atom and geet coordinates
+    for i in np.arange(self.start_position + position_correction, self.end_position + position_correction):
+        # first check if atom exists
+        try:
+            structure[0][chain][int(i)].has_id("CA")
+            # Get atom from pdb and geet coordinates
+            atom = list(structure[0][chain][int(i)]["CA"].get_vector()) + [i]
+            coordinates.append(atom)
+            # Get SASA command for each residue and bfactor
+            residue = "s{}, chain {} and resi {}".format(str(i), chain, str(i))
+            commands.append(residue)
+            bfactor = (structure[0][chain][int(i)]["CA"].get_bfactor())
+            bfactors.append(np.log10(bfactor))
+            positions_worked.append(i)
+        except:
+            print("residue {} not found".format(str(i)))
+            coordinates.append([np.nan, np.nan, np.nan, i])
+
+    # Convert to df
+    df_coordinates = pd.DataFrame(columns=['x', 'y', 'z', 'Position'], data=coordinates)
+
+    # Center data
+    x, y, z = centroid(df_coordinates)
+    df_coordinates['x_cent'] = (df_coordinates['x'] - x).abs()**2
+    df_coordinates['y_cent'] = (df_coordinates['y'] - y).abs()**2
+    df_coordinates['z_cent'] = (df_coordinates['z'] - z).abs()**2
+    df_coordinates['Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
+
+    # Add sasa values
+    if sasa:
+        # Get structure for SASA
+        structure_sasa = freesasa.Structure(pdb_path)
+        result = freesasa.calc(structure_sasa)
+        # Calculate sasa
+        sasa = freesasa.selectArea(commands, structure_sasa, result)
+        df_sasa = pd.DataFrame(columns=['SASA'], data=sasa.values())
+        df_sasa['log B-factor'] = bfactors
+        df_sasa['Position'] = positions_worked
+
+        # Merge
+        df_coordinates = df_coordinates.merge(df_sasa, how='outer', on='Position')
+
+    return df_coordinates
+
+
+def matplotlib_to_plotly(cmap, pl_entries=255):
+    '''
+    Convert a matplotlib colorscale into plotly rgb format.
+    '''
+    h = 1.0 / (pl_entries - 1)
+    pl_colorscale = []
+
+    for k in range(pl_entries):
+        C = list(map(np.uint8, np.array(cmap(k * h)[: 3]) * 255))
+        pl_colorscale.append([k * h, 'rgb' + str((C[0], C[1], C[2]))])
+
+    return pl_colorscale
+
+
+def update_layout(fig, temp_kwargs: Dict[str, Any]):
+    fig.update_layout(
+        font=dict(family="Arial, monospace", size=12, color="black"),
+        title={
+            'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top',
+            'x': 0.5
+        },
+        coloraxis_colorbar=dict( # modify colorbar properties
+        title = 'Fitness',
+        len=0.4,
+        thickness=15,
+        outlinewidth=2,
+        outlinecolor='rgb(0,0,0)',
+        showticklabels=True,
+        )
+    )
+    return fig
+
+
+def update_axes(fig, temp_kwargs: Dict[str, Any]):
+    '''
+    Separeated this portion of the code because it is clumsy. It changes
+    the axes looks.
+    '''
+    # Layout and title parameters https://plotly.com/python/figure-labels/
+    fig.update_layout(
+        scene=dict(
+            xaxis=dict(
+                title_text=temp_kwargs['x_label'],
+                showline=True,
+                linewidth=2,
+                linecolor='black',
+                ticks="outside",
+                mirror=True,
+                backgroundcolor='#9467bd',
+            ),
+            yaxis=dict(
+                title_text=temp_kwargs['y_label'],
+                showline=True,
+                linewidth=2,
+                linecolor='black',
+                ticks="outside",
+                mirror=True,
+                backgroundcolor='#9467bd',
+            ),
+            zaxis=dict(
+                title_text=temp_kwargs['z_label'],
+                showline=True,
+                linewidth=2,
+                linecolor='black',
+                ticks="outside",
+                mirror=True,
+                backgroundcolor='#9467bd',  #change the color of axis
+            )
+        )
+    )
+    return fig

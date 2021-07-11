@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Import Modules
-
-# In[2]:
-
-
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -21,22 +13,6 @@ from pathlib import Path
 from typing import Union
 from collections import defaultdict
 
-# local modules
-try:
-    import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
-    import mutagenesis_visualization.main.scripts.code_utils as code_utils
-except ModuleNotFoundError:
-    import import_notebook
-    import code_kwargs
-    import code_utils
-
-
-# # Plot Functions
-
-# ## Scatter
-
-# In[ ]:
-
 
 def plot_scatter(
     self,
@@ -46,7 +22,8 @@ def plot_scatter(
     **kwargs
 ):
     '''
-    Generate a scatter plot between object and a second object of the same class.
+    Generate a scatter plot between object and a second object of the
+    same class.
 
     Parameters
     ----------
@@ -54,23 +31,23 @@ def plot_scatter(
 
     obj2 : object from class *Screen* to do the scatter with
 
-    mode : str, default 'pointmutant'. 
+    mode : str, default 'pointmutant'.
         Alternative set to "mean" for the mean of each position
 
     output_file : str, default None
-        If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        If you want to export the generated graph, add the path and name
+        of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     '''
 
     # update kwargs
@@ -162,4 +139,3 @@ def plot_scatter(
     # show plt figure
     if temp_kwargs['show']:
         plt.show()
-

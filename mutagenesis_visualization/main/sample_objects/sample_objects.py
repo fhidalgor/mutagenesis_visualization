@@ -1,43 +1,17 @@
-#!/usr/bin/env python
-# coding: utf-8
+"""
 
-# # Create objects
-
-# This notebook will create objects with the datasets that are stored in the folder data. Having this objects easily accessible may pose useful for testing purposes.
-
-# ## Import
-
-# In[7]:
-
-
+"""
 import numpy as np
 import pandas as pd
 import os
 
-# Local imports
-try:
-    from mutagenesis_visualization.main.scripts.code_class import Screen, Counts
-    from mutagenesis_visualization.main.scripts.code_process_data import (
-        count_reads,
-        count_fastq,
-        _enumerate_variants,
-    )
-    import mutagenesis_visualization.main.scripts.code_utils as code_utils
-except ModuleNotFoundError:
-    print(os.getcwd())
-    import import_notebook
-    from code_class import Screen, Counts
-    from code_process_data import (
-        count_reads,
-        count_fastq,
-        _enumerate_variants,
-    )
-    import code_utils
-
-
-# ## HRas RBD
-
-# In[3]:
+from mutagenesis_visualization.main.scripts.code_class import Screen, Counts
+from mutagenesis_visualization.main.scripts.code_process_data import (
+    count_reads,
+    count_fastq,
+    _enumerate_variants,
+)
+import mutagenesis_visualization.main.scripts.code_utils as code_utils
 
 
 def hras_RBD():
@@ -74,11 +48,6 @@ def hras_RBD():
         secondary=secondary
     )
     return hras_RBD
-
-
-# ## Beta Lactamase
-
-# In[ ]:
 
 
 def bla_obj():
@@ -132,11 +101,6 @@ def bla_obj():
     return bla_obj
 
 
-# ## Sumo1
-
-# In[ ]:
-
-
 def sumo_obj():
     """
     Create object for the sumo1 dataset.
@@ -178,16 +142,11 @@ def sumo_obj():
     return sumo_obj
 
 
-# ## MAPK1
-
-# In[ ]:
-
-
 def mapk1_obj():
     """
     Create object for the mapk1 dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -220,16 +179,11 @@ def mapk1_obj():
     return mapk1_obj
 
 
-# ## UBE2I
-
-# In[ ]:
-
-
 def ube2i_obj():
     """
     Create object for the ube2i dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -274,16 +228,11 @@ def ube2i_obj():
     return ube2i_obj
 
 
-# ## TAT
-
-# In[ ]:
-
-
 def tat_obj():
     """
     Create object for the tat dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -315,16 +264,11 @@ def tat_obj():
     return tat_obj
 
 
-# ## REV
-
-# In[ ]:
-
-
 def rev_obj():
     """
     Create object for the rev dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -355,16 +299,12 @@ def rev_obj():
     return rev_obj
 
 
-# ## α-synuclein
-
-# In[ ]:
-
 
 def asynuclein_obj():
     """
     Create object for the synuclein dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -396,16 +336,11 @@ def asynuclein_obj():
     return asynuclein_obj
 
 
-# ## APH(3) II
-
-# In[4]:
-
-
 def aph_obj():
     """
     Create object for the aph dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -449,16 +384,11 @@ def aph_obj():
     return aph_obj
 
 
-# ## b11L5F
-
-# In[ ]:
-
-
 def b11L5F_obj():
     """
     Create object for the aph dataset.
     """
-    
+
     # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -491,11 +421,6 @@ def b11L5F_obj():
     return b11L5F_obj
 
 
-# # HRas RBD Counts
-
-# In[25]:
-
-
 def hras_counts():
     try:
         location = os.path.dirname(os.path.realpath(__file__))
@@ -512,11 +437,9 @@ def hras_counts():
         "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG",
         "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
     ]
-    
+
     df_counts_pre, wt_counts_pre = count_reads(
         hras_dnasequence, my_file, codon_list, counts_wt = False , start_position = 2)
-    
+
     hras_counts = Counts(df = df_counts_pre)
     return hras_counts
-    
-
