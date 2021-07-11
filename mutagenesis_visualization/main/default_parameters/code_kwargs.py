@@ -1,18 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Import Modules
-
-# In[1]:
-
-
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import rcParams
-
-
-# # Kwargs
-
-# In[2]:
 
 
 def kwargs():
@@ -92,15 +79,15 @@ def kwargs():
 
     bins : int, default 50
         Number of bins used for kernel and histograms.
-    
+
     return_plot_object : boolean, default False
         If true, will return plotting object.
-    
+
     figsize_x : int
-    
+
     figsize_y : int
-    
-    
+
+
     Returns
     --------
     default_kwargs : dict
@@ -153,9 +140,6 @@ def _generatecolormap():
     return cmap
 
 
-# In[4]:
-
-
 def _parameters():
     # normal font
     rcParams['font.family'] = 'sans-serif'
@@ -184,4 +168,3 @@ def _font_parameters():
     rcParams['mathtext.rm'] = 'Arial'
     rcParams['svg.fonttype'] = 'none'
     return
-

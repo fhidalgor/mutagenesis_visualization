@@ -14,7 +14,6 @@ from collections import defaultdict
 from Bio.Seq import Seq
 from pathlib import Path
 from typing import Union
-import math
 from Bio import AlignIO
 
 
@@ -118,7 +117,7 @@ def _transform_secondary(dataset, secondary, start_position, aminoacids):
 
 def _df_rearrange(df, new_order, values='Score', show_snv=False):
     '''
-    convert a df into a numpy array for mutagenesis data. 
+    convert a df into a numpy array for mutagenesis data.
     Allows the option of keeping NaN scores
 
     Returns copy
@@ -199,28 +198,28 @@ def parse_pivot(
 ):
     '''
     Parses a dataframe that contains saturation mutagenesis data in the Variant/Scores format.
-    
+
     Parameters
     -----------
     df_imported : pandas dataframe
         Dataframe with the data imported with pd.read_excel.
-    
+
     col_variant : str, default 'variant'
         Name of the column that contains the variants (ie T31A).
-        
+
     col_data : str, default 'DMS'
         Name of the column that contains the saturation mutagenesis scores.
-    
+
     fill_value : float, default np.nan
-        What number to replace values that are omitted. It is possible that your 
+        What number to replace values that are omitted. It is possible that your
         dataset does not have a wt value.
-        
+
     Returns
     --------
     df_pivoted : pandas dataframe
-        Dataframe that has been pivoted. Values are the saturation mutagenesis data. Columns are 
+        Dataframe that has been pivoted. Values are the saturation mutagenesis data. Columns are
         the amino acid substitutions. Rows are the positions of the protein.
-    
+
     sequence : list
         List of the amino acids that form the protein sequence.
     '''
@@ -320,7 +319,7 @@ def _aminoacids_snv(aa1, aa2, codontable, same_aa_SNV=True):
     codontable : dict (did not want to generate each time I run the function)
     same_aa_SNV : boolean, default True
         If True, it will consider the same amino acid to be SNV of itself
-    
+
     Returns
     --------
     boolean, True/False
@@ -407,9 +406,9 @@ def _are_pointmutants(aa, seqbase):
     Parameters
     -----------
     aa: str
-    seqbase: str    
+    seqbase: str
 
-    Returns 
+    Returns
     --------
     Boolean
     '''
@@ -429,9 +428,9 @@ def _are_pointmutants_list(aa, seqbase_list):
     Parameters
     -----------
     aa: str
-    seqbase_list: list of str    
+    seqbase_list: list of str
 
-    Returns 
+    Returns
     --------
     List of Boolean
     '''
@@ -484,7 +483,7 @@ def _aatocodons(aminoacid):
 
 def _aatocodons_df(df, namecolumn):
     '''
-    Inputs a dataframe with a column of amino acids, returns all syn for each amino acidcodons. 
+    Inputs a dataframe with a column of amino acids, returns all syn for each amino acidcodons.
     Used dict_codontoaa() and _aatocodons
 
     Parameters
@@ -595,7 +594,7 @@ def _is_DNA(df):
 #     Title : ShannonMSA
 #     License : GPLv3
 #     Email : J.R.J.Healey@warwick.ac.uk
-# 
+#
 
 # In[7]:
 
@@ -603,7 +602,7 @@ def _is_DNA(df):
 def _parseMSA(msa, alnformat, verbose):
     """
     Parse in the MSA file using Biopython's AlignIO
-    
+
     """
 
     alignment = AlignIO.read(msa, alnformat)
@@ -627,48 +626,3 @@ def _parseMSA(msa, alnformat, verbose):
     index = range(1, list(seq_lengths)[0] + 1)
 
     return alignment, list(seq_lengths), index
-
-
-##################################################################
-# Function to calcuate the Shannon's entropy per alignment column
-# H=-\sum_{i=1}^{M} P_i\,log_2\,P_i (http://imed.med.ucm.es/Tools/svs_help.html)
-# Gaps and N's are included in the calculation
-##################################################################
-
-
-def _shannon_entropy(list_input):
-    """
-    Calculate Shannon's Entropy per column of the alignment 
-    
-    """
-
-    unique_base = set(list_input)
-    M = len(list_input)
-    entropy_list = []
-    # Number of residues in column
-    for base in unique_base:
-        n_i = list_input.count(base)  # Number of residues of type i
-        P_i = n_i / float(
-            M
-        )  # n_i(Number of residues of type i) / M(Number of residues in column)
-        entropy_i = P_i * (math.log(P_i, 2))
-        entropy_list.append(entropy_i)
-
-    sh_entropy = -(sum(entropy_list))
-
-    return sh_entropy
-
-
-def _shannon_entropy_list_msa(alignment):
-    """
-    Calculate Shannon Entropy across the whole MSA
-    
-    """
-
-    shannon_entropy_list = []
-    for col_no in range(len(list(alignment[0]))):
-        list_input = list(alignment[:, col_no])
-        shannon_entropy_list.append(_shannon_entropy(list_input))
-
-    return shannon_entropy_list
-

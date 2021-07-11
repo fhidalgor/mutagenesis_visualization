@@ -78,7 +78,7 @@ blank_line_before_nested_class_or_def=False
 coalesce_brackets=True
 
 # The column limit.
-column_limit=80
+column_limit=120
 
 # The style for continuation alignment. Possible values are:
 #
@@ -211,7 +211,7 @@ spaces_around_power_operator=False
 # Use spaces around the subscript / slice operator.  For example:
 #
 #   my_list[1 : 10 : 2]
-spaces_around_subscript_colon=False
+spaces_around_subscript_colon=True
 
 # Adds a space after the opening '(' and before the ending ')' tuple delimiters.
 #

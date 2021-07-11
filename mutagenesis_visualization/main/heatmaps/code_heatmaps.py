@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Import Modules
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import itertools
@@ -29,7 +21,6 @@ except ModuleNotFoundError:
     import import_notebook
     import code_kwargs
     import code_utils
-
 
 # # Plot Functions
 
@@ -55,32 +46,32 @@ def plot_heatmap(
     Parameters
     ----------
     self : object from class *Screen*
-    
+
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
-    
+
     show_carton : boolean, default False
-        If true, the plot will display a cartoon with the secondary structure. 
-        The user must have added the secondary structure to the object. 
-    
+        If true, the plot will display a cartoon with the secondary structure.
+        The user must have added the secondary structure to the object.
+
     show_snv : boolean, default False
         If true, it will only display mutants that are a single nucleotide variant (SNV) of the wild-type
-        protein sequence. The algorithm does not take into account the wild-type DNA allele, so it 
+        protein sequence. The algorithm does not take into account the wild-type DNA allele, so it
         will include any possible mutant that is one base away.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
-            If true, will return plotting objects (ie. fig, ax).        
+            If true, will return plotting objects (ie. fig, ax).
     Returns
     ----------
     fig, ax, ax2, ax3, averageresidue : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     '''
     # load font parameters
     code_kwargs._font_parameters()
@@ -102,12 +93,9 @@ def plot_heatmap(
     )
 
     # average of residues by positon
-    average = [
-        code_utils._add_SNV_boolean(self.dataframe.copy()
-                                    ).groupby(by='Position').mean()['Score_NaN']
-    ]
+    average = [code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']]
     # For 1 column case
-    
+
     # Create new sequence that we may to change order later
     self.sequence_updated = self.sequence
 
@@ -116,17 +104,14 @@ def plot_heatmap(
         sorted_columns = _hierarchical_sort(df)
         sorted_columns_corrected = sorted_columns + self.start_position  # adds the initial number so index match
         df = df[sorted_columns_corrected]
-        temp = pd.DataFrame(
-            average
-        )  # had to convert back to df to be able to sort properly
+        temp = pd.DataFrame(average)  # had to convert back to df to be able to sort properly
         average = temp[sorted_columns_corrected]
         # Change the sequence order
-        self.sequence_updated = pd.DataFrame(list(self.sequence)
-                                             ).T[sorted_columns]
+        self.sequence_updated = pd.DataFrame(list(self.sequence)).T[sorted_columns]
         self.sequence_updated = list(self.sequence_updated.iloc[0])
-    elif len(average) == 1: 
+    elif len(average) == 1:
         average = [np.array(average[0])]
-        
+
     # declare figure and subplots
     figwidth = 14 * len(df.columns) / 165
     temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
@@ -135,22 +120,12 @@ def plot_heatmap(
         figheight = 2.45
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
         fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs = gridspec.GridSpec(
-            nrows=3,
-            ncols=2,
-            height_ratios=[len(df), 1, 5],
-            width_ratios=[len(df.columns), 1]
-        )
+        gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[len(df), 1, 5], width_ratios=[len(df.columns), 1])
     else:
         figheight = 2
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
         fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs = gridspec.GridSpec(
-            nrows=2,
-            ncols=2,
-            height_ratios=[len(df), 1],
-            width_ratios=[len(df.columns), 1]
-        )
+        gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[len(df), 1], width_ratios=[len(df.columns), 1])
 
     ax = plt.subplot(gs[0, 0])
     averageresidue = plt.subplot(gs[1, 0])
@@ -229,24 +204,12 @@ def plot_heatmap(
     averageresidue.yaxis.set_ticks_position('none')
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(
-        list(self.sequence_updated),
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
-    ax.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
+    ax.set_xticklabels(list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False)
     # For numbering labels, change if hierarchical sorting is true
     if not (hierarchical):
         ax2.set_xticklabels(
-            temp_kwargs['number_sequencelabels'][0:len(df.columns)],
+            temp_kwargs['number_sequencelabels'][0 : len(df.columns)],
             fontsize=10,
             fontname="Arial",
             color='k',
@@ -254,32 +217,11 @@ def plot_heatmap(
         )
     else:
         ax2.tick_params(direction='out', pad=7)
-        ax2.set_xticklabels(
-            sorted_columns_corrected,
-            fontsize=5,
-            fontname="Arial",
-            color='k',
-            minor=False,
-            rotation=90
-        )
-    ax3.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
-    averageresidue.set_xticklabels(
-        list(self.sequence_updated),
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
+        ax2.set_xticklabels(sorted_columns_corrected, fontsize=5, fontname="Arial", color='k', minor=False, rotation=90)
+    ax3.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False)
+    averageresidue.set_xticklabels(list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False)
     rowaverage = ''
-    averageresidue.set_yticklabels(
-        rowaverage, fontsize=6, fontname="Arial", color='k', minor=False
-    )
+    averageresidue.set_yticklabels(rowaverage, fontsize=6, fontname="Arial", color='k', minor=False)
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -288,11 +230,9 @@ def plot_heatmap(
         ylabel.set_horizontalalignment('center')
 
     # for coloring the residues that are 10,20...
-    for xtick, color in zip(ax.get_xticklabels(),
-                            temp_kwargs['color_sequencelabels']):
+    for xtick, color in zip(ax.get_xticklabels(), temp_kwargs['color_sequencelabels']):
         xtick.set_color(color)
-    for xtick, color in zip(averageresidue.get_xticklabels(),
-                            temp_kwargs['color_sequencelabels']):
+    for xtick, color in zip(averageresidue.get_xticklabels(), temp_kwargs['color_sequencelabels']):
         xtick.set_color(color)
     # _____________________________________________________________________________
 
@@ -307,14 +247,11 @@ def plot_heatmap(
         aspect=5,
         ticks=[
             temp_kwargs['colorbar_scale'][0],
-            np.mean(temp_kwargs['colorbar_scale']),
-            temp_kwargs['colorbar_scale'][1]
+            np.mean(temp_kwargs['colorbar_scale']), temp_kwargs['colorbar_scale'][1]
         ],
         orientation='vertical'
     )
-    cb.ax.set_yticklabels(
-        cb.ax.get_yticklabels(), fontsize=6, fontname="Arial", color='k'
-    )
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=6, fontname="Arial", color='k')
     cb.update_ticks()
     plt.text(
         1.2 + 10 / len(df.columns),
@@ -330,12 +267,7 @@ def plot_heatmap(
     gs.update(hspace=0.1, wspace=0.1 / len(df.columns) * 50)
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=12
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=12)
 
     # Cartoon
     if show_cartoon:
@@ -359,26 +291,16 @@ def _labels(start_position=1):
     # residue label and color
     emptylist = [''] * 1000
     number_sequencelabels = list([
-        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
-        for index, x in enumerate(emptylist)
+        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k' for index, x in enumerate(emptylist)
     ])
     color_sequencelabels = list([
-        index + start_position
-        if index in np.arange(10 - (start_position % 10), 1000, 10) else ''
+        index + start_position if index in np.arange(10 - (start_position % 10), 1000, 10) else ''
         for index, x in enumerate(emptylist)
     ])
     return number_sequencelabels, color_sequencelabels
 
 
-def _generate_cartoon(
-    self,
-    gs,
-    n_row,
-    colors,
-    bottom_space=0,
-    fig_inches=13.91,
-    show_labels=True
-):
+def _generate_cartoon(self, gs, n_row, colors, bottom_space=0, fig_inches=13.91, show_labels=True):
     '''Generates cartoon for heatmap'''
     # Create subplot
     cartoon = plt.subplot(gs[n_row, 0])
@@ -437,10 +359,7 @@ def _generate_cartoon(
     cartoon.axis('off')
 
     # size
-    cartoon.set_xlim(
-        self.start_position - 0.1,
-        len(self.secondary) + self.start_position + 0.2
-    )
+    cartoon.set_xlim(self.start_position - 0.1, len(self.secondary) + self.start_position + 0.2)
     cartoon.set_ylim(-2, 2.5)
 
     # adjust proximity to heatmap
@@ -475,11 +394,7 @@ def _sheet(starting_aa, length_aa, color='lightgreen'):
 def _helix(starting_aa, length_aa, color='lavender'):
     """produces matplotlib.Rectangle of length specified by length_aa """
     dx = length_aa  # so i can overlap tip
-    helixstructure = plt.Rectangle((starting_aa, -0.85),
-                                   dx,
-                                   2.2,
-                                   fc=color,
-                                   ec='k')
+    helixstructure = plt.Rectangle((starting_aa, -0.85), dx, 2.2, fc=color, ec='k')
     return helixstructure
 
 
@@ -493,7 +408,7 @@ def _hierarchical_sort(df):
     """
     sorts columns of dataset using hierarchical clustering
     returns order to rearrange dataset
-    
+
     """
 
     # replaces NaN values with 0
@@ -519,22 +434,22 @@ def plot_heatmap_rows(
     **kwargs
 ):
     '''
-    Generate a heatmap plot enrichment scores of selected aminoacids. 
+    Generate a heatmap plot enrichment scores of selected aminoacids.
 
     Parameters
     ----------
     self : object from class *Screen*
-    
-    selection : list of aa to show, default ['E','Q','A','P','V','Y']. 
+
+    selection : list of aa to show, default ['E','Q','A','P','V','Y'].
         If you only want the mean displayed, type selection = 'mean'.
-    
+
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
@@ -543,7 +458,7 @@ def plot_heatmap_rows(
     fig, ax, ax2 : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     '''
     # load font parameters
     code_kwargs._font_parameters()
@@ -558,17 +473,14 @@ def plot_heatmap_rows(
 
     # Check if mean or not. Add group and pivot df.
     if selection == 'mean':
-        df = code_utils._add_SNV_boolean(self.dataframe.copy()
-                                    ).groupby(by='Position').mean()['Score_NaN']
+        df = code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']
         y_labels = [""]
         dataset = np.array([df.to_numpy()])
     else:
-        df = code_utils._select_aa(
-            self.dataframe_stopcodons, selection, values='Score_NaN'
-        )
+        df = code_utils._select_aa(self.dataframe_stopcodons, selection, values='Score_NaN')
         y_labels = list(df.T.columns)
         dataset = df.to_numpy()
-    
+
     # The size can be changed. I found it empirically
     figwidth = 14 * len(dataset[0]) / 165
     figheight = 2 / 21 * len(selection)
@@ -617,22 +529,10 @@ def plot_heatmap_rows(
     ax.xaxis.tick_top()
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(
-        list(self.sequence),
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
-    ax.set_yticklabels(
-        y_labels,
-        fontsize=6,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
+    ax.set_xticklabels(list(self.sequence), fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(y_labels, fontsize=6, fontname="Arial", color='k', minor=False)
     ax2.set_xticklabels(
-        temp_kwargs['number_sequencelabels'][0:len(dataset[0])],
+        temp_kwargs['number_sequencelabels'][0 : len(dataset[0])],
         fontsize=10,
         fontname="Arial",
         color='k',
@@ -644,17 +544,11 @@ def plot_heatmap_rows(
         ylabel.set_horizontalalignment('center')
 
     # for coloring the residues that are 10,20...
-    for xtick, color in zip(ax.get_xticklabels(),
-                            temp_kwargs['color_sequencelabels']):
+    for xtick, color in zip(ax.get_xticklabels(), temp_kwargs['color_sequencelabels']):
         xtick.set_color(color)
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=12
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=12)
 
     # for color bar format
     cbar1.axis('off')
@@ -666,14 +560,11 @@ def plot_heatmap_rows(
         aspect=5,
         ticks=[
             temp_kwargs['colorbar_scale'][0],
-            np.mean(temp_kwargs['colorbar_scale']),
-            temp_kwargs['colorbar_scale'][1]
+            np.mean(temp_kwargs['colorbar_scale']), temp_kwargs['colorbar_scale'][1]
         ],
         orientation='vertical'
     )
-    cb.ax.set_yticklabels(
-        cb.ax.get_yticklabels(), fontsize=8, fontname="Arial", color='k'
-    )
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=8, fontname="Arial", color='k')
     cb.update_ticks()
     gs.update(hspace=0.1, wspace=0.1 / len(dataset[0]) * 50)
 
@@ -700,12 +591,7 @@ def plot_heatmap_rows(
 
 
 def plot_heatmap_columns(
-    self,
-    segment,
-    ylabel_color='k',
-    nancolor='lime',
-    output_file: Union[None, str, Path] = None,
-    **kwargs
+    self, segment, ylabel_color='k', nancolor='lime', output_file: Union[None, str, Path] = None, **kwargs
 ):
     '''
     Generate a heatmap plot enrichment scores but only plots a selected segment.
@@ -713,30 +599,30 @@ def plot_heatmap_columns(
     Parameters
     ----------
     self : object from class *Screen*
-    
+
     segment : list
         Segment is typed as [20,40] and includes both residues 20 and 40.
-    
+
     ylabel_color : str, default 'k'
         Choose white if you don't want amino acid y axis label.
-    
+
     nancolor : str, default 'lime'
         Will color np.nan values with the specified color.
-    
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
-                    
+        Example: 'path/filename.png' or 'path/filename.svg'.
+
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-        
+
     Returns
     ----------
     fig, ax, ax2 : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     '''
 
     # load font parameters
@@ -745,23 +631,20 @@ def plot_heatmap_columns(
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
-    
-    
+
     # load labels
     temp_kwargs['color_sequencelabels'] = _labels(self.start_position)[0]
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # sort data in specified order by user
     df_whole = code_utils._df_rearrange(
-        self.dataframe_stopcodons,
-        temp_kwargs['neworder_aminoacids'],
-        values='Score_NaN'
+        self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'], values='Score_NaN'
     )
 
     # select subset
     c0 = segment[0] - self.start_position
     c1 = segment[1] - self.start_position + 1
-    df = df_whole.iloc[:, c0:c1]
+    df = df_whole.iloc[:, c0 : c1]
 
     # the size can be changed
     figwidth = 2 * len(df.columns) / 22
@@ -815,27 +698,20 @@ def plot_heatmap_columns(
 
     # so labels of x and y do not show up and my labels show up instead
     ax.set_xticklabels(
-        list(self.sequence)[segment[0] - self.start_position:segment[1] -
-                            self.start_position + 1],
+        list(self.sequence)[segment[0] - self.start_position : segment[1] - self.start_position + 1],
         fontsize=6.5,
         fontname="Arial",
         color='k',
         minor=False
     )
     ax.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6,
-        fontname="Arial",
-        color=ylabel_color,
-        minor=False
+        temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color=ylabel_color, minor=False
     )
 
     ax2_label = (segment[1] - segment[0] + 1) * ['']
     ax2_label[0] = segment[0]
     ax2_label[-1] = segment[1]
-    ax2.set_xticklabels(
-        ax2_label, fontsize=7, fontname="Arial", color='k', minor=False
-    )
+    ax2.set_xticklabels(ax2_label, fontsize=7, fontname="Arial", color='k', minor=False)
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -856,4 +732,3 @@ def plot_heatmap_columns(
 
     if temp_kwargs['show']:
         plt.show()
-
