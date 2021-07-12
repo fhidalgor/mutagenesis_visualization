@@ -56,18 +56,14 @@ def plot_miniheatmap(
     dataframe_stopcodons = _transform_dataset_offset(self, offset)
 
     # calculate condensed heatmap
-    dataset = _condense_heatmap(
-        dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
-    )
+    dataset = _condense_heatmap(dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
 
     # if offset is not 0
     if background_correction and offset != 0:
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
         # do offset, no stop codons
-        dataset = _normalize_neighboreffect(
-            self, offset, temp_kwargs['neworder_aminoacids']
-        )
+        dataset = _normalize_neighboreffect(self, offset, temp_kwargs['neworder_aminoacids'])
 
     fig, ax, cb = _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
@@ -86,9 +82,7 @@ def _condense_heatmap(df, new_order):
 
     # Group by sequence and aminoacid, and then pivot table
     df_grouped = df.groupby(['Sequence', 'Aminoacid'], sort=False).mean()
-    df_pivoted = df_grouped.pivot_table(
-        values='Score', index='Aminoacid', columns='Sequence'
-    )
+    df_pivoted = df_grouped.pivot_table(values='Score', index='Aminoacid', columns='Sequence')
     df_pivoted.reset_index(drop=False, inplace=True)
 
     # Sort in y axis desired order
@@ -123,12 +117,10 @@ def _offset_sequence(dataset, sequence, start_position, offset):
     # truncate sequence
     if offset > 0:
         sequence = sequence + 'X' * np.absolute(offset)
-        trimmedsequence = sequence[start_position - 1 + offset:len(dataset[0]) +
-                                   start_position - 1 + offset]
+        trimmedsequence = sequence[start_position - 1 + offset : len(dataset[0]) + start_position - 1 + offset]
     else:
         sequence = 'X' * (np.absolute(offset)) + sequence
-        trimmedsequence = sequence[start_position - 1:len(dataset[0]) +
-                                   start_position - 1]
+        trimmedsequence = sequence[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     return trimmedsequence
 
@@ -138,11 +130,8 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
     Generate a dataframe with the sequence offset. Reutilizes _transform_dataset
     '''
     # Add offset sequence
-    offset_sequence = _offset_sequence(
-        self.dataset, self.sequence_raw, self.start_position, offset
-    )
-    df = self.dataframe_stopcodons.copy(
-    ) if stopcodons is True else self.dataframe.copy()
+    offset_sequence = _offset_sequence(self.dataset, self.sequence_raw, self.start_position, offset)
+    df = self.dataframe_stopcodons.copy() if stopcodons is True else self.dataframe.copy()
 
     # Copy old sequence
     df['Sequence_old'] = df['Sequence']

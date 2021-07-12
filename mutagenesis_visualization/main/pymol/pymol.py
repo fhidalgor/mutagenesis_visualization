@@ -90,8 +90,7 @@ def plot_pymol(
     # Calculate residues only if they are not given by the user
     if residues is None:
         residues = _pymol_fitness(
-            self.dataframe.copy(), temp_kwargs['gof'], temp_kwargs['lof'], mode,
-            position_correction
+            self.dataframe.copy(), temp_kwargs['gof'], temp_kwargs['lof'], mode, position_correction
         )
 
     # Start Pymol
@@ -101,8 +100,7 @@ def plot_pymol(
     # Fetch structure. If pdb contains a "/", it will assume it is stored locally
     if '/' in pdb:
         pymol.load(pdb)
-        pdb = (path.basename(pdb)).partition('.')[
-            0]  # Extract filename from pdb and then extract pdb code
+        pdb = (path.basename(pdb)).partition('.')[0]  # Extract filename from pdb and then extract pdb code
     else:
         pymol.fetch(pdb)
 
@@ -152,17 +150,12 @@ def _pymol_fitness(df, gof, lof, mode, position_correction):
     # Color of mutations
     blue_mutations = df_grouped[df_grouped['Score'] < lof]
     red_mutations = df_grouped[df_grouped['Score'] > gof]
-    white_mutations = df_grouped[
-        df_grouped['Score'].between(lof, gof, inclusive=True)]
+    white_mutations = df_grouped[df_grouped['Score'].between(lof, gof, inclusive=True)]
 
     # Pymol Format
-    blue_pymol = _array_to_pymol(
-        blue_mutations['Position'] + position_correction
-    )
+    blue_pymol = _array_to_pymol(blue_mutations['Position'] + position_correction)
     red_pymol = _array_to_pymol(red_mutations['Position'] + position_correction)
-    white_pymol = _array_to_pymol(
-        white_mutations['Position'] + position_correction
-    )
+    white_pymol = _array_to_pymol(white_mutations['Position'] + position_correction)
 
     residues = [blue_pymol, red_pymol, white_pymol]
 

@@ -13,6 +13,7 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
+
 def _array_to_df_enrichments(lib, aminoacids) -> pd.DataFrame:
     '''
     Aux function to transform array in df with index of amino acids.
@@ -20,6 +21,7 @@ def _array_to_df_enrichments(lib, aminoacids) -> pd.DataFrame:
 
     df = pd.DataFrame(index=aminoacids, data=lib)
     return df.astype(float)
+
 
 def calculate_enrichment(
     pre_lib,
@@ -141,8 +143,7 @@ def calculate_enrichment(
 
     # Log10 of the counts for library and wt alleles
     log10_counts = _get_enrichment(
-        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts,
-        stopcodon, infinite
+        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
     df = pd.DataFrame(data=log10_counts)
@@ -150,9 +151,7 @@ def calculate_enrichment(
 
     # MAD filtering
     if mad_filtering:
-        log10_counts_mad = _MAD_filtering(
-            np.ravel(np.array(log10_counts_grouped)), mpop
-        )
+        log10_counts_mad = _MAD_filtering(np.ravel(np.array(log10_counts_grouped)), mpop)
     else:
         log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
 
@@ -165,8 +164,7 @@ def calculate_enrichment(
     # Wt counts
     if pre_wt is not None:
         log10_wtcounts = _get_enrichment(
-            pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt,
-            stopcodon, infinite
+            pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt, stopcodon, infinite
         )
         # MAD filtering
         # If set to m=1, if tosses out about 50% of the values. the mean barely changes though
@@ -176,9 +174,9 @@ def calculate_enrichment(
         mean_wt = np.nanmean(log10_wtcounts)
         median_wt = np.nanmedian(log10_wtcounts)
         std_wt = np.nanstd(log10_wtcounts)
-        if len(log10_wtcounts)>1:
+        if len(log10_wtcounts) > 1:
             mode_wt = _nanmode(log10_wtcounts)
-        else: #case for only 1 wt
+        else:  #case for only 1 wt
             mode_wt = log10_wtcounts
 
     # Zero data, select case
@@ -202,14 +200,12 @@ def calculate_enrichment(
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'counts':
         # Get the ratio of counts
-        ratio = np.log10(post_lib.sum().sum()/pre_lib.sum().sum())
+        ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
         zeroed = log10_counts_grouped + ratio
         if norm_std == True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':
-        zeroed_0, kernel_std = _kernel_correction(
-            log10_counts_grouped, aminoacids
-        )
+        zeroed_0, kernel_std = _kernel_correction(log10_counts_grouped, aminoacids)
         zeroed, kernel_std = _kernel_correction(zeroed_0, aminoacids, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std

@@ -1,95 +1,110 @@
-import numpy as np
-import seaborn as sns
-import pandas as pd
+"""
+This module contains the class that plots histograms.
+"""
+from typing import Union, Dict, Any
+from pathlib import Path
 import copy
 import matplotlib.pyplot as plt
-from os import path
-import os
-from pathlib import Path
-from typing import Union
+import numpy as np
+import pandas as pd
+
+from mutagenesis_visualization.main.classes.screen import Screen
+from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
-def plot_hist(self, population='All', loc='upper left', output_file: Union[None, str, Path] = None, **kwargs):
+class Histogram(Pyplot):
     """
-    Generate a histogram plot. Can plot single nucleotide variants (SNVs) or
-    non-SNVs only.
-
-    Parameters
-    ----------
-    population : str, default 'All'.
-        Other options are 'SNV' and 'nonSNV'.
-
-    loc : str, default 'upper left'.
-        Position of the legend.
-
-    output_file : str, default None
-        If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'.
-
-    **kwargs : other keyword arguments
-        return_plot_object : boolean, default False
-            If true, will return plotting objects (ie. fig, ax).
-        bins : int, default 50.
-            Number of bins for the histogram.
-
-    Returns
-    ----------
-    fig : matplotlib figure and subplots
-        Needs to have return_plot_object==True. By default they do
-        not get returned.
-
+    Class to generate a kernel density plot.
     """
-    # update kwargs
-    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
-    temp_kwargs.update(kwargs)
-    temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
-    temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
-    temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
+    def __init__(self, screen_object: Screen) -> None:
+        super().__init__()
+        self.screen_object: Screen = screen_object
 
-    # Select case input data
-    df = self.dataframe['Score_NaN']
-    if population == 'SNV':
-        df = self.dataframe_SNV['Score_NaN']
-    elif population == 'nonSNV':
-        df = self.dataframe_nonSNV['Score_NaN']
+    def plot_hist(
+        self,
+        population: str = 'All',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
+        """
+        Generate a histogram plot. Can plot single nucleotide variants
+        (SNVs) or non-SNVs only.
 
-    # create figure
-    fig = plt.figure(figsize=temp_kwargs['figsize'])
+        Parameters
+        ----------
+        population : str, default 'All'.
+            Other options are 'SNV' and 'nonSNV'.
 
-    # Import parameters
-    code_kwargs._parameters()
+        output_file : str, default None
+            If you want to export the generated graph, add the path and
+            name of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
-    # plot figure
-    plt.hist(df, density=True, bins=temp_kwargs['bins'], color='k')
+        **kwargs : other keyword arguments
+            return_plot_object : boolean, default False
+                If true, will return plotting objects (ie. fig, ax).
+            bins : int, default 50.
+                Number of bins for the histogram.
 
-    # axes labels and title
-    plt.xlabel(
-        r'$∆E^i_x$' if temp_kwargs['x_label'] == 'x_label' else temp_kwargs['x_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
-    plt.ylabel('Probability density', fontsize=10, fontname="Arial", color='k', labelpad=3)
-    plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k')
+        Returns
+        ----------
+        fig : matplotlib figure and subplots
+            Needs to have return_plot_object==True. By default they do
+            not get returned.
 
-    # axes limits. spacer will be 1 or the
-    plt.xlim(temp_kwargs['xscale'])
-    plt.xticks(
-        np.arange(
-            temp_kwargs['xscale'][0], temp_kwargs['xscale'][1] + temp_kwargs['tick_spacing'],
-            temp_kwargs['tick_spacing']
+        """
+        temp_kwargs = self._update_kwargs(kwargs)
+        self.fig = plt.figure(figsize=temp_kwargs['figsize'])
+        self._load_parameters()
+
+        # Select case input data
+        self.dataset = self.screen_object.dataframe['Score_NaN']
+        if population == 'SNV':
+            self.dataset = self.screen_object.dataframe_SNV['Score_NaN']
+        elif population == 'nonSNV':
+            self.dataset = self.screen_object.dataframe_nonSNV['Score_NaN']
+
+        # plot histogram
+        self.ax_object = plt.hist(self.dataset, density=True, bins=temp_kwargs['bins'], color='k')
+
+        self._tune_plot(temp_kwargs)
+        self._save_work(output_file, temp_kwargs)
+
+        if temp_kwargs['show']:
+            plt.show()
+
+    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+        """
+        Update the kwargs.
+        """
+        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
+        temp_kwargs.update(kwargs)
+        temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
+        temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
+        temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
+        return temp_kwargs
+
+    def _tune_plot(self, temp_kwargs) -> None:
+        """
+        Change stylistic parameters of the plot.
+        """
+        # axes labels and title
+        plt.xlabel(
+            r'$∆E^i_x$' if temp_kwargs['x_label'] == 'x_label' else temp_kwargs['x_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=0
         )
-    )
-    plt.ylim(temp_kwargs['yscale'])
-    plt.grid()
+        plt.ylabel('Probability density', fontsize=10, fontname="Arial", color='k', labelpad=3)
+        plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k')
 
-    # save file
-    code_utils._save_work(fig, output_file, temp_kwargs)
-
-    # return matplotlib object
-    if temp_kwargs['return_plot_object']:
-        return fig
-
-    if temp_kwargs['show']:
-        plt.show()
+        # axes limits. spacer will be 1 or the
+        plt.xlim(temp_kwargs['xscale'])
+        plt.xticks(
+            np.arange(
+                temp_kwargs['xscale'][0], temp_kwargs['xscale'][1] + temp_kwargs['tick_spacing'],
+                temp_kwargs['tick_spacing']
+            )
+        )
+        plt.ylim(temp_kwargs['yscale'])
+        plt.grid()

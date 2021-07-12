@@ -24,6 +24,7 @@ from mutagenesis_visualization.main.plotly.plotly_utils import (
     matplotlib_to_plotly,
 )
 
+
 def plot_mean_plotly(
     self,
     mode='mean',

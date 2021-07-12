@@ -13,6 +13,7 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
+
 def count_reads(
     dna_sequence,
     input_file: Union[str, Path],
@@ -74,9 +75,7 @@ def count_reads(
 
     """
     # Assert messages
-    assert len(
-        dna_sequence
-    ) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
+    assert len(dna_sequence) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
 
     # Make upper case in case input was lower case
     dna_sequence = dna_sequence.upper()
@@ -86,22 +85,20 @@ def count_reads(
         codon_list = [item.upper() for item in codon_list]
 
     # Create list with codons of sequence
-    wtSeqList = [dna_sequence[i:i + 3] for i in range(0, len(dna_sequence), 3)]
+    wtSeqList = [dna_sequence[i : i + 3] for i in range(0, len(dna_sequence), 3)]
 
     # codon_list
     if codon_list == 'NNS':
         codon_list = [
-            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC",
-            "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG",
-            "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG",
-            "GTC", "GTG", "TGG", "TAC", "TAG"
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG", "TTG", "ATG",
+            "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG",
+            "TAC", "TAG"
         ]
     elif codon_list == 'NNK':
         codon_list = [
-            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT',
-            'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG', 'AAT', 'CCG', 'CCT',
-            'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT',
-            'GTG', 'GTT', 'TGG', 'TAT', 'TAG'
+            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG',
+            'AAT', 'CCG', 'CCT', 'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG',
+            'TAT', 'TAG'
         ]
 
     # Enumerate variants
@@ -113,38 +110,32 @@ def count_reads(
     # Convert to df
     wtProtein = Seq(dna_sequence).translate()
     df = pd.DataFrame()
-    df['Position'] = np.ravel(
-        [[pos] * len(codon_list)
-         for pos in np.arange(start_position,
-                              len(wtProtein) + start_position).astype(int)]
-    )
+    df['Position'] = np.ravel([[pos] * len(codon_list)
+                               for pos in np.arange(start_position,
+                                                    len(wtProtein) + start_position).astype(int)])
     df['Codon'] = codon_list * len(wtProtein)
     df['WTCodon'] = np.ravel([[codon] * len(codon_list) for codon in wtSeqList])
     df['Aminoacid'] = np.ravel([[aa] * len(codon_list) for aa in wtProtein])
-    df['SynWT'] = df.apply(
-        lambda x: _are_syn(x['Codon'], x['WTCodon'], _codon_table()), axis=1
-    )
+    df['SynWT'] = df.apply(lambda x: _are_syn(x['Codon'], x['WTCodon'], _codon_table()), axis=1)
     df['Counts'] = list(variants.values())
 
     if counts_wt:
         try:  # try is to fix the Bug Che discovered
-            df.loc[df['Codon'] == df['WTCodon'],
-                   'Counts'] = variants[dna_sequence]
+            df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = variants[dna_sequence]
         except:
             pass
     else:
         df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = np.nan
 
     # Pivot table and reindex
-    df_counts = df.pivot_table(
-        values='Counts', index='Codon', columns=['Position'], dropna=False
-    )
+    df_counts = df.pivot_table(values='Counts', index='Codon', columns=['Position'], dropna=False)
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon
-    df_wt = df.loc[(df['SynWT'] == True) | (df['SynWT'] == 'wt codon')][[ # perhaps I need to remove this again
-        'Counts' # removed
-    ]]
+    df_wt = df.loc[(df['SynWT'] == True) |
+                   (df['SynWT'] == 'wt codon')][[  # perhaps I need to remove this again
+                       'Counts'  # removed
+                   ]]
 
     # Export files
     if output_file:

@@ -1,6 +1,14 @@
 """
-
+This module contains the class Counts.
 """
+from typing import List, Optional
+import pandas as pd
+import numpy as np
+
+from mutagenesis_visualization.main.utils.snv import is_dna, translate_codons
+from mutagenesis_visualization.main.bar_graphs.library_representation import LibraryRepresentation
+from mutagenesis_visualization.main.bar_graphs.mean_counts import MeanCounts
+
 
 class Counts:
     '''
@@ -8,39 +16,47 @@ class Counts:
 
     Parameters
     ----------
-    df : pandas dataframe
+    dataframe : pandas dataframe
         Dataframe containing the counts per codon.
 
     start_position : int, default None
-        First position in the protein sequence that will be used for the first column of the
-        array. If a protein has been mutated only from residue 100-150, then if start_position = 100,
-        the algorithm will trim the first 99 amino acids in the input sequence. The last
-        residue will be calculated based on the length of the input array. We have set the default value to 2
-        because normally the Methionine in position 1 is not mutated.
+        First position in the protein sequence that will be used for the
+        first column of the array. If a protein has been mutated only
+        from residue 100-150, then if start_position = 100, the algorithm
+        will trim the first 99 amino acids in the input sequence. The last
+        residue will be calculated based on the length of the input array.
+        We have set the default value to 2 because normally the Methionine
+        in position 1 is not mutated.
 
     aminoacids : list, default None
         List of aminoacids (in order). Stop codon needs to be '*'.
         If none, it will use the index of the dataframe
 
     '''
-    def __init__(self, df, start_position=None, aminoacids=None):
-        self.dataframe = df
-
+    def __init__(
+        self,
+        dataframe: pd.DataFrame,
+        start_position: Optional[int] = None,
+        aminoacids: Optional[List[str]] = None,
+    ):
+        self.dataframe: pd.DataFrame = dataframe
+        self.positions: List[int] = list(self.dataframe.columns)
+        self.start_position: int = self.positions[0]
         if start_position:
             self.start_position = start_position
-            self.positions = np.arange(start_position, len(df.columns) + 1)
-        else:  # if none, use the columns of the dataframe
-            self.positions = list(df.columns)
-            self.start_position = self.positions[0]
+            self.positions = np.arange(start_position, len(self.dataframe.columns) + 1)
 
+        # if aminoacids is none, use the index of the dataframe
         if aminoacids:
-            self.aminoacids = aminoacids
-        else:  # if aminoacids is none, use the index of the dataframe
-            if _is_DNA(df):
-                self.aminoacids = _translate_codons(df)
-            else:
-                self.aminoacids = list(df.index)
-        # bar plots
+            self.aminoacids: List[str] = aminoacids
+        elif is_dna(self.dataframe):
+            self.aminoacids = translate_codons(self.dataframe)
+        else:
+            self.aminoacids = list(self.dataframe.index)
 
-    mean_counts = plot_meancounts
-    library_representation = plot_library_representation
+        self.mean_counts = MeanCounts(dataset=self.dataframe, positions=self.positions)
+        self.library_representation = LibraryRepresentation(
+            dataset=self.dataframe,
+            aminoacids=self.aminoacids,
+            positions=self.positions,
+        )

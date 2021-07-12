@@ -25,6 +25,7 @@ import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
 import mutagenesis_visualization.main.scripts.code_utils as code_utils
 from mutagenesis_visualization.main.scripts.code_heatmaps import _labels
 
+
 def plot_pca(
     self,
     mode='aminoacid',
@@ -83,23 +84,17 @@ def plot_pca(
     if mode == 'aminoacid':
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
-        dataset = _calculate_correlation(
-            dataset, temp_kwargs['neworder_aminoacids']
-        )
+        dataset = _calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
         textlabels = temp_kwargs['neworder_aminoacids']
     elif mode == 'secondary':
-        dataset = _calculate_correlation_bysecondary(
-            dataset, self.secondary_dup
-        )
+        dataset = _calculate_correlation_bysecondary(dataset, self.secondary_dup)
         textlabels = list(dataset.columns)
     elif mode == 'individual':
         dataset = _calculate_correlation_byresidue(dataset)
         textlabels = list(dataset.columns)
 
     # plot using plot_clusters
-    dimensionstoplot, variance = _calculate_clusters(
-        dataset, dimensions, temp_kwargs['random_state']
-    )
+    dimensionstoplot, variance = _calculate_clusters(dataset, dimensions, temp_kwargs['random_state'])
 
     # x and y
     x = dimensionstoplot.iloc[:, 0]
@@ -110,15 +105,13 @@ def plot_pca(
 
     # labels
     plt.xlabel(
-        'PCA ' + str(dimensions[0] + 1) + ': ' +
-        str(int(variance[dimensions[0]] * 100)) + '%',
+        'PCA ' + str(dimensions[0] + 1) + ': ' + str(int(variance[dimensions[0]] * 100)) + '%',
         fontsize=10,
         labelpad=5,
         fontweight='normal'
     )
     plt.ylabel(
-        'PCA ' + str(dimensions[1] + 1) + ': ' +
-        str(int(variance[dimensions[1]] * 100)) + '%',
+        'PCA ' + str(dimensions[1] + 1) + ': ' + str(int(variance[dimensions[1]] * 100)) + '%',
         fontsize=10,
         labelpad=-2,
         fontweight='normal'
@@ -130,13 +123,7 @@ def plot_pca(
         adjust_text(texts, autoalign='xy')
 
     # set title
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -176,10 +163,7 @@ def _calculate_clusters(dataset, dimensions, random_state):
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa = pd.DataFrame((model.components_).T,
-                         columns=[
-                             'PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'
-                         ])
+    df_aa = pd.DataFrame((model.components_).T, columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -202,9 +186,7 @@ def _grouby_secondary(df, secondary):
 
 def _calculate_correlation_bysecondary(df, secondary):
     dataset = _grouby_secondary(df, secondary)
-    dataset = dataset.pivot_table(
-        values='Score', index='Secondary', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Secondary', columns='Aminoacid')
     dataset = dataset.T.corr()
 
     return dataset
@@ -213,9 +195,7 @@ def _calculate_correlation_bysecondary(df, secondary):
 def _calculate_correlation(df, order_aminoacids):
 
     dataset = df.copy()
-    dataset = dataset.pivot_table(
-        values='Score', index='Position', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.corr()
     dataset = dataset.reindex(index=order_aminoacids)[order_aminoacids]
 
@@ -225,9 +205,7 @@ def _calculate_correlation(df, order_aminoacids):
 def _calculate_correlation_byresidue(df):
 
     dataset = df.copy()
-    dataset = dataset.pivot_table(
-        values='Score', index='Position', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.T.corr()
 
     return dataset

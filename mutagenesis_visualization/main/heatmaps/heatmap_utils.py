@@ -38,13 +38,13 @@ def hierarchical_sort(df_input: pd.DataFrame) -> list:
 
 
 def generate_cartoon(
-    self, gs, n_row: int, colors, bottom_space: float = 0, fig_inches: float = 13.91, show_labels: bool = True
+    self, gs_object, n_row: int, colors, bottom_space: float = 0, fig_inches: float = 13.91, show_labels: bool = True
 ):
     '''
     Generates cartoon for heatmap.
     '''
     # Create subplot
-    cartoon = plt.subplot(gs[n_row, 0])
+    cartoon = plt.subplot(gs_object[n_row, 0])
 
     # Generate coordinates of labels
     labels = list(Counter(self.secondary).keys())

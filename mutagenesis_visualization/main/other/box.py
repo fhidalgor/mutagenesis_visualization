@@ -41,16 +41,8 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     plt.setp(ax.lines, color='k')
 
     # graph parameters
-    plt.title(
-        temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8
-    )
-    plt.ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
+    plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8)
+    plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0)
     plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
 
     # axes limits

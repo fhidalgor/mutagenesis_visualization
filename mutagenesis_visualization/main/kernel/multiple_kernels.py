@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Union
 
-from mutagenesis_visualization.main.base_model.pyplot import Pyplot
+from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
 class MultipleKernel(Pyplot):

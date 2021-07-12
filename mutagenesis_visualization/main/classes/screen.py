@@ -2,11 +2,25 @@
 This module contains the class Screen, which groups the plotting classes.
 """
 # Regular libraries
-from typing import List, Optional
+from typing import List, Optional, Any
 import numpy as np
-import pandas as pd
+from pandas import DataFrame
 
 from mutagenesis_visualization.main.kernel.kernel import Kernel
+from mutagenesis_visualization.main.kernel.histogram import Histogram
+from mutagenesis_visualization.main.scatter.scatter import Scatter
+from mutagenesis_visualization.main.bar_graphs.mean_barplot import MeanBar
+from mutagenesis_visualization.main.bar_graphs.mean_differential import MeanBar
+from mutagenesis_visualization.main.bar_graphs.mean_position import MeanBar
+from mutagenesis_visualization.main.utils.snv import select_snv, select_nonsnv
+from mutagenesis_visualization.main.utils.pandas_functions import (transform_dataset, transform_sequence, transform_secondary)
+from mutagenesis_visualization.main.plotly.heatmap import HeatmapP
+from mutagenesis_visualization.main.plotly.histogram import HistogramP
+from mutagenesis_visualization.main.plotly.mean_enrichment import MeanEnrichmentP
+from mutagenesis_visualization.main.plotly.rank import RankP
+from mutagenesis_visualization.main.plotly.scatter_3d_pdb import Scatter3D
+from mutagenesis_visualization.main.plotly.scatter_3d import Scatter3DPDB
+from mutagenesis_visualization.main.plotly.scatter import ScatterP
 
 class Screen:
     '''
@@ -69,13 +83,13 @@ class Screen:
     '''
     def __init__(
         self,
-        dataset,
+        dataset: Any,
         sequence: str,
-        aminoacids: List[str]=list('ACDEFGHIKLMNPQRSTVWY*'),
-        start_position: Optional[int]=2,
-        fillna: Optional[float]=0,
-        secondary: Optional[list]=None,
-        roc_df: Optional[pd.DataFrame]=None
+        aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*'),
+        start_position: Optional[int] = 2,
+        fillna: Optional[float] = 0,
+        secondary: Optional[list] = None,
+        roc_df: Optional[DataFrame] = None
     ):
         # Instances
         self.dataset = np.array(dataset)
@@ -83,76 +97,66 @@ class Screen:
         self.start_position = start_position
         self.end_position = len(self.dataset[0]) + start_position
         self.sequence_raw = ''.join(sequence)  # why I am doing this?
-        self.sequence = _transform_sequence(
-            self.dataset, self.sequence_raw, self.start_position
+        self.sequence: str = transform_sequence(self.dataset, self.sequence_raw, self.start_position)
+        self.dataframe_stopcodons, self.dataframe = transform_dataset(
+            self.dataset, self.sequence, self.aminoacids, self.start_position, fillna
         )
-        self.dataframe_stopcodons, self.dataframe = _transform_dataset(
-            self.dataset, self.sequence, self.aminoacids, self.start_position,
-            fillna
-        )
-        self.dataframe_SNV = _select_SNV(self.dataframe)
-        self.dataframe_nonSNV = _select_nonSNV(self.dataframe)
+        self.dataframe_SNV = select_snv(self.dataframe)
+        self.dataframe_nonSNV = select_nonsnv(self.dataframe)
 
         # Optional parameters
         self.roc_df = roc_df
         self.secondary = secondary
         if self.secondary is not None:
-            self.secondary, self.secondary_dup = _transform_secondary(
-                self.dataset, self.secondary, self.start_position,
-                self.aminoacids
+            self.secondary, self.secondary_dup = transform_secondary(
+                self.dataset, self.secondary, self.start_position, self.aminoacids
             )
 
         # Assert messages
-        assert len(sequence) >= len(
-            self.dataset[0]
-        ), 'Input sequence is not long enough'
+        assert len(sequence) >= len(self.dataset[0]), 'Input sequence is not long enough'
 
+        # kernel
+        self.kernel = Kernel(dataset=self.dataframe['Score_NaN'])
+        self.histogram = Histogram(self)
 
-        # code_kernel
-        self.kernel = Kernel(dataset = self.dataframe['Score_NaN'])
-        self.histogram = Histogram()
+        # heatmaps
+        self.heatmap = plot_heatmap
+        self.heatmap_rows = plot_heatmap_rows
+        self.heatmap_columns = plot_heatmap_columns
 
-        # code_heatmaps
-        heatmap = plot_heatmap
-        heatmap_rows = plot_heatmap_rows
-        heatmap_columns = plot_heatmap_columns
+        # bar
+        self.mean = MeanBar(dataframe = self.dataframe)
+        self.differential = plot_meandifferential
+        self.position = plot_position
 
-        # code_bar
-        mean = plot_mean
-        differential = plot_meandifferential
-        position = plot_position
-        meancounts = plot_meancounts
-        library_representation = plot_library_representation
+        # scatter
+        self.scatter = Scatter(self.dataframe)
 
-        # code_scatter
-        scatter = plot_scatter
+        # PCA
+        self.correlation = plot_correlation
+        self.individual_correlation = plot_individual_correlation
+        self.group_correlation = plot_group_correlation
+        self.pca = plot_pca
 
-        # code_PCA
-        correlation = plot_correlation
-        individual_correlation = plot_individual_correlation
-        group_correlation = plot_group_correlation
-        pca = plot_pca
+        #self.other
+        self.rank = plot_rank
+        self.miniheatmap = plot_miniheatmap
+        self.neighboreffect = plot_neighboreffect
+        self.secondary_mean = plot_secondary
+        self.roc = plot_roc
+        self.cumulative = plot_cumulative
 
-        # code_Other
-        rank = plot_rank
-        miniheatmap = plot_miniheatmap
-        neighboreffect = plot_neighboreffect
-        secondary_mean = plot_secondary
-        roc = plot_roc
-        cumulative = plot_cumulative
-
-        # code_plotly
-        rank_plotly = plot_rank_plotly
-        scatter_plotly = plot_scatter_plotly
-        histogram_plotly = plot_histogram_plotly
-        mean_plotly = plot_mean_plotly
-        scatter_3D_plotly = plot_scatter_3D_plotly
-        scatter_3D_pdbprop_plotly = plot_scatter_3D_pdbprop_plotly
-        heatmap_plotly = plot_heatmap_plotly
-
+        # plotly
+        self.heatmap_plotly = HeatmapP(self.dataframe_stopcodons, self.sequence)
+        self.histogram_plotly = HistogramP(self.dataframe)
+        self.mean_plotly = MeanEnrichmentP()
+        self.rank_plotly = RankP(self.dataframe)
+        self.scatter_plotly = ScatterP(self.dataframe)
+        self.scatter_3D_plotly = Scatter3D()
+        self.scatter_3D_pdbprop_plotly = Scatter3DPDB()
 
         # pymol
         try:
-            pymol = plot_pymol
+            self.pymol = plot_pymol
         except:
             pass

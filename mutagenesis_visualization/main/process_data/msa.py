@@ -12,6 +12,7 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
+
 def msa_enrichment(self, path, start_position, threshold=0.01):
     """
     Generate a dataframe with the Shannon entropy by residue and the mean
@@ -52,14 +53,10 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
     shannon_entropy = code_utils._shannon_entropy_list_msa(msa)
 
     # Merge enrichment scores and MSA conservation
-    df_freq = _merge_msa_enrichment(
-        self, _msa_to_df(msa), start_position, threshold
-    )
+    df_freq = _merge_msa_enrichment(self, _msa_to_df(msa), start_position, threshold)
 
     # Merge shannon and mean enrichment score
-    df_shannon = _merge_shannon_enrichment(
-        self, shannon_entropy, start_position
-    )
+    df_shannon = _merge_shannon_enrichment(self, shannon_entropy, start_position)
 
     return df_shannon, df_freq
 
@@ -68,10 +65,7 @@ def _merge_shannon_enrichment(self, shannon_entropy, start_position):
 
     # Create df with shannon entropy by residue and average enrichment score by residue
     df_shannon = pd.DataFrame()
-    df_shannon['Position'] = np.arange(
-        start_position,
-        len(shannon_entropy) + start_position
-    )
+    df_shannon['Position'] = np.arange(start_position, len(shannon_entropy) + start_position)
     df_shannon['Shannon'] = shannon_entropy
 
     # group by enrichment scores
@@ -124,20 +118,14 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
     df = pd.DataFrame()
 
     # Create column with position and aminoacid label
-    df['Position'] = np.ravel(
-        [[i] * len(df_msa.T)
-         for i in range(start_position,
-                        len(df_msa) + start_position)]
-    )
+    df['Position'] = np.ravel([[i] * len(df_msa.T) for i in range(start_position, len(df_msa) + start_position)])
     df['Aminoacid'] = list(df_msa.columns) * len(df_msa)
 
     # Add conservation from MSA
     df['Conservation'] = list(df_msa.stack(dropna=False))
 
     # Merge with enrichment scores
-    df_merged = self.dataframe.merge(
-        df, how='inner', on=['Position', 'Aminoacid']
-    )
+    df_merged = self.dataframe.merge(df, how='inner', on=['Position', 'Aminoacid'])
 
     # Copycat conservation
     df_merged['Class'] = df_merged['Conservation']

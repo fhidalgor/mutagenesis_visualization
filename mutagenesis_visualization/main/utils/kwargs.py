@@ -1,8 +1,11 @@
+"""
+This module contains standard input kwarg parameters.
+"""
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib import rcParams
+from typing import Dict, Any
 
 
-def kwargs():
+def default_kwargs() -> Dict[str, Any]:
     """
     Kwargs used in the methods and some other functions. Not all kwargs work on
     each method, read the individual description.
@@ -94,10 +97,10 @@ def kwargs():
         Dictionary with the default kwargs.
 
     """
-    default_kwargs = {
+    default_kwargs: Dict[str, Any] = {
         'figsize_x': None,
         'figsize_y': None,
-        'colormap': _generatecolormap(),
+        'colormap': _generate_colormap(),
         'colorbar_scale': [-1, 1],
         'color': 'k',
         'title': 'Title',
@@ -119,52 +122,23 @@ def kwargs():
         'show': True,
         'random_state': 554,
         'bins': 50,
-        'return_plot_object':False,
+        'return_plot_object': False,
     }
 
     return default_kwargs
 
 
-def _generatecolormap():
-    cmap = LinearSegmentedColormap(
+def _generate_colormap() -> LinearSegmentedColormap:
+    """
+    Generates standard blue, white, red color map.
+    """
+    cmap: LinearSegmentedColormap = LinearSegmentedColormap(
         'BlueWhiteRed',
         {
-            'red': ((0.0, 0.0, 0.0), (0.15, 0.0, 0.0), (0.475, 1.0, 1),
-                    (0.525, 1.0, 1), (0.85, 1.0, 1.0), (1.0, .8, 1)), 'green':
-            ((0.0, 0.0, .0), (0.15, 0.5, 0.5), (0.475, 1.0, 1), (0.525, 1.0, 1),
-             (0.85, 0.0, 0.0), (1.0, 0.0, 0.0)), 'blue':
-            ((0.0, .5, .5), (0.15, 1, 1), (0.475, 1.0, 1), (0.525, 1.0, 1),
-             (0.85, 0.0, 0.0), (1.0, 0.0, 0.0))
+            'red': ((0.0, 0.0, 0.0), (0.15, 0.0, 0.0), (0.475, 1.0, 1), (0.525, 1.0, 1), (0.85, 1.0, 1.0),
+                    (1.0, .8, 1)), 'green': ((0.0, 0.0, .0), (0.15, 0.5, 0.5), (0.475, 1.0, 1), (0.525, 1.0, 1),
+                                             (0.85, 0.0, 0.0), (1.0, 0.0, 0.0)), 'blue':
+            ((0.0, .5, .5), (0.15, 1, 1), (0.475, 1.0, 1), (0.525, 1.0, 1), (0.85, 0.0, 0.0), (1.0, 0.0, 0.0))
         },
     )
     return cmap
-
-
-def _parameters():
-    # normal font
-    rcParams['font.family'] = 'sans-serif'
-    rcParams['font.sans-serif'] = ['Arial']
-
-    # math font
-    rcParams['mathtext.fontset'] = 'custom'
-    rcParams['mathtext.rm'] = 'Arial'
-    rcParams['svg.fonttype'] = 'none'
-
-    # add grid
-    rcParams['grid.color'] = 'silver'
-    rcParams['grid.linestyle'] = '--'
-    rcParams['grid.linewidth'] = 1
-    rcParams['lines.dashed_pattern'] = [5, 10]
-    rcParams['axes.axisbelow'] = True
-    # Parameters for all graphs
-    rcParams['xtick.labelsize'] = 9
-    rcParams['ytick.labelsize'] = 9
-    return
-
-
-def _font_parameters():
-    # math font
-    rcParams['mathtext.fontset'] = 'custom'
-    rcParams['mathtext.rm'] = 'Arial'
-    rcParams['svg.fonttype'] = 'none'
-    return

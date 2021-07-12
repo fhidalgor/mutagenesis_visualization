@@ -2,37 +2,25 @@
 This module contains utils for the plotly figures.
 """
 
-from pathlib import Path
-from typing import Union, Dict, Any
+from typing import Dict, Any
 import numpy as np
 import pandas as pd
 from Bio.PDB import PDBParser
 import freesasa
 
 
-def save_html(fig, output_html: Union[None, str, Path]) -> None:
-    '''
-    Save figure to html.
-    '''
-    if output_html:
-        fig.write_html(str(Path(output_html)))
-
-
-def select_grouping(self, mode):
-    '''
+def select_grouping(dataframe: pd.DataFrame, mode: str) -> pd.DataFrame:
+    """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
-    '''
+    """
     # convert to upper case
     mode = mode.upper()
 
     # Select grouping
     if mode == 'MEAN':
-        df = self.dataframe.groupby('Position', as_index=False).mean()
-    else:
-        df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
-
-    return df
+        return dataframe.groupby('Position', as_index=False).mean()
+    return dataframe.loc[dataframe['Aminoacid'] == mode].copy()
 
 
 def color_3d_scatter(df, mode, lof, gof):
@@ -81,19 +69,19 @@ def color_3d_scatter(df, mode, lof, gof):
 
 
 def centroid(df):
-    '''
+    """
     Find center of x,y,z using centroid method.
     The input is a dataframe with columns x, y, z.
     Returns the center of each of the three dimensions
-    '''
+    """
     return df['x'].mean(), df['y'].mean(), df['z'].mean()
 
 
 def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False):
-    '''
+    """
     Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
     If PDB is missing atoms, it can handle it.
-    '''
+    """
 
     # Get structure from PDB
     structure = PDBParser().get_structure('pdb', pdb_path)
@@ -149,9 +137,9 @@ def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False
 
 
 def matplotlib_to_plotly(cmap, pl_entries=255):
-    '''
+    """
     Convert a matplotlib colorscale into plotly rgb format.
-    '''
+    """
     h = 1.0 / (pl_entries - 1)
     pl_colorscale = []
 
@@ -182,10 +170,10 @@ def update_layout(fig, temp_kwargs: Dict[str, Any]):
 
 
 def update_axes(fig, temp_kwargs: Dict[str, Any]):
-    '''
+    """
     Separeated this portion of the code because it is clumsy. It changes
     the axes looks.
-    '''
+    """
     # Layout and title parameters https://plotly.com/python/figure-labels/
     fig.update_layout(
         scene=dict(

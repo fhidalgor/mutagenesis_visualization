@@ -13,6 +13,7 @@ from typing import Union
 from scipy import stats
 from logomaker import alignment_to_matrix
 
+
 def count_fastq(variants, input_file):
     '''
     Count the frequency of variants in the input fastq file.

@@ -1,6 +1,4 @@
-def plot_roc(
-    self, df_class=None, mode='pointmutant',output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_roc(self, df_class=None, mode='pointmutant', output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates ROC AUC plot. It compares enrichment scores to some labels that
     the user has specified.
@@ -60,28 +58,16 @@ def plot_roc(
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     tick_spacing = 0.2
-    ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing)
-    )  # Plt ticks
-    ax.yaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing)
-    )  # Plt ticks
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))  # Plt ticks
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
-    plt.ylabel(
-        'True Positive Rate',
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
+    plt.ylabel('True Positive Rate', fontsize=12, fontname="Arial", color='k', labelpad=0)
     plt.xlabel('False Positive Rate', fontsize=12, fontname="Arial", color='k')
 
     # Legend
-    plt.legend(
-        loc='lower right', handlelength=0, handletextpad=0, frameon=False
-    )
+    plt.legend(loc='lower right', handlelength=0, handletextpad=0, frameon=False)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -93,6 +79,7 @@ def plot_roc(
     if temp_kwargs['show']:
         plt.show()
 
+
 def _select_grouping(df, mode):
     '''
     Choose the subset of substitutions based on mode input.
@@ -103,7 +90,7 @@ def _select_grouping(df, mode):
     mode = mode.upper()
 
     # Select grouping
-    if mode =='POINTMUTANT':
+    if mode == 'POINTMUTANT':
         pass
     elif mode == 'MEAN':
         df = df.groupby('Position', as_index=False).mean()
@@ -112,15 +99,14 @@ def _select_grouping(df, mode):
 
     return df
 
+
 def _rocauc(df):
     '''
     Calculate roc rates and auc.
 
     The input is a dataframe that contains [Variants,Class,Score]
     '''
-    fpr, tpr, thresholds = metrics.roc_curve(
-        df['Class'], df['Score'], drop_intermediate=True
-    )
+    fpr, tpr, thresholds = metrics.roc_curve(df['Class'], df['Score'], drop_intermediate=True)
     auc = metrics.roc_auc_score(df['Class'], df['Score'])
     return fpr, tpr, auc, thresholds
 
@@ -138,8 +124,8 @@ def _mergeclassvariants(df_score, df_class, mode):
         # Merge DMS with true score dataset
         df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
     else:
-            # Cut other data
-        df_class = df_class[['Position','Class']].copy()
+        # Cut other data
+        df_class = df_class[['Position', 'Class']].copy()
         df_merged = pd.merge(df_score, df_class, on=['Position'], how='left')
 
     # Drop rows with Nan values

@@ -1,27 +1,27 @@
 """
-This module contains the abstract class for all the plot classes.
+This module contains the parent class for all the plot classes.
 """
-
 from pathlib import Path
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Optional
 import copy
 from matplotlib import rcParams
 from matplotlib.figure import Figure
-from mutagenesis_visualization.main.default_parameters.kwargs import default_kwargs
+from mutagenesis_visualization.main.utils.kwargs import default_kwargs
+
 
 class Pyplot:
     """
     Plot abstract class used to visualize mutagenesis data using
     matplotlib.
     """
-    def __init__(self, dataset: Any) -> None:
+    def __init__(self, dataset: Optional[Any] = None) -> None:
         """
         Docstring placeholder
         """
         self.dataset: Any = dataset
         self.kwargs: Dict[str, Any] = default_kwargs()
         self.fig: Figure = Figure()
-        self.ax_object: Any = None
+        self.ax_object: Optional[Any] = None
 
     def _save_work(self, output_file: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
         '''
@@ -34,7 +34,7 @@ class Pyplot:
                 bbox_inches='tight',
                 dpi=temp_kwargs['dpi'],
                 transparent=True
-        )
+            )
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -43,8 +43,7 @@ class Pyplot:
         temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
         return temp_kwargs.update(kwargs)
 
-
-    def _load_parameters(self,) -> None:
+    def _load_parameters(self, ) -> None:
         """
         Default rcParams.
         """
@@ -67,7 +66,7 @@ class Pyplot:
         rcParams['xtick.labelsize'] = 9
         rcParams['ytick.labelsize'] = 9
 
-    def _font_parameters(self,) -> None:
+    def _font_parameters(self, ) -> None:
         """
         Default math font rcParams.
         """
@@ -79,7 +78,8 @@ class Pyplot:
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         pass
 
-    def return_plot_object(self,):
+    def return_plot_object(self, ):
         """
         Return matplotlib object.
         """
+        return self.fig, self.ax_object

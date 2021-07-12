@@ -35,11 +35,7 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     df = _calculate_secondary(self.dataframe, self.secondary_dup)
 
     # Color
-    df['Color'] = df.apply(
-        code_utils._color_data,
-        axis=1,
-        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-    )
+    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -58,30 +54,10 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
 
     # graph parameters
     ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        labels,
-        fontsize=9,
-        fontname="Arial",
-        color='k',
-        minor=False,
-        rotation=0
-    )
-    ax.set_ylabel(
-        r'$∆E^i_x$',
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=12,
-        rotation=0
-    )
+    ax.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0)
+    ax.set_ylabel(r'$∆E^i_x$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0)
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)

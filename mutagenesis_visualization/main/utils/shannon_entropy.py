@@ -21,9 +21,7 @@ def shannon_entropy(list_input: list) -> list:
     # Number of residues in column
     for base in unique_base:
         n_i = list_input.count(base)  # Number of residues of type i
-        P_i = n_i / float(
-            M
-        )  # n_i(Number of residues of type i) / M(Number of residues in column)
+        P_i = n_i / float(M)  # n_i(Number of residues of type i) / M(Number of residues in column)
         entropy_i = P_i * (math.log(P_i, 2))
         entropy_list.append(entropy_i)
 

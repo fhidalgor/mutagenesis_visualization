@@ -25,9 +25,8 @@ import mutagenesis_visualization.main.scripts.code_kwargs as code_kwargs
 import mutagenesis_visualization.main.scripts.code_utils as code_utils
 from mutagenesis_visualization.main.scripts.code_heatmaps import _labels
 
-def plot_correlation(
-    self, output_file: Union[None, str, Path] = None, **kwargs
-):
+
+def plot_correlation(self, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generate a correlation of each amino acid.
 
@@ -62,9 +61,7 @@ def plot_correlation(
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # calculate correlation heatmap
-    dataset = _calculate_correlation(
-        self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
-    )
+    dataset = _calculate_correlation(self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
 
     # declare figure and subplots
     coeff = len(dataset.columns) / 19 * 1.05
@@ -101,20 +98,8 @@ def plot_correlation(
     ax.yaxis.set_ticks_position('none')
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(
-        list(dataset.columns),
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
-    ax.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
+    ax.set_xticklabels(list(dataset.columns), fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False)
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -128,14 +113,10 @@ def plot_correlation(
         fraction=0.025,
         pad=0.05,
         aspect=5,
-        ticks=[
-            temp_kwargs['colorbar_scale'][0], temp_kwargs['colorbar_scale'][1]
-        ],
+        ticks=[temp_kwargs['colorbar_scale'][0], temp_kwargs['colorbar_scale'][1]],
         orientation='vertical'
     )
-    cb.ax.set_yticklabels(
-        cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k'
-    )
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k')
     cb.update_ticks()
     plt.text(
         len(dataset.columns) + 1.2 * coeff,
@@ -148,13 +129,7 @@ def plot_correlation(
     )
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=10
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -173,9 +148,7 @@ def plot_correlation(
 # In[ ]:
 
 
-def plot_individual_correlation(
-    self, output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_individual_correlation(self, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates a bar plot of the correlation of each amino acid mutational
     profile (row of the heatmap) with the rest of amino acids (rows)
@@ -211,9 +184,7 @@ def plot_individual_correlation(
     # Get data
     if '*' in temp_kwargs['neworder_aminoacids']:
         temp_kwargs['neworder_aminoacids'].remove('*')
-    df = _calculate_correlation(
-        self.dataframe, temp_kwargs['neworder_aminoacids']
-    ).mean()**2
+    df = _calculate_correlation(self.dataframe, temp_kwargs['neworder_aminoacids']).mean()**2
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -231,30 +202,10 @@ def plot_individual_correlation(
 
     # graph parameters
     ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        labels,
-        fontsize=9,
-        fontname="Arial",
-        color='k',
-        minor=False,
-        rotation=0
-    )
-    ax.set_ylabel(
-        r'$R^2$',
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=12,
-        rotation=0
-    )
+    ax.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0)
+    ax.set_ylabel(r'$R^2$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0)
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -324,9 +275,7 @@ def plot_group_correlation(
         temp_kwargs['neworder_aminoacids'].remove('*')
 
     # Get R2 of each combination of amino acid substitutions
-    df = _calculate_substitution_correlations(
-        self, temp_kwargs['neworder_aminoacids'], groups
-    )
+    df = _calculate_substitution_correlations(self, temp_kwargs['neworder_aminoacids'], groups)
 
     # Filter according the the R2 correlation value
     filtered = df.loc[df['R2'] > r2]
@@ -354,13 +303,7 @@ def plot_group_correlation(
     fig.ax.set_xlim([-0.5, len(logoplot) - 0.5])
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=10
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
 
     # save file, cannot save logo file for now
 
@@ -398,11 +341,7 @@ def _calculate_substitution_correlations(self, aminoacids, groups):
                 if aa_nonselected == aa_selected:
                     temp_list.append(1)
                 else:
-                    temp_list.append(
-                        _find_correlation(
-                            aa_selected, aa_nonselected, corr_values
-                        )
-                    )
+                    temp_list.append(_find_correlation(aa_selected, aa_nonselected, corr_values))
         df[combination] = temp_list  # Store in df
     return _polishdf(df)
 

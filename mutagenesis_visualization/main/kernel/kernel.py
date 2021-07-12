@@ -12,16 +12,17 @@ from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 class Kernel(Pyplot):
     """
-    Class to generate
+    Class to generate a kernel density plot.
     """
     def plot(
         self,
         cumulative=False,
         output_file: Union[None, str, Path] = None,
-        **kwargs,
-    ):
+        **kwargs: Dict[str, Any],
+    ) -> None:
         """
         Plot univariate or bivariate distributions using kernel density estimation.
+
         Parameters
         ----------
         cumulative : bool, optional, default False
@@ -30,20 +31,16 @@ class Kernel(Pyplot):
         output_file : str, default None
             If you want to export the generated graph, add the path and name of the file.
             Example: 'path/filename.png' or 'path/filename.svg'.
+
         **kwargs : other keyword arguments
             return_plot_object : boolean, default False
                 If true, will return plotting objects (ie. fig, ax_object).
-        Returns
-        ----------
-        fig, ax_object : matplotlib figure and subplots
-            Needs to have return_plot_object=True. By default they do
-            not get returned.
         """
-        temp_kwargs = self._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
         self._load_parameters()
 
-        # plot
+        # plot kernel
         self.ax_object = sns.kdeplot(
             self.dataset,
             cumulative=cumulative,
@@ -76,9 +73,3 @@ class Kernel(Pyplot):
         temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
         return temp_kwargs
-
-    def return_plot_object(self,):
-        """
-        Return matplotlib object.
-        """
-        return self.fig, self.ax_object

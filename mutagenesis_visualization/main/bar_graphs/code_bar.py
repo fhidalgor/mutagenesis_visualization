@@ -5,7 +5,6 @@
 
 # In[ ]:
 
-
 import numpy as np
 import pandas as pd
 import itertools
@@ -28,7 +27,6 @@ except ModuleNotFoundError:
     import code_utils
     from code_heatmaps import _generate_cartoon
 
-
 # # Plot Functions
 
 # ## Mean Plots
@@ -38,13 +36,7 @@ except ModuleNotFoundError:
 # In[ ]:
 
 
-def plot_mean(
-    self,
-    mode='mean',
-    show_cartoon=False,
-    output_file: Union[None, str, Path] = None,
-    **kwargs
-):
+def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, str, Path] = None, **kwargs):
     '''
     Plot in a bargraph the mean enrichment for each residue of the protein. 
     Red for gain of function, blue for loss of function
@@ -98,11 +90,7 @@ def plot_mean(
     else:
         df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
 
-    df['Color'] = df.apply(
-        code_utils._color_data,
-        axis=1,
-        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-    )
+    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
 
     # make figure
     if show_cartoon:
@@ -118,47 +106,19 @@ def plot_mean(
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=10,
-        rotation=0
-    )
-    ax.set_xticks(
-        np.arange(self.start_position,
-                  len(df) + self.start_position, 20)
-    )
-    ax.set_xlabel(
-        'Residue', fontsize=10, fontname="Arial", color='k', labelpad=4
-    )
-    ax.set_xlim(
-        self.start_position - 0.1,
-        len(df) + self.start_position - 1 + 0.1
-    )
+    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0)
+    ax.set_xticks(np.arange(self.start_position, len(df) + self.start_position, 20))
+    ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
+    ax.set_xlim(self.start_position - 0.1, len(df) + self.start_position - 1 + 0.1)
 
     # cartoon
     title_pad = 0
     if show_cartoon:
-        _generate_cartoon(
-            self,
-            gs,
-            1,
-            temp_kwargs['cartoon_colors'],
-            bottom_space=-0.78,
-            show_labels=False
-        )
+        _generate_cartoon(self, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False)
         title_pad = 2.5
 
     # Plot title
-    plt.title(
-        temp_kwargs['title'],
-        fontsize=12,
-        fontname='Arial',
-        color='k',
-        pad=title_pad
-    )
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=title_pad)
 
     # Put text labels
     _inputtext(temp_kwargs['text_labels'])
@@ -196,13 +156,7 @@ def _parameters_mean():
 # In[ ]:
 
 
-def plot_meandifferential(
-    self,
-    obj2,
-    show_cartoon=False,
-    output_file: Union[None, str, Path] = None,
-    **kwargs
-):
+def plot_meandifferential(self, obj2, show_cartoon=False, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Plot the mean positional difference between two experiments.
 
@@ -235,9 +189,7 @@ def plot_meandifferential(
     temp_kwargs.update(kwargs)
     temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
     temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
-    temp_kwargs['y_label'] = kwargs.get(
-        'y_label', r'Mean Differential $∆E^i_x$'
-    )
+    temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
 
     # load parameters
     _parameters_mean()
@@ -258,25 +210,10 @@ def plot_meandifferential(
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=-5,
-        rotation=90
-    )
-    ax.set_xticks(
-        np.arange(self.start_position,
-                  len(df) + self.start_position, 20)
-    )
-    ax.set_xlabel(
-        'Residue', fontsize=10, fontname="Arial", color='k', labelpad=4
-    )
-    ax.set_xlim(
-        self.start_position - 0.1,
-        len(df) + self.start_position - 1 + 0.1
-    )
+    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=-5, rotation=90)
+    ax.set_xticks(np.arange(self.start_position, len(df) + self.start_position, 20))
+    ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
+    ax.set_xlim(self.start_position - 0.1, len(df) + self.start_position - 1 + 0.1)
 
     # cartoon
     title_pad = 0
@@ -285,23 +222,10 @@ def plot_meandifferential(
         obj = obj2
         if len(self.dataframe) < len(obj2.dataframe):
             obj = self
-            _generate_cartoon(
-                obj,
-                gs,
-                1,
-                temp_kwargs['cartoon_colors'],
-                bottom_space=-0.78,
-                show_labels=False
-            )
+            _generate_cartoon(obj, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False)
 
     # title
-    ax.set_title(
-        temp_kwargs['title'],
-        fontsize=12,
-        fontname='Arial',
-        color='k',
-        pad=title_pad
-    )
+    ax.set_title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=title_pad)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -358,27 +282,12 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(
-        temp_kwargs['y_label'],
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=0,
-        rotation=90
-    )
-    ax.set_xlabel(
-        'Amino acid position',
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=4
-    )
+    ax.set_ylabel(temp_kwargs['y_label'], fontsize=12, fontname="Arial", color='k', labelpad=0, rotation=90)
+    ax.set_xlabel('Amino acid position', fontsize=12, fontname="Arial", color='k', labelpad=4)
     ax.set_xticklabels(self.positions)
 
     # Title
-    plt.title(
-        temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=0
-    )
+    plt.title(temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=0)
 
     # Put text labels
     _inputtext(temp_kwargs['text_labels'])
@@ -407,9 +316,7 @@ def _inputtext(text_entries):
 # In[ ]:
 
 
-def plot_position(
-    self, position, output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_position(self, position, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Choose a position and plot in a bargraph the enrichment score for each
     substitution. Red for gain of function, blue for loss of function.
@@ -450,11 +357,7 @@ def plot_position(
     df = self.dataframe.loc[self.dataframe['Position'] == position].copy()
 
     # Color
-    df['Color'] = df.apply(
-        code_utils._color_data,
-        axis=1,
-        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-    )
+    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
 
     # make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -465,18 +368,9 @@ def plot_position(
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=10,
-        rotation=0
-    )
+    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0)
 
-    ax.set_xlabel(
-        'Residue', fontsize=10, fontname="Arial", color='k', labelpad=4
-    )
+    ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
 
     # save file
@@ -495,9 +389,7 @@ def plot_position(
 # In[ ]:
 
 
-def plot_library_representation(
-    self, output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_library_representation(self, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates a cumulative stacked bar plot. Each bar represents an amino acid
     position, and each color indicates the observed variant frequency.
@@ -540,28 +432,13 @@ def plot_library_representation(
 
     # axes parameters
     ax.set_ylim(0, 100)
-    ax.set_ylabel(
-        'Cumulative % AA representation',
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=0,
-        rotation=90
-    )
+    ax.set_ylabel('Cumulative % AA representation', fontsize=12, fontname="Arial", color='k', labelpad=0, rotation=90)
     ax.yaxis.set_major_formatter(ticker.PercentFormatter())
 
-    ax.set_xlabel(
-        'Amino acid position',
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=4
-    )
+    ax.set_xlabel('Amino acid position', fontsize=12, fontname="Arial", color='k', labelpad=4)
     ax.set_xticklabels(self.positions)
 
-    plt.title(
-        temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=20
-    )
+    plt.title(temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=20)
 
     # legend
     plt.legend(
@@ -596,7 +473,9 @@ def _group_codons_to_aa(self):
 
     Returns sum of counts
 
-    """    # copy df
+    """
+
+    # copy df
     df = self.dataframe.copy()
 
     df['Aminoacid'] = self.aminoacids
@@ -611,4 +490,3 @@ def _percentage_column(df):
     Make the percentage per column.
     """
     return df / df.sum(axis=0) * 100
-

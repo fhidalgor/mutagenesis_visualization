@@ -1,6 +1,4 @@
-def plot_cumulative(
-    self, mode='all', output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates a cumulative plot of the enrichment scores by position.
 
@@ -50,14 +48,10 @@ def plot_cumulative(
         y_label = 'Cumulative GoF'
 
     # Graph limits
-    plt.xlim(
-        self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1
-    )
+    plt.xlim(self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1)
     plt.ylim(0, 1.1)
 
-    ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(temp_kwargs['tick_spacing'])
-    )  # Plt ticks
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
@@ -65,10 +59,7 @@ def plot_cumulative(
     plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
 
     # x=y line
-    plt.plot([0, df['Position'].max()], [0, 1],
-             color='silver',
-             lw=2,
-             linestyle='--')
+    plt.plot([0, df['Position'].max()], [0, 1], color='silver', lw=2, linestyle='--')
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)

@@ -60,7 +60,7 @@ def plot_heatmap(
             If true, will return plotting objects (ie. fig, ax_object).
     Returns
     ----------
-    fig, ax_object, ax2, ax3, averageresidue : matplotlib figure and subplots
+    fig, ax_object, ax_object2, ax_object3, averageresidue : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
 
@@ -174,14 +174,14 @@ def plot_heatmap(
     ax_object.tick_params('y', direction='out', pad=0.4)
 
     # make new axes
-    ax2 = ax_object.twiny()
-    ax3 = ax_object.twinx()
+    ax_object2 = ax_object.twiny()
+    ax_object3 = ax_object.twinx()
 
     # tune the axes
-    ax2.set_xticks(np.arange(len(df_data.columns)) + 0.5, minor=False)
-    ax3.set_yticks(np.arange(len(df_data)) + 0.5, minor=False)
-    ax2.tick_params(direction='out', pad=4)
-    ax3.tick_params(direction='out', pad=0.4)
+    ax_object2.set_xticks(np.arange(len(df_data.columns)) + 0.5, minor=False)
+    ax_object3.set_yticks(np.arange(len(df_data)) + 0.5, minor=False)
+    ax_object2.tick_params(direction='out', pad=4)
+    ax_object3.tick_params(direction='out', pad=0.4)
     averageresidue.tick_params(direction='out', pad=-2)
     averageresidue.set_xticks(
         np.arange(len(df_data.columns)) + 0.5,
@@ -190,20 +190,20 @@ def plot_heatmap(
     averageresidue.set_yticks(np.arange(0.5) + 0.5)
 
     # Set the limits of the new axis from the original axis limits
-    ax2.set_xlim(ax_object.get_xlim())
-    ax3.set_ylim(ax_object.get_ylim())
+    ax_object2.set_xlim(ax_object.get_xlim())
+    ax_object3.set_ylim(ax_object.get_ylim())
 
     # want a more natural, table-like display
     ax_object.invert_yaxis()
     ax_object.xaxis.tick_top()
-    ax3.invert_yaxis()
+    ax_object3.invert_yaxis()
 
     # remove ticks
     ax_object.xaxis.set_ticks_position('none')
     ax_object.yaxis.set_ticks_position('none')
-    ax2.yaxis.set_ticks_position('none')
-    ax2.xaxis.set_ticks_position('none')
-    ax3.yaxis.set_ticks_position('none')
+    ax_object2.yaxis.set_ticks_position('none')
+    ax_object2.xaxis.set_ticks_position('none')
+    ax_object3.yaxis.set_ticks_position('none')
     averageresidue.xaxis.set_ticks_position('none')
     averageresidue.yaxis.set_ticks_position('none')
 
@@ -224,7 +224,7 @@ def plot_heatmap(
     )
     # For numbering labels, change if hierarchical sorting is true
     if not hierarchical:
-        ax2.set_xticklabels(
+        ax_object2.set_xticklabels(
             temp_kwargs['number_sequencelabels'][0 : len(df_data.columns)],
             fontsize=10,
             fontname="Arial",
@@ -232,8 +232,8 @@ def plot_heatmap(
             minor=False
         )
     else:
-        ax2.tick_params(direction='out', pad=7)
-        ax2.set_xticklabels(
+        ax_object2.tick_params(direction='out', pad=7)
+        ax_object2.set_xticklabels(
             sorted_columns_corrected,
             fontsize=5,
             fontname="Arial",
@@ -241,7 +241,7 @@ def plot_heatmap(
             minor=False,
             rotation=90,
         )
-    ax3.set_yticklabels(
+    ax_object3.set_yticklabels(
         temp_kwargs['neworder_aminoacids'],
         fontsize=6,
         fontname="Arial",
@@ -261,7 +261,7 @@ def plot_heatmap(
     # align the labels of the y axis
     for ylabel in ax_object.get_yticklabels():
         ylabel.set_horizontalalignment('center')
-    for ylabel in ax3.get_yticklabels():
+    for ylabel in ax_object3.get_yticklabels():
         ylabel.set_horizontalalignment('center')
 
     # for coloring the residues that are 10,20...
@@ -318,7 +318,7 @@ def plot_heatmap(
 
     # return matplotlib object
     if temp_kwargs['return_plot_object']:
-        return fig, ax_object, ax2, ax3, averageresidue
+        return fig, ax_object, ax_object2, ax_object3, averageresidue
 
     if temp_kwargs['show']:
         plt.show()

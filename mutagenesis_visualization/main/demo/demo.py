@@ -1,38 +1,27 @@
 import numpy as np
 import pandas as pd
-import itertools
-from os import path
 import os
 
 # Local imports
-try:
-    from mutagenesis_visualization.main.scripts.code_class import Screen
-    import mutagenesis_visualization.main.scripts.code_utils as code_utils
-except ModuleNotFoundError:
-    import import_notebook
-    from code_class import Screen
-    import code_utils
-    __file__ = '__main__'
+from mutagenesis_visualization.main.classes.screen import Screen
+import mutagenesis_visualization.main.utils.
 
 
-def demo(figure='heatmap', show=True):
+def demo(figure: str='heatmap', show: bool=True) -> None:
     """
     Performs a demonstration of the mutagenesis_visualization software.
 
     Parameters
     -----------
     figure : str, default 'heatmap'
-        There are a few example plots that can be displayed to test the package is working on your station.
-        The options are 'heatmap', 'miniheatmap', 'mean', 'kernel', 'pca'
-        'position', 'secondary_mean', 'correlation', 'individual_correlation'.
+        There are a few example plots that can be displayed to test the
+        package is working on your station. The options are 'heatmap',
+        'miniheatmap', 'mean', 'kernel', 'pca' 'position', 'secondary_mean',
+        'correlation', 'individual_correlation'.
         Check the documentation for more information.
 
     show : boolean, default True
         If True, will do plt.show() for each figure.
-
-    Returns
-    -------
-    None.
     """
     # Use relative file import to access the data folder
     try:
@@ -48,22 +37,15 @@ def demo(figure='heatmap', show=True):
     hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
 
     # Define secondary structure
-    secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9),
-                 ['α1'] * (25 - 15), ['L2'] * (36 - 25), ['β2'] * (46 - 36),
-                 ['L3'] * (48 - 46), ['β3'] * (58 - 48), ['L4'] * (64 - 58),
-                 ['α2'] * (74 - 64), ['L5'] * (76 - 74), ['β4'] * (83 - 76),
-                 ['L6'] * (86 - 83), ['α3'] * (103 - 86), ['L7'] * (110 - 103),
-                 ['β5'] * (116 - 110), ['L8'] * (126 - 116),
-                 ['α4'] * (137 - 126), ['L9'] * (140 - 137),
-                 ['β6'] * (143 - 140), ['L10'] * (151 - 143),
+    secondary: list = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15), ['L2'] * (36 - 25),
+                 ['β2'] * (46 - 36), ['L3'] * (48 - 46), ['β3'] * (58 - 48), ['L4'] * (64 - 58),
+                 ['α2'] * (74 - 64), ['L5'] * (76 - 74), ['β4'] * (83 - 76), ['L6'] * (86 - 83),
+                 ['α3'] * (103 - 86), ['L7'] * (110 - 103), ['β5'] * (116 - 110), ['L8'] * (126 - 116),
+                 ['α4'] * (137 - 126), ['L9'] * (140 - 137), ['β6'] * (143 - 140), ['L10'] * (151 - 143),
                  ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
 
     # Create object
-    hras_RBD = Screen(
-        dataset=hras_enrichment_RBD,
-        sequence=hras_sequence,
-        secondary=secondary
-    )
+    hras_RBD: Screen = Screen(dataset=hras_enrichment_RBD, sequence=hras_sequence, secondary=secondary)
 
     if figure == 'heatmap':
         # Create heatmap plot
@@ -73,57 +55,27 @@ def demo(figure='heatmap', show=True):
         hras_RBD.miniheatmap(title='Wt residue H-Ras', show=show)
     elif figure == 'mean':
         # Mean enrichment by position
-        hras_RBD.mean(
-            figsize=[6, 2.5],
-            mode='mean',
-            show_cartoon=True,
-            yscale=[-2, 0.5],
-            title='',
-            show=show
-        )
+        hras_RBD.mean(figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[-2, 0.5], title='', show=show)
     elif figure == 'kernel':
         # Plot kernel dist using sns.distplot.
-        hras_RBD.kernel(
-            histogram=True, title='H-Ras 2-166', xscale=[-2, 1], show=show
-        )
+        hras_RBD.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1], show=show)
     elif figure == 'pca':
         # PCA by amino acid substitution
-        hras_RBD.pca(
-            dimensions=[0, 1],
-            figsize=(2, 2),
-            adjustlabels=True,
-            title='',
-            show=show
-        )
+        hras_RBD.pca(dimensions=[0, 1], figsize=(2, 2), adjustlabels=True, title='', show=show)
     elif figure == 'position':
         # Create plot for position 117
         hras_RBD.position(
-            position=117,
-            yscale=(-1.5, 0.8),
-            figsize=(3.5, 2),
-            title='Position 117',
-            output_file=None,
-            show=show
+            position=117, yscale=(-1.5, 0.8), figsize=(3.5, 2), title='Position 117', output_file=None, show=show
         )
     elif figure == 'secondary_mean':
-        hras_RBD.secondary_mean(
-            yscale=[-1, 0],
-            figsize=[3, 2],
-            title='Mean of secondary motifs',
-            show=show
-        )
+        hras_RBD.secondary_mean(yscale=[-1, 0], figsize=[3, 2], title='Mean of secondary motifs', show=show)
     elif figure == 'correlation':
         # Correlation between amino acids
-        hras_RBD.correlation(
-            colorbar_scale=[0.5, 1], title='Correlation', show=show
-        )
+        hras_RBD.correlation(colorbar_scale=[0.5, 1], title='Correlation', show=show)
     elif figure == 'individual_correlation':
         # Explained variability by amino acid
         hras_RBD.individual_correlation(
-            yscale=[0, 0.6],
-            title='Explained variability by amino acid',
-            output_file=None,
-            show=show
+            yscale=[0, 0.6], title='Explained variability by amino acid', output_file=None, show=show
         )
     else:
         raise NameError('Select a valid name for a demo figure')
@@ -163,30 +115,22 @@ def demo_datasets():
     # Beta lactamase data
     my_file = os.path.join(location, '../../data', 'df_bla_raw.pkl')
     df_bla_raw = pd.read_pickle(my_file)
-    data_dict['df_bla'], sequence_bla = code_utils.parse_pivot(
-        df_bla_raw, col_data='DMS_amp_625_(b)'
-    )
+    data_dict['df_bla'], sequence_bla = code_utils.parse_pivot(df_bla_raw, col_data='DMS_amp_625_(b)')
 
     # Sumo
     my_file = os.path.join(location, '../../data', 'df_sumo1_raw.pkl')
     df_sumo1_raw = pd.read_pickle(my_file)
-    data_dict['df_sumo1'], sequence_sumo1 = code_utils.parse_pivot(
-        df_sumo1_raw, col_data='DMS'
-    )
+    data_dict['df_sumo1'], sequence_sumo1 = code_utils.parse_pivot(df_sumo1_raw, col_data='DMS')
 
     # MAPK1
     my_file = os.path.join(location, '../../data', 'df_mapk1_raw.pkl')
     df_mapk1_raw = pd.read_pickle(my_file)
-    data_dict['df_mapk1'], sequence_mapk1 = code_utils.parse_pivot(
-        df_mapk1_raw, col_data='DMS_DOX'
-    )
+    data_dict['df_mapk1'], sequence_mapk1 = code_utils.parse_pivot(df_mapk1_raw, col_data='DMS_DOX')
 
     # UBE2I
     my_file = os.path.join(location, '../../data', 'df_ube2i_raw.pkl')
     df_ube2i_raw = pd.read_pickle(my_file)
-    data_dict['df_ube2i'], sequence_ube2i = code_utils.parse_pivot(
-        df_ube2i_raw, col_data='DMS'
-    )
+    data_dict['df_ube2i'], sequence_ube2i = code_utils.parse_pivot(df_ube2i_raw, col_data='DMS')
 
     # TAT
     my_file = os.path.join(location, '../../data', 'df_tat.pkl')
@@ -270,8 +214,6 @@ def demo_fasta():
     print(location)
     # Create dictionary where to store data
     fasta_dict = {}
-    fasta_dict['ras'] = os.path.join(
-        location, '../../data', 'Ras_family_trimmed.fasta'
-    )
+    fasta_dict['ras'] = os.path.join(location, '../../data', 'Ras_family_trimmed.fasta')
 
     return fasta_dict

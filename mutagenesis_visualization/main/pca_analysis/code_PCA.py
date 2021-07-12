@@ -5,7 +5,6 @@
 
 # In[ ]:
 
-
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -36,7 +35,6 @@ except ModuleNotFoundError:
     import code_utils
     from code_heatmaps import _labels
 
-
 # # Plot Functions
 
 # ## Heatmap correlation
@@ -44,9 +42,7 @@ except ModuleNotFoundError:
 # In[ ]:
 
 
-def plot_correlation(
-    self, output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_correlation(self, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generate a correlation of each amino acid.
 
@@ -81,9 +77,7 @@ def plot_correlation(
     temp_kwargs['number_sequencelabels'] = _labels(self.start_position)[1]
 
     # calculate correlation heatmap
-    dataset = _calculate_correlation(
-        self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
-    )
+    dataset = _calculate_correlation(self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
 
     # declare figure and subplots
     coeff = len(dataset.columns) / 19 * 1.05
@@ -120,20 +114,8 @@ def plot_correlation(
     ax.yaxis.set_ticks_position('none')
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(
-        list(dataset.columns),
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
-    ax.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False
-    )
+    ax.set_xticklabels(list(dataset.columns), fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False)
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -147,14 +129,10 @@ def plot_correlation(
         fraction=0.025,
         pad=0.05,
         aspect=5,
-        ticks=[
-            temp_kwargs['colorbar_scale'][0], temp_kwargs['colorbar_scale'][1]
-        ],
+        ticks=[temp_kwargs['colorbar_scale'][0], temp_kwargs['colorbar_scale'][1]],
         orientation='vertical'
     )
-    cb.ax.set_yticklabels(
-        cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k'
-    )
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k')
     cb.update_ticks()
     plt.text(
         len(dataset.columns) + 1.2 * coeff,
@@ -167,13 +145,7 @@ def plot_correlation(
     )
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=10
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -192,9 +164,7 @@ def plot_correlation(
 # In[ ]:
 
 
-def plot_individual_correlation(
-    self, output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_individual_correlation(self, output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates a bar plot of the correlation of each amino acid mutational
     profile (row of the heatmap) with the rest of amino acids (rows)
@@ -230,9 +200,7 @@ def plot_individual_correlation(
     # Get data
     if '*' in temp_kwargs['neworder_aminoacids']:
         temp_kwargs['neworder_aminoacids'].remove('*')
-    df = _calculate_correlation(
-        self.dataframe, temp_kwargs['neworder_aminoacids']
-    ).mean()**2
+    df = _calculate_correlation(self.dataframe, temp_kwargs['neworder_aminoacids']).mean()**2
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -250,30 +218,10 @@ def plot_individual_correlation(
 
     # graph parameters
     ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        labels,
-        fontsize=9,
-        fontname="Arial",
-        color='k',
-        minor=False,
-        rotation=0
-    )
-    ax.set_ylabel(
-        r'$R^2$',
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=12,
-        rotation=0
-    )
+    ax.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0)
+    ax.set_ylabel(r'$R^2$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0)
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -343,9 +291,7 @@ def plot_group_correlation(
         temp_kwargs['neworder_aminoacids'].remove('*')
 
     # Get R2 of each combination of amino acid substitutions
-    df = _calculate_substitution_correlations(
-        self, temp_kwargs['neworder_aminoacids'], groups
-    )
+    df = _calculate_substitution_correlations(self, temp_kwargs['neworder_aminoacids'], groups)
 
     # Filter according the the R2 correlation value
     filtered = df.loc[df['R2'] > r2]
@@ -373,13 +319,7 @@ def plot_group_correlation(
     fig.ax.set_xlim([-0.5, len(logoplot) - 0.5])
 
     # for putting title on graph
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=10
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
 
     # save file, cannot save logo file for now
 
@@ -417,11 +357,7 @@ def _calculate_substitution_correlations(self, aminoacids, groups):
                 if aa_nonselected == aa_selected:
                     temp_list.append(1)
                 else:
-                    temp_list.append(
-                        _find_correlation(
-                            aa_selected, aa_nonselected, corr_values
-                        )
-                    )
+                    temp_list.append(_find_correlation(aa_selected, aa_nonselected, corr_values))
         df[combination] = temp_list  # Store in df
     return _polishdf(df)
 
@@ -503,23 +439,17 @@ def plot_pca(
     if mode == 'aminoacid':
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
-        dataset = _calculate_correlation(
-            dataset, temp_kwargs['neworder_aminoacids']
-        )
+        dataset = _calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
         textlabels = temp_kwargs['neworder_aminoacids']
     elif mode == 'secondary':
-        dataset = _calculate_correlation_bysecondary(
-            dataset, self.secondary_dup
-        )
+        dataset = _calculate_correlation_bysecondary(dataset, self.secondary_dup)
         textlabels = list(dataset.columns)
     elif mode == 'individual':
         dataset = _calculate_correlation_byresidue(dataset)
         textlabels = list(dataset.columns)
 
     # plot using plot_clusters
-    dimensionstoplot, variance = _calculate_clusters(
-        dataset, dimensions, temp_kwargs['random_state']
-    )
+    dimensionstoplot, variance = _calculate_clusters(dataset, dimensions, temp_kwargs['random_state'])
 
     # x and y
     x = dimensionstoplot.iloc[:, 0]
@@ -530,15 +460,13 @@ def plot_pca(
 
     # labels
     plt.xlabel(
-        'PCA ' + str(dimensions[0] + 1) + ': ' +
-        str(int(variance[dimensions[0]] * 100)) + '%',
+        'PCA ' + str(dimensions[0] + 1) + ': ' + str(int(variance[dimensions[0]] * 100)) + '%',
         fontsize=10,
         labelpad=5,
         fontweight='normal'
     )
     plt.ylabel(
-        'PCA ' + str(dimensions[1] + 1) + ': ' +
-        str(int(variance[dimensions[1]] * 100)) + '%',
+        'PCA ' + str(dimensions[1] + 1) + ': ' + str(int(variance[dimensions[1]] * 100)) + '%',
         fontsize=10,
         labelpad=-2,
         fontweight='normal'
@@ -550,13 +478,7 @@ def plot_pca(
         adjust_text(texts, autoalign='xy')
 
     # set title
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -596,10 +518,7 @@ def _calculate_clusters(dataset, dimensions, random_state):
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa = pd.DataFrame((model.components_).T,
-                         columns=[
-                             'PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'
-                         ])
+    df_aa = pd.DataFrame((model.components_).T, columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -622,9 +541,7 @@ def _grouby_secondary(df, secondary):
 
 def _calculate_correlation_bysecondary(df, secondary):
     dataset = _grouby_secondary(df, secondary)
-    dataset = dataset.pivot_table(
-        values='Score', index='Secondary', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Secondary', columns='Aminoacid')
     dataset = dataset.T.corr()
 
     return dataset
@@ -633,9 +550,7 @@ def _calculate_correlation_bysecondary(df, secondary):
 def _calculate_correlation(df, order_aminoacids):
 
     dataset = df.copy()
-    dataset = dataset.pivot_table(
-        values='Score', index='Position', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.corr()
     dataset = dataset.reindex(index=order_aminoacids)[order_aminoacids]
 
@@ -645,10 +560,7 @@ def _calculate_correlation(df, order_aminoacids):
 def _calculate_correlation_byresidue(df):
 
     dataset = df.copy()
-    dataset = dataset.pivot_table(
-        values='Score', index='Position', columns='Aminoacid'
-    )
+    dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.T.corr()
 
     return dataset
-

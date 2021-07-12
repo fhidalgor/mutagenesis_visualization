@@ -5,7 +5,6 @@
 
 # In[1]:
 
-
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -34,21 +33,14 @@ except ModuleNotFoundError:
     import code_utils
     from code_heatmaps import _labels
 
-
 # # Plot Functions
 
-# ## Rank 
+# ## Rank
 
 # In[2]:
 
 
-def plot_rank(
-    self,
-    mode='pointmutant',
-    outdf=False,
-    output_file: Union[None, str, Path] = None,
-    **kwargs
-):
+def plot_rank(self, mode='pointmutant', outdf=False, output_file: Union[None, str, Path] = None, **kwargs):
     """
     DEPRECATED.
     Generate a rank plot so every mutation/residue is sorted based
@@ -109,17 +101,9 @@ def plot_rank(
     plt.scatter(np.arange(len(df), 0, -1), df['Score'], c='k', s=1)
 
     # Titles
-    plt.title(
-        temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8
-    )
+    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8)
     # Labels
-    plt.ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
+    plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0)
     plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
 
     # other graph parameters
@@ -205,18 +189,14 @@ def plot_miniheatmap(
     dataframe_stopcodons = _transform_dataset_offset(self, offset)
 
     # calculate condensed heatmap
-    dataset = _condense_heatmap(
-        dataframe_stopcodons, temp_kwargs['neworder_aminoacids']
-    )
+    dataset = _condense_heatmap(dataframe_stopcodons, temp_kwargs['neworder_aminoacids'])
 
     # if offset is not 0
     if background_correction and offset != 0:
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
         # do offset, no stop codons
-        dataset = _normalize_neighboreffect(
-            self, offset, temp_kwargs['neworder_aminoacids']
-        )
+        dataset = _normalize_neighboreffect(self, offset, temp_kwargs['neworder_aminoacids'])
 
     fig, ax, cb = _plot_miniheatmap(dataset, output_file, temp_kwargs)
 
@@ -235,9 +215,7 @@ def _condense_heatmap(df, new_order):
 
     # Group by sequence and aminoacid, and then pivot table
     df_grouped = df.groupby(['Sequence', 'Aminoacid'], sort=False).mean()
-    df_pivoted = df_grouped.pivot_table(
-        values='Score', index='Aminoacid', columns='Sequence'
-    )
+    df_pivoted = df_grouped.pivot_table(values='Score', index='Aminoacid', columns='Sequence')
     df_pivoted.reset_index(drop=False, inplace=True)
 
     # Sort in y axis desired order
@@ -272,12 +250,10 @@ def _offset_sequence(dataset, sequence, start_position, offset):
     # truncate sequence
     if offset > 0:
         sequence = sequence + 'X' * np.absolute(offset)
-        trimmedsequence = sequence[start_position - 1 + offset:len(dataset[0]) +
-                                   start_position - 1 + offset]
+        trimmedsequence = sequence[start_position - 1 + offset : len(dataset[0]) + start_position - 1 + offset]
     else:
         sequence = 'X' * (np.absolute(offset)) + sequence
-        trimmedsequence = sequence[start_position - 1:len(dataset[0]) +
-                                   start_position - 1]
+        trimmedsequence = sequence[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     return trimmedsequence
 
@@ -287,11 +263,8 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
     Generate a dataframe with the sequence offset. Reutilizes _transform_dataset
     '''
     # Add offset sequence
-    offset_sequence = _offset_sequence(
-        self.dataset, self.sequence_raw, self.start_position, offset
-    )
-    df = self.dataframe_stopcodons.copy(
-    ) if stopcodons is True else self.dataframe.copy()
+    offset_sequence = _offset_sequence(self.dataset, self.sequence_raw, self.start_position, offset)
+    df = self.dataframe_stopcodons.copy() if stopcodons is True else self.dataframe.copy()
 
     # Copy old sequence
     df['Sequence_old'] = df['Sequence']
@@ -311,9 +284,8 @@ def _transform_dataset_offset(self, offset, stopcodons=True):
 # In[4]:
 
 
-def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = None,
-                         **kwargs):
-   """
+def plot_neighboreffect(self, offset=1, output_file: Union[None, str, Path] = None, **kwargs):
+    """
    DEPRECATED.
 
    Generate a miniheatmap plot telling you the effect of having a residue in front or behind.
@@ -344,30 +316,32 @@ def plot_neighboreffect (self, offset=1, output_file: Union[None, str, Path] = N
        not get returned.
        
    """
-   # load font parameters
-   code_kwargs._font_parameters()
+    # load font parameters
+    code_kwargs._font_parameters()
 
-   # update kwargs
-   temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
-   temp_kwargs.update(kwargs)
-   if '*' in temp_kwargs['neworder_aminoacids']: temp_kwargs['neworder_aminoacids'].remove('*')
-   
-   # do offset, no stop codons
-   df = _normalize_neighboreffect(self,offset,temp_kwargs['neworder_aminoacids'])
-   
-   # Plot
-   fig, ax, cb = _plot_miniheatmap(df,output_file, temp_kwargs)
-   
-   # return matplotlib object
-   if temp_kwargs['return_plot_object']:
-       return fig, ax, cb
-   
-   # show figure    
-   if temp_kwargs['show']: 
-       plt.show()
-   
-def _plot_miniheatmap(df,output_file, temp_kwargs):
-   """
+    # update kwargs
+    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
+    temp_kwargs.update(kwargs)
+    if '*' in temp_kwargs['neworder_aminoacids']:
+        temp_kwargs['neworder_aminoacids'].remove('*')
+
+    # do offset, no stop codons
+    df = _normalize_neighboreffect(self, offset, temp_kwargs['neworder_aminoacids'])
+
+    # Plot
+    fig, ax, cb = _plot_miniheatmap(df, output_file, temp_kwargs)
+
+    # return matplotlib object
+    if temp_kwargs['return_plot_object']:
+        return fig, ax, cb
+
+    # show figure
+    if temp_kwargs['show']:
+        plt.show()
+
+
+def _plot_miniheatmap(df, output_file, temp_kwargs):
+    """
    Aux plot that will do the heavy lifting to plot a miniheatmap.
    
    Parameters
@@ -386,105 +360,126 @@ def _plot_miniheatmap(df,output_file, temp_kwargs):
    fig, ax, cb : matplotlib figure and subplots
        
    """
-   # declare figure and subplots
-   coeff = len(df.columns)/19*1.05
-   fig = plt.figure(figsize=(2.5*coeff, 2.5))
-   gs = gridspec.GridSpec(nrows=1, ncols=1)
-   ax = plt.subplot(gs[0])
+    # declare figure and subplots
+    coeff = len(df.columns) / 19 * 1.05
+    fig = plt.figure(figsize=(2.5 * coeff, 2.5))
+    gs = gridspec.GridSpec(nrows=1, ncols=1)
+    ax = plt.subplot(gs[0])
 
-   # main heatmap
-   heatmap = ax.pcolor(df.to_numpy(), vmin=temp_kwargs['colorbar_scale'][0], vmax=temp_kwargs['colorbar_scale'][1],
-                       cmap=temp_kwargs['colormap'], edgecolors='k', linewidths=0.2, color='darkgrey')
+    # main heatmap
+    heatmap = ax.pcolor(
+        df.to_numpy(),
+        vmin=temp_kwargs['colorbar_scale'][0],
+        vmax=temp_kwargs['colorbar_scale'][1],
+        cmap=temp_kwargs['colormap'],
+        edgecolors='k',
+        linewidths=0.2,
+        color='darkgrey'
+    )
 
-   # ____________axes manipulation____________________________________________
-   # put the major ticks at the middle of each cell
-   ax.set_xticks(np.arange(df.shape[1]) + 0.5, minor=False)
-   ax.set_yticks(np.arange(df.shape[0]) + 0.5, minor=False)
+    # ____________axes manipulation____________________________________________
+    # put the major ticks at the middle of each cell
+    ax.set_xticks(np.arange(df.shape[1]) + 0.5, minor=False)
+    ax.set_yticks(np.arange(df.shape[0]) + 0.5, minor=False)
 
-   # position of axis labels
-   ax.tick_params('x', direction='out', pad=-2.5)
-   ax.tick_params('y', direction='out', pad=0.4)
+    # position of axis labels
+    ax.tick_params('x', direction='out', pad=-2.5)
+    ax.tick_params('y', direction='out', pad=0.4)
 
-   # want a more natural, table-like display
-   ax.invert_yaxis()
-   ax.xaxis.tick_top()
+    # want a more natural, table-like display
+    ax.invert_yaxis()
+    ax.xaxis.tick_top()
 
-   # remove ticks
-   ax.xaxis.set_ticks_position('none')
-   ax.yaxis.set_ticks_position('none')
+    # remove ticks
+    ax.xaxis.set_ticks_position('none')
+    ax.yaxis.set_ticks_position('none')
 
-   # so labels of x and y do not show up and my labels show up instead
-   ax.set_xticklabels(list(df.columns), fontsize=6.5,
-                      fontname="Arial", color='k', minor=False)
-   ax.set_yticklabels(temp_kwargs['neworder_aminoacids'],
-                      fontsize=6.5, fontname="Arial", color='k', minor=False)
+    # so labels of x and y do not show up and my labels show up instead
+    ax.set_xticklabels(list(df.columns), fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False)
 
-   # align the labels of the y axis
-   for ylabel in ax.get_yticklabels():
-       ylabel.set_horizontalalignment('center')
+    # align the labels of the y axis
+    for ylabel in ax.get_yticklabels():
+        ylabel.set_horizontalalignment('center')
 
-   # _____________________________________________________________________________
+    # _____________________________________________________________________________
 
-   # for color bar format
-   cb = plt.colorbar(heatmap, fraction=0.025, pad=0.05, aspect=5, ticks=[temp_kwargs['colorbar_scale'][0], np.mean(
-       temp_kwargs['colorbar_scale']), temp_kwargs['colorbar_scale'][1]], orientation='vertical')
-   cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k')
-   cb.update_ticks()
-   plt.text(len(df.columns)+2, 7.8, r'$\langle∆E^x_i\rangle_x$', horizontalalignment='center',
-            fontsize=7, fontname="Arial", color='k')
+    # for color bar format
+    cb = plt.colorbar(
+        heatmap,
+        fraction=0.025,
+        pad=0.05,
+        aspect=5,
+        ticks=[
+            temp_kwargs['colorbar_scale'][0],
+            np.mean(temp_kwargs['colorbar_scale']), temp_kwargs['colorbar_scale'][1]
+        ],
+        orientation='vertical'
+    )
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k')
+    cb.update_ticks()
+    plt.text(
+        len(df.columns) + 2,
+        7.8,
+        r'$\langle∆E^x_i\rangle_x$',
+        horizontalalignment='center',
+        fontsize=7,
+        fontname="Arial",
+        color='k'
+    )
 
-   # for putting title on graph
-   plt.title(temp_kwargs['title'], horizontalalignment='center',
-             fontname="Arial", fontsize=10, pad=10)
-   plt.ylabel('Amino Acid Substitution', fontsize=10, labelpad=-1)
+    # for putting title on graph
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
+    plt.ylabel('Amino Acid Substitution', fontsize=10, labelpad=-1)
 
-   # save file
-   code_utils._save_work(fig, output_file, temp_kwargs)
-   
-   # return matplotlib object
-   return fig, ax, cb
+    # save file
+    code_utils._save_work(fig, output_file, temp_kwargs)
+
+    # return matplotlib object
+    return fig, ax, cb
 
 
-def _normalize_neighboreffect(self,offset,neworder):
-   '''
+def _normalize_neighboreffect(self, offset, neworder):
+    '''
    For every residue, subtract the average effect of a substitution
    Returns a normalized dataframe
    '''
-   aalist = list('ACDEFGHIKLMNPQRSTVWY')
-   # Add offset sequence to df
-   df = _transform_dataset_offset(self,offset,False)
-   
-   # calculate mean effect using condensed heatmap
-   mean = _condense_heatmap(self.dataframe, aalist)
-   
-   df_normalized = pd.DataFrame()
-   for aa in aalist:
-       # Choose the neighbors of an aa
-       aa_neighbors = df.loc[df['Sequence']==aa]
-       # Do the mean substitution of amino acids that are repeated
-       aa_neighbors = aa_neighbors.groupby(['Sequence_old','Aminoacid'],as_index=False).mean()
-       # Make into table
-       aa_neighbors_pivoted = aa_neighbors.pivot_table(values='Score', index='Aminoacid',  columns='Sequence_old')
-       aa_neighbors_pivoted.reset_index(drop=True, inplace=True)
-       # Get the mean of the amino acids that appear in the aa_neighbors subset
-       mean_neighbors = mean[list(aa_neighbors_pivoted.columns)]
-       # Subtract average effect and do mean
-       df_normalized[aa] = (aa_neighbors_pivoted - mean_neighbors).mean(axis=1)
-   
-   # Sort by aa
-   df_normalized = df_normalized[neworder]
-   # Sort in y axis desired order
-   df_normalized = _sort_yaxis_aminoacids(df_normalized,neworder,aalist)
-   return df_normalized
+    aalist = list('ACDEFGHIKLMNPQRSTVWY')
+    # Add offset sequence to df
+    df = _transform_dataset_offset(self, offset, False)
 
-def _sort_yaxis_aminoacids(df,neworder,oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
-   # Sort in y axis desired order
-   df['Aminoacid_new'] = oldorder
-   df['Aminoacid_new'] = pd.Categorical(df['Aminoacid_new'], neworder)
-   df.sort_values(by=['Aminoacid_new'],inplace=True)
-   df.drop(['Aminoacid_new'], inplace=True, axis=1)
-   
-   return df
+    # calculate mean effect using condensed heatmap
+    mean = _condense_heatmap(self.dataframe, aalist)
+
+    df_normalized = pd.DataFrame()
+    for aa in aalist:
+        # Choose the neighbors of an aa
+        aa_neighbors = df.loc[df['Sequence'] == aa]
+        # Do the mean substitution of amino acids that are repeated
+        aa_neighbors = aa_neighbors.groupby(['Sequence_old', 'Aminoacid'], as_index=False).mean()
+        # Make into table
+        aa_neighbors_pivoted = aa_neighbors.pivot_table(values='Score', index='Aminoacid', columns='Sequence_old')
+        aa_neighbors_pivoted.reset_index(drop=True, inplace=True)
+        # Get the mean of the amino acids that appear in the aa_neighbors subset
+        mean_neighbors = mean[list(aa_neighbors_pivoted.columns)]
+        # Subtract average effect and do mean
+        df_normalized[aa] = (aa_neighbors_pivoted - mean_neighbors).mean(axis=1)
+
+    # Sort by aa
+    df_normalized = df_normalized[neworder]
+    # Sort in y axis desired order
+    df_normalized = _sort_yaxis_aminoacids(df_normalized, neworder, aalist)
+    return df_normalized
+
+
+def _sort_yaxis_aminoacids(df, neworder, oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
+    # Sort in y axis desired order
+    df['Aminoacid_new'] = oldorder
+    df['Aminoacid_new'] = pd.Categorical(df['Aminoacid_new'], neworder)
+    df.sort_values(by=['Aminoacid_new'], inplace=True)
+    df.drop(['Aminoacid_new'], inplace=True, axis=1)
+
+    return df
 
 
 # ## Secondary Structure
@@ -529,11 +524,7 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     df = _calculate_secondary(self.dataframe, self.secondary_dup)
 
     # Color
-    df['Color'] = df.apply(
-        code_utils._color_data,
-        axis=1,
-        args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
-    )
+    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
 
     # Make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -552,30 +543,10 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
 
     # graph parameters
     ax.set_xticks(ticks)
-    ax.set_xticklabels(
-        labels,
-        fontsize=9,
-        fontname="Arial",
-        color='k',
-        minor=False,
-        rotation=0
-    )
-    ax.set_ylabel(
-        r'$∆E^i_x$',
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=12,
-        rotation=0
-    )
+    ax.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0)
+    ax.set_ylabel(r'$∆E^i_x$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0)
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(
-        temp_kwargs['title'],
-        horizontalalignment='center',
-        fontname="Arial",
-        fontsize=10,
-        pad=5
-    )
+    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -605,9 +576,7 @@ def _calculate_secondary(df, secondary):
 # In[3]:
 
 
-def plot_roc(
-    self, df_class=None, mode='pointmutant',output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_roc(self, df_class=None, mode='pointmutant', output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates ROC AUC plot. It compares enrichment scores to some labels that
     the user has specified.
@@ -638,14 +607,14 @@ def plot_roc(
     """
     # Chose mode:
     df_grouped = _select_grouping(self.dataframe, mode)
-    
+
     # Use default class
     if df_class is None:
         df_class = self.roc_df
-    
+
     # Merge dataframe with classes
     df = _mergeclassvariants(self.dataframe, df_class, mode)
-           
+
     # Calculate ROC parameters
     fpr, tpr, auc, _ = _rocauc(df)
 
@@ -667,28 +636,16 @@ def plot_roc(
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     tick_spacing = 0.2
-    ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing)
-    )  # Plt ticks
-    ax.yaxis.set_major_locator(
-        ticker.MultipleLocator(tick_spacing)
-    )  # Plt ticks
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))  # Plt ticks
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
-    plt.ylabel(
-        'True Positive Rate',
-        fontsize=12,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
+    plt.ylabel('True Positive Rate', fontsize=12, fontname="Arial", color='k', labelpad=0)
     plt.xlabel('False Positive Rate', fontsize=12, fontname="Arial", color='k')
 
     # Legend
-    plt.legend(
-        loc='lower right', handlelength=0, handletextpad=0, frameon=False
-    )
+    plt.legend(loc='lower right', handlelength=0, handletextpad=0, frameon=False)
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -699,7 +656,8 @@ def plot_roc(
 
     if temp_kwargs['show']:
         plt.show()
-        
+
+
 def _select_grouping(df, mode):
     '''
     Choose the subset of substitutions based on mode input.
@@ -710,7 +668,7 @@ def _select_grouping(df, mode):
     mode = mode.upper()
 
     # Select grouping
-    if mode =='POINTMUTANT':
+    if mode == 'POINTMUTANT':
         pass
     elif mode == 'MEAN':
         df = df.groupby('Position', as_index=False).mean()
@@ -719,15 +677,14 @@ def _select_grouping(df, mode):
 
     return df
 
+
 def _rocauc(df):
     '''
     Calculate roc rates and auc.
 
     The input is a dataframe that contains [Variants,Class,Score]
     '''
-    fpr, tpr, thresholds = metrics.roc_curve(
-        df['Class'], df['Score'], drop_intermediate=True
-    )
+    fpr, tpr, thresholds = metrics.roc_curve(df['Class'], df['Score'], drop_intermediate=True)
     auc = metrics.roc_auc_score(df['Class'], df['Score'])
     return fpr, tpr, auc, thresholds
 
@@ -738,15 +695,15 @@ def _mergeclassvariants(df_score, df_class, mode):
     '''
     # convert to upper case
     mode = mode.upper()
-    
+
     if mode == 'POINTMUTANT':
         # Cut other data
         df_class = df_class[['Variant', 'Class']].copy()
         # Merge DMS with true score dataset
         df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
     else:
-            # Cut other data
-        df_class = df_class[['Position','Class']].copy()
+        # Cut other data
+        df_class = df_class[['Position', 'Class']].copy()
         df_merged = pd.merge(df_score, df_class, on=['Position'], how='left')
 
     # Drop rows with Nan values
@@ -782,15 +739,12 @@ def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
     return df_true
     """
 
-
 # ## Cumulative
 
 # In[7]:
 
 
-def plot_cumulative(
-    self, mode='all', output_file: Union[None, str, Path] = None, **kwargs
-):
+def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None, **kwargs):
     """
     Generates a cumulative plot of the enrichment scores by position.
 
@@ -840,14 +794,10 @@ def plot_cumulative(
         y_label = 'Cumulative GoF'
 
     # Graph limits
-    plt.xlim(
-        self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1
-    )
+    plt.xlim(self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1)
     plt.ylim(0, 1.1)
 
-    ax.xaxis.set_major_locator(
-        ticker.MultipleLocator(temp_kwargs['tick_spacing'])
-    )  # Plt ticks
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))  # Plt ticks
 
     # Axis labels
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
@@ -855,10 +805,7 @@ def plot_cumulative(
     plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
 
     # x=y line
-    plt.plot([0, df['Position'].max()], [0, 1],
-             color='silver',
-             lw=2,
-             linestyle='--')
+    plt.plot([0, df['Position'].max()], [0, 1], color='silver', lw=2, linestyle='--')
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -933,16 +880,8 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     plt.setp(ax.lines, color='k')
 
     # graph parameters
-    plt.title(
-        temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8
-    )
-    plt.ylabel(
-        temp_kwargs['y_label'],
-        fontsize=10,
-        fontname="Arial",
-        color='k',
-        labelpad=0
-    )
+    plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8)
+    plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0)
     plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
 
     # axes limits
@@ -960,4 +899,3 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     # show plt figure
     if temp_kwargs['show']:
         plt.show()
-

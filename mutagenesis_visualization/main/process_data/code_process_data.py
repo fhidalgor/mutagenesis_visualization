@@ -5,7 +5,6 @@
 
 # In[ ]:
 
-
 import numpy as np
 import pandas as pd
 import copy
@@ -28,7 +27,6 @@ except ModuleNotFoundError:
     os.chdir(new_directory)
     import code_utils as code_utils
     os.chdir(directory)
-
 
 # # Data Process Functions
 
@@ -98,9 +96,7 @@ def count_reads(
 
     """
     # Assert messages
-    assert len(
-        dna_sequence
-    ) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
+    assert len(dna_sequence) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
 
     # Make upper case in case input was lower case
     dna_sequence = dna_sequence.upper()
@@ -110,22 +106,20 @@ def count_reads(
         codon_list = [item.upper() for item in codon_list]
 
     # Create list with codons of sequence
-    wtSeqList = [dna_sequence[i:i + 3] for i in range(0, len(dna_sequence), 3)]
+    wtSeqList = [dna_sequence[i : i + 3] for i in range(0, len(dna_sequence), 3)]
 
     # codon_list
     if codon_list == 'NNS':
         codon_list = [
-            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC",
-            "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC", "CCC", "CCG",
-            "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG",
-            "GTC", "GTG", "TGG", "TAC", "TAG"
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG", "TTG", "ATG",
+            "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG",
+            "TAC", "TAG"
         ]
     elif codon_list == 'NNK':
         codon_list = [
-            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT',
-            'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG', 'AAT', 'CCG', 'CCT',
-            'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT',
-            'GTG', 'GTT', 'TGG', 'TAT', 'TAG'
+            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG',
+            'AAT', 'CCG', 'CCT', 'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG',
+            'TAT', 'TAG'
         ]
 
     # Enumerate variants
@@ -137,38 +131,32 @@ def count_reads(
     # Convert to df
     wtProtein = Seq(dna_sequence).translate()
     df = pd.DataFrame()
-    df['Position'] = np.ravel(
-        [[pos] * len(codon_list)
-         for pos in np.arange(start_position,
-                              len(wtProtein) + start_position).astype(int)]
-    )
+    df['Position'] = np.ravel([[pos] * len(codon_list)
+                               for pos in np.arange(start_position,
+                                                    len(wtProtein) + start_position).astype(int)])
     df['Codon'] = codon_list * len(wtProtein)
     df['WTCodon'] = np.ravel([[codon] * len(codon_list) for codon in wtSeqList])
     df['Aminoacid'] = np.ravel([[aa] * len(codon_list) for aa in wtProtein])
-    df['SynWT'] = df.apply(
-        lambda x: _are_syn(x['Codon'], x['WTCodon'], _codon_table()), axis=1
-    )
+    df['SynWT'] = df.apply(lambda x: _are_syn(x['Codon'], x['WTCodon'], _codon_table()), axis=1)
     df['Counts'] = list(variants.values())
 
     if counts_wt:
         try:  # try is to fix the Bug Che discovered
-            df.loc[df['Codon'] == df['WTCodon'],
-                   'Counts'] = variants[dna_sequence]
+            df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = variants[dna_sequence]
         except:
             pass
     else:
         df.loc[df['Codon'] == df['WTCodon'], 'Counts'] = np.nan
 
     # Pivot table and reindex
-    df_counts = df.pivot_table(
-        values='Counts', index='Codon', columns=['Position'], dropna=False
-    )
+    df_counts = df.pivot_table(values='Counts', index='Codon', columns=['Position'], dropna=False)
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon
-    df_wt = df.loc[(df['SynWT'] == True) | (df['SynWT'] == 'wt codon')][[ # perhaps I need to remove this again
-        'Counts' # removed
-    ]]
+    df_wt = df.loc[(df['SynWT'] == True) |
+                   (df['SynWT'] == 'wt codon')][[  # perhaps I need to remove this again
+                       'Counts'  # removed
+                   ]]
 
     # Export files
     if output_file:
@@ -192,17 +180,14 @@ def count_reads(
 
 def _codon_table():
     codontable = {
-        'ATA': 'I', 'ATC': 'I', 'ATT': 'I', 'ATG': 'M', 'ACA': 'T', 'ACC': 'T',
-        'ACG': 'T', 'ACT': 'T', 'AAC': 'N', 'AAT': 'N', 'AAA': 'K', 'AAG': 'K',
-        'AGC': 'S', 'AGT': 'S', 'AGA': 'R', 'AGG': 'R', 'CTA': 'L', 'CTC': 'L',
-        'CTG': 'L', 'CTT': 'L', 'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P',
-        'CAC': 'H', 'CAT': 'H', 'CAA': 'Q', 'CAG': 'Q', 'CGA': 'R', 'CGC': 'R',
-        'CGG': 'R', 'CGT': 'R', 'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
-        'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', 'GAC': 'D', 'GAT': 'D',
-        'GAA': 'E', 'GAG': 'E', 'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
-        'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', 'TTC': 'F', 'TTT': 'F',
-        'TTA': 'L', 'TTG': 'L', 'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*',
-        'TGC': 'C', 'TGT': 'C', 'TGA': '*', 'TGG': 'W'
+        'ATA': 'I', 'ATC': 'I', 'ATT': 'I', 'ATG': 'M', 'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T', 'AAC': 'N',
+        'AAT': 'N', 'AAA': 'K', 'AAG': 'K', 'AGC': 'S', 'AGT': 'S', 'AGA': 'R', 'AGG': 'R', 'CTA': 'L', 'CTC': 'L',
+        'CTG': 'L', 'CTT': 'L', 'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P', 'CAC': 'H', 'CAT': 'H', 'CAA': 'Q',
+        'CAG': 'Q', 'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R', 'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
+        'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', 'GAC': 'D', 'GAT': 'D', 'GAA': 'E', 'GAG': 'E', 'GGA': 'G',
+        'GGC': 'G', 'GGG': 'G', 'GGT': 'G', 'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', 'TTC': 'F', 'TTT': 'F',
+        'TTA': 'L', 'TTG': 'L', 'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*', 'TGC': 'C', 'TGT': 'C', 'TGA': '*',
+        'TGG': 'W'
     }
     return codontable
 
@@ -210,7 +195,7 @@ def _codon_table():
 def _are_syn(codon1, codon2, codontable):
     '''Determine if 2 codons are synonymous'''
     if codon1 == codon2:
-        return 'wt codon' # changed from False
+        return 'wt codon'  # changed from False
     if _translate(codon1, codontable) is not _translate(codon2, codontable):
         return False
     return True
@@ -222,7 +207,7 @@ def _translate(seq, codontable):
     protein = ''
     if len(seq) % 3 == 0:
         for i in range(0, len(seq), 3):
-            codon = seq[i:i + 3]
+            codon = seq[i : i + 3]
             protein += codontable[codon]
     return protein
 
@@ -238,7 +223,7 @@ def _enumerate_variants(wtSeqList, codon_list, dna_sequence):
     # Loop over codons
     for position in range(0, len(wtSeqList)):
         for codons in (codon_list):
-            variant = ''.join(wtSeqList[0:position]) +                 codons + ''.join(wtSeqList[position+1:])
+            variant = ''.join(wtSeqList[0 : position]) + codons + ''.join(wtSeqList[position + 1 :])
             if (variant == dna_sequence):  # Store redundant wild-types
                 if firstwtseq:
                     variant = 'wtSeq' + str(position)
@@ -429,8 +414,7 @@ def calculate_enrichment(
 
     # Log10 of the counts for library and wt alleles
     log10_counts = _get_enrichment(
-        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts,
-        stopcodon, infinite
+        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
     df = pd.DataFrame(data=log10_counts)
@@ -438,12 +422,10 @@ def calculate_enrichment(
 
     # MAD filtering
     if mad_filtering:
-        log10_counts_mad = _MAD_filtering(
-            np.ravel(np.array(log10_counts_grouped)), mpop
-        )
+        log10_counts_mad = _MAD_filtering(np.ravel(np.array(log10_counts_grouped)), mpop)
     else:
         log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
-    
+
     # Statistics population using mad filtered data
     mean_pop = np.nanmean(log10_counts_mad)
     median_pop = np.nanmedian(log10_counts_mad)
@@ -453,22 +435,21 @@ def calculate_enrichment(
     # Wt counts
     if pre_wt is not None:
         log10_wtcounts = _get_enrichment(
-            pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt,
-            stopcodon, infinite
+            pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt, stopcodon, infinite
         )
         # MAD filtering
         # If set to m=1, if tosses out about 50% of the values. the mean barely changes though
         if mad_filtering:
             log10_wtcounts = _MAD_filtering(log10_wtcounts, mwt)
-            
+
         mean_wt = np.nanmean(log10_wtcounts)
         median_wt = np.nanmedian(log10_wtcounts)
         std_wt = np.nanstd(log10_wtcounts)
-        if len(log10_wtcounts)>1:
+        if len(log10_wtcounts) > 1:
             mode_wt = _nanmode(log10_wtcounts)
-        else: #case for only 1 wt
+        else:  #case for only 1 wt
             mode_wt = log10_wtcounts
-            
+
     # Zero data, select case
     if zeroing == 'wt':
         if how == 'mean':
@@ -490,14 +471,12 @@ def calculate_enrichment(
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'counts':
         # Get the ratio of counts
-        ratio = np.log10(post_lib.sum().sum()/pre_lib.sum().sum())
+        ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
         zeroed = log10_counts_grouped + ratio
         if norm_std == True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':
-        zeroed_0, kernel_std = _kernel_correction(
-            log10_counts_grouped, aminoacids
-        )
+        zeroed_0, kernel_std = _kernel_correction(log10_counts_grouped, aminoacids)
         zeroed, kernel_std = _kernel_correction(zeroed_0, aminoacids, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
@@ -514,16 +493,13 @@ def calculate_enrichment(
     return zeroed
 
 
-# 
+#
 # ## Aux functions
 
 # In[ ]:
 
 
-def _get_enrichment(
-    input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts,
-    stopcodon, infinite
-):
+def _get_enrichment(input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite):
     '''Calculate log10 enrichment scores from input and output counts'''
     # Copy data and replace low counts by np.nan
     input_lib = np.copy(input_lib.astype(float))
@@ -532,22 +508,16 @@ def _get_enrichment(
 
     # Stop codon correction
     if stopcodon:
-        output_lib = _stopcodon_correction(
-            input_lib, output_lib, input_stopcodon, output_stopcodon
-        )
+        output_lib = _stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodon)
 
     # log10 of library and replace infinite values. This will potentially divide by zero.
     with np.errstate(divide='ignore'):
-        counts_log10_ratio = _replace_inf(
-            np.log10(output_lib / input_lib), infinite
-        )
+        counts_log10_ratio = _replace_inf(np.log10(output_lib / input_lib), infinite)
 
     return counts_log10_ratio
 
 
-def _stopcodon_correction(
-    input_lib, output_lib, input_stopcodon, output_stopcodon
-):
+def _stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodon):
     '''This aux function will take as an input the counts for pre and post selection (and also for wT subset), 
     and will return the corrected output counts'''
 
@@ -621,10 +591,7 @@ def _nanmode(data):
     # Adjust kernel
     kernel_processed_data = stats.gaussian_kde(data_corrected)
     # Find mode
-    indexmax = np.where(
-        kernel_processed_data(data_corrected) ==
-        kernel_processed_data(data_corrected).max()
-    )
+    indexmax = np.where(kernel_processed_data(data_corrected) == kernel_processed_data(data_corrected).max())
     # Return mean in case there are two x values with equal y-axis height
     return data_corrected[indexmax].mean()
 
@@ -635,23 +602,16 @@ def _kernel_correction(data, aminoacids, cutoff=2):
     ignores stop codons. Not used for dataframes, only numpy arrays'''
 
     # Get data into right format
-    data_corrected, kernel_processed_data = _kernel_datapreparation(
-        data, cutoff
-    )
+    data_corrected, kernel_processed_data = _kernel_datapreparation(data, cutoff)
 
     # Find max of kernel peak
-    indexmax = np.where(
-        kernel_processed_data(data_corrected) ==
-        kernel_processed_data(data_corrected).max()
-    )
+    indexmax = np.where(kernel_processed_data(data_corrected) == kernel_processed_data(data_corrected).max())
 
     # Normalize the max of peak os it has an x = 0
     data_final = data - data_corrected[indexmax].mean()
 
     # find std of kernel. It uses the already max peak x=0 normalized data
-    data_final_flatten, data_final_kernel_processed_data = _kernel_datapreparation(
-        data_final, cutoff
-    )
+    data_final_flatten, data_final_kernel_processed_data = _kernel_datapreparation(data_final, cutoff)
     std = _kernel_std(data_final_flatten, data_final_kernel_processed_data)
 
     return data_final, std
@@ -663,13 +623,12 @@ def _kernel_datapreparation(data, cutoff):
     flatten and eliminate np.nan. Will return the data in that format + the adjusted kernel
     
     '''
-    
+
     # Eliminate stop codon
     data_corrected = np.array(data.drop('*', errors='ignore').copy())
 
     # Eliminate values lower than -1
-    data_corrected = data_corrected[(data_corrected >= -cutoff)
-                                    & (data_corrected <= cutoff)]
+    data_corrected = data_corrected[(data_corrected >= -cutoff) & (data_corrected <= cutoff)]
 
     # Get rid of np.nan values and convert matrix into 1d matrix
     data_corrected = data_corrected[np.invert(np.isnan(data_corrected))]
@@ -724,7 +683,7 @@ def _array_to_df_enrichments(lib, aminoacids):
     aux function to transform array in df with index of amino acids.
     
     '''
-    
+
     df = pd.DataFrame(index=aminoacids, data=lib)
     return df.astype(float)
 
@@ -838,15 +797,13 @@ def assemble_sublibraries(
 
     # Read reads from excel
     list_pre, list_sel, list_pre_wt, list_sel_wt = _read_counts(
-        excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt,
-        columns_wt
+        excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt, columns_wt
     )
 
     # Assemble sublibraries
     df = _assemble_list(
-        list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing, how,
-        norm_std, stopcodon, min_counts, min_countswt, std_scale, mpop, mwt,
-        infinite
+        list_pre, list_sel, list_pre_wt, list_sel_wt, aminoacids, zeroing, how, norm_std, stopcodon, min_counts,
+        min_countswt, std_scale, mpop, mwt, infinite
     )
 
     # Export files
@@ -856,60 +813,26 @@ def assemble_sublibraries(
     return df
 
 
-def _read_counts(
-    excel_path,
-    sheet_pre,
-    sheet_post,
-    columns,
-    nrows_pop,
-    nrows_wt,
-    columns_wt=None,
-    skiprows=1
-):
+def _read_counts(excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt, columns_wt=None, skiprows=1):
     '''Aux'''
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     list_pre, list_sel, list_pre_wt, list_sel_wt = ([] for i in range(4))
 
     # Read counts from excel
     replicates = np.arange(0, len(sheet_pre))
-    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt,
-                                               replicates):
+    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt, replicates):
         # Pre counts
-        list_pre.append(
-            pd.read_excel(
-                excel_path,
-                sheet_pre,
-                skiprows=skiprows,
-                usecols=column,
-                nrows=nrows_pop
-            )
-        )
+        list_pre.append(pd.read_excel(excel_path, sheet_pre, skiprows=skiprows, usecols=column, nrows=nrows_pop))
         # Sel counts
-        list_sel.append(
-            pd.read_excel(
-                excel_path,
-                sheet_post,
-                skiprows=skiprows,
-                usecols=column,
-                nrows=nrows_pop
-            )
-        )
+        list_sel.append(pd.read_excel(excel_path, sheet_post, skiprows=skiprows, usecols=column, nrows=nrows_pop))
         if columns_wt is None:
             list_pre_wt.append(None)
             list_sel_wt.append(None)
         else:
             # Pre counts wild-type alleles
-            list_pre_wt.append(
-                pd.read_excel(
-                    excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt
-                )
-            )
+            list_pre_wt.append(pd.read_excel(excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt))
             # Sel counts wild-type alleles
-            list_sel_wt.append(
-                pd.read_excel(
-                    excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt
-                )
-            )
+            list_sel_wt.append(pd.read_excel(excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt))
     return list_pre, list_sel, list_pre_wt, list_sel_wt
 
 
@@ -938,12 +861,11 @@ def _assemble_list(
 
     enrichment_lib = []
 
-    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt,
-                                        list_sel_wt):
+    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt, list_sel_wt):
         # log 10
         enrichment_log10 = calculate_enrichment(
-            pre, sel, pre_wt, sel_wt, aminoacids, zeroing, how, norm_std,
-            stopcodon, min_counts, min_countswt, std_scale, mpop, mwt, infinite
+            pre, sel, pre_wt, sel_wt, aminoacids, zeroing, how, norm_std, stopcodon, min_counts, min_countswt,
+            std_scale, mpop, mwt, infinite
         )
         # Store in list
         enrichment_lib.append(enrichment_log10)
@@ -995,14 +917,10 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
     shannon_entropy = code_utils._shannon_entropy_list_msa(msa)
 
     # Merge enrichment scores and MSA conservation
-    df_freq = _merge_msa_enrichment(
-        self, _msa_to_df(msa), start_position, threshold
-    )
+    df_freq = _merge_msa_enrichment(self, _msa_to_df(msa), start_position, threshold)
 
     # Merge shannon and mean enrichment score
-    df_shannon = _merge_shannon_enrichment(
-        self, shannon_entropy, start_position
-    )
+    df_shannon = _merge_shannon_enrichment(self, shannon_entropy, start_position)
 
     return df_shannon, df_freq
 
@@ -1011,10 +929,7 @@ def _merge_shannon_enrichment(self, shannon_entropy, start_position):
 
     # Create df with shannon entropy by residue and average enrichment score by residue
     df_shannon = pd.DataFrame()
-    df_shannon['Position'] = np.arange(
-        start_position,
-        len(shannon_entropy) + start_position
-    )
+    df_shannon['Position'] = np.arange(start_position, len(shannon_entropy) + start_position)
     df_shannon['Shannon'] = shannon_entropy
 
     # group by enrichment scores
@@ -1065,20 +980,14 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
     df = pd.DataFrame()
 
     # Create column with position and aminoacid label
-    df['Position'] = np.ravel(
-        [[i] * len(df_msa.T)
-         for i in range(start_position,
-                        len(df_msa) + start_position)]
-    )
+    df['Position'] = np.ravel([[i] * len(df_msa.T) for i in range(start_position, len(df_msa) + start_position)])
     df['Aminoacid'] = list(df_msa.columns) * len(df_msa)
 
     # Add conservation from MSA
     df['Conservation'] = list(df_msa.stack(dropna=False))
 
     # Merge with enrichment scores
-    df_merged = self.dataframe.merge(
-        df, how='inner', on=['Position', 'Aminoacid']
-    )
+    df_merged = self.dataframe.merge(df, how='inner', on=['Position', 'Aminoacid'])
 
     # Copycat conservation
     df_merged['Class'] = df_merged['Conservation']
@@ -1087,4 +996,3 @@ def _merge_msa_enrichment(self, df_msa, start_position, threshold):
     df_merged.loc[df_merged['Conservation'] > threshold, 'Class'] = 1
     df_merged.loc[df_merged['Conservation'] <= threshold, 'Class'] = 0
     return df_merged
-
