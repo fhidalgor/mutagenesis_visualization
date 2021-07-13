@@ -6,6 +6,8 @@ from typing import Union, Dict, Any, Optional
 import copy
 from matplotlib import rcParams
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.kwargs import default_kwargs
 
 
@@ -14,14 +16,33 @@ class Pyplot:
     Plot abstract class used to visualize mutagenesis data using
     matplotlib.
     """
-    def __init__(self, dataset: Optional[Any] = None) -> None:
+    def __init__(
+        self,
+        dataset: Optional[Any] = None,
+        dataframe: Optional[DataFrame] = None,
+        dataframe_stopcodons: Optional[DataFrame] = None,
+        sequence: Optional[str] = None,
+        start_position: Optional[str] = None,
+        secondary: Optional[list] = None,
+        secondary_dup: Optional[list] = None,
+    ) -> None:
         """
         Docstring placeholder
         """
         self.dataset: Any = dataset
+        self.dataframe: Optional[DataFrame] = dataframe
+        self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
+        self.sequence: Optional[str] = sequence
+        self.start_position: Optional[int] = start_position
+        self.secondary: Optional[list] = secondary
+        self.secondary_dup: Optional[list] = secondary_dup
         self.kwargs: Dict[str, Any] = default_kwargs()
         self.fig: Figure = Figure()
         self.ax_object: Optional[Any] = None
+        self.cb_object: Optional[Any] = None
+        self.gs_object: Optional[Any] = None
+        self.df_output: Optional[DataFrame] = None
+        self.screen_object: Optional[Any] = None
 
     def _save_work(self, output_file: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
         '''
@@ -35,6 +56,8 @@ class Pyplot:
                 dpi=temp_kwargs['dpi'],
                 transparent=True
             )
+        if temp_kwargs['show']:
+            plt.show()
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """

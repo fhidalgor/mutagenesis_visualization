@@ -248,6 +248,7 @@ def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> pd.DataFrame:
 
     return df_input
 
+
 def translate_codons(df_input: pd.DataFrame) -> List[str]:
     """
     Translate the index of the df_input from codons to AA.

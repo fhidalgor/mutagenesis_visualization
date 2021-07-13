@@ -473,10 +473,6 @@ def _aatocodons_df(df, namecolumn):
 
 # In[4]:
 
-
-
-
-
 # In[5]:
 
 

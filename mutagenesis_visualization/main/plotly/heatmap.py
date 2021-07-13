@@ -2,7 +2,7 @@
 This module contains the plotly heatmap plot.
 """
 from pathlib import Path
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Union
 import copy
 import numpy as np
 from pandas import DataFrame
@@ -12,25 +12,23 @@ import plotly.graph_objects as go
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.snv import add_snv_boolean
 from mutagenesis_visualization.main.utils.pandas_functions import df_rearrange
-from mutagenesis_visualization.main.plotly.plotly_utils import matplotlib_to_plotly
+from mutagenesis_visualization.main.utils.plotly_utils import matplotlib_to_plotly
 
 
 class HeatmapP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
-    def __init__(self, dataframe_stopcodons: DataFrame, sequence: str) -> None:
-        super().__init__()
-        self.dataframe_stopcodons: DataFrame = dataframe_stopcodons
+    def __init__(self, dataframe: DataFrame, sequence: str) -> None:
+        super().__init__(dataframe)
         self.sequence: str = sequence
-        self.df_output: Optional[DataFrame] = None
 
     def plot(
         self,
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ):
-        '''
+        """
         Generate a plotly histogram plot.
 
         Parameters
@@ -42,19 +40,19 @@ class HeatmapP(Plotly):
             path and name of the file. Example: 'path/filename.html'.
 
         **kwargs : other keyword arguments
-        '''
+        """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
 
         # sort data by rows in specified order by user
         self.df_output = df_rearrange(
-            add_snv_boolean(self.dataframe_stopcodons.copy()),
+            add_snv_boolean(self.dataframe.copy()),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=False
         )
 
         # get labels for texthover and reindex
-        text_hover = self.dataframe_stopcodons.pivot(
+        text_hover = self.dataframe.pivot(
             values='Variant',
             index='Aminoacid',
             columns='Position',
@@ -78,7 +76,7 @@ class HeatmapP(Plotly):
                 xpad=0,
             ),
         ))
-
+        self._tune_plot(temp_kwargs)
         self._save_html(output_html)
 
         if temp_kwargs['show']:

@@ -2,7 +2,7 @@
 This module contains the object to create a heatmap specifying the
 selected columns.
 """
-from typing import Union, Dict, Any
+from typing import Any, Dict, Union, Optional
 from pathlib import Path
 import copy
 import numpy as np
@@ -10,161 +10,170 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
-from mutagenesis_visualization.main.default_parameters.kwargs import default_kwargs
-from mutagenesis_visualization.main.default_parameters.font_parameters import font_parameters
-from mutagenesis_visualization.main.heatmaps.heatmap_utils import (
-    labels,
-)
+from mutagenesis_visualization.main.classes.base_model import Pyplot
+from mutagenesis_visualization.main.utils.heatmap_utils import labels
 from mutagenesis_visualization.main.utils.pandas_functions import df_rearrange
-from mutagenesis_visualization.main.utils.save_work import save_work
 
 
-def plot_heatmap_columns(
-    self,
-    segment: list,
-    ylabel_color: str = 'k',
-    nancolor: str = 'lime',
-    output_file: Union[None, str, Path] = None,
-    **kwargs: Dict[str, Any],
-):
-    '''
-    Generate a heatmap plot enrichment scores but only plots a selected segment.
+class HeatmapColumns(Pyplot):
+    """
+    This class plots a heatmap with the enrichment scores where you
+    can show selected columns.
+    """
+    def __init__(
+        self,
+        dataframe: Optional[pd.DataFrame],
+        sequence: Optional[str],
+        start_position: Optional[str],
+        dataframe_stopcodons: pd.DataFrame,
+    ) -> None:
+        super().__init__(
+            dataset=None,
+            dataframe=dataframe,
+            sequence=sequence,
+            start_position=start_position,
+        )
+        self.dataframe_stopcodons: pd.DataFrame = dataframe_stopcodons
+        self.sequence_updated: Optional[str] = None
+        self.ax_object2 = None
+        self.ax_object3 = None
+        self.average_residue = None
 
-    Parameters
-    ----------
-    self : object from class *Screen*
+    def plot(
+        self,
+        segment: list,
+        ylabel_color: str = 'k',
+        nancolor: str = 'lime',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
+        """
+        Generate a heatmap plot enrichment scores but only plots a selected segment.
 
-    segment : list
-        Segment is typed as [20,40] and includes both residues 20 and 40.
+        Parameters
+        ----------
+        self : object from class *Screen*
 
-    ylabel_color : str, default 'k'
-        Choose white if you don't want amino acid y axis label.
+        segment : list
+            Segment is typed as [20,40] and includes both residues 20 and 40.
 
-    nancolor : str, default 'lime'
-        Will color np.nan values with the specified color.
+        ylabel_color : str, default 'k'
+            Choose white if you don't want amino acid y axis label.
 
-    output_file : str, default None
-        If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'.
+        nancolor : str, default 'lime'
+            Will color np.nan values with the specified color.
 
-    **kwargs : other keyword arguments
-        return_plot_object : boolean, default False
-            If true, will return plotting objects (ie. fig, ax_object).
+        output_file : str, default None
+            If you want to export the generated graph, add the path and name of the file.
+            Example: 'path/filename.png' or 'path/filename.svg'.
 
-    Returns
-    ----------
-    fig, ax_object, ax2_object : matplotlib figure and subplots
-        Needs to have return_plot_object==True. By default they do
-        not get returned.
+        **kwargs : other keyword arguments
+        """
 
-    '''
+        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
+        self._load_parameters()
 
-    # load font parameters
-    font_parameters()
+        # sort data in specified order by user
+        df_whole: pd.DataFrame = df_rearrange(
+            self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'], values='Score_NaN'
+        )
 
-    # update kwargs
-    temp_kwargs = copy.deepcopy(default_kwargs())
-    temp_kwargs.update(kwargs)
+        # select subset
+        self.df_output = df_whole.iloc[:, segment[0] - self.start_position : segment[1] - self.start_position + 1]
 
-    # load labels
-    temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
-    temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
+        # the size can be changed
+        figwidth = 2 * len(self.df_output.columns) / 22
+        figheight = 2
+        temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
+        temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
 
-    # sort data in specified order by user
-    df_whole: pd.DataFrame = df_rearrange(
-        self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'], values='Score_NaN'
-    )
+        self.fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
+        gs_object = gridspec.GridSpec(nrows=1, ncols=1)
+        # needed to set autoscale off to avoid missalignment
+        ax_object = plt.subplot(gs_object[0])
 
-    # select subset
-    df_main = df_whole.iloc[:, segment[0] - self.start_position : segment[1] - self.start_position + 1]
+        # Change color of values that are NaN
+        cmap = temp_kwargs['colormap']
+        cmap.set_bad(color=nancolor)
 
-    # the size can be changed
-    figwidth = 2 * len(df_main.columns) / 22
-    figheight = 2
-    temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
-    temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
+        # main heatmap
+        ax_object.pcolormesh(
+            self.df_output,
+            vmin=temp_kwargs['colorbar_scale'][0],
+            vmax=temp_kwargs['colorbar_scale'][1],
+            cmap=cmap,
+            edgecolors='k',
+            linewidths=0.2,
+            antialiased=True,
+            color='darkgrey'
+        )
 
-    fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-    gs_object = gridspec.GridSpec(nrows=1, ncols=1)
-    # needed to set autoscale off to avoid missalignment
-    ax_object = plt.subplot(gs_object[0])
+        # put the major ticks at the middle of each cell
+        ax_object.set_xticks(
+            np.arange(len(self.df_output.columns)) + 0.5,
+            minor=False,
+        )
+        ax_object.set_yticks(np.arange(len(self.df_output)) + 0.5, minor=False)
 
-    # Change color of values that are NaN
-    cmap = temp_kwargs['colormap']
-    cmap.set_bad(color=nancolor)
+        # position of axis labels
+        ax_object.tick_params('x', direction='out', pad=-2.5)
+        ax_object.tick_params('y', direction='out', pad=0.4)
 
-    # main heatmap
-    ax_object.pcolormesh(
-        df_main,
-        vmin=temp_kwargs['colorbar_scale'][0],
-        vmax=temp_kwargs['colorbar_scale'][1],
-        cmap=cmap,
-        edgecolors='k',
-        linewidths=0.2,
-        antialiased=True,
-        color='darkgrey'
-    )
+        # second axis
+        ax2_object = ax_object.twiny()
+        ax2_object.set_xticks(np.arange(len(self.df_output.columns)) + 0.5, minor=False)
+        ax2_object.tick_params(direction='out', pad=4)
 
-    # put the major ticks at the middle of each cell
-    ax_object.set_xticks(
-        np.arange(len(df_main.columns)) + 0.5,
-        minor=False,
-    )
-    ax_object.set_yticks(np.arange(len(df_main)) + 0.5, minor=False)
+        # Set the limits of the new axis from the original axis limits
+        ax2_object.set_xlim(ax_object.get_xlim())
 
-    # position of axis labels
-    ax_object.tick_params('x', direction='out', pad=-2.5)
-    ax_object.tick_params('y', direction='out', pad=0.4)
+        # want a more natural, table-like display
+        ax_object.invert_yaxis()
+        ax_object.xaxis.tick_top()
 
-    # second axis
-    ax2_object = ax_object.twiny()
-    ax2_object.set_xticks(np.arange(len(df_main.columns)) + 0.5, minor=False)
-    ax2_object.tick_params(direction='out', pad=4)
+        # so labels of x and y do not show up and my labels show up instead
+        ax_object.set_xticklabels(
+            list(self.sequence)[segment[0] - self.start_position : segment[1] - self.start_position + 1],
+            fontsize=6.5,
+            fontname="Arial",
+            color='k',
+            minor=False,
+        )
+        ax_object.set_yticklabels(
+            temp_kwargs['neworder_aminoacids'],
+            fontsize=6,
+            fontname="Arial",
+            color=ylabel_color,
+            minor=False,
+        )
 
-    # Set the limits of the new axis from the original axis limits
-    ax2_object.set_xlim(ax_object.get_xlim())
+        ax2_label = (segment[1] - segment[0] + 1) * ['']
+        ax2_label[0] = segment[0]
+        ax2_label[-1] = segment[1]
+        ax2_object.set_xticklabels(ax2_label, fontsize=7, fontname="Arial", color='k', minor=False)
 
-    # want a more natural, table-like display
-    ax_object.invert_yaxis()
-    ax_object.xaxis.tick_top()
+        # align the labels of the y axis
+        for ylabel in ax_object.get_yticklabels():
+            ylabel.set_horizontalalignment('center')
 
-    # so labels of x and y do not show up and my labels show up instead
-    ax_object.set_xticklabels(
-        list(self.sequence)[segment[0] - self.start_position : segment[1] - self.start_position + 1],
-        fontsize=6.5,
-        fontname="Arial",
-        color='k',
-        minor=False,
-    )
-    ax_object.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'],
-        fontsize=6,
-        fontname="Arial",
-        color=ylabel_color,
-        minor=False,
-    )
+        # remove ticks
+        ax_object.xaxis.set_ticks_position('none')
+        ax_object.yaxis.set_ticks_position('none')
+        ax2_object.yaxis.set_ticks_position('none')
+        ax2_object.xaxis.set_ticks_position('none')
 
-    ax2_label = (segment[1] - segment[0] + 1) * ['']
-    ax2_label[0] = segment[0]
-    ax2_label[-1] = segment[1]
-    ax2_object.set_xticklabels(ax2_label, fontsize=7, fontname="Arial", color='k', minor=False)
+        self._save_work(output_file, temp_kwargs)
 
-    # align the labels of the y axis
-    for ylabel in ax_object.get_yticklabels():
-        ylabel.set_horizontalalignment('center')
+        if temp_kwargs['show']:
+            plt.show()
 
-    # remove ticks
-    ax_object.xaxis.set_ticks_position('none')
-    ax_object.yaxis.set_ticks_position('none')
-    ax2_object.yaxis.set_ticks_position('none')
-    ax2_object.xaxis.set_ticks_position('none')
-
-    # save file
-    save_work(fig, output_file, temp_kwargs)
-
-    # return matplotlib object
-    if temp_kwargs['return_plot_object']:
-        return fig, ax_object, ax2_object
-
-    if temp_kwargs['show']:
-        plt.show()
+    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+        """
+        Update the kwargs.
+        """
+        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
+        temp_kwargs.update(kwargs)
+        # load labels
+        temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
+        temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
+        return temp_kwargs

@@ -16,10 +16,6 @@ class RankP(Plotly):
     """
     This class uses plotly to generate a rank plot.
     """
-    def __init__(self, dataframe: DataFrame) -> None:
-        super().__init__()
-        self.dataframe: DataFrame = dataframe
-
     def plot(
         self,
         mode: str = 'pointmutant',

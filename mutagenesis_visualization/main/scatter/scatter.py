@@ -10,10 +10,13 @@ from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 
-
 from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.pandas_functions import (process_mean_residue, process_by_pointmutant,)
+from mutagenesis_visualization.main.utils.pandas_functions import (
+    process_mean_residue,
+    process_by_pointmutant,
+)
+
 
 class Scatter(Pyplot):
     """
@@ -24,8 +27,13 @@ class Scatter(Pyplot):
         self.screen_object: Optional[Screen] = None
         self.dataframe: pd.DataFrame = dataframe
 
-
-    def plot(self, screen_object: Screen, mode: str='pointmutant', output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],) -> None:
+    def plot(
+        self,
+        screen_object: Screen,
+        mode: str = 'pointmutant',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ) -> None:
         """
         Generate a scatter plot between object and a second object of the
         same class.
@@ -57,7 +65,9 @@ class Scatter(Pyplot):
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
 
         # Scatter data points
-        plt.scatter(df_output['dataset_1'], df_output['dataset_2'], c='k', s=8, alpha=0.5, rasterized=True, label='_nolegend_')
+        plt.scatter(
+            df_output['dataset_1'], df_output['dataset_2'], c='k', s=8, alpha=0.5, rasterized=True, label='_nolegend_'
+        )
 
         # correlation
         _, _, r_value, _, _ = linregress(df_output['dataset_1'], df_output['dataset_2'])

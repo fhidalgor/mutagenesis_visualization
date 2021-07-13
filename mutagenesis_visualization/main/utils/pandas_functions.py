@@ -7,7 +7,13 @@ import pandas as pd
 import itertools
 
 
-def transform_dataset(dataset, sequence: str, aminoacids: str, start_position: int, fillna: float,) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def transform_dataset(
+    dataset,
+    sequence: str,
+    aminoacids: str,
+    start_position: int,
+    fillna: float,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     '''
     Internal function that constructs a dataframe from user inputs
     Returns dataframe containing [Position, Sequence, Aminoacid, Variant, Score]
@@ -20,7 +26,9 @@ def transform_dataset(dataset, sequence: str, aminoacids: str, start_position: i
     df_input['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
 
     # Create column with position label
-    df_input['Position'] = np.ravel([[i] * len(aminoacids) for i in range(start_position, len(dataset[0]) + start_position)])
+    df_input['Position'] = np.ravel([[i] * len(aminoacids)
+                                     for i in range(start_position,
+                                                    len(dataset[0]) + start_position)])
     df_input['Aminoacid'] = aminoacids * len(dataset[0])
     df_input['Variant'] = df_input['Sequence'] + df_input['Position'].astype(str) + df_input['Aminoacid']
     df_input['Score'] = np.ravel(dataset.T)
@@ -44,7 +52,12 @@ def transform_sequence(dataset: Any, sequence: str, start_position: int) -> str:
     return sequence[start_position - 1 : len(dataset[0]) + start_position - 1]
 
 
-def transform_secondary(dataset: Any, secondary: list, start_position: int, aminoacids: str,) -> Tuple[list,list]:
+def transform_secondary(
+    dataset: Any,
+    secondary: list,
+    start_position: int,
+    aminoacids: str,
+) -> Tuple[list, list]:
     '''
     Internal function that trims the input secondary structure. Returns
     list containing trimmed secondary structure (20 times each element).
@@ -65,7 +78,12 @@ def transform_secondary(dataset: Any, secondary: list, start_position: int, amin
     return trimmedsecondary, secondary_dup
 
 
-def df_rearrange(df_input: pd.DataFrame, new_order: str, values: str='Score', show_snv: bool=False,) -> pd.DataFrame:
+def df_rearrange(
+    df_input: pd.DataFrame,
+    new_order: str,
+    values: str = 'Score',
+    show_snv: bool = False,
+) -> pd.DataFrame:
     '''
     Convert a df_input into a numpy array for mutagenesis data. Allows the
     option of keeping NaN scores. Returns copy
@@ -80,20 +98,21 @@ def df_rearrange(df_input: pd.DataFrame, new_order: str, values: str='Score', sh
     return df_pivoted.reindex(index=list(new_order))
 
 
-def _common(a: list, b: list) ->list:
+def _common(a: list, b: list) -> list:
     '''
     return common elements of two lists
     '''
     return [value for value in a if value in b]
 
-def _transpose(df_input: pd.DataFrame, values: str ='Score') -> pd.DataFrame:
+
+def _transpose(df_input: pd.DataFrame, values: str = 'Score') -> pd.DataFrame:
     '''
     Convert a df_input into a numpy array for mutagenesis data. Returns copy
     '''
     return df_input.pivot_table(values=values, index='Aminoacid', columns=['Position']).T
 
 
-def select_aa(df_input: pd.DataFrame, selection, values: str ='Score') -> pd.DataFrame:
+def select_aa(df_input: pd.DataFrame, selection, values: str = 'Score') -> pd.DataFrame:
     '''returns copy'''
     df_input = _transpose(df_input.copy(), values)
     return df_input[selection].T
@@ -146,12 +165,17 @@ def parse_pivot(df_imported: pd.DataFrame, col_variant='variant', col_data='DMS'
 
     return df_pivoted, sequence
 
+
 def color_data(row, color_gof, color_lof):
     if row["Score"] > 0:
         return color_gof
     return color_lof
 
-def process_mean_residue(dataframe_1: pd.DataFrame, dataframe_2: pd.DataFrame,) -> pd.DataFrame:
+
+def process_mean_residue(
+    dataframe_1: pd.DataFrame,
+    dataframe_2: pd.DataFrame,
+) -> pd.DataFrame:
     """
     Given two dataframes, it groups by position and truncates the
     longer one. It also drops nan values. Returns joined dataframe
@@ -172,7 +196,11 @@ def process_mean_residue(dataframe_1: pd.DataFrame, dataframe_2: pd.DataFrame,) 
     df_ouput['d1 - d2'] = df_ouput['dataset_1'] - df_ouput['dataset_2']
     return df_ouput.dropna(how='any', inplace=True)
 
-def process_by_pointmutant(dataframe_1: pd.DataFrame, dataframe_2: pd.DataFrame,) -> pd.DataFrame:
+
+def process_by_pointmutant(
+    dataframe_1: pd.DataFrame,
+    dataframe_2: pd.DataFrame,
+) -> pd.DataFrame:
     """
     Given two dataframes, it truncates the longer one. It also drops nan values.
     Returns joined dataframe that contains the Scores and the Variants.

@@ -9,17 +9,13 @@ import plotly.io as pio
 import plotly.graph_objects as go
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
-from mutagenesis_visualization.main.plotly.plotly_utils import select_grouping
+from mutagenesis_visualization.main.utils.plotly_utils import select_grouping
 
 
 class HistogramP(Plotly):
     """
     This class uses plotly to generate a histogram plot.
     """
-    def __init__(self, dataframe: DataFrame) -> None:
-        super().__init__()
-        self.dataframe: DataFrame = dataframe
-
     def plot(
         self,
         mode='pointmutant',

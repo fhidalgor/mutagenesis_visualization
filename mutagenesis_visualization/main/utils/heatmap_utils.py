@@ -38,7 +38,14 @@ def hierarchical_sort(df_input: pd.DataFrame) -> list:
 
 
 def generate_cartoon(
-    self, gs_object, n_row: int, colors, bottom_space: float = 0, fig_inches: float = 13.91, show_labels: bool = True
+    secondary: list,
+    start_position: int,
+    gs_object,
+    n_row: int,
+    colors,
+    bottom_space: float = 0,
+    fig_inches: float = 13.91,
+    show_labels: bool = True,
 ):
     '''
     Generates cartoon for heatmap.
@@ -47,10 +54,10 @@ def generate_cartoon(
     cartoon = plt.subplot(gs_object[n_row, 0])
 
     # Generate coordinates of labels
-    labels = list(Counter(self.secondary).keys())
-    length = list(Counter(self.secondary).values())
+    labels = list(Counter(secondary).keys())
+    length = list(Counter(secondary).values())
     cumsum = length[:-1]
-    cumsum.insert(0, self.start_position)
+    cumsum.insert(0, start_position)
     cumsum = np.cumsum(cumsum)
 
     # Create cartoon
@@ -100,7 +107,7 @@ def generate_cartoon(
     cartoon.axis('off')
 
     # size
-    cartoon.set_xlim(self.start_position - 0.1, len(self.secondary) + self.start_position + 0.2)
+    cartoon.set_xlim(start_position - 0.1, len(secondary) + start_position + 0.2)
     cartoon.set_ylim(-2, 2.5)
 
     # adjust proximity to heatmap

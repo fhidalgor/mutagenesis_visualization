@@ -18,10 +18,8 @@ class ScatterP(Plotly):
     This class uses plotly to generate a scatter plot.
     """
     def __init__(self, dataframe: DataFrame) -> None:
-        super().__init__()
-        self.dataframe: DataFrame = dataframe
+        super().__init__(dataframe)
         self.screen_object: Optional[Screen] = None
-        self.df_output: Optional[DataFrame] = None
 
     def plot(
         self,

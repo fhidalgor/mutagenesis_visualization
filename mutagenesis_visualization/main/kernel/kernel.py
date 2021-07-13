@@ -37,8 +37,9 @@ class Kernel(Pyplot):
                 If true, will return plotting objects (ie. fig, ax_object).
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self.fig = plt.figure(figsize=temp_kwargs['figsize'])
         self._load_parameters()
+
+        self.fig = plt.figure(figsize=temp_kwargs['figsize'])
 
         # plot kernel
         self.ax_object = sns.kdeplot(
@@ -50,10 +51,7 @@ class Kernel(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-        if temp_kwargs['show']:
-            plt.show()
-
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
@@ -63,7 +61,7 @@ class Kernel(Pyplot):
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

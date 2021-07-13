@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
-def _input_text(text_entries: List[str]):
+def input_text(text_entries: List[str]):
     '''
     The user can input text as a variable by manually giving the coordinates.
     '''
@@ -48,7 +48,8 @@ class MeanCounts(Pyplot):
         **kwargs : other keyword arguments
             text_labels : list of lists, default empty
                 If you want to add a label to the graph, add the coordinates
-                and the text. Example: text_labels = [[x0,y0,text0],[x1,y1,text1]].
+                and the text. Example: text_labels = [[x0,y0,text0]
+                [x1,y1,text1]].
         """
         temp_kwargs = self._update_kwargs(kwargs)
         self._load_parameters()
@@ -59,9 +60,6 @@ class MeanCounts(Pyplot):
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
-
-        if temp_kwargs['show']:
-            plt.show()
 
     def _tune_plot(self, temp_kwargs) -> None:
         """
@@ -90,7 +88,7 @@ class MeanCounts(Pyplot):
         plt.title(temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=0)
 
         # Put text labels
-        _input_text(temp_kwargs['text_labels'])
+        input_text(temp_kwargs['text_labels'])
 
     def _update_kwargs(self, kwargs) -> Dict[str, Any]:
         """

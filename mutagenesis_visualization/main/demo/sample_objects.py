@@ -19,7 +19,7 @@ def hras_RBD():
     Create object hras_RBD.
     """
 
-  # Use relative file import to access the data folder
+    # Use relative file import to access the data folder
     try:
         location = os.path.dirname(os.path.realpath(__file__))
         my_file = os.path.join(location, '../../data', 'HRas166_RBD.csv')

@@ -60,13 +60,16 @@ class MeanBar(Pyplot):
         width = 0.5
 
         # Color based on values
-        self.ax_object.bar(df_output['Aminoacid'], df_output['Score'], width, color=df_output['Color'], ec='k',)
+        self.ax_object.bar(
+            df_output['Aminoacid'],
+            df_output['Score'],
+            width,
+            color=df_output['Color'],
+            ec='k',
+        )
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
-
-        if temp_kwargs['show']:
-            plt.show()
 
         def _update_kwargs(self, kwargs) -> Dict[str, Any]:
             """
