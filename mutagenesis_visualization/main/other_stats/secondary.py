@@ -10,6 +10,7 @@ import numpy as np
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 #from mutagenesis_visualization.main.utils.u import Counter
 
+
 def _calculate_secondary(df_input: DataFrame, secondary: list) -> DataFrame:
     """
     Returns copy.
@@ -20,11 +21,16 @@ def _calculate_secondary(df_input: DataFrame, secondary: list) -> DataFrame:
     df_output = df_output[df_output['Secondary'].str.startswith(('β', 'α'))]
     return df_output.drop(['Position'], axis=1)
 
+
 class Secondary(Pyplot):
     """
     Class to generate a ROC analysis.
     """
-    def plot(self, output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generates a bar plot of data sorted by secondary elements (alpha
         helices and beta sheets).
@@ -46,7 +52,12 @@ class Secondary(Pyplot):
         df_output: DataFrame = _calculate_secondary(self.dataframe, self.secondary_dup)
 
         # Color
-        df_output['Color'] = df_output.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'],))
+        df_output['Color'] = df_output.apply(
+            code_utils._color_data, axis=1, args=(
+                temp_kwargs['color_gof'],
+                temp_kwargs['color_lof'],
+            )
+        )
 
         # Make figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -65,10 +76,30 @@ class Secondary(Pyplot):
 
         # graph parameters
         self.ax_object.set_xticks(ticks)
-        self.ax_object.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0,)
-        self.ax_object.set_ylabel(r'$∆E^i_x$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0,)
+        self.ax_object.set_xticklabels(
+            labels,
+            fontsize=9,
+            fontname="Arial",
+            color='k',
+            minor=False,
+            rotation=0,
+        )
+        self.ax_object.set_ylabel(
+            r'$∆E^i_x$',
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=12,
+            rotation=0,
+        )
         self.ax_object.set_ylim(temp_kwargs['yscale'])
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5,)
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=10,
+            pad=5,
+        )
 
         self._save_work(output_file, temp_kwargs)
 

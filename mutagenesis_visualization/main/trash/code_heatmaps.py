@@ -40,7 +40,7 @@ def plot_heatmap(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
+    """
     Generate a heatmap plot of the enrichment scores.
 
     Parameters
@@ -72,7 +72,7 @@ def plot_heatmap(
         Needs to have return_plot_object==True. By default they do
         not get returned.
 
-    '''
+    """
     # load font parameters
     code_kwargs._font_parameters()
 
@@ -93,7 +93,10 @@ def plot_heatmap(
     )
 
     # average of residues by positon
-    average = [code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']]
+    average = [
+        code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position'
+                                                                   ).mean()['Score_NaN']
+    ]
     # For 1 column case
 
     # Create new sequence that we may to change order later
@@ -120,12 +123,16 @@ def plot_heatmap(
         figheight = 2.45
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
         fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[len(df), 1, 5], width_ratios=[len(df.columns), 1])
+        gs = gridspec.GridSpec(
+            nrows=3, ncols=2, height_ratios=[len(df), 1, 5], width_ratios=[len(df.columns), 1]
+        )
     else:
         figheight = 2
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
         fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[len(df), 1], width_ratios=[len(df.columns), 1])
+        gs = gridspec.GridSpec(
+            nrows=2, ncols=2, height_ratios=[len(df), 1], width_ratios=[len(df.columns), 1]
+        )
 
     ax = plt.subplot(gs[0, 0])
     averageresidue = plt.subplot(gs[1, 0])
@@ -204,8 +211,12 @@ def plot_heatmap(
     averageresidue.yaxis.set_ticks_position('none')
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False)
-    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False)
+    ax.set_xticklabels(
+        list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False
+    )
+    ax.set_yticklabels(
+        temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False
+    )
     # For numbering labels, change if hierarchical sorting is true
     if not (hierarchical):
         ax2.set_xticklabels(
@@ -217,9 +228,20 @@ def plot_heatmap(
         )
     else:
         ax2.tick_params(direction='out', pad=7)
-        ax2.set_xticklabels(sorted_columns_corrected, fontsize=5, fontname="Arial", color='k', minor=False, rotation=90)
-    ax3.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False)
-    averageresidue.set_xticklabels(list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False)
+        ax2.set_xticklabels(
+            sorted_columns_corrected,
+            fontsize=5,
+            fontname="Arial",
+            color='k',
+            minor=False,
+            rotation=90
+        )
+    ax3.set_yticklabels(
+        temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color='k', minor=False
+    )
+    averageresidue.set_xticklabels(
+        list(self.sequence_updated), fontsize=6.5, fontname="Arial", color='k', minor=False
+    )
     rowaverage = ''
     averageresidue.set_yticklabels(rowaverage, fontsize=6, fontname="Arial", color='k', minor=False)
 
@@ -291,7 +313,8 @@ def _labels(start_position=1):
     # residue label and color
     emptylist = [''] * 1000
     number_sequencelabels = list([
-        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k' for index, x in enumerate(emptylist)
+        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
+        for index, x in enumerate(emptylist)
     ])
     color_sequencelabels = list([
         index + start_position if index in np.arange(10 - (start_position % 10), 1000, 10) else ''
@@ -301,7 +324,7 @@ def _labels(start_position=1):
 
 
 def _generate_cartoon(self, gs, n_row, colors, bottom_space=0, fig_inches=13.91, show_labels=True):
-    '''Generates cartoon for heatmap'''
+    """Generates cartoon for heatmap"""
     # Create subplot
     cartoon = plt.subplot(gs[n_row, 0])
 
@@ -433,7 +456,7 @@ def plot_heatmap_rows(
     output_file: Union[None, str, Path] = None,
     **kwargs
 ):
-    '''
+    """
     Generate a heatmap plot enrichment scores of selected aminoacids.
 
     Parameters
@@ -459,7 +482,7 @@ def plot_heatmap_rows(
         Needs to have return_plot_object==True. By default they do
         not get returned.
 
-    '''
+    """
     # load font parameters
     code_kwargs._font_parameters()
 
@@ -473,7 +496,8 @@ def plot_heatmap_rows(
 
     # Check if mean or not. Add group and pivot df.
     if selection == 'mean':
-        df = code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']
+        df = code_utils._add_SNV_boolean(self.dataframe.copy()).groupby(by='Position'
+                                                                        ).mean()['Score_NaN']
         y_labels = [""]
         dataset = np.array([df.to_numpy()])
     else:
@@ -591,9 +615,14 @@ def plot_heatmap_rows(
 
 
 def plot_heatmap_columns(
-    self, segment, ylabel_color='k', nancolor='lime', output_file: Union[None, str, Path] = None, **kwargs
+    self,
+    segment,
+    ylabel_color='k',
+    nancolor='lime',
+    output_file: Union[None, str, Path] = None,
+    **kwargs
 ):
-    '''
+    """
     Generate a heatmap plot enrichment scores but only plots a selected segment.
 
     Parameters
@@ -623,7 +652,7 @@ def plot_heatmap_columns(
         Needs to have return_plot_object==True. By default they do
         not get returned.
 
-    '''
+    """
 
     # load font parameters
     code_kwargs._font_parameters()
@@ -698,14 +727,19 @@ def plot_heatmap_columns(
 
     # so labels of x and y do not show up and my labels show up instead
     ax.set_xticklabels(
-        list(self.sequence)[segment[0] - self.start_position : segment[1] - self.start_position + 1],
+        list(self.sequence
+             )[segment[0] - self.start_position : segment[1] - self.start_position + 1],
         fontsize=6.5,
         fontname="Arial",
         color='k',
         minor=False
     )
     ax.set_yticklabels(
-        temp_kwargs['neworder_aminoacids'], fontsize=6, fontname="Arial", color=ylabel_color, minor=False
+        temp_kwargs['neworder_aminoacids'],
+        fontsize=6,
+        fontname="Arial",
+        color=ylabel_color,
+        minor=False
     )
 
     ax2_label = (segment[1] - segment[0] + 1) * ['']

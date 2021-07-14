@@ -15,7 +15,7 @@ from logomaker import alignment_to_matrix
 
 
 def count_fastq(variants, input_file):
-    '''
+    """
     Count the frequency of variants in the input fastq file.
 
     Parameters
@@ -37,7 +37,7 @@ def count_fastq(variants, input_file):
         Total number of DNA chains that appear in the fastq file.
     usefulreads : int
         Total number of identified DNA chains. Calculated as the sum of all the key values.
-    '''
+    """
     # if variant input is not an ordered dict, convert to ordered dict
     if not (isinstance(variants, OrderedDict)):
         variants = _initialize_ordereddict(variants)

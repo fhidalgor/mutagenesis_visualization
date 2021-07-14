@@ -96,7 +96,9 @@ class Heatmap(Pyplot):
         )
 
         # average of residues by positon
-        average = [add_snv_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']]
+        average = [
+            add_snv_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']
+        ]
         # For 1 column case
 
         # Create new sequence that we may to change order later
@@ -282,9 +284,11 @@ class Heatmap(Pyplot):
             ylabel.set_horizontalalignment('center')
 
         # for coloring the residues that are 10,20...
-        for xtick, color in zip(self.ax_object.get_xticklabels(), temp_kwargs['color_sequencelabels']):
+        for xtick, color in zip(self.ax_object.get_xticklabels(),
+                                temp_kwargs['color_sequencelabels']):
             xtick.set_color(color)
-        for xtick, color in zip(self.average_residue.get_xticklabels(), temp_kwargs['color_sequencelabels']):
+        for xtick, color in zip(self.average_residue.get_xticklabels(),
+                                temp_kwargs['color_sequencelabels']):
             xtick.set_color(color)
         # _____________________________________________________________________________
 

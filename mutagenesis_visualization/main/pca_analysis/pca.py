@@ -8,7 +8,14 @@ import matplotlib.pyplot as plt
 from adjustText import adjust_text
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.pca_utils import (calculate_correlation, calculate_correlation_by_residue, calculate_correlation_by_secondary,calculate_clusters,auto_text)
+from mutagenesis_visualization.main.utils.pca_utils import (
+    calculate_correlation,
+    calculate_correlation_by_residue,
+    calculate_correlation_by_secondary,
+    calculate_clusters,
+    auto_text,
+)
+
 
 class PCA(Pyplot):
     """
@@ -16,9 +23,9 @@ class PCA(Pyplot):
     """
     def plot(
         self,
-        mode: str='aminoacid',
-        dimensions: List[int]=[0, 1],
-        adjust_labels:bool=False,
+        mode: str = 'aminoacid',
+        dimensions: List[int] = [0, 1],
+        adjust_labels: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ):
@@ -70,7 +77,9 @@ class PCA(Pyplot):
             textlabels = list(dataset.columns)
 
         # plot using plot_clusters
-        dimensions_to_plot, variance = calculate_clusters(dataset, dimensions, temp_kwargs['random_state'])
+        dimensions_to_plot, variance = calculate_clusters(
+            dataset, dimensions, temp_kwargs['random_state']
+        )
 
         # x and y
         x = dimensions_to_plot.iloc[:, 0]
@@ -99,7 +108,13 @@ class PCA(Pyplot):
             adjust_text(texts, autoalign='xy')
 
         # set title
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=10,
+            pad=5
+        )
 
         self._save_work(output_file, temp_kwargs)
 

@@ -8,8 +8,13 @@ import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from matplotlib import ticker
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.other_stats_utils import (select_grouping, merge_class_variants, roc_auc,)
+from mutagenesis_visualization.main.utils.other_stats_utils import (
+    select_grouping,
+    merge_class_variants,
+    roc_auc,
+)
 from mutagenesis_visualization.main.utils.heatmap_utils import labels
+
 
 class Miniheatmap(Pyplot):
     """
@@ -17,10 +22,11 @@ class Miniheatmap(Pyplot):
     """
     def plot(
         self,
-        offset: float=0,
-        background_correction: bool=True,
+        offset: float = 0,
+        background_correction: bool = True,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],    ):
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generate a miniheatmap plot enrichment scores of mutagenesis selection
         assays.
@@ -142,7 +148,9 @@ def _plot_miniheatmap(df, output_file, temp_kwargs):
 
     # so labels of x and y do not show up and my labels show up instead
     ax.set_xticklabels(list(df.columns), fontsize=6.5, fontname="Arial", color='k', minor=False)
-    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_yticklabels(
+        temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False
+    )
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -175,7 +183,9 @@ def _plot_miniheatmap(df, output_file, temp_kwargs):
     )
 
     # for putting title on graph
-    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
+    plt.title(
+        temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10
+    )
     plt.ylabel('Amino Acid Substitution', fontsize=10, labelpad=-1)
 
     # save file

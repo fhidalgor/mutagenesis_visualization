@@ -7,6 +7,7 @@ from matplotlib import ticker
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
+
 class Cumulative(Pyplot):
     """
     This class will plot a cumulative function on the enrichment scores
@@ -18,13 +19,16 @@ class Cumulative(Pyplot):
         dataframe_snv: DataFrame,
         dataframe_nonsnv: DataFrame,
     ) -> None:
-        super().__init__(
-            dataframe=dataframe,
-        )
+        super().__init__(dataframe=dataframe, )
         self.dataframe_snv: DataFrame = dataframe_snv
-        self.dataframe_nonsnv: DataFrame=dataframe_nonsnv
+        self.dataframe_nonsnv: DataFrame = dataframe_nonsnv
 
-    def plot(self, mode: str ='all', output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        mode: str = 'all',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generates a cumulative plot of the enrichment scores by position.
 

@@ -15,9 +15,9 @@ from logomaker import alignment_to_matrix
 
 
 def _array_to_df_enrichments(lib, aminoacids) -> pd.DataFrame:
-    '''
+    """
     Aux function to transform array in df with index of amino acids.
-    '''
+    """
 
     df = pd.DataFrame(index=aminoacids, data=lib)
     return df.astype(float)

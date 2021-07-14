@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.ticker as ticker
 from pathlib import Path
-from typing import Union
+from typing import Any, Dict, Union
 
 # Local imports
 try:
@@ -36,9 +36,11 @@ except ModuleNotFoundError:
 # In[ ]:
 
 
-def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, str, Path] = None, **kwargs):
-    '''
-    Plot in a bargraph the mean enrichment for each residue of the protein. 
+def plot_mean(
+    self, mode='mean', show_cartoon=False, output_file: Union[None, str, Path] = None, **kwargs
+):
+    """
+    Plot in a bargraph the mean enrichment for each residue of the protein.
     Red for gain of function, blue for loss of function
 
     Parameters
@@ -46,22 +48,22 @@ def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, st
     self : object from class *Screen*
 
     mode : str, default 'mean'
-        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
-        each position. If mode = 'A', it will show the alanine substitution profile. Can be 
+        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of
+        each position. If mode = 'A', it will show the alanine substitution profile. Can be
         used for each amino acid. Use the one-letter code and upper case.
 
     show_cartoon : boolean, default False
-        If true, the plot will display a cartoon with the secondary structure. 
-        The user must have added the secondary structure to the object. 
+        If true, the plot will display a cartoon with the secondary structure.
+        The user must have added the secondary structure to the object.
 
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'. 
+        Example: 'path/filename.png' or 'path/filename.svg'.
 
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-        
+
         color_gof : str, default 'red'
             Choose color to color positions with an enrichment score > 0.
 
@@ -73,8 +75,8 @@ def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, st
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
-    '''
+
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -90,7 +92,12 @@ def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, st
     else:
         df = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
 
-    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
+    df['Color'] = df.apply(
+        code_utils._color_data, axis=1, args=(
+            temp_kwargs['color_gof'],
+            temp_kwargs['color_lof'],
+        )
+    )
 
     # make figure
     if show_cartoon:
@@ -106,7 +113,9 @@ def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, st
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0)
+    ax.set_ylabel(
+        temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0
+    )
     ax.set_xticks(np.arange(self.start_position, len(df) + self.start_position, 20))
     ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
     ax.set_xlim(self.start_position - 0.1, len(df) + self.start_position - 1 + 0.1)
@@ -114,7 +123,9 @@ def plot_mean(self, mode='mean', show_cartoon=False, output_file: Union[None, st
     # cartoon
     title_pad = 0
     if show_cartoon:
-        _generate_cartoon(self, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False)
+        _generate_cartoon(
+            self, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False
+        )
         title_pad = 2.5
 
     # Plot title
@@ -156,7 +167,13 @@ def _parameters_mean():
 # In[ ]:
 
 
-def plot_meandifferential(self, obj2, show_cartoon=False, output_file: Union[None, str, Path] = None, **kwargs):
+def plot_meandifferential(
+    self,
+    obj2,
+    show_cartoon=False,
+    output_file: Union[None, str, Path] = None,
+    **kwargs: Dict[str, Any]
+):
     """
     Plot the mean positional difference between two experiments.
 
@@ -176,7 +193,7 @@ def plot_meandifferential(self, obj2, show_cartoon=False, output_file: Union[Non
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
@@ -210,7 +227,9 @@ def plot_meandifferential(self, obj2, show_cartoon=False, output_file: Union[Non
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=-5, rotation=90)
+    ax.set_ylabel(
+        temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=-5, rotation=90
+    )
     ax.set_xticks(np.arange(self.start_position, len(df) + self.start_position, 20))
     ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
     ax.set_xlim(self.start_position - 0.1, len(df) + self.start_position - 1 + 0.1)
@@ -222,7 +241,9 @@ def plot_meandifferential(self, obj2, show_cartoon=False, output_file: Union[Non
         obj = obj2
         if len(self.dataframe) < len(obj2.dataframe):
             obj = self
-            _generate_cartoon(obj, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False)
+            _generate_cartoon(
+                obj, gs, 1, temp_kwargs['cartoon_colors'], bottom_space=-0.78, show_labels=False
+            )
 
     # title
     ax.set_title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=title_pad)
@@ -259,13 +280,13 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
         text_labels : list of lists, default empty
             If you want to add a label to the graph, add the coordinates and the text.
             Example: text_labels = [[x0,y0,text0],[x1,y1,text1]].
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -282,7 +303,9 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(temp_kwargs['y_label'], fontsize=12, fontname="Arial", color='k', labelpad=0, rotation=90)
+    ax.set_ylabel(
+        temp_kwargs['y_label'], fontsize=12, fontname="Arial", color='k', labelpad=0, rotation=90
+    )
     ax.set_xlabel('Amino acid position', fontsize=12, fontname="Arial", color='k', labelpad=4)
     ax.set_xticklabels(self.positions)
 
@@ -304,7 +327,7 @@ def plot_meancounts(self, output_file: Union[None, str, Path] = None, **kwargs):
 
 
 def _inputtext(text_entries):
-    '''the user can input text as a variable by manually giving the coordinates'''
+    """the user can input text as a variable by manually giving the coordinates"""
     if text_entries:
         for entry in text_entries:
             plt.text(entry[0], entry[1], entry[2])
@@ -335,13 +358,13 @@ def plot_position(self, position, output_file: Union[None, str, Path] = None, **
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -357,7 +380,9 @@ def plot_position(self, position, output_file: Union[None, str, Path] = None, **
     df = self.dataframe.loc[self.dataframe['Position'] == position].copy()
 
     # Color
-    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
+    df['Color'] = df.apply(
+        code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
+    )
 
     # make figure
     fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -368,7 +393,9 @@ def plot_position(self, position, output_file: Union[None, str, Path] = None, **
 
     # axes parameters
     ax.set_ylim(temp_kwargs['yscale'])
-    ax.set_ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0)
+    ax.set_ylabel(
+        temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0
+    )
 
     ax.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
     plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
@@ -403,13 +430,13 @@ def plot_library_representation(self, output_file: Union[None, str, Path] = None
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -432,7 +459,14 @@ def plot_library_representation(self, output_file: Union[None, str, Path] = None
 
     # axes parameters
     ax.set_ylim(0, 100)
-    ax.set_ylabel('Cumulative % AA representation', fontsize=12, fontname="Arial", color='k', labelpad=0, rotation=90)
+    ax.set_ylabel(
+        'Cumulative % AA representation',
+        fontsize=12,
+        fontname="Arial",
+        color='k',
+        labelpad=0,
+        rotation=90
+    )
     ax.yaxis.set_major_formatter(ticker.PercentFormatter())
 
     ax.set_xlabel('Amino acid position', fontsize=12, fontname="Arial", color='k', labelpad=4)

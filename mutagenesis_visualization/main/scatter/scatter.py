@@ -9,8 +9,6 @@ import pandas as pd
 from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from matplotlib import ticker
-
-from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pandas_functions import (
     process_mean_residue,
@@ -22,14 +20,9 @@ class Scatter(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-    def __init__(self, dataframe: pd.DataFrame) -> None:
-        super().__init__()
-        self.screen_object: Optional[Screen] = None
-        self.dataframe: pd.DataFrame = dataframe
-
     def plot(
         self,
-        screen_object: Screen,
+        screen_object: Any,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -57,7 +50,9 @@ class Scatter(Pyplot):
 
         # Chose mode:
         if mode == 'pointmutant':
-            df_output: pd.DataFrame = process_by_pointmutant(self.dataframe, self.screen_object.dataframe)
+            df_output: pd.DataFrame = process_by_pointmutant(
+                self.dataframe, self.screen_object.dataframe
+            )
         else:
             df_output = process_mean_residue(self.dataframe, self.screen_object.dataframe)
 
@@ -66,7 +61,13 @@ class Scatter(Pyplot):
 
         # Scatter data points
         plt.scatter(
-            df_output['dataset_1'], df_output['dataset_2'], c='k', s=8, alpha=0.5, rasterized=True, label='_nolegend_'
+            df_output['dataset_1'],
+            df_output['dataset_2'],
+            c='k',
+            s=8,
+            alpha=0.5,
+            rasterized=True,
+            label='_nolegend_'
         )
 
         # correlation

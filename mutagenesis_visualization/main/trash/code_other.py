@@ -63,18 +63,18 @@ def plot_rank(self, mode='pointmutant', outdf=False, output_file: Union[None, st
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-    
+
     df : Pandas dataframe
         Contains the mutations sorted by their performance.
         Needs to have outdf==True. By default they do
         not get returned.
-    
+
     """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -165,13 +165,13 @@ def plot_miniheatmap(
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax, cb : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
 
     # load font parameters
@@ -206,9 +206,9 @@ def plot_miniheatmap(
 
 
 def _condense_heatmap(df, new_order):
-    '''
+    """
     Converts the np.array with stored enrichment scores into the condensed heatmap
-    '''
+    """
     # Convert dataset to df
     df = df.copy()
     df.drop(['Position'], axis=1, inplace=True)
@@ -259,9 +259,9 @@ def _offset_sequence(dataset, sequence, start_position, offset):
 
 
 def _transform_dataset_offset(self, offset, stopcodons=True):
-    '''
+    """
     Generate a dataframe with the sequence offset. Reutilizes _transform_dataset
-    '''
+    """
     # Add offset sequence
     offset_sequence = _offset_sequence(self.dataset, self.sequence_raw, self.start_position, offset)
     df = self.dataframe_stopcodons.copy() if stopcodons is True else self.dataframe.copy()
@@ -308,13 +308,13 @@ def plot_neighboreffect(self, offset=1, output_file: Union[None, str, Path] = No
    **kwargs : other keyword arguments
        return_plot_object : boolean, default False
            If true, will return plotting objects (ie. fig, ax).
-           
+
    Returns
    ----------
    fig, ax, cb : matplotlib figure and subplots
        Needs to have return_plot_object==True. By default they do
        not get returned.
-       
+
    """
     # load font parameters
     code_kwargs._font_parameters()
@@ -343,22 +343,22 @@ def plot_neighboreffect(self, offset=1, output_file: Union[None, str, Path] = No
 def _plot_miniheatmap(df, output_file, temp_kwargs):
     """
    Aux plot that will do the heavy lifting to plot a miniheatmap.
-   
+
    Parameters
    ------------
    df: pandas dataframe
        dataframe with the data to plot.
-   
+
    output_file : str, default None
        If you want to export the generated graph, add the path and name of the file.
        Example: 'path/filename.png' or 'path/filename.svg'.
-   
+
    temp_kwargs : kwargs
-   
+
    Returns
    --------
    fig, ax, cb : matplotlib figure and subplots
-       
+
    """
     # declare figure and subplots
     coeff = len(df.columns) / 19 * 1.05
@@ -440,10 +440,10 @@ def _plot_miniheatmap(df, output_file, temp_kwargs):
 
 
 def _normalize_neighboreffect(self, offset, neworder):
-    '''
+    """
    For every residue, subtract the average effect of a substitution
    Returns a normalized dataframe
-   '''
+   """
     aalist = list('ACDEFGHIKLMNPQRSTVWY')
     # Add offset sequence to df
     df = _transform_dataset_offset(self, offset, False)
@@ -503,7 +503,7 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
@@ -560,9 +560,9 @@ def plot_secondary(self, output_file: Union[None, str, Path] = None, **kwargs):
 
 
 def _calculate_secondary(df, secondary):
-    '''
+    """
     Returns copy
-    '''
+    """
     df = df.copy()
     df.insert(4, 'Secondary', secondary)
     df = df.groupby(['Secondary'], as_index=False, sort=False).mean()
@@ -588,12 +588,12 @@ def plot_roc(self, df_class=None, mode='pointmutant', output_file: Union[None, s
     df_class: Pandas dataframe
         A dataframe that contains a column of variants labeled 'Variant' with a column labeled 'Class'
         containing the true class of that mutation. The true class can also be an input when creating the object.
-    
+
     mode : str, default 'pointmutant'
-        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of 
-        each position. If mode = 'A', it will show the alanine substitution profile. Can be 
+        Specify what enrichment scores to show. If mode = 'mean', it will show the mean of
+        each position. If mode = 'A', it will show the alanine substitution profile. Can be
         used for each amino acid. Use the one-letter code and upper case.
-        
+
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'.
@@ -659,11 +659,11 @@ def plot_roc(self, df_class=None, mode='pointmutant', output_file: Union[None, s
 
 
 def _select_grouping(df, mode):
-    '''
+    """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
 
-    '''
+    """
     # convert to upper case
     mode = mode.upper()
 
@@ -679,20 +679,20 @@ def _select_grouping(df, mode):
 
 
 def _rocauc(df):
-    '''
+    """
     Calculate roc rates and auc.
 
     The input is a dataframe that contains [Variants,Class,Score]
-    '''
+    """
     fpr, tpr, thresholds = metrics.roc_curve(df['Class'], df['Score'], drop_intermediate=True)
     auc = metrics.roc_auc_score(df['Class'], df['Score'])
     return fpr, tpr, auc, thresholds
 
 
 def _mergeclassvariants(df_score, df_class, mode):
-    '''
+    """
     Merge the input dataframe containing the class (true score) for variants and the enrichment scores
-    '''
+    """
     # convert to upper case
     mode = mode.upper()
 
@@ -712,125 +712,7 @@ def _mergeclassvariants(df_score, df_class, mode):
     return df_merged
 
 
-"""
-DEPRECATED
-
-def _concattrueposneg(df_tp, df_tn, subset='Variant', keep='first'):
-    '''
-    Concat a df containing the true positive variants and the true negative variants
-
-    Parameters
-    -----------
-    df_tp : Dataframe with the true positives
-    df_tn : Dataframe with the true negatives
-    subset : str, default Variant
-    keep : {‘first’, ‘last’, False} 
-
-    Returns
-    --------
-    None.
-    '''
-    # Concatenate tp and tn datasets
-    df_true = pd.concat([df_tp, df_tn], sort=False)
-
-    # Will keep a variant as true positive if found in both datasets (because could be a mistake in gnomAD)
-    df_true.drop_duplicates(subset=subset, keep=keep, inplace=True)
-
-    return df_true
-    """
-
-# ## Cumulative
-
-# In[7]:
-
-
-def plot_cumulative(self, mode='all', output_file: Union[None, str, Path] = None, **kwargs):
-    """
-    Generates a cumulative plot of the enrichment scores by position.
-
-    Parameters
-    -----------
-    self : object from class *Screen*
-
-    mode : str, default 'all'
-        Options are 'all','SNV' and 'nonSNV'.
-
-    output_file : str, default None
-        If you want to export the generated graph, add the path and name of the file.
-        Example: 'path/filename.png' or 'path/filename.svg'.
-
-    **kwargs : other keyword arguments
-        return_plot_object : boolean, default False
-            If true, will return plotting objects (ie. fig, ax).
-            
-    Returns
-    --------
-    fig, ax : matplotlib figure and subplots
-        Needs to have return_plot_object==True. By default they do
-        not get returned.
-        
-    """
-
-    # update kwargs
-    temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
-    temp_kwargs.update(kwargs)
-    temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2))
-    temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 20)
-
-    # import parameters
-    code_kwargs._parameters()
-
-    # create figure
-    fig, ax = plt.subplots(figsize=temp_kwargs['figsize'])
-
-    # Get data filtered
-    df = _filter_bySNV(self, mode)
-    cumsum = df.cumsum(skipna=False)['Score']
-    plt.plot(df['Position'], cumsum / list(cumsum)[-1], color='red', lw=2)
-
-    # y label
-    y_label = 'Cumulative LoF'
-    if list(cumsum)[-1] > 0:
-        y_label = 'Cumulative GoF'
-
-    # Graph limits
-    plt.xlim(self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1)
-    plt.ylim(0, 1.1)
-
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))  # Plt ticks
-
-    # Axis labels
-    plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
-    plt.ylabel(y_label, fontsize=12, fontname="Arial", color='k', labelpad=5)
-    plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
-
-    # x=y line
-    plt.plot([0, df['Position'].max()], [0, 1], color='silver', lw=2, linestyle='--')
-
-    # save file
-    code_utils._save_work(fig, output_file, temp_kwargs)
-
-    # return matplotlib object
-    if temp_kwargs['return_plot_object']:
-        return fig, ax
-
-    # show plt figure
-    if temp_kwargs['show']:
-        plt.show()
-
-
-def _filter_bySNV(self, mode):
-
-    # Select all, SNV, nonSNV
-    if mode == 'all':
-        df = self.dataframe
-    elif mode == 'SNV':
-        df = self.dataframe_SNV
-    elif mode == 'nonSNV':
-        df = self.dataframe_nonSNV
-    df = df.groupby(by='Position', as_index=False).mean()
-    return df
-
+'
 
 # ## Box Plot
 
@@ -850,17 +732,17 @@ def plot_box(binned_x, y, output_file: Union[None, str, Path] = None, **kwargs):
     output_file : str, default None
         If you want to export the generated graph, add the path and name of the file.
         Example: 'path/filename.png' or 'path/filename.svg'.
-        
+
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
     # Load parameters
     code_kwargs._parameters()

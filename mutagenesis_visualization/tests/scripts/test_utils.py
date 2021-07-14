@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # # Test of code_utils
-# 
+#
 
 # In[1]:
 
@@ -51,27 +51,27 @@ def test_common():
 
 
 def test_aminoacids_snv():
-    '''testing full capabilities of function'''
-    
+    """testing full capabilities of function"""
+
     # Create dict with codons
     codontable = code_utils._dict_codontoaa()
-    
+
     # Create input arguments
     pairs = [['F', 'L'], ['I', 'M'], ['T', 'A'], ['S', 'R'],
          ['F', 'P'], ['I', 'G'], ['T', 'L'], ['S', 'H'], ['A','A']]
-    
+
     # Expected answer
     expected_answer = [True]*4 + [False]*5
-    
+
     # Calculate answer and assert
     for pair, exp_ans in zip(pairs, expected_answer):
         calculated_answer = code_utils._aminoacids_snv(
             pair[0], pair[1], codontable, same_aa_SNV=False)
         assert exp_ans == calculated_answer, 'Error in determining SNV'
-    
+
     # Now change the same_aa_SNV parameter
     expected_answer = code_utils._aminoacids_snv('A', 'A', codontable, same_aa_SNV=True)
-    
+
     assert  expected_answer == True, 'Error in determining SNV when the two amino acids are the same'
 
 
@@ -79,24 +79,24 @@ def test_aminoacids_snv():
 
 
 def test_codons_snv():
-    '''testing full capabilities of function'''
-    
+    """testing full capabilities of function"""
+
     # Create input arguments
     pairs = [['AAA', 'AAT'], ['ACA', 'ACT'], ['ATA', 'TTA'], ['CCC', 'CCT'],
          ['AAA', 'ACC'], ['CAA', 'CCC'], ['ATA', 'TTT'], ['CCC', 'AAA'], ['AAA','AAA']]
-    
+
     # Expected answer
     expected_answer = [True]*4 + [False]*5
-    
+
     # Calculate answer and assert
     for pair, exp_ans in zip(pairs, expected_answer):
         calculated_answer = code_utils._codons_pointmutants(
             pair[0], pair[1], same_codon_SNV=False)
         assert exp_ans == calculated_answer, 'Error in determining SNV'
-    
+
     # Now change the same_aa_SNV parameter
     expected_answer = code_utils._codons_pointmutants('CAA', 'CAA', same_codon_SNV=True)
-    
+
     assert  expected_answer == True, 'Error in determining SNV when the two codons are the same'
 
 
@@ -118,7 +118,7 @@ def test_are_pointmutants():
 
 def test_are_pointmutants_list():
     assert code_utils._are_pointmutants_list('A', ['ATG', 'ATT', 'ACT'])==[False, False,True]
-    
+
 
 
 # ### Scatter Internal
@@ -127,7 +127,7 @@ def test_are_pointmutants_list():
 
 
 def test_process_bypointmutant():
-    '''testing that output type is a dataframe'''
+    """testing that output type is a dataframe"""
     # Create mock objects
     self = type('', (), {})()
     obj = type('', (), {})()
@@ -149,7 +149,7 @@ def test_process_bypointmutant():
 
 
 def test_process_meanresidue():
-    '''testing full capabilities of function'''
+    """testing full capabilities of function"""
     # Create mock objects
     self = type('', (), {})()
     obj = type('', (), {})()
@@ -172,7 +172,7 @@ def test_process_meanresidue():
 
 
 def test_color_data():
-    '''testing full capabilities of function'''
+    """testing full capabilities of function"""
     df = pd.DataFrame()
     df['Score'] = [1, 2, 3, 0, -1, -2, -3]
     df['Expected_Answer'] = ['red']*3+['blue']*4
@@ -188,7 +188,7 @@ def test_color_data():
 
 
 def test_translate_codons():
-    '''testing full capabilities of function'''
+    """testing full capabilities of function"""
     list_codons = ['AAA', 'AAC', 'AAG', 'AAT', 'ACA', 'ACC', 'ACG', 'ACT', 'AGA', 'AGC', 'AGG', 'AGT', 'ATA', 'ATC', 'ATG', 'ATT', 'CAA', 'CAC', 'CAG', 'CAT', 'CCA', 'CCC', 'CCG', 'CCT', 'CGA', 'CGC', 'CGG', 'CGT', 'CTA', 'CTC', 'CTG',
                    'CTT', 'GAA', 'GAC', 'GAG', 'GAT', 'GCA', 'GCC', 'GCG', 'GCT', 'GGA', 'GGC', 'GGG', 'GGT', 'GTA', 'GTC', 'GTG', 'GTT', 'TAA', 'TAC', 'TAG', 'TAT', 'TCA', 'TCC', 'TCG', 'TCT', 'TGA', 'TGC', 'TGG', 'TGT', 'TTA', 'TTC', 'TTG', 'TTT']
     list_aminoacids = ['K', 'N', 'K', 'N', 'T', 'T', 'T', 'T', 'R', 'S', 'R', 'S', 'I', 'I', 'M', 'I', 'Q', 'H', 'Q', 'H', 'P', 'P', 'P', 'P', 'R', 'R', 'R', 'R', 'L', 'L',
@@ -203,7 +203,7 @@ def test_translate_codons():
 
 
 def test_is_DNA():
-    '''testing full capabilities of function'''
+    """testing full capabilities of function"""
     df = pd.DataFrame(index=['A', 'C', 'T', 'G', 'P', 'L'])
     df2 = pd.DataFrame(index=['ATA', 'CAT', 'TGG', 'TGT'])
     assert (code_utils._is_DNA(
@@ -226,8 +226,8 @@ def test_parseMSA():
         my_file = os.path.join('../../data/for_tests', "msa.fasta")
     # Read MSA
     msa, seq_lengths, index = code_utils._parseMSA(my_file, "fasta", 0)
-                                                   
-    assert seq_lengths == [20]                                        
+
+    assert seq_lengths == [20]
 
 
 # In[8]:
@@ -240,12 +240,11 @@ def test_shannon_entropy_list_msa():
         my_file = os.path.join(location, '../../data/for_tests', "msa.fasta")
     except NameError:
         my_file = os.path.join('../../data/for_tests', "msa.fasta")
-        
+
     # Read MSA
     msa, seq_lengths, index = code_utils._parseMSA(my_file, "fasta", 0)
-    
+
     # Calculate entropy
     shannon = code_utils._shannon_entropy_list_msa(msa)
-                                                   
-    assert code_utils._shannon_entropy_list_msa(msa) == [-0.0]*20                                        
 
+    assert code_utils._shannon_entropy_list_msa(msa) == [-0.0]*20

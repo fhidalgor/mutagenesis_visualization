@@ -19,7 +19,7 @@ class MultipleKernel(Pyplot):
         output_file: Union[None, str, Path] = None,
         **kwargs
     ):
-        '''
+        """
         Generate a kernel density plot for multiple objects passed as a dictionary.
         If specified it can also draw a histogram. Uses sns.dispplot. Can manage either
         Screen objects or dataframes out of the calculate_enrichments function.
@@ -48,7 +48,7 @@ class MultipleKernel(Pyplot):
             Needs to have return_plot_object=True. By default they do
             not get returned.
 
-        '''
+        """
 
         # update kwargs
         temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -66,7 +66,8 @@ class MultipleKernel(Pyplot):
         code_kwargs._parameters()
 
         # plot (allows two types of data input)
-        for (label, dataset, color) in zip(dict_copy.keys(), dict_copy.values(), colors[0 : len(dict_copy)]):
+        for (label, dataset, color) in zip(dict_copy.keys(), dict_copy.values(),
+                                           colors[0 : len(dict_copy)]):
             if isinstance(dataset, pd.core.frame.DataFrame):  # check if input is a dataframe
                 # plot objects scores
                 ax = sns.kdeplot(dataset['Score_NaN'], color=color, lw=2, label=label)
@@ -83,7 +84,14 @@ class MultipleKernel(Pyplot):
         plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
-        plt.legend(dict_copy.keys(), loc='best', frameon=False, fontsize=9, handlelength=1, handletextpad=0.5)
+        plt.legend(
+            dict_copy.keys(),
+            loc='best',
+            frameon=False,
+            fontsize=9,
+            handlelength=1,
+            handletextpad=0.5
+        )
 
         # save file
         code_utils._save_work(fig, output_file, temp_kwargs)

@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
@@ -16,11 +15,7 @@ class Histogram(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-    def __init__(self, screen_object: Screen) -> None:
-        super().__init__()
-        self.screen_object: Screen = screen_object
-
-    def plot_hist(
+    def plot(
         self,
         population: str = 'All',
         output_file: Union[None, str, Path] = None,
@@ -57,11 +52,11 @@ class Histogram(Pyplot):
         self._load_parameters()
 
         # Select case input data
-        self.dataset = self.screen_object.dataframe['Score_NaN']
+        self.dataset = self.dataframe['Score_NaN']
         if population == 'SNV':
-            self.dataset = self.screen_object.dataframe_SNV['Score_NaN']
+            self.dataset = self.dataframe_snv['Score_NaN']
         elif population == 'nonSNV':
-            self.dataset = self.screen_object.dataframe_nonSNV['Score_NaN']
+            self.dataset = self.dataframe_nonsnv['Score_NaN']
 
         # plot histogram
         self.ax_object = plt.hist(self.dataset, density=True, bins=temp_kwargs['bins'], color='k')

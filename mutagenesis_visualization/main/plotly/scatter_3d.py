@@ -24,12 +24,12 @@ class Scatter3D(Plotly):
     """
     def plot(
         self,
-        mode='mean',
-        pdb_path=None,
-        df_coordinates=None,
-        position_correction=0,
-        chain='A',
-        squared=False,
+        pdb_path: str,
+        mode: str='mean',
+        df_coordinates: bool=None,
+        position_correction: int=0,
+        chain: str='A',
+        squared: bool=False,
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ) -> None:
@@ -41,15 +41,15 @@ class Scatter3D(Plotly):
 
         Parameters
         -----------
+        pdb : str, default None
+            User should specify the path PDB.
+
         mode : str, default 'mean'
             Specify what enrichment scores to use. If mode = 'mean',
             it will use the mean of each position to classify the residues.
             If mode = 'A', it will use the Alanine substitution profile.
             Can be used for each amino acid. Use the one-letter code and
             upper case.
-
-        pdb : str, default None
-            User should specify the path PDB chain.
 
         df_coordinates: pandas dataframe, default None
             If no pdb is included, the user must pass the 3-D coordinates
@@ -88,7 +88,7 @@ class Scatter3D(Plotly):
 
         # If coordinates is not an input, get it from the pdb
         if df_coordinates is None:
-            df_coordinates = parse_pdb_coordinates(self, pdb_path, position_correction, chain)
+            df_coordinates = parse_pdb_coordinates(pdb_path, self.start_position, self.end_position, position_correction, chain)
 
         # Plot figure
         x, y, z = ('x', 'y', 'z')

@@ -15,9 +15,6 @@ class MeanBar(Pyplot):
     """
     Class to generate a mean enrichment bar plot.
     """
-    def __init__(self, dataframe: DataFrame) -> None:
-        super().__init__()
-        self.dataframe: DataFrame = dataframe
 
     def plot(
         self,
@@ -71,37 +68,37 @@ class MeanBar(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-        def _update_kwargs(self, kwargs) -> Dict[str, Any]:
-            """
-            Update the kwargs.
-            """
-            temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-            temp_kwargs.update(kwargs)
-            temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
-            temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
-            temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
-            return temp_kwargs
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Update the kwargs.
+        """
+        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
+        temp_kwargs.update(kwargs)
+        temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
+        temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
+        temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
+        return temp_kwargs
 
-        def _tune_plot(self, temp_kwargs) -> None:
-            """
-            Change stylistic parameters of the plot.
-            """
-            # axes parameters
-            self.ax_object.set_ylim(temp_kwargs['yscale'])
-            self.ax_object.set_ylabel(
-                temp_kwargs['y_label'],
-                fontsize=10,
-                fontname="Arial",
-                color='k',
-                labelpad=10,
-                rotation=0,
-            )
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
+        """
+        Change stylistic parameters of the plot.
+        """
+        # axes parameters
+        self.ax_object.set_ylim(temp_kwargs['yscale'])
+        self.ax_object.set_ylabel(
+            temp_kwargs['y_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=10,
+            rotation=0,
+        )
 
-            self.ax_object.set_xlabel(
-                'Residue',
-                fontsize=10,
-                fontname="Arial",
-                color='k',
-                labelpad=4,
-            )
-            plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        self.ax_object.set_xlabel(
+            'Residue',
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=4,
+        )
+        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')

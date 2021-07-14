@@ -1,7 +1,7 @@
 """
 This module contains the correlation class.
 """
-from typing import List, Union, Dict, Any
+from typing import Union, Dict, Any
 import copy
 from pathlib import Path
 import numpy as np
@@ -10,12 +10,17 @@ import matplotlib.pyplot as plt
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pca_utils import calculate_correlation
 
+
 class IndividualCorrelation(Pyplot):
     """
     This class will conduct an individual correlation from the enrichment
     scores.
     """
-    def plot(self, output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generates a bar plot of the correlation of each amino acid mutational
         profile (row of the heatmap) with the rest of amino acids (rows)
@@ -36,14 +41,15 @@ class IndividualCorrelation(Pyplot):
         # Get data
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
-        self.df_output = calculate_correlation(self.dataframe, temp_kwargs['neworder_aminoacids']).mean()**2
+        self.df_output = calculate_correlation(self.dataframe,
+                                               temp_kwargs['neworder_aminoacids']).mean()**2
 
         # Make figure
-        self.fig, self.ax = plt.subplots(figsize=temp_kwargs['figsize'])
+        self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
         ticks = np.arange(0, len(self.df_output))  # label locations
         width = 0.5
         # Plot figure
-        self.ax.bar(
+        self.ax_object.bar(
             ticks,
             self.df_output,
             width,
@@ -52,11 +58,31 @@ class IndividualCorrelation(Pyplot):
         )
 
         # graph parameters
-        self.ax.set_xticks(ticks)
-        self.ax.set_xticklabels(temp_kwargs['neworder_aminoacids'], fontsize=9, fontname="Arial", color='k', minor=False, rotation=0,)
-        self.ax.set_ylabel(r'$R^2$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0,)
-        self.ax.set_ylim(temp_kwargs['yscale'])
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5,)
+        self.ax_object.set_xticks(ticks)
+        self.ax_object.set_xticklabels(
+            temp_kwargs['neworder_aminoacids'],
+            fontsize=9,
+            fontname="Arial",
+            color='k',
+            minor=False,
+            rotation=0,
+        )
+        self.ax_object.set_ylabel(
+            r'$R^2$',
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=12,
+            rotation=0,
+        )
+        self.ax_object.set_ylim(temp_kwargs['yscale'])
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=10,
+            pad=5,
+        )
 
         self._save_work(output_file, temp_kwargs)
 

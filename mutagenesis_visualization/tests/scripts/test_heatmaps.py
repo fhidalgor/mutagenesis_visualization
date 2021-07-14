@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # # Test of code_heatmaps
-# 
+#
 
 # ## Import modules
 
@@ -145,7 +145,7 @@ def test_hierarchical_sort():
 
 
 def test_helix():
-    '''testing function produces matplotlib object'''
+    """testing function produces matplotlib object"""
     assert (
         str(type(_helix(0, 5))) == "<class 'matplotlib.patches.Rectangle'>"
     ), "function _helix failed"
@@ -175,8 +175,7 @@ def test_sheet():
 
 
 def test_loop():
-    '''testing function produces matplotlib object'''
+    """testing function produces matplotlib object"""
     assert (
         str(type(_loop(1, 5)))
     ) == "<class 'matplotlib.patches.Rectangle'>", "function _loop failed"
-

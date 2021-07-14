@@ -8,12 +8,10 @@ from pandas import DataFrame
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import gridspec
-from pandas import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.utils.pandas_functions import process_mean_residue
-from mutagenesis_visualization.main.heatmaps.heatmap_utils import generate_cartoon
+from mutagenesis_visualization.main.utils.heatmap_utils import generate_cartoon
 
 
 class MeanDifferential(Pyplot):
@@ -22,7 +20,7 @@ class MeanDifferential(Pyplot):
     """
     def plot(
         self,
-        screen_object: Screen,
+        screen_object: Any,
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -32,7 +30,7 @@ class MeanDifferential(Pyplot):
 
         Parameters
         ----------
-        obj2 : another Screen object to compare with
+        screen_object : another Screen object to compare with
 
         show_cartoon : boolean, default False
             If true, the plot will display a cartoon with the secondary
@@ -50,7 +48,7 @@ class MeanDifferential(Pyplot):
         self._load_parameters()
 
         # make pandas
-        df_output: DataFrame = process_mean_residue(
+        self.df_output: DataFrame = process_mean_residue(
             self.dataframe,
             self.screen_object.dataframe,
         )
@@ -64,7 +62,7 @@ class MeanDifferential(Pyplot):
             self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
 
         # plot
-        self.ax_object.plot(df_output['Position'], df_output['d1 - d2'], color='k')
+        self.ax_object.plot(self.df_output['Position'], self.df_output['d1 - d2'], color='k')
 
         # Needs to be worked for selecting the longer one
         # cartoon
@@ -114,8 +112,19 @@ class MeanDifferential(Pyplot):
         # self.ax_objectes parameters
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
-            temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=-5, rotation=90
+            temp_kwargs['y_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=-5,
+            rotation=90
         )
-        self.ax_object.set_xticks(np.arange(self.start_position, len(df_output) + self.start_position, 20))
+        self.ax_object.set_xticks(
+            np.arange(self.start_position,
+                      len(self.df_output) + self.start_position, 20)
+        )
         self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
-        self.ax_object.set_xlim(self.start_position - 0.1, len(df_output) + self.start_position - 1 + 0.1)
+        self.ax_object.set_xlim(
+            self.start_position - 0.1,
+            len(self.df_output) + self.start_position - 1 + 0.1
+        )

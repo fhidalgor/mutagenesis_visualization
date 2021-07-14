@@ -1,22 +1,27 @@
 """
 This module contains the correlation class.
 """
-from typing import List, Union, Dict, Any
+from typing import Union, Dict, Any
 import copy
 from pathlib import Path
 import numpy as np
-import matplotlib.gridspec as gridspec
+from matplotlib import gridspec
 import matplotlib.pyplot as plt
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.heatmap_utils import labels
 from mutagenesis_visualization.main.utils.pca_utils import calculate_correlation
 
+
 class Correlation(Pyplot):
     """
     This class will conduct a correlation from the enrichment scores.
     """
-    def plot(self, output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generate a correlation of each amino acid.
 
@@ -40,8 +45,8 @@ class Correlation(Pyplot):
 
         # declare figure and subplots
         self.fig = plt.figure(figsize=(2.5 * len(self.dataset.columns) / 19 * 1.05, 2.5))
-        gs = gridspec.GridSpec(nrows=1, ncols=1)
-        self.ax_object = plt.subplot(gs[0])
+        self.gs_object = gridspec.GridSpec(nrows=1, ncols=1)
+        self.ax_object = plt.subplot(self.gs_object[0])
 
         # main heatmap
         heatmap = self.ax_object.pcolor(
@@ -109,7 +114,12 @@ class Correlation(Pyplot):
 
         # _____________________________________________________________________________
 
-        self.cb_object.self.ax.set_yticklabels(self.cb_object.self.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k',)
+        self.cb_object.ax.set_yticklabels(
+            self.cb_object.ax.get_yticklabels(),
+            fontsize=7,
+            fontname="Arial",
+            color='k',
+        )
         self.cb_object.update_ticks()
         plt.text(
             len(self.dataset.columns) + 1.2 * len(self.dataset.columns) / 19 * 1.05,

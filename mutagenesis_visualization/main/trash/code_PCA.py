@@ -56,13 +56,13 @@ def plot_correlation(self, output_file: Union[None, str, Path] = None, **kwargs)
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
 
     # load font parameters
@@ -114,8 +114,12 @@ def plot_correlation(self, output_file: Union[None, str, Path] = None, **kwargs)
     ax.yaxis.set_ticks_position('none')
 
     # so labels of x and y do not show up and my labels show up instead
-    ax.set_xticklabels(list(dataset.columns), fontsize=6.5, fontname="Arial", color='k', minor=False)
-    ax.set_yticklabels(temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False)
+    ax.set_xticklabels(
+        list(dataset.columns), fontsize=6.5, fontname="Arial", color='k', minor=False
+    )
+    ax.set_yticklabels(
+        temp_kwargs['neworder_aminoacids'], fontsize=6.5, fontname="Arial", color='k', minor=False
+    )
 
     # align the labels of the y axis
     for ylabel in ax.get_yticklabels():
@@ -145,7 +149,9 @@ def plot_correlation(self, output_file: Union[None, str, Path] = None, **kwargs)
     )
 
     # for putting title on graph
-    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
+    plt.title(
+        temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -180,13 +186,13 @@ def plot_individual_correlation(self, output_file: Union[None, str, Path] = None
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
     # Load parameters
     code_kwargs._parameters()
@@ -221,7 +227,9 @@ def plot_individual_correlation(self, output_file: Union[None, str, Path] = None
     ax.set_xticklabels(labels, fontsize=9, fontname="Arial", color='k', minor=False, rotation=0)
     ax.set_ylabel(r'$R^2$', fontsize=10, fontname="Arial", color='k', labelpad=12, rotation=0)
     ax.set_ylim(temp_kwargs['yscale'])
-    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
+    plt.title(
+        temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -271,7 +279,7 @@ def plot_group_correlation(
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-            
+
     Returns
     --------
     Use logomaker to plot the most frequent residues.
@@ -319,7 +327,9 @@ def plot_group_correlation(
     fig.ax.set_xlim([-0.5, len(logoplot) - 0.5])
 
     # for putting title on graph
-    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10)
+    plt.title(
+        temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10
+    )
 
     # save file, cannot save logo file for now
 
@@ -336,7 +346,7 @@ def plot_group_correlation(
 
 
 def _calculate_substitution_correlations(self, aminoacids, groups):
-    '''if a set of residues was chosen, how well would they represent the entire population'''
+    """if a set of residues was chosen, how well would they represent the entire population"""
 
     # Get correlation values
     corr_values = _calculate_correlation(self.dataframe, aminoacids)**2
@@ -415,15 +425,15 @@ def plot_pca(
     **kwargs : other keyword arguments
         return_plot_object : boolean, default False
             If true, will return plotting objects (ie. fig, ax).
-        
+
         random_state : int, default 554
-        
+
     Returns
     ----------
     fig, ax : matplotlib figure and subplots
         Needs to have return_plot_object==True. By default they do
         not get returned.
-        
+
     """
 
     # load parameters
@@ -449,7 +459,9 @@ def plot_pca(
         textlabels = list(dataset.columns)
 
     # plot using plot_clusters
-    dimensionstoplot, variance = _calculate_clusters(dataset, dimensions, temp_kwargs['random_state'])
+    dimensionstoplot, variance = _calculate_clusters(
+        dataset, dimensions, temp_kwargs['random_state']
+    )
 
     # x and y
     x = dimensionstoplot.iloc[:, 0]
@@ -478,7 +490,9 @@ def plot_pca(
         adjust_text(texts, autoalign='xy')
 
     # set title
-    plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5)
+    plt.title(
+        temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=5
+    )
 
     # save file
     code_utils._save_work(fig, output_file, temp_kwargs)
@@ -493,7 +507,7 @@ def plot_pca(
 
 
 def _auto_text(x, y, textlabels):
-    '''auto anotates text labels'''
+    """auto anotates text labels"""
     texts = [
         plt.annotate(
             textlabels[i],  # this is the text
@@ -509,7 +523,7 @@ def _auto_text(x, y, textlabels):
 
 
 def _calculate_clusters(dataset, dimensions, random_state):
-    '''input the dataframe that needs to be correlated, the dimensions, and will calculate PCA descomposition. '''
+    """input the dataframe that needs to be correlated, the dimensions, and will calculate PCA descomposition. """
 
     # call pca model
     pca = PCA(n_components=6, random_state=random_state)
@@ -518,7 +532,8 @@ def _calculate_clusters(dataset, dimensions, random_state):
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa = pd.DataFrame((model.components_).T, columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
+    df_aa = pd.DataFrame((model.components_).T,
+                         columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -527,11 +542,11 @@ def _calculate_clusters(dataset, dimensions, random_state):
 
 
 def _grouby_secondary(df, secondary):
-    '''
+    """
     Groups each secondary motif and makes the mean.
 
     Returns dataframe. Returns copy
-    '''
+    """
     df = df.copy()
     df.insert(4, 'Secondary', secondary)
     df = df.groupby(['Secondary', 'Aminoacid'], as_index=False).mean()

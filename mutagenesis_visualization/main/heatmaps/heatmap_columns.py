@@ -2,7 +2,7 @@
 This module contains the object to create a heatmap specifying the
 selected columns.
 """
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Tuple, Union, Optional
 from pathlib import Path
 import copy
 import numpy as np
@@ -20,6 +20,7 @@ class HeatmapColumns(Pyplot):
     This class plots a heatmap with the enrichment scores where you
     can show selected columns.
     """
+
     def __init__(
         self,
         dataframe: Optional[pd.DataFrame],
@@ -28,12 +29,11 @@ class HeatmapColumns(Pyplot):
         dataframe_stopcodons: pd.DataFrame,
     ) -> None:
         super().__init__(
-            dataset=None,
             dataframe=dataframe,
             sequence=sequence,
             start_position=start_position,
+            dataframe_stopcodons = dataframe_stopcodons
         )
-        self.dataframe_stopcodons: pd.DataFrame = dataframe_stopcodons
         self.sequence_updated: Optional[str] = None
         self.ax_object2 = None
         self.ax_object3 = None
@@ -41,7 +41,7 @@ class HeatmapColumns(Pyplot):
 
     def plot(
         self,
-        segment: list,
+        segment: Tuple[int],
         ylabel_color: str = 'k',
         nancolor: str = 'lime',
         output_file: Union[None, str, Path] = None,
@@ -54,7 +54,7 @@ class HeatmapColumns(Pyplot):
         ----------
         self : object from class *Screen*
 
-        segment : list
+        segment : Tuple[int]
             Segment is typed as [20,40] and includes both residues 20 and 40.
 
         ylabel_color : str, default 'k'
@@ -79,7 +79,8 @@ class HeatmapColumns(Pyplot):
         )
 
         # select subset
-        self.df_output = df_whole.iloc[:, segment[0] - self.start_position : segment[1] - self.start_position + 1]
+        self.df_output = df_whole.iloc[:, segment[0] - self.start_position : segment[1] -
+                                       self.start_position + 1]
 
         # the size can be changed
         figwidth = 2 * len(self.df_output.columns) / 22
@@ -133,7 +134,8 @@ class HeatmapColumns(Pyplot):
 
         # so labels of x and y do not show up and my labels show up instead
         ax_object.set_xticklabels(
-            list(self.sequence)[segment[0] - self.start_position : segment[1] - self.start_position + 1],
+            list(self.sequence
+                 )[segment[0] - self.start_position : segment[1] - self.start_position + 1],
             fontsize=6.5,
             fontname="Arial",
             color='k',

@@ -6,6 +6,7 @@ try:
 except ModuleNotFoundError:
     pass
 
+
 def pymol_fitness(df_input: DataFrame, gof, lof, mode, position_correction):
     """
     You input the dataframe. Removes stop codons.
@@ -35,6 +36,7 @@ def pymol_fitness(df_input: DataFrame, gof, lof, mode, position_correction):
             residues[i] = '0'
 
     return residues
+
 
 def _array_to_pymol(aminoacid_positions: List[str]):
     """

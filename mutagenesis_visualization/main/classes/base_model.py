@@ -21,6 +21,8 @@ class Pyplot:
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
+        dataframe_snv: Optional[DataFrame] = None,
+        dataframe_nonsnv: Optional[DataFrame] = None,
         sequence: Optional[str] = None,
         start_position: Optional[str] = None,
         secondary: Optional[list] = None,
@@ -32,6 +34,8 @@ class Pyplot:
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
         self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
+        self.dataframe_snv: Optional[DataFrame] = dataframe_snv
+        self.dataframe_nonsnv: Optional[DataFrame] = dataframe_nonsnv
         self.sequence: Optional[str] = sequence
         self.start_position: Optional[int] = start_position
         self.secondary: Optional[list] = secondary
@@ -45,9 +49,9 @@ class Pyplot:
         self.screen_object: Optional[Any] = None
 
     def _save_work(self, output_file: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
-        '''
+        """
         Save file function using pathlib.
-        '''
+        """
         if output_file:
             self.fig.savefig(
                 Path(output_file),

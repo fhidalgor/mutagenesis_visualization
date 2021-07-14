@@ -11,7 +11,7 @@ from mutagenesis_visualization.main.bar_graphs.mean_counts import MeanCounts
 
 
 class Counts:
-    '''
+    """
     *Counts* represents the output of reading a fastq file.
 
     Parameters
@@ -32,7 +32,7 @@ class Counts:
         List of aminoacids (in order). Stop codon needs to be '*'.
         If none, it will use the index of the dataframe
 
-    '''
+    """
     def __init__(
         self,
         dataframe: pd.DataFrame,

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.heatmaps.heatmap_utils import (
+from mutagenesis_visualization.main.utils.heatmap_utils import (
     labels,
 )
 from mutagenesis_visualization.main.utils.snv import add_snv_boolean
@@ -30,12 +30,11 @@ class HeatmapRows(Pyplot):
         dataframe_stopcodons: pd.DataFrame,
     ) -> None:
         super().__init__(
-            dataset=None,
             dataframe=dataframe,
             sequence=sequence,
             start_position=start_position,
+            dataframe_stopcodons= dataframe_stopcodons,
         )
-        self.dataframe_stopcodons: pd.DataFrame = dataframe_stopcodons
         self.sequence_updated: Optional[str] = None
         self.ax_object2 = None
         self.ax_object3 = None
@@ -72,7 +71,8 @@ class HeatmapRows(Pyplot):
 
         # Check if mean or not. Add group and pivot df_main.
         if selection == 'mean':
-            df_main: pd.DataFrame = add_snv_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']
+            df_main: pd.DataFrame = add_snv_boolean(self.dataframe.copy()
+                                                    ).groupby(by='Position').mean()['Score_NaN']
             y_labels = [""]
             dataset = np.array([df_main.to_numpy()])
         else:
@@ -165,7 +165,7 @@ class HeatmapRows(Pyplot):
             heatmap,
             fraction=1,
             pad=0,
-            ax_object=[cbar1],
+            ax=[cbar1],
             aspect=5,
             ticks=[
                 temp_kwargs['colorbar_scale'][0],
@@ -173,8 +173,8 @@ class HeatmapRows(Pyplot):
             ],
             orientation='vertical'
         )
-        cb_object.ax_object.set_yticklabels(
-            cb_object.ax_object.get_yticklabels(),
+        cb_object.ax.set_yticklabels(
+            cb_object.ax.get_yticklabels(),
             fontsize=8,
             fontname="Arial",
             color='k',

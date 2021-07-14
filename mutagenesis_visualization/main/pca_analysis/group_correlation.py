@@ -4,21 +4,22 @@ This module contains the group correlation class.
 from typing import List, Union, Dict, Any
 from pathlib import Path
 import matplotlib.pyplot as plt
-import logomaker
+#import logomaker
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pca_utils import calculate_substitution_correlations
+
 
 class GroupCorrelation(Pyplot):
     """
     This class will conduct a correlation from the enrichment scores.
     """
-    def plot_group_correlation(
+    def plot(
         self,
-        r2,
-        groups=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
+        r2: float = 0.5,
+        groups: List[str]=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
         output_file: Union[None, str, Path] = None,
-        **kwargs
+        **kwargs: Dict[str, Any],
     ):
         """
         Determines which amino acids better represent the heatmap. Requires
@@ -77,6 +78,12 @@ class GroupCorrelation(Pyplot):
         self.fig.ax.set_xlim([-0.5, len(logoplot) - 0.5])
 
         # for putting title on graph
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=10, pad=10,)
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=10,
+            pad=10,
+        )
 
         self._save_work(output_file, temp_kwargs)

@@ -1,14 +1,15 @@
-
 from os import path
 from pathlib import Path
 from typing import Union, List, Dict, Any
 import copy
 
-from pandas import pd
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.kwargs import default_kwargs
-from mutagenesis_visualization.main.utils.pymol_utils import (light_parameters, pymol_fitness,)
+from mutagenesis_visualization.main.utils.pymol_utils import (
+    light_parameters,
+    pymol_fitness,
+)
 
 try:
     from ipymol import viewer as pymol
@@ -20,7 +21,13 @@ class Pymol:
     """
     This class acts as a wrapper with the ipymol github repo.
     """
-    def __init__(self, dataframe: DataFrame, dataframe_snv: DataFrame, dataframe_nonsnv: DataFrame, dataframe_stopcodons: DataFrame,) -> None:
+    def __init__(
+        self,
+        dataframe: DataFrame,
+        dataframe_snv: DataFrame,
+        dataframe_nonsnv: DataFrame,
+        dataframe_stopcodons: DataFrame,
+    ) -> None:
         dataframe: DataFrame = dataframe
         dataframe_snv: DataFrame = dataframe_snv
         dataframe_nonsnv: DataFrame = dataframe_nonsnv
@@ -29,9 +36,9 @@ class Pymol:
     def __call__(
         self,
         pdb: str,
-        mode: str ='mean',
-        residues:List[str]=None,
-        position_correction: int=0,
+        mode: str = 'mean',
+        residues: List[str] = None,
+        position_correction: int = 0,
         **kwargs
     ) -> None:
         """
@@ -95,7 +102,11 @@ class Pymol:
         # Calculate residues only if they are not given by the user
         if residues is None:
             residues = pymol_fitness(
-                self.df_input.copy(), temp_kwargs['gof'], temp_kwargs['lof'], mode, position_correction,
+                self.df_input.copy(),
+                temp_kwargs['gof'],
+                temp_kwargs['lof'],
+                mode,
+                position_correction,
             )
 
         # Start Pymol
@@ -105,7 +116,8 @@ class Pymol:
         # Fetch structure. If pdb contains a "/", it will assume it is stored locally
         if '/' in pdb:
             pymol.load(pdb)
-            pdb = (path.basename(pdb)).partition('.')[0]  # Extract filename from pdb and then extract pdb code
+            pdb = (path.basename(pdb)
+                   ).partition('.')[0]  # Extract filename from pdb and then extract pdb code
         else:
             pymol.fetch(pdb)
 

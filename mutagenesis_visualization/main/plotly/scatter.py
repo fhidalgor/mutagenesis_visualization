@@ -9,7 +9,6 @@ import plotly.io as pio
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
-from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.utils.pandas_functions import process_mean_residue
 
 
@@ -17,13 +16,10 @@ class ScatterP(Plotly):
     """
     This class uses plotly to generate a scatter plot.
     """
-    def __init__(self, dataframe: DataFrame) -> None:
-        super().__init__(dataframe)
-        self.screen_object: Optional[Screen] = None
 
     def plot(
         self,
-        screen_object: Screen,
+        screen_object: Any,
         mode: str = 'pointmutant',
         show_results: bool = False,
         output_html: Union[None, str, Path] = None,
@@ -50,7 +46,7 @@ class ScatterP(Plotly):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self.screen_object: Screen = screen_object
+        self.screen_object: Any = screen_object
 
         # Chose mode:
         if mode == 'pointmutant':

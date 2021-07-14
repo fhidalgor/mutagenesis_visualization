@@ -90,15 +90,15 @@ def count_reads(
     # codon_list
     if codon_list == 'NNS':
         codon_list = [
-            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG", "TTG", "ATG",
-            "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG",
-            "TAC", "TAG"
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC",
+            "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG",
+            "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
         ]
     elif codon_list == 'NNK':
         codon_list = [
-            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT', 'AAG', 'CTG', 'CTT', 'TTG', 'ATG',
-            'AAT', 'CCG', 'CCT', 'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG', 'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG',
-            'TAT', 'TAG'
+            'GCG', 'GCT', 'TGT', 'GAT', 'GAG', 'TTT', 'GGG', 'GGT', 'CAT', 'ATT', 'AAG', 'CTG',
+            'CTT', 'TTG', 'ATG', 'AAT', 'CCG', 'CCT', 'CAG', 'AGG', 'CGG', 'CGT', 'AGT', 'TCG',
+            'TCT', 'ACG', 'ACT', 'GTG', 'GTT', 'TGG', 'TAT', 'TAG'
         ]
 
     # Enumerate variants
@@ -110,9 +110,11 @@ def count_reads(
     # Convert to df
     wtProtein = Seq(dna_sequence).translate()
     df = pd.DataFrame()
-    df['Position'] = np.ravel([[pos] * len(codon_list)
-                               for pos in np.arange(start_position,
-                                                    len(wtProtein) + start_position).astype(int)])
+    df['Position'] = np.ravel(
+        [[pos] * len(codon_list)
+         for pos in np.arange(start_position,
+                              len(wtProtein) + start_position).astype(int)]
+    )
     df['Codon'] = codon_list * len(wtProtein)
     df['WTCodon'] = np.ravel([[codon] * len(codon_list) for codon in wtSeqList])
     df['Aminoacid'] = np.ravel([[aa] * len(codon_list) for aa in wtProtein])
@@ -132,10 +134,10 @@ def count_reads(
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon
-    df_wt = df.loc[(df['SynWT'] == True) |
-                   (df['SynWT'] == 'wt codon')][[  # perhaps I need to remove this again
-                       'Counts'  # removed
-                   ]]
+    df_wt = df.loc[(df['SynWT'] == True) | (df['SynWT'] == 'wt codon')][
+        [  # perhaps I need to remove this again
+            'Counts'  # removed
+        ]]
 
     # Export files
     if output_file:

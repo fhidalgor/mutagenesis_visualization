@@ -24,7 +24,8 @@ def select_nonsnv(df_input: pd.DataFrame) -> pd.DataFrame:
     df_snv: pd.DataFrame = select_snv(df_input)
 
     # Merge and eliminate duplicates. Keep Non-SNV
-    df_nonsnv: pd.DataFrame = pd.concat([df_snv, df_input], sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
+    df_nonsnv: pd.DataFrame = pd.concat([df_snv, df_input],
+                                        sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
     df_nonsnv.drop_duplicates(subset="Variant", keep=False, inplace=True)
 
     return df_nonsnv
@@ -109,7 +110,9 @@ def add_snv_boolean(df_input: pd.DataFrame) -> pd.DataFrame:
     codon_table: dict = _dict_codon_to_aa()
 
     # Add column with True/False input
-    df_input["SNV?"] = df_input.apply(lambda x: _aminoacids_snv(x["Sequence"], x["Aminoacid"], codon_table), axis=1)
+    df_input["SNV?"] = df_input.apply(
+        lambda x: _aminoacids_snv(x["Sequence"], x["Aminoacid"], codon_table), axis=1
+    )
 
     return df_input
 
@@ -244,7 +247,9 @@ def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> pd.DataFrame:
     df_input = df_input.copy()
 
     # Calculate each possible codon for every amino acid
-    df_input["Codons_" + namecolumn] = df_input.apply(lambda x: _aa_to_codons(x[namecolumn]), axis=1)
+    df_input["Codons_" + namecolumn] = df_input.apply(
+        lambda x: _aa_to_codons(x[namecolumn]), axis=1
+    )
 
     return df_input
 

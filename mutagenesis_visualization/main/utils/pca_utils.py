@@ -36,7 +36,8 @@ def calculate_clusters(dataset, dimensions, random_state):
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa = pd.DataFrame((model.components_).T, columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
+    df_aa = pd.DataFrame((model.components_).T,
+                         columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -82,6 +83,7 @@ def calculate_correlation_by_residue(df):
     dataset = dataset.T.corr()
 
     return dataset
+
 
 def calculate_substitution_correlations(self, aminoacids, groups):
     """

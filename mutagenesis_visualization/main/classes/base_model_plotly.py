@@ -14,19 +14,33 @@ class Plotly:
     Plot abstract class used to visualize mutagenesis data using
     plotly.
     """
-    def __init__(self, dataframe: DataFrame) -> None:
+    def __init__(self,dataset: Optional[Any] = None,
+                dataframe: Optional[DataFrame] = None,
+                dataframe_stopcodons: Optional[DataFrame] = None,
+                dataframe_snv: Optional[DataFrame] = None,
+                dataframe_nonsnv: Optional[DataFrame] = None,
+                sequence: Optional[str] = None,
+                start_position: Optional[str] = None,
+                end_position: Optional[str] = None,) -> None:
         """
         Docstring placeholder
         """
+        self.dataset: Any = dataset
+        self.dataframe: Optional[DataFrame] = dataframe
+        self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
+        self.dataframe_snv: Optional[DataFrame] = dataframe_snv
+        self.dataframe_nonsnv: Optional[DataFrame] = dataframe_nonsnv
+        self.sequence: Optional[str] = sequence
+        self.start_position: Optional[int] = start_position
+        self.end_position: Optional[int] = end_position
         self.kwargs: Dict[str, Any] = default_kwargs()
         self.fig: Any = None
-        self.dataframe: DataFrame = dataframe
         self.df_output: Optional[DataFrame] = None
 
     def _save_html(self, output_html: Union[None, str, Path]) -> None:
-        '''
+        """
         Save figure to html.
-        '''
+        """
         if output_html:
             self.fig.write_html(str(Path(output_html)))
 

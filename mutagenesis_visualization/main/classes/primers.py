@@ -43,8 +43,8 @@ def _primer_design(
     step_size: int = 6
     forward_primer = "AAA"
     while mt.Tm_NN(forward_primer) < melting_temp:
-        forward_primer = dna[(codon_position - step_size): codon_position] + codon + dna[(codon_position + 3):
-                                                                                         (codon_position + step_size)]
+        forward_primer = dna[(codon_position - step_size): codon_position] + codon + dna[
+            (codon_position + 3):(codon_position + step_size)]
         step_size += 1
     return forward_primer, _reverse_complement(forward_primer)
 

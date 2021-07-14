@@ -34,8 +34,10 @@ except ModuleNotFoundError:
 # In[2]:
 
 
-def plot_rank_plotly(self, mode='pointmutant', outdf=False, output_html: Union[None, str, Path] = None, **kwargs):
-    '''
+def plot_rank_plotly(
+    self, mode='pointmutant', outdf=False, output_html: Union[None, str, Path] = None, **kwargs
+):
+    """
     Generate a plotly rank plot so every mutation/residue is sorted based
     on enrichment score.
 
@@ -60,7 +62,7 @@ def plot_rank_plotly(self, mode='pointmutant', outdf=False, output_html: Union[N
     df : Pandas dataframe
     fig : plotly object
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -84,12 +86,25 @@ def plot_rank_plotly(self, mode='pointmutant', outdf=False, output_html: Union[N
     pio.templates.default = "plotly_white"
 
     # Axes https://plotly.com/python/axes/
-    fig.update_traces(mode="markers", hovertemplate='Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>')
+    fig.update_traces(
+        mode="markers",
+        hovertemplate='Position: %{x}<br>Score: %{y}<br>Variant: %{text}<extra></extra>'
+    )
     fig.update_xaxes(
-        title_text=temp_kwargs['x_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -117,7 +132,7 @@ def plot_rank_plotly(self, mode='pointmutant', outdf=False, output_html: Union[N
 
 # save file html
 def _save_html(fig, output_html):
-    '''save to html'''
+    """save to html"""
     if output_html:
         fig.write_html(str(Path(output_html)))
 
@@ -128,9 +143,14 @@ def _save_html(fig, output_html):
 
 
 def plot_scatter_plotly(
-    self, obj2, mode='pointmutant', show_results=False, output_html: Union[None, str, Path] = None, **kwargs
+    self,
+    obj2,
+    mode='pointmutant',
+    show_results=False,
+    output_html: Union[None, str, Path] = None,
+    **kwargs
 ):
-    '''
+    """
     Generate a scatter plot between object and a second object of the
     same class.
 
@@ -156,7 +176,7 @@ def plot_scatter_plotly(
     ----------
     fig : plotly object
 
-    '''
+    """
 
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
@@ -175,18 +195,31 @@ def plot_scatter_plotly(
     pio.templates.default = "plotly_white"
 
     # create figure
-    fig = px.scatter(x=df['dataset_1'], y=df['dataset_2'], trendline="ols", trendline_color_override="red")
+    fig = px.scatter(
+        x=df['dataset_1'], y=df['dataset_2'], trendline="ols", trendline_color_override="red"
+    )
 
     # Titles
     # hide text labels
     fig.update_traces(
-        hovertext=df['Variant'], hovertemplate='Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>'
+        hovertext=df['Variant'],
+        hovertemplate='Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>'
     )
     fig.update_xaxes(
-        title_text=temp_kwargs['x_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
+        title_text=temp_kwargs['x_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -217,7 +250,7 @@ def plot_scatter_plotly(
 
 
 def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwargs):
-    '''
+    """
     Generate a plotly histogram plot.
 
     Parameters
@@ -234,7 +267,7 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
     ----------
     fig : plotly object
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -251,7 +284,9 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
     )
 
     # get labels for texthover and reindex
-    text_hover = self.dataframe_stopcodons.pivot(values='Variant', index='Aminoacid', columns='Position')
+    text_hover = self.dataframe_stopcodons.pivot(
+        values='Variant', index='Aminoacid', columns='Position'
+    )
     text_hover = text_hover.reindex(list(df.index))
 
     # Create figure
@@ -273,7 +308,9 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
         ),
     ))
 
-    fig.update_traces(hovertemplate='Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>')
+    fig.update_traces(
+        hovertemplate='Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>'
+    )
 
     # Style
     pio.templates.default = "plotly_white"
@@ -330,11 +367,10 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
 
 # ### Deprecated
 
+
 # In[5]:
-"""def _plot_heatmap_plotly_imshow(
-    self, output_html: Union[None, str, Path] = None, **kwargs
-):
-    '''
+def _plot_heatmap_plotly_imshow(self, output_html: Union[None, str, Path] = None, **kwargs):
+    """
     DEPRECATED. THIS VERSION USES IMSHOW INSTEAD OF GO.HEATMAP.
     Generate a plotly histogram plot.
 
@@ -352,7 +388,7 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
     ----------
     fig : plotly object
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -434,7 +470,7 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
         return fig
 
     if temp_kwargs['show']:
-        fig.show(config = {'displayModeBar': False})
+        fig.show(config={'displayModeBar': False})
 
 
 # Still want to add extra axis with original amino acids"""
@@ -445,8 +481,10 @@ def plot_heatmap_plotly(self, output_html: Union[None, str, Path] = None, **kwar
 
 
 #https://plotly.com/python/histograms/
-def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str, Path] = None, **kwargs):
-    '''
+def plot_histogram_plotly(
+    self, mode='pointmutant', output_html: Union[None, str, Path] = None, **kwargs
+):
+    """
     Generate a plotly histogram plot.
 
     Parameters
@@ -466,7 +504,7 @@ def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str
     ----------
     fig : plotly object
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -507,7 +545,11 @@ def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str
         # Overlay both histograms
         fig.update_layout(
             barmode='overlay',
-            legend=dict(orientation="h", y=(1 + (1.5 / temp_kwargs['figsize'][1]**2)), bgcolor='rgba(0,0,0,0)'),
+            legend=dict(
+                orientation="h",
+                y=(1 + (1.5 / temp_kwargs['figsize'][1]**2)),
+                bgcolor='rgba(0,0,0,0)'
+            ),
         )
         # Reduce opacity to see both histograms
         fig.update_traces(opacity=0.75)
@@ -528,7 +570,12 @@ def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str
         automargin=True,
     )
     fig.update_yaxes(
-        title_text=temp_kwargs['y_label'], showline=True, linewidth=2, linecolor='black', ticks="outside", mirror=True
+        title_text=temp_kwargs['y_label'],
+        showline=True,
+        linewidth=2,
+        linecolor='black',
+        ticks="outside",
+        mirror=True
     )
 
     # Layout and title parameters https://plotly.com/python/figure-labels/
@@ -553,20 +600,20 @@ def plot_histogram_plotly(self, mode='pointmutant', output_html: Union[None, str
 # ## Mean
 
 # In[20]:
-'''    import os
+"""    import os
     directory = os.getcwd()
     new_directory = directory.replace('tests', 'main')
     os.chdir(new_directory)
 
     from code_create_objects import (hras_RBD)
     os.chdir(directory)
-    plot_mean_plotly(hras_RBD())'''
+    plot_mean_plotly(hras_RBD())"""
 
 # In[19]:
 
 
 def plot_mean_plotly(self, mode='mean', output_html: Union[None, str, Path] = None, **kwargs):
-    '''
+    """
     Generate a plotly mean plot.
 
     Parameters
@@ -588,7 +635,7 @@ def plot_mean_plotly(self, mode='mean', output_html: Union[None, str, Path] = No
     ----------
     fig : plotly object
 
-    '''
+    """
     # update kwargs
     temp_kwargs = copy.deepcopy(code_kwargs.kwargs())
     temp_kwargs.update(kwargs)
@@ -603,18 +650,24 @@ def plot_mean_plotly(self, mode='mean', output_html: Union[None, str, Path] = No
     df = _select_grouping(self, mode)
 
     # Calculate colors
-    df['Color'] = df.apply(code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof']))
+    df['Color'] = df.apply(
+        code_utils._color_data, axis=1, args=(temp_kwargs['color_gof'], temp_kwargs['color_lof'])
+    )
 
     # Create figure
     #fig = px.bar(data_frame=df, x='Position', y='Score', color='Color')
     #px.bar was switching colors when the first value of Score was negative
 
-    fig = go.Figure(data=[go.Bar(
-        x=df['Position'],
-        y=df['Score'],
-        marker_color=df['Color'],
-        marker_line_width=0,
-    )])
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=df['Position'],
+                y=df['Score'],
+                marker_color=df['Color'],
+                marker_line_width=0,
+            )
+        ]
+    )
 
     # Style
     pio.templates.default = "plotly_white"
@@ -661,11 +714,11 @@ def plot_mean_plotly(self, mode='mean', output_html: Union[None, str, Path] = No
 
 
 def _select_grouping(self, mode):
-    '''
+    """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
 
-    '''
+    """
     # convert to upper case
     mode = mode.upper()
 
@@ -809,8 +862,8 @@ def _update_layout(fig, temp_kwargs):
 
 
 def _update_axes(fig, temp_kwargs):
-    '''Separeated this portion of the code because it is clumsy. It changes the
-    axes looks.'''
+    """Separeated this portion of the code because it is clumsy. It changes the
+    axes looks."""
     # Layout and title parameters https://plotly.com/python/figure-labels/
     fig.update_layout(
         scene=dict(
@@ -1026,17 +1079,17 @@ def _color_3D_scatter(df, mode, lof, gof):
 
 
 def _centroid(df):
-    '''
+    """
     Find center of x,y,z using centroid method.
     The input is a dataframe with columns x, y, z.
     Returns the center of each of the three dimensions
-    '''
+    """
     return df['x'].mean(), df['y'].mean(), df['z'].mean()
 
 
 def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False):
-    '''parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
-    If PDB is missing atoms, it can handle it.'''
+    """parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
+    If PDB is missing atoms, it can handle it."""
 
     # Get structure from PDB
     structure = PDBParser().get_structure('pdb', pdb_path)
@@ -1047,7 +1100,8 @@ def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False
     positions_worked = []  # positions present in pdb
 
     # Iterate over each CA atom and geet coordinates
-    for i in np.arange(self.start_position + position_correction, self.end_position + position_correction):
+    for i in np.arange(self.start_position + position_correction,
+                       self.end_position + position_correction):
         # first check if atom exists
         try:
             structure[0][chain][int(i)].has_id("CA")
@@ -1072,7 +1126,8 @@ def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False
     df_coordinates['x_cent'] = (df_coordinates['x'] - x).abs()**2
     df_coordinates['y_cent'] = (df_coordinates['y'] - y).abs()**2
     df_coordinates['z_cent'] = (df_coordinates['z'] - z).abs()**2
-    df_coordinates['Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
+    df_coordinates[
+        'Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
 
     # Add sasa values
     if sasa:
@@ -1092,7 +1147,7 @@ def _parse_pdbcoordinates(self, pdb_path, position_correction, chain, sasa=False
 
 
 def _matplotlib_to_plotly(cmap, pl_entries=255):
-    '''convert a matplotlib colorscale into plotly rgb format'''
+    """convert a matplotlib colorscale into plotly rgb format"""
     h = 1.0 / (pl_entries - 1)
     pl_colorscale = []
 

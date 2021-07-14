@@ -78,7 +78,7 @@ def _merge_shannon_enrichment(self, shannon_entropy, start_position):
 
 
 def _flatten_msa(msa):
-    '''Flatten an msa so each sequence is in one string'''
+    """Flatten an msa so each sequence is in one string"""
     msa_flattened = []
     for sequence in msa:
         msa_flattened.append(''.join(sequence))
@@ -86,10 +86,10 @@ def _flatten_msa(msa):
 
 
 def _msa_to_df(msa, correctionfactor=1):
-    '''
+    """
     Convert a msa from a fasta file into a df ready to plot with
     logomaker. Returns frequency
-    '''
+    """
     # Flatten MSA
     msa_flattened = _flatten_msa(msa)
 
@@ -109,16 +109,18 @@ def _msa_to_df(msa, correctionfactor=1):
 
 
 def _merge_msa_enrichment(self, df_msa, start_position, threshold):
-    '''
+    """
     Merges msa conservation of each individual amino acid with the
     enrichment scores.
-    '''
+    """
 
     # make a dataframe
     df = pd.DataFrame()
 
     # Create column with position and aminoacid label
-    df['Position'] = np.ravel([[i] * len(df_msa.T) for i in range(start_position, len(df_msa) + start_position)])
+    df['Position'] = np.ravel([[i] * len(df_msa.T)
+                               for i in range(start_position,
+                                              len(df_msa) + start_position)])
     df['Aminoacid'] = list(df_msa.columns) * len(df_msa)
 
     # Add conservation from MSA

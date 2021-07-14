@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from Bio.PDB import PDBParser
 import freesasa
+from pandas.core.frame import DataFrame
 
 
 def select_grouping(dataframe: pd.DataFrame, mode: str) -> pd.DataFrame:
@@ -68,22 +69,23 @@ def color_3d_scatter(df, mode, lof, gof):
     return df_grouped
 
 
-def centroid(df):
+def centroid(df_input: DataFrame):
     """
     Find center of x,y,z using centroid method.
     The input is a dataframe with columns x, y, z.
     Returns the center of each of the three dimensions
     """
-    return df['x'].mean(), df['y'].mean(), df['z'].mean()
+    return df_input['x'].mean(), df_input['y'].mean(), df_input['z'].mean()
 
 
-def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False):
+def parse_pdb_coordinates(pdb_path: str, start_position: int, end_position: int, position_correction: int, chain: str, sasa=False):
     """
     Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
     If PDB is missing atoms, it can handle it.
     """
 
     # Get structure from PDB
+    print(pdb_path)
     structure = PDBParser().get_structure('pdb', pdb_path)
 
     coordinates = []
@@ -92,7 +94,8 @@ def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False
     positions_worked = []  # positions present in pdb
 
     # Iterate over each CA atom and geet coordinates
-    for i in np.arange(self.start_position + position_correction, self.end_position + position_correction):
+    for i in np.arange(start_position + position_correction,
+                       end_position + position_correction):
         # first check if atom exists
         try:
             structure[0][chain][int(i)].has_id("CA")
@@ -117,7 +120,8 @@ def parse_pdb_coordinates(self, pdb_path, position_correction, chain, sasa=False
     df_coordinates['x_cent'] = (df_coordinates['x'] - x).abs()**2
     df_coordinates['y_cent'] = (df_coordinates['y'] - y).abs()**2
     df_coordinates['z_cent'] = (df_coordinates['z'] - z).abs()**2
-    df_coordinates['Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
+    df_coordinates[
+        'Distance'] = df_coordinates['x_cent'] + df_coordinates['y_cent'] + df_coordinates['z_cent']
 
     # Add sasa values
     if sasa:

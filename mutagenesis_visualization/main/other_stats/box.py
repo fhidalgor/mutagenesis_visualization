@@ -10,11 +10,18 @@ import seaborn as sns
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
+
 class Box(Pyplot):
     """
     Class to generate a box plot.
     """
-    def plot(self, binned_x: array, y: array, output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        binned_x: array,
+        y: array,
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generates a boxplot. Data needs to be binned prior before using
         this function.
@@ -51,9 +58,26 @@ class Box(Pyplot):
         plt.setp(self.ax_object.lines, color='k')
 
         # graph parameters
-        plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k', pad=8,)
-        plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0,)
-        plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k',)
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=10,
+            fontname='Arial',
+            color='k',
+            pad=8,
+        )
+        plt.ylabel(
+            temp_kwargs['y_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=0,
+        )
+        plt.xlabel(
+            temp_kwargs['x_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+        )
 
         # axes limits
         plt.xlim(temp_kwargs['xscale'])

@@ -25,9 +25,9 @@ class Scatter3DPDB(Plotly):
     """
     def plot(
         self,
+        pdb_path: str = None,
         plot: List[str] = ['Distance', 'SASA', 'log B-factor'],
         mode: str = 'mean',
-        pdb_path: str = None,
         custom: Any = None,
         position_correction: int = 0,
         chain: str = 'A',
@@ -41,8 +41,8 @@ class Scatter3DPDB(Plotly):
 
         Parameters
         -----------
-        self : object from class *Screen*
-            **kwargs : other keyword arguments.
+        pdb_path : str, default None
+            User should specify the path PDB.
 
         plot : list, default ['Distance', 'SASA', 'log B-factor']
             List of 3 elements to plot. Other options are 'Score' and Custom.
@@ -55,9 +55,6 @@ class Scatter3DPDB(Plotly):
             If mode = 'A', it will use the Alanine substitution profile.
             Can be used for each amino acid. Use the one-letter code and
             upper case.
-
-        pdb_path : str, default None
-            User should specify the path PDB.
 
         custom : list or dataframe or np.array, default None
             If you want to add a custom dataset to plot, use custom. On the
@@ -103,8 +100,9 @@ class Scatter3DPDB(Plotly):
 
         # If coordinates is not an input, get it from the pdb
         self.df_output = parse_pdb_coordinates(
-            self,
             pdb_path,
+            self.start_position,
+            self.end_position,
             position_correction,
             chain,
             sasa=True,
@@ -143,7 +141,9 @@ class Scatter3DPDB(Plotly):
         self.fig = update_axes(self.fig, temp_kwargs)
 
         # for the clickable part
-        self.fig.update_traces(hovertext=self.df_output['Position'], hovertemplate='Position: %{hovertext}')
+        self.fig.update_traces(
+            hovertext=self.df_output['Position'], hovertemplate='Position: %{hovertext}'
+        )
         # title
         self.fig = update_layout(self.fig, temp_kwargs)
 

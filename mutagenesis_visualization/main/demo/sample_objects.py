@@ -33,11 +33,13 @@ def hras_RBD():
     hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
 
     # Define secondary structure
-    secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15), ['L2'] * (36 - 25),
-                 ['β2'] * (46 - 36), ['L3'] * (48 - 46), ['β3'] * (58 - 48), ['L4'] * (64 - 58), ['α2'] * (74 - 64),
-                 ['L5'] * (76 - 74), ['β4'] * (83 - 76), ['L6'] * (86 - 83), ['α3'] * (103 - 86), ['L7'] * (110 - 103),
-                 ['β5'] * (116 - 110), ['L8'] * (126 - 116), ['α4'] * (137 - 126), ['L9'] * (140 - 137),
-                 ['β6'] * (143 - 140), ['L10'] * (151 - 143), ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
+    secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9),
+                 ['α1'] * (25 - 15), ['L2'] * (36 - 25), ['β2'] * (46 - 36), ['L3'] * (48 - 46),
+                 ['β3'] * (58 - 48), ['L4'] * (64 - 58), ['α2'] * (74 - 64), ['L5'] * (76 - 74),
+                 ['β4'] * (83 - 76), ['L6'] * (86 - 83), ['α3'] * (103 - 86), ['L7'] * (110 - 103),
+                 ['β5'] * (116 - 110), ['L8'] * (126 - 116), ['α4'] * (137 - 126),
+                 ['L9'] * (140 - 137), ['β6'] * (143 - 140), ['L10'] * (151 - 143),
+                 ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
 
     # Create object
     hras_RBD = Screen(dataset=hras_enrichment_RBD, sequence=hras_sequence, secondary=secondary)
@@ -73,13 +75,15 @@ def bla_obj():
     sequence_bla_x = 'MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYIELDLNSGKILESFRP' + 'EERFPMMSTFKVLLCGAVLSRVDAGQEQLGRRIHYSQNDLVEYSPVTEKHLTDGMTVREL' + 'CSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRWEPELNEAIPNDERDTTM' + 'PAAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSALPAGWFIADKSGAGERGS' + 'RGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGASLIKHW'
 
     # Define secondary structure
-    secondary_bla = [['L0'] * 23, ['α1'] * (38 - 23), ['L1'] * 2, ['β1'] * (48 - 40), ['L2'] * 5, ['β2'] * (57 - 53),
-                     ['L3'] * (68 - 57), ['α2'] * (84 - 68), ['L4'] * (95 - 84), ['α3'] * (100 - 95),
-                     ['L5'] * (103 - 100), ['α4'] * (110 - 103), ['L6'] * (116 - 110), ['α5'] * (140 - 116),
-                     ['L7'] * (1), ['α6'] * (153 - 141), ['L8'] * (164 - 153), ['α7'] * (169 - 164),
-                     ['L9'] * (179 - 169), ['α8'] * (194 - 179), ['L10'] * 3, ['α9'] * (210 - 197),
-                     ['L11'] * (227 - 210), ['β3'] * (235 - 227), ['L12'] * (240 - 235), ['β4'] * (249 - 240),
-                     ['L13'] * (254 - 249), ['β5'] * (262 - 254), ['L14'] * (266 - 262), ['α10'] * (286 - 266)]
+    secondary_bla = [['L0'] * 23, ['α1'] * (38 - 23), ['L1'] * 2, ['β1'] * (48 - 40), ['L2'] * 5,
+                     ['β2'] * (57 - 53), ['L3'] * (68 - 57), ['α2'] * (84 - 68), ['L4'] * (95 - 84),
+                     ['α3'] * (100 - 95), ['L5'] * (103 - 100), ['α4'] * (110 - 103),
+                     ['L6'] * (116 - 110), ['α5'] * (140 - 116), ['L7'] * (1), ['α6'] * (153 - 141),
+                     ['L8'] * (164 - 153), ['α7'] * (169 - 164), ['L9'] * (179 - 169),
+                     ['α8'] * (194 - 179), ['L10'] * 3, ['α9'] * (210 - 197), ['L11'] * (227 - 210),
+                     ['β3'] * (235 - 227), ['L12'] * (240 - 235), ['β4'] * (249 - 240),
+                     ['L13'] * (254 - 249), ['β5'] * (262 - 254), ['L14'] * (266 - 262),
+                     ['α10'] * (286 - 266)]
 
     # Create objects
     bla_obj = Screen(df_bla, sequence_bla_x, aminoacids, start_position, 0, secondary_bla)
@@ -112,8 +116,9 @@ def sumo_obj():
     # Full sequence
     sequence_sumo1 = 'MSDQEAKPSTEDLGDKKEGEYIKLKVIGQDSSEIHFKVKMTTHLKKLKESYCQRQGVPMN' + 'SLRFLFEGQRIADNHTPKELGMEEEDVIEVYQEQTGGHSTV'
     # Define secondary structure
-    secondary_sumo1 = [['L0'] * (20), ['β1'] * (28 - 20), ['L1'] * 3, ['β2'] * (39 - 31), ['L2'] * 4,
-                       ['α1'] * (55 - 43), ['L3'] * (6), ['β3'] * (65 - 61), ['L4'] * (75 - 65), ['α2'] * (80 - 75),
+    secondary_sumo1 = [['L0'] * (20), ['β1'] * (28 - 20),
+                       ['L1'] * 3, ['β2'] * (39 - 31), ['L2'] * 4, ['α1'] * (55 - 43), ['L3'] * (6),
+                       ['β3'] * (65 - 61), ['L4'] * (75 - 65), ['α2'] * (80 - 75),
                        ['L5'] * (85 - 80), ['β4'] * (92 - 85), ['L6'] * (101 - 92)]
 
     # Create objects
@@ -184,9 +189,10 @@ def ube2i_obj():
     sequence_ube2i_x = 'MSGIALSRLAQERKAWRKDHPFGFVAVPTKNPDGTMNLMNWECAIPGKKGTP' + 'WEGGLFKLRMLFKDDYPSSPPKCKFEPPLFHPNVYPSGTVCLSILEEDKDWRPAITIKQ' + 'ILLGIQELLNEPNIQDPAQAEAYTIYCQNRVEYEKRVRAQAKKFAPS'
 
     # Define secondary structure
-    secondary_ube2i = [['α1'] * (20 - 1), ['L1'] * (24 - 20), ['β1'] * (30 - 24), ['L2'] * 5, ['β2'] * (46 - 35),
-                       ['L3'] * (56 - 46), ['β3'] * (63 - 56), ['L4'] * (73 - 63), ['β4'] * (77 - 73),
-                       ['L5'] * (93 - 77), ['α2'] * (98 - 93), ['L6'] * (107 - 98), ['α3'] * (122 - 107),
+    secondary_ube2i = [['α1'] * (20 - 1), ['L1'] * (24 - 20), ['β1'] * (30 - 24), ['L2'] * 5,
+                       ['β2'] * (46 - 35), ['L3'] * (56 - 46), ['β3'] * (63 - 56),
+                       ['L4'] * (73 - 63), ['β4'] * (77 - 73), ['L5'] * (93 - 77),
+                       ['α2'] * (98 - 93), ['L6'] * (107 - 98), ['α3'] * (122 - 107),
                        ['L7'] * (129 - 122), ['α4'] * (155 - 129), ['L8'] * (160 - 155)]
 
     # Create objects
@@ -221,7 +227,8 @@ def tat_obj():
     sequence_tat = 'MEPVDPRLEPWKHPGSQPKTACTNCYCKKCCFHCQVCFITKALGISYGRKKRRQRRRAHQ' + 'NSQTHQASLSKQPTSQPRGDPTGPKE'
 
     # Define secondary structure
-    secondary_tat = [['L1'] * (8), ['α1'] * (13 - 8), ['L2'] * (28 - 14), ['α2'] * (41 - 28), ['L3'] * (90 - 41)]
+    secondary_tat = [['L1'] * (8), ['α1'] * (13 - 8), ['L2'] * (28 - 14), ['α2'] * (41 - 28),
+                     ['L3'] * (90 - 41)]
 
     tat_obj = Screen(df_tat, sequence_tat, aminoacids, start_position, 0, secondary_tat)
 
@@ -254,7 +261,8 @@ def rev_obj():
     sequence_rev = 'MAGRSGDSDEDLLKAVRLIKFLYQSNPPPNPEGTRQARRNRRRRWRERQRQIHSISERIL' + 'STYLGRSAEPVPLQLPPLERLTLDCNEDCGTSGTQGVGSPQILVESPTILESGAKE'
 
     # Define secondary structure
-    secondary_rev = [['L1'] * (8), ['α1'] * (25 - 8), ['L2'] * (33 - 25), ['α2'] * (68 - 33), ['L3'] * (116 - 41)]
+    secondary_rev = [['L1'] * (8), ['α1'] * (25 - 8), ['L2'] * (33 - 25), ['α2'] * (68 - 33),
+                     ['L3'] * (116 - 41)]
 
     rev_obj = Screen(df_rev, sequence_rev, aminoacids, start_position, 0, secondary_rev)
     return rev_obj
@@ -288,7 +296,9 @@ def asynuclein_obj():
     secondary_asynuclein = [['L1'] * (1), ['α1'] * (37 - 1), ['L2'] * (44 - 37), ['α2'] * (92 - 44),
                             ['L3'] * (140 - 92)]
 
-    asynuclein_obj = Screen(df_asynuclein, sequence_asynuclein, aminoacids, start_position, 0, secondary_asynuclein)
+    asynuclein_obj = Screen(
+        df_asynuclein, sequence_asynuclein, aminoacids, start_position, 0, secondary_asynuclein
+    )
 
     return asynuclein_obj
 
@@ -317,15 +327,17 @@ def aph_obj():
     sequence_aph = 'MIEQDGLHAGSPAAWVERLFGYDWAQQTIGCSDAAVFRLSAQGRPVLFVKTDLSGALNELQ' + 'DEAARLSWLATTGVPCAAVLDVVTEAGRDWLLLGEVPGQDLLSSHLAPAEKVSIMADAMRR' + 'LHTLDPATCPFDHQAKHRIERARTRMEAGLVDQDDLDEEHQGLAPAELFARLKARMPDGED' + 'LVVTHGDACLPNIMVENGRFSGFIDCGRLGVADRYQDIALATRDIAEELGGEWADRFLVLY' + 'GIAAPDSQRIAFYRLLDEFF'
 
     # Define secondary structure
-    secondary_aph = [['L1'] * (11), ['α1'] * (16 - 11), ['L2'] * (22 - 16), ['β1'] * (26 - 22), ['L3'] * (34 - 26),
-                     ['β2'] * (40 - 34), ['L4'] * (46 - 40), ['β3'] * (52 - 46), ['L5'] * (58 - 52), ['α2'] * (72 - 58),
-                     ['L6'] * (79 - 72), ['β4'] * (85 - 79), ['L7'] * (89 - 85), ['β5'] * (95 - 89), ['L8'] * (99 - 95),
-                     ['β6'] * (101 - 99), ['L9'] * (107 - 101), ['α3'] * (131 - 107), ['L10'] * (135 - 131),
-                     ['α4'] * (150 - 135), ['L11'] * (158 - 150), ['α5'] * (163 - 158), ['L12'] * (165 - 163),
-                     ['α6'] * (177 - 165), ['L13'] * (183 - 177), ['β7'] * (187 - 183), ['L14'] * (191 - 187),
-                     ['α7'] * (194 - 191), ['L15'] * (1), ['β8'] * (199 - 195), ['L16'] * (201 - 199),
-                     ['β9'] * (206 - 201), ['L17'] * (212 - 206), ['β10'] * (216 - 212), ['α8'] * (245 - 216),
-                     ['L18'] * (4), ['α9'] * (264 - 249)]
+    secondary_aph = [['L1'] * (11), ['α1'] * (16 - 11), ['L2'] * (22 - 16), ['β1'] * (26 - 22),
+                     ['L3'] * (34 - 26), ['β2'] * (40 - 34), ['L4'] * (46 - 40), ['β3'] * (52 - 46),
+                     ['L5'] * (58 - 52), ['α2'] * (72 - 58), ['L6'] * (79 - 72), ['β4'] * (85 - 79),
+                     ['L7'] * (89 - 85), ['β5'] * (95 - 89), ['L8'] * (99 - 95),
+                     ['β6'] * (101 - 99), ['L9'] * (107 - 101), ['α3'] * (131 - 107),
+                     ['L10'] * (135 - 131), ['α4'] * (150 - 135), ['L11'] * (158 - 150),
+                     ['α5'] * (163 - 158), ['L12'] * (165 - 163), ['α6'] * (177 - 165), ['L13'] *
+                     (183 - 177), ['β7'] * (187 - 183), ['L14'] * (191 - 187), ['α7'] * (194 - 191),
+                     ['L15'] * (1), ['β8'] * (199 - 195), ['L16'] * (201 - 199),
+                     ['β9'] * (206 - 201), ['L17'] * (212 - 206), ['β10'] * (216 - 212),
+                     ['α8'] * (245 - 216), ['L18'] * (4), ['α9'] * (264 - 249)]
 
     aph_obj = Screen(np.log10(df_aph), sequence_aph, aminoacids, start_position, 0, secondary_aph)
 
@@ -377,11 +389,14 @@ def hras_counts():
 
     # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
     codon_list = [
-        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG", "TTG", "ATG", "AAC",
-        "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
+        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG",
+        "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC",
+        "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
     ]
 
-    df_counts_pre, wt_counts_pre = count_reads(hras_dnasequence, my_file, codon_list, counts_wt=False, start_position=2)
+    df_counts_pre, wt_counts_pre = count_reads(
+        hras_dnasequence, my_file, codon_list, counts_wt=False, start_position=2
+    )
 
     hras_counts = Counts(df=df_counts_pre)
     return hras_counts

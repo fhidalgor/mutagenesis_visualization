@@ -4,16 +4,14 @@ This module contains the class that plots the mean position bar plot.
 from typing import Union, Dict, Any
 import copy
 from pathlib import Path
-from pandas import DataFrame
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import gridspec
-from pandas import DataFrame
 
 from mutagenesis_visualization.main.bar_graphs.mean_counts import input_text
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pandas_functions import color_data
-from mutagenesis_visualization.main.heatmaps.heatmap_utils import generate_cartoon
+from mutagenesis_visualization.main.utils.heatmap_utils import generate_cartoon
 
 
 class MeanPosition(Pyplot):
@@ -27,7 +25,7 @@ class MeanPosition(Pyplot):
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ):
-        '''
+        """
         Plot in a bargraph the mean enrichment for each residue of the
         protein. Red for gain of function, blue for loss of function
 
@@ -56,7 +54,7 @@ class MeanPosition(Pyplot):
 
             color_lof : str, default 'blue'
                 Choose color to color positions with an enrichment score < 0.
-        '''
+        """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self._load_parameters()
 
@@ -131,8 +129,22 @@ class MeanPosition(Pyplot):
         # axes parameters
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
-            temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=10, rotation=0
+            temp_kwargs['y_label'],
+            fontsize=10,
+            fontname="Arial",
+            color='k',
+            labelpad=10,
+            rotation=0
         )
-        self.ax_object.set_xticks(np.arange(self.start_position, len(self.df_output) + self.start_position, 20))
+        self.ax_object.set_xticks(
+            np.arange(
+                self.start_position,
+                len(self.df_output) + self.start_position,
+                20,
+            )
+        )
         self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
-        self.ax_object.set_xlim(self.start_position - 0.1, len(self.df_output) + self.start_position - 1 + 0.1)
+        self.ax_object.set_xlim(
+            self.start_position - 0.1,
+            len(self.df_output) + self.start_position - 1 + 0.1,
+        )

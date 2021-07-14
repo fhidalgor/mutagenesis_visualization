@@ -30,18 +30,18 @@ except ModuleNotFoundError:
 # In[4]:
 
 
-'''class Student:
+"""class Student:
     def __init__(self, name, gpa, grad_date,units):
         self.name = name
         self.GPA = gpa
         self.grad_date = grad_date
         self.units = units
-    
+
     def total_GPA(self):
         return self.GPA * self.units
-    
+
 Sage = Student('Sage',4.0, 'May 2021', 12)
-Kate = Student('Kate', 3.8, 'Dec 2021', 14)'''
+Kate = Student('Kate', 3.8, 'Dec 2021', 14)"""
 
 
 # ## Test heatmap
@@ -166,7 +166,7 @@ def test_plot_rank_plotly():
         ) == False, "rank_plotly failed with {} parameters".format(parameters)
 
 
-# ## Test Histogram 
+# ## Test Histogram
 
 # In[7]:
 
@@ -352,4 +352,3 @@ def test_plot_scatter_3D_pdbprop_plotly():
         ) == False, "scatter_3D_pdbprop_plotly failed with {} parameters".format(
             parameters
         )
-

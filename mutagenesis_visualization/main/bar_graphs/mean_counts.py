@@ -11,9 +11,9 @@ from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
 def input_text(text_entries: List[str]):
-    '''
+    """
     The user can input text as a variable by manually giving the coordinates.
-    '''
+    """
     if text_entries:
         for entry in text_entries:
             plt.text(entry[0], entry[1], entry[2])

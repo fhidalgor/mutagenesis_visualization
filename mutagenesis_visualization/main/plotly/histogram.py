@@ -4,7 +4,6 @@ This module contains the plotly histogram plot.
 from pathlib import Path
 from typing import Any, Dict, Union
 import copy
-from pandas import DataFrame
 import plotly.io as pio
 import plotly.graph_objects as go
 

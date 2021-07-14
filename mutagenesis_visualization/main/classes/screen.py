@@ -18,10 +18,8 @@ from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
 from mutagenesis_visualization.main.other_stats.box import Box
 from mutagenesis_visualization.main.other_stats.cumulative import Cumulative
 from mutagenesis_visualization.main.other_stats.miniheatmap import Miniheatmap
-from mutagenesis_visualization.main.other_stats.neighbor_effect import NeighborEffect
 from mutagenesis_visualization.main.other_stats.roc_analysis import ROC
 from mutagenesis_visualization.main.other_stats.secondary import Secondary
-
 
 from mutagenesis_visualization.main.pca_analysis.correlation import Correlation
 from mutagenesis_visualization.main.pca_analysis.group_correlation import GroupCorrelation
@@ -45,8 +43,9 @@ try:
 except ModuleNotFoundError:
     pass
 
+
 class Screen:
-    '''
+    """
     *Screen* represents a mutagenesis experiment. If you are doing deep scan
     mutagenesis, then every amino acid in the protein has been mutated to
     every possible amino acid. For example, if there was a leucine at
@@ -103,7 +102,7 @@ class Screen:
     Other attributes are same as input parameters: dataset, aminoacids,
     start_position, roc_df, secondary
 
-    '''
+    """
     def __init__(
         self,
         dataset: Any,
@@ -140,43 +139,46 @@ class Screen:
 
         # kernel
         self.kernel = Kernel(dataset=self.dataframe['Score_NaN'])
-        self.histogram = Histogram(self)
+        self.histogram = Histogram(dataframe=self.dataframe, dataframe_snv=self.dataframe_snv, dataframe_nonsnv=self.dataframe_nonsnv)
 
         # heatmaps
         self.heatmap = Heatmap(
-            self.dataframe,
-            self.sequence,
-            self.start_position,
-            self.dataframe_stopcodons,
-            self.secondary,
+            dataframe = self.dataframe,
+            sequence = self.sequence,
+            start_position = self.start_position,
+            dataframe_stopcodons = self.dataframe_stopcodons,
+            secondary = self.secondary
         )
+
         self.heatmap_rows = HeatmapRows(
-            self.dataframe,
-            self.sequence,
-            self.start_position,
-            self.dataframe_stopcodons,
+            dataframe = self.dataframe,
+            sequence = self.sequence,
+            start_position= self.start_position,
+            dataframe_stopcodons= self.dataframe_stopcodons,
         )
         self.heatmap_columns = HeatmapColumns(
-            self.dataframe,
-            self.sequence,
-            self.start_position,
-            self.dataframe_stopcodons,
+            dataframe= self.dataframe,
+            sequence= self.sequence,
+            start_position= self.start_position,
+            dataframe_stopcodons= self.dataframe_stopcodons,
         )
 
         # bar
         self.mean = MeanBar(dataframe=self.dataframe)
-        self.differential = MeanDifferential()
-        self.position = MeanPosition()
+        #self.differential = MeanDifferential(dataframe=self.dataframe)
+        self.position = MeanPosition(dataframe=self.dataframe, start_position = self.start_position)
 
         # scatter
-        self.scatter = Scatter(self.dataframe)
+        #self.scatter = Scatter(self.dataframe)
+
 
         # PCA
-        self.correlation = Correlation()
-        self.group_correlation = GroupCorrelation()
-        self.individual_correlation = IndividualCorrelation()
-        self.pca = PCA()
+        self.correlation = Correlation(dataframe_stopcodons = self.dataframe_stopcodons, start_position = self.start_position)
+        #self.group_correlation = GroupCorrelation(dataframe_stopcodons = self.dataframe_stopcodons, start_position = self.start_position)
+        self.individual_correlation = IndividualCorrelation(dataframe = self.dataframe)
+        self.pca = PCA(dataframe = self.dataframe)
 
+        """
         # other stats
         self.box = Box()
         self.cumulative = Cumulative(self.dataframe, self.dataframe_snv, self.dataframe_nonsnv)
@@ -184,18 +186,20 @@ class Screen:
         self.neighboreffect = NeighborEffect()
         self.secondary_mean = Secondary(self.dataframe, self.secondary_dup)
         self.roc = ROC(self.dataframe)
-
+        """
         # plotly
-        self.plotly_heatmap_ = HeatmapP(self.dataframe_stopcodons, self.sequence)
-        self.plotly_histogram = HistogramP(self.dataframe)
-        self.plotly_mean = MeanEnrichmentP(self.dataframe)
-        self.plotly_rank = RankP(self.dataframe)
-        self.plotly_scatter = ScatterP(self.dataframe)
-        self.plotly_scatter_3D = Scatter3D(self.dataframe)
-        self.plotly_scatter_3D_pdbprop = Scatter3DPDB(self.dataframe)
+        self.plotly_heatmap = HeatmapP(
+            sequence = self.sequence,
+            dataframe_stopcodons = self.dataframe_stopcodons)
+        self.plotly_histogram = HistogramP(dataframe = self.dataframe)
+        self.plotly_mean = MeanEnrichmentP(dataframe = self.dataframe)
+        self.plotly_rank = RankP(dataframe = self.dataframe)
+        self.plotly_scatter = ScatterP(dataframe = self.dataframe)
+        self.plotly_scatter_3D = Scatter3D(dataframe = self.dataframe, start_position = self.start_position,  end_position = self.end_position)
+        self.plotly_scatter_3D_pdbprop = Scatter3DPDB(dataframe = self.dataframe, start_position = self.start_position, end_position = self.end_position)
 
         # pymol
-        try:
-            self.pymol = Pymol(self.dataframe_stopcodons,)
-        except ModuleNotFoundError:
-            pass
+        #try:
+            #self.pymol = Pymol(self.dataframe_stopcodons, )
+        #except ModuleNotFoundError:
+            #pass

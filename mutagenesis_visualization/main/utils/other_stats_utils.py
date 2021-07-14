@@ -55,6 +55,7 @@ def merge_class_variants(df_score, df_class, mode):
 
     return df_merged
 
+
 def condense_heatmap(df, new_order):
     """
     Converts the np.array with stored enrichment scores into the condensed heatmap
@@ -100,7 +101,8 @@ def _offset_sequence(dataset, sequence, start_position, offset):
     # truncate sequence
     if offset > 0:
         sequence = sequence + 'X' * np.absolute(offset)
-        trimmedsequence = sequence[start_position - 1 + offset : len(dataset[0]) + start_position - 1 + offset]
+        trimmedsequence = sequence[start_position - 1 + offset : len(dataset[0]) + start_position -
+                                   1 + offset]
     else:
         sequence = 'X' * (np.absolute(offset)) + sequence
         trimmedsequence = sequence[start_position - 1 : len(dataset[0]) + start_position - 1]
@@ -126,6 +128,7 @@ def transform_dataset_offset(self, offset, stopcodons=True):
     # Drop rows with X
     return df.drop(df.index[df['Sequence'] == 'X'], inplace=True)
 
+
 def _normalize_neighboreffect(self, offset, neworder):
     """
    For every residue, subtract the average effect of a substitution
@@ -145,7 +148,9 @@ def _normalize_neighboreffect(self, offset, neworder):
         # Do the mean substitution of amino acids that are repeated
         aa_neighbors = aa_neighbors.groupby(['Sequence_old', 'Aminoacid'], as_index=False).mean()
         # Make into table
-        aa_neighbors_pivoted = aa_neighbors.pivot_table(values='Score', index='Aminoacid', columns='Sequence_old')
+        aa_neighbors_pivoted = aa_neighbors.pivot_table(
+            values='Score', index='Aminoacid', columns='Sequence_old'
+        )
         aa_neighbors_pivoted.reset_index(drop=True, inplace=True)
         # Get the mean of the amino acids that appear in the aa_neighbors subset
         mean_neighbors = mean[list(aa_neighbors_pivoted.columns)]

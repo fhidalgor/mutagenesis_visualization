@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 import copy
 import numpy as np
-from pandas import DataFrame
+from pandas.core.frame import DataFrame
 import plotly.io as pio
 import plotly.graph_objects as go
 
@@ -19,9 +19,6 @@ class HeatmapP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
-    def __init__(self, dataframe: DataFrame, sequence: str) -> None:
-        super().__init__(dataframe)
-        self.sequence: str = sequence
 
     def plot(
         self,
@@ -45,14 +42,14 @@ class HeatmapP(Plotly):
 
         # sort data by rows in specified order by user
         self.df_output = df_rearrange(
-            add_snv_boolean(self.dataframe.copy()),
+            add_snv_boolean(self.dataframe_stopcodons.copy()),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=False
         )
 
         # get labels for texthover and reindex
-        text_hover = self.dataframe.pivot(
+        text_hover = self.dataframe_stopcodons.pivot(
             values='Variant',
             index='Aminoacid',
             columns='Position',
@@ -86,7 +83,9 @@ class HeatmapP(Plotly):
         """
         Change stylistic parameters of the plot.
         """
-        self.fig.update_traces(hovertemplate='Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>')
+        self.fig.update_traces(
+            hovertemplate='Aminoacid substitution: %{text}<br>Enrichment score: %{z}<extra></extra>'
+        )
 
         # Style
         pio.templates.default = "plotly_white"

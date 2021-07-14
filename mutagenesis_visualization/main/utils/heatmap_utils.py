@@ -13,7 +13,8 @@ import pandas as pd
 def labels(start_position: int = 1) -> Tuple[List[str], List[int]]:
     # residue label and color
     number_sequencelabels: List[str] = list([
-        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k' for index in range(0, 1000)
+        'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
+        for index in range(0, 1000)
     ])
     color_sequencelabels: List[int] = list([
         index + start_position if index in np.arange(10 - (start_position % 10), 1000, 10) else ''
@@ -47,9 +48,9 @@ def generate_cartoon(
     fig_inches: float = 13.91,
     show_labels: bool = True,
 ):
-    '''
+    """
     Generates cartoon for heatmap.
-    '''
+    """
     # Create subplot
     cartoon = plt.subplot(gs_object[n_row, 0])
 

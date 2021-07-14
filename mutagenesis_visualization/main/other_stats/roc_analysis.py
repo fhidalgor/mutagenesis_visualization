@@ -8,13 +8,24 @@ import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from matplotlib import ticker
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.other_stats_utils import (select_grouping, merge_class_variants, roc_auc,)
+from mutagenesis_visualization.main.utils.other_stats_utils import (
+    select_grouping,
+    merge_class_variants,
+    roc_auc,
+)
+
 
 class ROC(Pyplot):
     """
     Class to generate a ROC analysis.
     """
-    def plot(self, df_class: DataFrame=None, mode: str='pointmutant', output_file: Union[None, str, Path] = None, **kwargs: Dict[str, Any],):
+    def plot(
+        self,
+        df_class: DataFrame = None,
+        mode: str = 'pointmutant',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any],
+    ):
         """
         Generates ROC AUC plot. It compares enrichment scores to some labels
         that the user has specified.
@@ -75,11 +86,22 @@ class ROC(Pyplot):
 
         # Axis labels
         plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
-        plt.ylabel('True Positive Rate', fontsize=12, fontname="Arial", color='k', labelpad=0,)
+        plt.ylabel(
+            'True Positive Rate',
+            fontsize=12,
+            fontname="Arial",
+            color='k',
+            labelpad=0,
+        )
         plt.xlabel('False Positive Rate', fontsize=12, fontname="Arial", color='k')
 
         # Legend
-        plt.legend(loc='lower right', handlelength=0, handletextpad=0, frameon=False,)
+        plt.legend(
+            loc='lower right',
+            handlelength=0,
+            handletextpad=0,
+            frameon=False,
+        )
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
