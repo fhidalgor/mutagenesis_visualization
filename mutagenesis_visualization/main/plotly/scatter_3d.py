@@ -25,11 +25,11 @@ class Scatter3D(Plotly):
     def plot(
         self,
         pdb_path: str,
-        mode: str='mean',
-        df_coordinates: bool=None,
-        position_correction: int=0,
-        chain: str='A',
-        squared: bool=False,
+        mode: str = 'mean',
+        df_coordinates: bool = None,
+        position_correction: int = 0,
+        chain: str = 'A',
+        squared: bool = False,
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ) -> None:
@@ -88,7 +88,9 @@ class Scatter3D(Plotly):
 
         # If coordinates is not an input, get it from the pdb
         if df_coordinates is None:
-            df_coordinates = parse_pdb_coordinates(pdb_path, self.start_position, self.end_position, position_correction, chain)
+            df_coordinates = parse_pdb_coordinates(
+                pdb_path, self.start_position, self.end_position, position_correction, chain
+            )
 
         # Plot figure
         x, y, z = ('x', 'y', 'z')

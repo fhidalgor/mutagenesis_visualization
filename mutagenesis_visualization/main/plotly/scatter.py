@@ -16,7 +16,6 @@ class ScatterP(Plotly):
     """
     This class uses plotly to generate a scatter plot.
     """
-
     def plot(
         self,
         screen_object: Any,

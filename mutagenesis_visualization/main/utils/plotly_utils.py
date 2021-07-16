@@ -2,7 +2,7 @@
 This module contains utils for the plotly figures.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 import numpy as np
 import pandas as pd
 from Bio.PDB import PDBParser
@@ -24,39 +24,42 @@ def select_grouping(dataframe: pd.DataFrame, mode: str) -> pd.DataFrame:
     return dataframe.loc[dataframe['Aminoacid'] == mode].copy()
 
 
-def color_3d_scatter(df, mode, lof, gof):
+def color_3d_scatter(df_input: DataFrame, mode: str, lof: float, gof: float) -> DataFrame:
     """
     Color the data points by enrichment scores.
 
     Parameters
     -----------
     df : pandas dataframe
-        The input is a dataframe that has colum with ['Position', 'Aminoacid', 'Score'].
+        The input is a dataframe that has colum with
+        ['Position', 'Aminoacid', 'Score'].
 
     mode : str
-        Specify what enrichment scores to use. If mode = 'mean', it will use the mean of
-        each position to classify the residues. If mode = 'A', it will use the Alanine substitution profile.
-        Can be used for each amino acid. Use the one-letter code and upper case.
+        Specify what enrichment scores to use. If mode = 'mean', it will
+        use the mean of each position to classify the residues. If
+        mode = 'A', it will use the Alanine substitution profile. Can be
+        used for each amino acid. Use the one-letter code and upper case.
 
     gof : int, default is 1
-        cutoff for determining gain of function mutations based on mutagenesis data.
+        cutoff for determining gain of function mutations based on
+        mutagenesis data.
 
     lof : int, default is -1
-        cutoff for determining loss of function mutations based on mutagenesis data.
+        cutoff for determining loss of function mutations based on
+        mutagenesis data.
 
     Returns
     ---------
     df_grouped: pandas dataframe
-        New dataframe with added column of ['Color'] and the ['Score'] values of the
-        mode you chose.
-
+        New dataframe with added column of ['Color'] and the ['Score']
+        values of the mode you chose.
     """
 
     # Copy df
-    df_grouped = df.copy()
+    df_grouped: DataFrame = df_input.copy()
 
     # Select grouping.
-    if mode == 'mean':
+    if mode.lower() == 'mean':
         df_grouped = df_grouped.groupby(['Position'], as_index=False).mean()
     else:
         df_grouped = df_grouped.loc[df_grouped['Aminoacid'] == mode]
@@ -65,11 +68,10 @@ def color_3d_scatter(df, mode, lof, gof):
     df_grouped['Color'] = 'green'
     df_grouped.loc[df_grouped['Score'] < lof, 'Color'] = 'blue'
     df_grouped.loc[df_grouped['Score'] > gof, 'Color'] = 'red'
-
     return df_grouped
 
 
-def centroid(df_input: DataFrame):
+def centroid(df_input: DataFrame) -> Tuple:
     """
     Find center of x,y,z using centroid method.
     The input is a dataframe with columns x, y, z.
@@ -78,7 +80,14 @@ def centroid(df_input: DataFrame):
     return df_input['x'].mean(), df_input['y'].mean(), df_input['z'].mean()
 
 
-def parse_pdb_coordinates(pdb_path: str, start_position: int, end_position: int, position_correction: int, chain: str, sasa=False):
+def parse_pdb_coordinates(
+    pdb_path: str,
+    start_position: int,
+    end_position: int,
+    position_correction: int,
+    chain: str,
+    sasa=False
+):
     """
     Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
     If PDB is missing atoms, it can handle it.
@@ -94,8 +103,7 @@ def parse_pdb_coordinates(pdb_path: str, start_position: int, end_position: int,
     positions_worked = []  # positions present in pdb
 
     # Iterate over each CA atom and geet coordinates
-    for i in np.arange(start_position + position_correction,
-                       end_position + position_correction):
+    for i in np.arange(start_position + position_correction, end_position + position_correction):
         # first check if atom exists
         try:
             structure[0][chain][int(i)].has_id("CA")

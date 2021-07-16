@@ -15,7 +15,6 @@ class MeanBar(Pyplot):
     """
     Class to generate a mean enrichment bar plot.
     """
-
     def plot(
         self,
         position: int,

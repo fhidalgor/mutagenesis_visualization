@@ -33,7 +33,7 @@ class HeatmapRows(Pyplot):
             dataframe=dataframe,
             sequence=sequence,
             start_position=start_position,
-            dataframe_stopcodons= dataframe_stopcodons,
+            dataframe_stopcodons=dataframe_stopcodons,
         )
         self.sequence_updated: Optional[str] = None
         self.ax_object2 = None

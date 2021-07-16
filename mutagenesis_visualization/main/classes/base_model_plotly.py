@@ -6,7 +6,7 @@ from typing import Union, Dict, Any, Optional
 import copy
 from pandas import DataFrame
 
-from mutagenesis_visualization.main.utils.kwargs import default_kwargs
+from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 
 
 class Plotly:
@@ -14,14 +14,17 @@ class Plotly:
     Plot abstract class used to visualize mutagenesis data using
     plotly.
     """
-    def __init__(self,dataset: Optional[Any] = None,
-                dataframe: Optional[DataFrame] = None,
-                dataframe_stopcodons: Optional[DataFrame] = None,
-                dataframe_snv: Optional[DataFrame] = None,
-                dataframe_nonsnv: Optional[DataFrame] = None,
-                sequence: Optional[str] = None,
-                start_position: Optional[str] = None,
-                end_position: Optional[str] = None,) -> None:
+    def __init__(
+        self,
+        dataset: Optional[Any] = None,
+        dataframe: Optional[DataFrame] = None,
+        dataframe_stopcodons: Optional[DataFrame] = None,
+        dataframe_snv: Optional[DataFrame] = None,
+        dataframe_nonsnv: Optional[DataFrame] = None,
+        sequence: Optional[str] = None,
+        start_position: Optional[str] = None,
+        end_position: Optional[str] = None,
+    ) -> None:
         """
         Docstring placeholder
         """
@@ -33,7 +36,7 @@ class Plotly:
         self.sequence: Optional[str] = sequence
         self.start_position: Optional[int] = start_position
         self.end_position: Optional[int] = end_position
-        self.kwargs: Dict[str, Any] = default_kwargs()
+        self.kwargs: Dict[str, Any] = generate_default_kwargs()
         self.fig: Any = None
         self.df_output: Optional[DataFrame] = None
 

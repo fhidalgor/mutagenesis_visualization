@@ -7,7 +7,10 @@ import copy
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
-from mutagenesis_visualization.main.utils.pandas_functions import (df_rearrange, common_elements_list)
+from mutagenesis_visualization.main.utils.pandas_functions import (
+    df_rearrange, common_elements_list
+)
+
 
 def select_grouping(df, mode):
     """
@@ -89,7 +92,9 @@ def condense_heatmap(df_input: DataFrame, new_order: List[str]) -> DataFrame:
     return data_dropped[x_order]
 
 
-def _offset_sequence(dataset: np.array, sequence: str, start_position: int, offset: int) -> str:
+def _offset_sequence(
+    dataset: np.array, sequence: str, start_position: int, position_offset: int
+) -> str:
     """
     Internal function that offsets the input sequence.
 
@@ -102,52 +107,58 @@ def _offset_sequence(dataset: np.array, sequence: str, start_position: int, offs
     sequence = copy.deepcopy(sequence)
 
     # truncate sequence
-    if offset > 0:
-        sequence = sequence + 'X' * np.absolute(offset)
-        trimmedsequence = sequence[start_position - 1 + offset : len(dataset[0]) + start_position -
-                                   1 + offset]
+    if position_offset > 0:
+        sequence = sequence + 'X' * np.absolute(position_offset)
+        trimmedsequence = sequence[start_position - 1 + position_offset : len(dataset[0]) +
+                                   start_position - 1 + position_offset]
     else:
-        sequence = 'X' * (np.absolute(offset)) + sequence
+        sequence = 'X' * (np.absolute(position_offset)) + sequence
         trimmedsequence = sequence[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     return trimmedsequence
 
 
-def transform_dataset_offset(dataset: np.array, dataframe: DataFrame, dataframe_stopcodons:DataFrame, sequence_raw: str, start_position: int, offset: int, stopcodons: bool,) -> DataFrame:
+def transform_dataset_offset(
+    dataset: np.array,
+    dataframe: DataFrame,
+    dataframe_stopcodons: DataFrame,
+    sequence_raw: str,
+    start_position: int,
+    position_offset: int,
+    stopcodons: bool,
+) -> DataFrame:
     """
-    Generate a dataframe with the sequence offset.
+    Generate a dataframe with the sequence position_offset.
     """
-    # Add offset sequence
-    offset_sequence = _offset_sequence(dataset, sequence_raw, start_position, offset)
+    # Add position_offset sequence
+    offset_sequence = _offset_sequence(dataset, sequence_raw, start_position, position_offset)
     df_output = dataframe_stopcodons.copy() if stopcodons is True else dataframe.copy()
 
     # Copy old sequence
     df_output['Sequence_old'] = df_output['Sequence']
     # Count amino acids
     aa_number = len(set(df_output['Aminoacid']))
-    # Generate new offset sequence
+    # Generate new position_offset sequence
     df_output['Sequence'] = np.ravel([[aa] * aa_number for aa in offset_sequence])
 
     # Drop rows with X
-    return df_output.drop(df_output.index[df_output['Sequence'] == 'X'], inplace=True)
+    df_output.drop(df_output.index[df_output['Sequence'] == 'X'], inplace=True)
+    return df_output
 
 
-def _normalize_neighboreffect(self, offset, neworder):
+def normalize_neighbor_effect(
+    df_input: DataFrame, df_condensed_heatmap: DataFrame, neworder_aminoacids: List[str],
+    aminoacids: List[str]
+) -> DataFrame:
     """
-   For every residue, subtract the average effect of a substitution
-   Returns a normalized dataframe
-   """
-    aalist = list('ACDEFGHIKLMNPQRSTVWY')
-    # Add offset sequence to df
-    df = _transform_dataset_offset(self, offset, False)
+    For every residue, subtract the average effect of a substitution
+    Returns a normalized dataframe
+    """
 
-    # calculate mean effect using condensed heatmap
-    mean = _condense_heatmap(self.dataframe, aalist)
-
-    df_normalized = pd.DataFrame()
-    for aa in aalist:
+    df_output: DataFrame = pd.DataFrame()
+    for aa in aminoacids:
         # Choose the neighbors of an aa
-        aa_neighbors = df.loc[df['Sequence'] == aa]
+        aa_neighbors = df_input.loc[df_input['Sequence'] == aa]
         # Do the mean substitution of amino acids that are repeated
         aa_neighbors = aa_neighbors.groupby(['Sequence_old', 'Aminoacid'], as_index=False).mean()
         # Make into table
@@ -156,22 +167,23 @@ def _normalize_neighboreffect(self, offset, neworder):
         )
         aa_neighbors_pivoted.reset_index(drop=True, inplace=True)
         # Get the mean of the amino acids that appear in the aa_neighbors subset
-        mean_neighbors = mean[list(aa_neighbors_pivoted.columns)]
+        mean_neighbors = df_condensed_heatmap[list(aa_neighbors_pivoted.columns)]
         # Subtract average effect and do mean
-        df_normalized[aa] = (aa_neighbors_pivoted - mean_neighbors).mean(axis=1)
+        df_output[aa] = (aa_neighbors_pivoted - mean_neighbors).mean(axis=1)
 
     # Sort by aa
-    df_normalized = df_normalized[neworder]
+    df_output = df_output[neworder_aminoacids]
     # Sort in y axis desired order
-    df_normalized = _sort_yaxis_aminoacids(df_normalized, neworder, aalist)
-    return df_normalized
+    df_output = _sort_yaxis_aminoacids(df_output, neworder_aminoacids, aminoacids)
+    return df_output
 
 
-def _sort_yaxis_aminoacids(df, neworder, oldorder=list('ACDEFGHIKLMNPQRSTVWY')):
+def _sort_yaxis_aminoacids(
+    df_input: DataFrame, neworder_aminoacids: list, old_order: list
+) -> DataFrame:
     # Sort in y axis desired order
-    df['Aminoacid_new'] = oldorder
-    df['Aminoacid_new'] = pd.Categorical(df['Aminoacid_new'], neworder)
-    df.sort_values(by=['Aminoacid_new'], inplace=True)
-    df.drop(['Aminoacid_new'], inplace=True, axis=1)
-
-    return df
+    df_input['Aminoacid_new'] = old_order
+    df_input['Aminoacid_new'] = pd.Categorical(df_input['Aminoacid_new'], neworder_aminoacids)
+    df_input.sort_values(by=['Aminoacid_new'], inplace=True)
+    df_input.drop(['Aminoacid_new'], inplace=True, axis=1)
+    return df_input

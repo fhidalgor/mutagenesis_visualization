@@ -2,13 +2,13 @@
 This module contains the parent class for all the plot classes.
 """
 from pathlib import Path
-from typing import Union, Dict, Any, Optional
+from typing import Union, Dict, Any, Optional, List
 import copy
 from matplotlib import rcParams
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
-from mutagenesis_visualization.main.utils.kwargs import default_kwargs
+from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 
 
 class Pyplot:
@@ -18,12 +18,14 @@ class Pyplot:
     """
     def __init__(
         self,
+        aminoacids: List[str] = None,
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
         dataframe_snv: Optional[DataFrame] = None,
         dataframe_nonsnv: Optional[DataFrame] = None,
         sequence: Optional[str] = None,
+        sequence_raw: Optional[str] = None,
         start_position: Optional[str] = None,
         secondary: Optional[list] = None,
         secondary_dup: Optional[list] = None,
@@ -31,16 +33,18 @@ class Pyplot:
         """
         Docstring placeholder
         """
+        self.aminoacids: List[str] = aminoacids
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
         self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
         self.dataframe_snv: Optional[DataFrame] = dataframe_snv
         self.dataframe_nonsnv: Optional[DataFrame] = dataframe_nonsnv
         self.sequence: Optional[str] = sequence
+        self.sequence_raw: Optional[str] = sequence_raw
         self.start_position: Optional[int] = start_position
         self.secondary: Optional[list] = secondary
         self.secondary_dup: Optional[list] = secondary_dup
-        self.kwargs: Dict[str, Any] = default_kwargs()
+        self.kwargs: Dict[str, Any] = generate_default_kwargs()
         self.fig: Figure = Figure()
         self.ax_object: Optional[Any] = None
         self.cb_object: Optional[Any] = None

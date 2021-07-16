@@ -16,9 +16,9 @@ from mutagenesis_visualization.main.kernel.histogram import Histogram
 from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 from mutagenesis_visualization.main.heatmaps.heatmap_columns import HeatmapColumns
 from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
+from mutagenesis_visualization.main.heatmaps.miniheatmap import Miniheatmap
 from mutagenesis_visualization.main.other_stats.box import Box
 from mutagenesis_visualization.main.other_stats.cumulative import Cumulative
-from mutagenesis_visualization.main.other_stats.miniheatmap import Miniheatmap
 from mutagenesis_visualization.main.other_stats.roc_analysis import ROC
 from mutagenesis_visualization.main.pca_analysis.correlation import Correlation
 from mutagenesis_visualization.main.pca_analysis.individual_correlation import IndividualCorrelation
@@ -105,7 +105,10 @@ class Screen:
     ):
         # Instances
         self.dataset: np.array = np.array(dataset)
-        self.aminoacids: str = aminoacids
+        if isinstance(aminoacids, list):
+            self.aminoacids: List[str] = aminoacids
+        elif isinstance(aminoacids, str):
+            self.aminoacids: List[str] = list(aminoacids)
         self.start_position: int = start_position
         self.end_position: int = len(self.dataset[0]) + start_position
         self.sequence_raw: str = sequence  # unchanged
@@ -128,64 +131,97 @@ class Screen:
 
         # kernel
         self.kernel: Kernel = Kernel(dataset=self.dataframe['Score_NaN'])
-        self.histogram: Histogram = Histogram(dataframe=self.dataframe, dataframe_snv=self.dataframe_snv, dataframe_nonsnv=self.dataframe_nonsnv)
+        self.histogram: Histogram = Histogram(
+            dataframe=self.dataframe,
+            dataframe_snv=self.dataframe_snv,
+            dataframe_nonsnv=self.dataframe_nonsnv
+        )
 
         # heatmaps
         self.heatmap: Heatmap = Heatmap(
-            dataframe = self.dataframe,
-            sequence = self.sequence,
-            start_position = self.start_position,
-            dataframe_stopcodons = self.dataframe_stopcodons,
-            secondary = self.secondary
+            dataframe=self.dataframe,
+            sequence=self.sequence,
+            start_position=self.start_position,
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            secondary=self.secondary
         )
 
         self.heatmap_rows: HeatmapRows = HeatmapRows(
-            dataframe = self.dataframe,
-            sequence = self.sequence,
-            start_position= self.start_position,
-            dataframe_stopcodons= self.dataframe_stopcodons,
+            dataframe=self.dataframe,
+            sequence=self.sequence,
+            start_position=self.start_position,
+            dataframe_stopcodons=self.dataframe_stopcodons,
         )
         self.heatmap_columns: HeatmapColumns = HeatmapColumns(
-            dataframe= self.dataframe,
-            sequence= self.sequence,
-            start_position= self.start_position,
-            dataframe_stopcodons= self.dataframe_stopcodons,
+            dataframe=self.dataframe,
+            sequence=self.sequence,
+            start_position=self.start_position,
+            dataframe_stopcodons=self.dataframe_stopcodons,
+        )
+        self.miniheatmap: Miniheatmap = Miniheatmap(
+            dataframe=self.dataframe,
+            sequence_raw=self.sequence_raw,
+            start_position=self.start_position,
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            dataset=self.dataset,
+            aminoacids=self.aminoacids
         )
 
         # bar
-        self.differential: MeanDifferential = MeanDifferential(dataframe=self.dataframe, start_position = self.start_position)
+        self.differential: MeanDifferential = MeanDifferential(
+            dataframe=self.dataframe, start_position=self.start_position
+        )
         self.mean: MeanBar = MeanBar(dataframe=self.dataframe)
-        self.position: MeanPosition = MeanPosition(dataframe=self.dataframe, start_position = self.start_position)
-        self.secondary_mean: Secondary = Secondary(dataframe = self.dataframe, secondary_dup = self.secondary_dup)
+        self.position: MeanPosition = MeanPosition(
+            dataframe=self.dataframe, start_position=self.start_position
+        )
+        self.secondary_mean: Secondary = Secondary(
+            dataframe=self.dataframe, secondary_dup=self.secondary_dup
+        )
 
         # scatter
-        self.scatter: Scatter = Scatter(dataframe = self.dataframe)
+        self.scatter: Scatter = Scatter(dataframe=self.dataframe)
 
         # PCA
-        self.correlation: Correlation = Correlation(dataframe_stopcodons = self.dataframe_stopcodons, start_position = self.start_position)
-        self.individual_correlation: IndividualCorrelation = IndividualCorrelation(dataframe = self.dataframe)
-        self.pca: PCA = PCA(dataframe = self.dataframe)
+        self.correlation: Correlation = Correlation(
+            dataframe_stopcodons=self.dataframe_stopcodons, start_position=self.start_position
+        )
+        self.individual_correlation: IndividualCorrelation = IndividualCorrelation(
+            dataframe=self.dataframe
+        )
+        self.pca: PCA = PCA(dataframe=self.dataframe)
 
         # other stats
         self.box: Box = Box()
-        self.cumulative: Cumulative = Cumulative(dataframe=self.dataframe, dataframe_snv=self.dataframe_snv, dataframe_nonsnv=self.dataframe_nonsnv)
-        self.miniheatmap: Miniheatmap = Miniheatmap(dataframe_stopcodons = self.dataframe_stopcodons, start_position=self.start_position)
+        self.cumulative: Cumulative = Cumulative(
+            dataframe=self.dataframe,
+            dataframe_snv=self.dataframe_snv,
+            dataframe_nonsnv=self.dataframe_nonsnv
+        )
         # rank plot
-        self.roc: ROC = ROC(dataframe =self.dataframe)
+        self.roc: ROC = ROC(dataframe=self.dataframe)
 
         # plotly
-        self.plotly_heatmap:HeatmapP = HeatmapP(
-            sequence = self.sequence,
-            dataframe_stopcodons = self.dataframe_stopcodons)
-        self.plotly_histogram: HistogramP = HistogramP(dataframe = self.dataframe)
-        self.plotly_mean: MeanEnrichmentP = MeanEnrichmentP(dataframe = self.dataframe)
-        self.plotly_rank: RankP = RankP(dataframe = self.dataframe)
-        self.plotly_scatter: ScatterP = ScatterP(dataframe = self.dataframe)
-        self.plotly_scatter_3D: Scatter3D = Scatter3D(dataframe = self.dataframe, start_position = self.start_position,  end_position = self.end_position)
-        self.plotly_scatter_3D_pdbprop: Scatter3DPDB = Scatter3DPDB(dataframe = self.dataframe, start_position = self.start_position, end_position = self.end_position)
+        self.plotly_heatmap: HeatmapP = HeatmapP(
+            sequence=self.sequence, dataframe_stopcodons=self.dataframe_stopcodons
+        )
+        self.plotly_histogram: HistogramP = HistogramP(dataframe=self.dataframe)
+        self.plotly_mean: MeanEnrichmentP = MeanEnrichmentP(dataframe=self.dataframe)
+        self.plotly_rank: RankP = RankP(dataframe=self.dataframe)
+        self.plotly_scatter: ScatterP = ScatterP(dataframe=self.dataframe)
+        self.plotly_scatter_3D: Scatter3D = Scatter3D(
+            dataframe=self.dataframe,
+            start_position=self.start_position,
+            end_position=self.end_position
+        )
+        self.plotly_scatter_3D_pdbprop: Scatter3DPDB = Scatter3DPDB(
+            dataframe=self.dataframe,
+            start_position=self.start_position,
+            end_position=self.end_position
+        )
 
         # pymol
         #try:
-            #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
+        #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
         #except ModuleNotFoundError:
-            #pass
+        #pass

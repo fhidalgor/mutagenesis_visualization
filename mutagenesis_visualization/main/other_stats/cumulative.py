@@ -70,7 +70,10 @@ class Cumulative(Pyplot):
         plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
 
         # x=y line
-        plt.plot([0, self.df_output['Position'].max()], [0, 1], color='silver', lw=2, linestyle='--')
+        plt.plot([0, self.df_output['Position'].max()], [0, 1],
+                 color='silver',
+                 lw=2,
+                 linestyle='--')
 
     def _filter_by_snv(self, mode: str) -> DataFrame:
         if mode.lower() == 'all':

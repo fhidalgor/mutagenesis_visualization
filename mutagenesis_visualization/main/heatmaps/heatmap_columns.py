@@ -20,7 +20,6 @@ class HeatmapColumns(Pyplot):
     This class plots a heatmap with the enrichment scores where you
     can show selected columns.
     """
-
     def __init__(
         self,
         dataframe: Optional[pd.DataFrame],
@@ -32,7 +31,7 @@ class HeatmapColumns(Pyplot):
             dataframe=dataframe,
             sequence=sequence,
             start_position=start_position,
-            dataframe_stopcodons = dataframe_stopcodons
+            dataframe_stopcodons=dataframe_stopcodons
         )
         self.sequence_updated: Optional[str] = None
         self.ax_object2 = None

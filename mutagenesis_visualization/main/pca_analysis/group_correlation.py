@@ -17,7 +17,7 @@ class GroupCorrelation(Pyplot):
     def plot(
         self,
         r2: float = 0.5,
-        groups: List[str]=['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
+        groups: List[str] = ['DEHKR', 'QN', 'CASTG', 'ILMV', 'WYF'],
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ):

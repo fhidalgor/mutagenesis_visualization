@@ -5,7 +5,7 @@ import copy
 
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.kwargs import default_kwargs
+from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 from mutagenesis_visualization.main.utils.pymol_utils import (
     light_parameters,
     pymol_fitness,

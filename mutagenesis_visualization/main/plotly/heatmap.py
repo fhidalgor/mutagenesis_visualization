@@ -19,7 +19,6 @@ class HeatmapP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
-
     def plot(
         self,
         output_html: Union[None, str, Path] = None,
