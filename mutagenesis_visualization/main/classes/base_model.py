@@ -75,12 +75,12 @@ class Pyplot:
         Default rcParams.
         """
         # normal font
-        rcParams['font.family'] = 'sans-serif'
-        rcParams['font.sans-serif'] = ['Arial']
+        #rcParams['font.family'] = 'sans-serif'
+        #rcParams['font.sans-serif'] = ['Arial']
 
         # math font
-        rcParams['mathtext.fontset'] = 'custom'
-        rcParams['mathtext.rm'] = 'Arial'
+        #rcParams['mathtext.fontset'] = 'custom'
+        #rcParams['mathtext.rm'] = 'Arial'
         rcParams['svg.fonttype'] = 'none'
 
         # add grid
@@ -98,8 +98,8 @@ class Pyplot:
         Default math font rcParams.
         """
         # math font
-        rcParams['mathtext.fontset'] = 'custom'
-        rcParams['mathtext.rm'] = 'Arial'
+        #rcParams['mathtext.fontset'] = 'custom'
+        #rcParams['mathtext.rm'] = 'Arial'
         rcParams['svg.fonttype'] = 'none'
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:

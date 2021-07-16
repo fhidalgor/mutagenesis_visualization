@@ -27,7 +27,8 @@ start_position = 2
 fillna = 0
 
 object = Screen(dataset, sequence, aminoacids, start_position, fillna, secondary)
-object.plotly_scatter_3D_pdbprop.plot("mutagenesis_visualization/data/5p21.pdb")
+object.scatter.plot(object)
+#object.plotly_scatter_3D_pdbprop.plot("mutagenesis_visualization/data/5p21.pdb")
 
 
 

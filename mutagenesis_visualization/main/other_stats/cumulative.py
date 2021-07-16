@@ -13,16 +13,6 @@ class Cumulative(Pyplot):
     This class will plot a cumulative function on the enrichment scores
     from first to last amino acid.
     """
-    def __init__(
-        self,
-        dataframe: DataFrame,
-        dataframe_snv: DataFrame,
-        dataframe_nonsnv: DataFrame,
-    ) -> None:
-        super().__init__(dataframe=dataframe, )
-        self.dataframe_snv: DataFrame = dataframe_snv
-        self.dataframe_nonsnv: DataFrame = dataframe_nonsnv
-
     def plot(
         self,
         mode: str = 'all',
@@ -89,8 +79,7 @@ class Cumulative(Pyplot):
             return self.dataframe_snv
         elif mode.lower() == 'nonsnv':
             return self.dataframe_nonsnv
-        elif mode.lower() == 'mean':
-            return self.dataframe.groupby(by='Position', as_index=False).mean()
+        return self.dataframe.groupby(by='Position', as_index=False).mean()
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """

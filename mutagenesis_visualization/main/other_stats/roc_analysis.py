@@ -21,7 +21,7 @@ class ROC(Pyplot):
     """
     def plot(
         self,
-        df_class: DataFrame = None,
+        df_class: DataFrame,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -35,8 +35,7 @@ class ROC(Pyplot):
         df_class: Pandas dataframe
             A dataframe that contains a column of variants labeled 'Variant'
             with a column labeled 'Class' containing the true class of that
-            mutation. The true class can also be an input when creating
-            the object.
+            mutation.
 
         mode : str, default 'pointmutant'
             Specify what enrichment scores to show. If mode = 'mean', it will
@@ -53,10 +52,6 @@ class ROC(Pyplot):
 
         # Chose mode: !!! not used
         df_grouped: DataFrame = select_grouping(self.dataframe, mode)
-
-        # Use default class
-        if df_class is None:
-            df_class = self.roc_df
 
         # Merge dataframe with classes
         df_output: DataFrame = merge_class_variants(self.dataframe, df_class, mode)

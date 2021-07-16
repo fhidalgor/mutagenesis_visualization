@@ -1,5 +1,13 @@
-from mutagenesis_visualization.main.utils.pandas_functions import df_rearrange
+"""
+Utilities used in the other stats methods.
+"""
+from typing import List
 
+import copy
+import numpy as np
+import pandas as pd
+from pandas.core.frame import DataFrame
+from mutagenesis_visualization.main.utils.pandas_functions import (df_rearrange, common_elements_list)
 
 def select_grouping(df, mode):
     """
@@ -56,16 +64,15 @@ def merge_class_variants(df_score, df_class, mode):
     return df_merged
 
 
-def condense_heatmap(df, new_order):
+def condense_heatmap(df_input: DataFrame, new_order: List[str]) -> DataFrame:
     """
     Converts the np.array with stored enrichment scores into the condensed heatmap
     """
-    # Convert dataset to df
-    df = df.copy()
-    df.drop(['Position'], axis=1, inplace=True)
+    df_input = df_input.copy()
+    df_input.drop(['Position'], axis=1, inplace=True)
 
     # Group by sequence and aminoacid, and then pivot table
-    df_grouped = df.groupby(['Sequence', 'Aminoacid'], sort=False).mean()
+    df_grouped = df_input.groupby(['Sequence', 'Aminoacid'], sort=False).mean()
     df_pivoted = df_grouped.pivot_table(values='Score', index='Aminoacid', columns='Sequence')
     df_pivoted.reset_index(drop=False, inplace=True)
 
@@ -74,7 +81,7 @@ def condense_heatmap(df, new_order):
     df_pivoted = df_pivoted.sort_values(by=['Aminoacid'])
 
     # Sort in x axis desired order
-    x_order = code_utils._common(new_order, list(df_pivoted.columns))
+    x_order = common_elements_list(new_order, list(df_pivoted.columns))
 
     # Drop amino acid column
     data_dropped = df_pivoted.drop(['Aminoacid'], axis=1)
@@ -82,13 +89,9 @@ def condense_heatmap(df, new_order):
     return data_dropped[x_order]
 
 
-def _offset_sequence(dataset, sequence, start_position, offset):
+def _offset_sequence(dataset: np.array, sequence: str, start_position: int, offset: int) -> str:
     """
     Internal function that offsets the input sequence.
-
-    Parameters
-    -----------
-    dataset, sequence, start_position, offset
 
     Returns
     --------
@@ -110,23 +113,23 @@ def _offset_sequence(dataset, sequence, start_position, offset):
     return trimmedsequence
 
 
-def transform_dataset_offset(self, offset, stopcodons=True):
+def transform_dataset_offset(dataset: np.array, dataframe: DataFrame, dataframe_stopcodons:DataFrame, sequence_raw: str, start_position: int, offset: int, stopcodons: bool,) -> DataFrame:
     """
-    Generate a dataframe with the sequence offset. Reutilizes _transform_dataset
+    Generate a dataframe with the sequence offset.
     """
     # Add offset sequence
-    offset_sequence = _offset_sequence(self.dataset, self.sequence_raw, self.start_position, offset)
-    df = self.dataframe_stopcodons.copy() if stopcodons is True else self.dataframe.copy()
+    offset_sequence = _offset_sequence(dataset, sequence_raw, start_position, offset)
+    df_output = dataframe_stopcodons.copy() if stopcodons is True else dataframe.copy()
 
     # Copy old sequence
-    df['Sequence_old'] = df['Sequence']
+    df_output['Sequence_old'] = df_output['Sequence']
     # Count amino acids
-    aa_number = len(set(df['Aminoacid']))
+    aa_number = len(set(df_output['Aminoacid']))
     # Generate new offset sequence
-    df['Sequence'] = np.ravel([[aa] * aa_number for aa in offset_sequence])
+    df_output['Sequence'] = np.ravel([[aa] * aa_number for aa in offset_sequence])
 
     # Drop rows with X
-    return df.drop(df.index[df['Sequence'] == 'X'], inplace=True)
+    return df_output.drop(df_output.index[df_output['Sequence'] == 'X'], inplace=True)
 
 
 def _normalize_neighboreffect(self, offset, neworder):

@@ -24,13 +24,13 @@ class MeanDifferential(Pyplot):
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Plot the mean positional difference between two experiments.
 
         Parameters
         ----------
-        screen_object : another Screen object to compare with
+        screen_object : another *Screen* object to compare with.
 
         show_cartoon : boolean, default False
             If true, the plot will display a cartoon with the secondary
@@ -50,9 +50,9 @@ class MeanDifferential(Pyplot):
         # make pandas
         self.df_output: DataFrame = process_mean_residue(
             self.dataframe,
-            self.screen_object.dataframe,
+            screen_object.dataframe,
         )
-
+        print(self.df_output)
         # make cartoon
         if show_cartoon:
             self.fig = plt.figure(figsize=temp_kwargs['figsize'])

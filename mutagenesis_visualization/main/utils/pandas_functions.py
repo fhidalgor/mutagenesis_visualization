@@ -104,9 +104,9 @@ def df_rearrange(
     return df_pivoted.reindex(index=list(new_order))
 
 
-def _common(a: list, b: list) -> list:
+def common_elements_list(a: list, b: list) -> list:
     """
-    return common elements of two lists
+    Return common elements of two lists.
     """
     return [value for value in a if value in b]
 
@@ -181,7 +181,7 @@ def parse_pivot(
     return df_pivoted, sequence
 
 
-def color_data(row, color_gof, color_lof):
+def color_data(row, color_gof: str, color_lof: str) -> str:
     if row["Score"] > 0:
         return color_gof
     return color_lof
@@ -200,7 +200,7 @@ def process_mean_residue(
 
     # truncate so both datasets have same length and delete stop codons
     dataset_1 = dataframe_1.groupby(['Position'], as_index=False).mean()
-    dataset_2 = dataframe_2(['Position'], as_index=False).mean()
+    dataset_2 = dataframe_2.groupby(['Position'], as_index=False).mean()
     min_length: int = min(len(dataset_1), len(dataset_2))
 
     # convert to dataframe and eliminate Nans
@@ -209,7 +209,8 @@ def process_mean_residue(
     df_ouput['dataset_2'] = list(dataset_2['Score'])[0 : min_length]
     df_ouput['Position'] = list(dataset_1['Position'])[0 : min_length]
     df_ouput['d1 - d2'] = df_ouput['dataset_1'] - df_ouput['dataset_2']
-    return df_ouput.dropna(how='any', inplace=True)
+    df_ouput.dropna(how='any', inplace=True)
+    return df_ouput
 
 
 def process_by_pointmutant(
@@ -228,4 +229,5 @@ def process_by_pointmutant(
     df_ouput['Variant'] = list(dataframe_1['Variant'])[: min_length]
 
     # eliminate Nans
-    return df_ouput.dropna(how='any', inplace=True)
+    df_ouput.dropna(how='any', inplace=True)
+    return df_ouput

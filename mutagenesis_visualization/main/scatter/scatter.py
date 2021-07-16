@@ -44,17 +44,16 @@ class Scatter(Pyplot):
 
         **kwargs : other keyword arguments
         """
-        self.screen_object = screen_object
         temp_kwargs = self._update_kwargs(kwargs)
         self._load_parameters()
 
         # Chose mode:
         if mode == 'pointmutant':
             df_output: pd.DataFrame = process_by_pointmutant(
-                self.dataframe, self.screen_object.dataframe
+                self.dataframe, screen_object.dataframe
             )
         else:
-            df_output = process_mean_residue(self.dataframe, self.screen_object.dataframe)
+            df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
 
         # create figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
