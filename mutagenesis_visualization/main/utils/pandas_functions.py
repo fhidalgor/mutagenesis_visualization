@@ -202,7 +202,7 @@ def process_mean_residue(
     d1 - score of d2.
     """
 
-    # truncate so both datasets have same length and delete stop codons
+    # truncate so both datasets have same length
     dataset_1 = dataframe_1.groupby(['Position'], as_index=False).mean()
     dataset_2 = dataframe_2.groupby(['Position'], as_index=False).mean()
     min_length: int = min(len(dataset_1), len(dataset_2))
@@ -215,6 +215,37 @@ def process_mean_residue(
     df_ouput['d1 - d2'] = df_ouput['dataset_1'] - df_ouput['dataset_2']
     df_ouput.dropna(how='any', inplace=True)
     return df_ouput
+
+def process_rmse_residue(
+    dataframe_1: DataFrame,
+    dataframe_2: DataFrame,
+    metric: str,
+) -> DataFrame:
+    """
+    Given two dataframes, it groups by position and truncates the
+    longer one. It also drops nan values. Returns joined dataframe
+    that contains the Scores, the position and the rmse between mutations.
+    """
+
+    min_length: int = min(len(dataframe_1), len(dataframe_2))
+    df_ouput: DataFrame = pd.DataFrame()
+    df_ouput['Position'] = list(dataframe_1['Position'])[0 : min_length]
+    df_ouput['dataset_1'] = list(dataframe_1['Score'])[0 : min_length]
+    df_ouput['dataset_2'] = list(dataframe_2['Score'])[0 : min_length]
+    df_diff: DataFrame = pd.DataFrame()
+
+    if metric.lower() == 'mean':
+        df_ouput['d1 - d2'] = (df_ouput['dataset_1'] - df_ouput['dataset_2'])
+        df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
+    elif metric.lower() == 'rmse':
+        df_ouput['d1 - d2'] = ((df_ouput['dataset_1'] - df_ouput['dataset_2'])**2)
+        df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
+        df_diff['d1 - d2'] = df_diff['d1 - d2']**0.5
+    elif metric.lower() == 'squared':
+        df_ouput['d1 - d2'] = (df_ouput['dataset_1']**2 - df_ouput['dataset_2']**2)
+        df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
+    df_diff.dropna(how='any', inplace=True)
+    return df_diff
 
 
 def process_by_pointmutant(

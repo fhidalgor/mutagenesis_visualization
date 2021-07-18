@@ -10,18 +10,15 @@ import freesasa
 from pandas.core.frame import DataFrame
 
 
-def select_grouping(dataframe: pd.DataFrame, mode: str) -> pd.DataFrame:
+def select_grouping(dataframe: pd.DataFrame, mode: str) -> DataFrame:
     """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
     """
-    # convert to upper case
-    mode = mode.upper()
-
     # Select grouping
-    if mode == 'MEAN':
+    if mode.upper() == 'MEAN':
         return dataframe.groupby('Position', as_index=False).mean()
-    return dataframe.loc[dataframe['Aminoacid'] == mode].copy()
+    return dataframe.loc[dataframe['Aminoacid'] == mode.upper()].copy()
 
 
 def color_3d_scatter(df_input: DataFrame, mode: str, lof: float, gof: float) -> DataFrame:

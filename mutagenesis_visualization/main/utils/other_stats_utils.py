@@ -7,6 +7,8 @@ import copy
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
+from sklearn import metrics
+
 from mutagenesis_visualization.main.utils.pandas_functions import (
     df_rearrange, return_common_elements
 )

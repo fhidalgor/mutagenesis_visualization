@@ -98,11 +98,12 @@ def generate_default_kwargs() -> Dict[str, Any]:
 
     """
     default_kwargs: Dict[str, Any] = {
+        'figsize':None,
         'figsize_x': None,
         'figsize_y': None,
         'colormap': _generate_colormap(),
         'colorbar_scale': [-1, 1],
-        'color': 'k',
+        'color': 'black',
         'title': 'Title',
         'x_label': 'x_label',
         'y_label': 'y_label',

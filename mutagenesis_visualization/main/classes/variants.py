@@ -16,7 +16,7 @@ class CreateVariants:
         self.seq_list: List[str] = []
         self.df_output: pd.DataFrame = pd.DataFrame()
 
-    def __call__(self, dna: str, codon_list: Union[list, str]) -> pd.DataFrame:
+    def __call__(self, dna: str, codon_list: Union[list, str]) -> DataFrame:
         """
         Generate a list of all point mutants given a dna sequence and a list
         of codons.

@@ -16,7 +16,7 @@ class Plotly:
     """
     def __init__(
         self,
-        aminoacids: Union[str, List[str]] = list('ACDEFGHIKLMNPQRSTVWY*'),
+        aminoacids: Union[str, List[str]],
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
@@ -56,7 +56,15 @@ class Plotly:
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        return temp_kwargs.update(kwargs)
+        temp_kwargs.update(kwargs)
+        temp_kwargs['aminoacids'] = kwargs.get('aminoacids', self.aminoacids)
+        if "*" in self.aminoacids and len(self.aminoacids)==21:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW*'))
+        elif len(self.aminoacids)==20:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW'))
+        else:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', self.aminoacids)
+        return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         pass

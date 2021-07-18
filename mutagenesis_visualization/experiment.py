@@ -7,8 +7,20 @@ from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 import numpy as np
 from mutagenesis_visualization.main.utils.pandas_functions import (transform_dataset, transform_sequence, transform_secondary)
 
+from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 
-df = pd.read_csv("mutagenesis_visualization/data/HRas166_RBD.csv")
+
+DEMO_OBJECTS:DemoObjects = DemoObjects()
+OBJ_TEST_1 = DEMO_OBJECTS.hras_rbd
+OBJ_TEST_2 = DEMO_OBJECTS.bla
+
+#OBJ_TEST_1.plotly_enrichment_bar(tick_spacing= 5)
+
+OBJ_TEST_1.plotly_differential(OBJ_TEST_2, plot_type='line',tick_spacing= 5)
+
+
+
+"""df = pd.read_csv("mutagenesis_visualization/data/HRas166_RBD.csv")
 my_file = "mutagenesis_visualization/data/HRas166_RBD.csv"
 # Load enrichment scores
 dataset = np.genfromtxt(my_file, delimiter=',')
@@ -26,12 +38,13 @@ aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
 start_position = 2
 fillna = 0
 
-object = Screen(dataset, sequence, aminoacids, start_position, fillna, secondary)
+object_test = Screen(dataset, sequence, aminoacids, start_position, fillna, secondary)"""
+#object.plotly_mean()
 #object.miniheatmap.plot(position_offset = -1, background_correction=True)
 #object.plotly_scatter_3d_pdbprop("mutagenesis_visualization/data/5p21.pdb")
 #object.position_bar(position=15)
-object.mean_differential(object, show_cartoon = True)
 
+#object_test.enrichment_bar(show_cartoon = False)
 
 
 

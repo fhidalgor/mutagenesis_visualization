@@ -42,19 +42,19 @@ class RankP(Plotly):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
 
         # Sort by enrichment scores
-        df_output = self.dataframe.sort_values(by=['Score']).copy()
+        self.df_output = self.dataframe.sort_values(by=['Score']).copy()
 
         # Chose mode:
         if mode == 'mean':
-            df_output = df_output.groupby(by=['Position'], as_index=False).mean()
-            df_output.sort_values(by=['Score'], inplace=True)
-            df_output['Variant'] = df_output['Position']
+            self.df_output = self.df_output.groupby(by=['Position'], as_index=False).mean()
+            self.df_output.sort_values(by=['Score'], inplace=True)
+            self.df_output['Variant'] = self.df_output['Position']
 
         # Create figure
         self.fig = px.scatter(
-            x=np.arange(len(df_output), 0, -1),
-            y=df_output['Score'],
-            text=df_output['Variant'],
+            x=np.arange(len(self.df_output), 0, -1),
+            y=self.df_output['Score'],
+            text=self.df_output['Variant'],
         )
 
         self._save_html(output_html)

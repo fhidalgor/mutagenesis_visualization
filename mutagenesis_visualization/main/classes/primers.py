@@ -111,7 +111,7 @@ class GeneratePrimers:
         codon: str = 'NNS',
         length_primer: int = 15,
         melting_temp: Optional[float] = None,
-    ) -> pd.DataFrame:
+    ) -> DataFrame:
         """
         Generate primers for saturation mutagenesis.
 

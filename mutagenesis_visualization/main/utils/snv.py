@@ -6,9 +6,9 @@ from collections import defaultdict
 import pandas as pd
 import itertools
 from Bio.Seq import Seq
+from pandas.core.frame import DataFrame
 
-
-def select_nonsnv(df_input: pd.DataFrame) -> pd.DataFrame:
+def select_nonsnv(df_input: DataFrame) -> DataFrame:
     """
     Generate a dataframe that contains the non-SNV variants and the enrichment score
 
@@ -31,7 +31,7 @@ def select_nonsnv(df_input: pd.DataFrame) -> pd.DataFrame:
     return df_nonsnv
 
 
-def select_snv(df_input: pd.DataFrame) -> pd.DataFrame:
+def select_snv(df_input: pd.DataFrame) -> DataFrame:
     """
     Select for SNV variants in DSM dataset
 
@@ -93,7 +93,7 @@ def _aminoacids_snv(aa1: str, aa2: str, codon_table, same_aa_SNV: bool = True) -
     return False
 
 
-def add_snv_boolean(df_input: pd.DataFrame) -> pd.DataFrame:
+def add_snv_boolean(df_input: pd.DataFrame) -> DataFrame:
     """
     Add a column to dataframe indication if the variant is a SNV or not
 
@@ -228,7 +228,7 @@ def _aa_to_codons(aminoacid: str) -> List[str]:
     return codons
 
 
-def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> pd.DataFrame:
+def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> DataFrame:
     """
     Inputs a dataframe with a column of amino acids, returns all syn for each amino acidcodons.
     Used dict_codon_to_aa() and _aa_to_codons.

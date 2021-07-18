@@ -9,7 +9,7 @@ import numpy as np
 from pandas import DataFrame
 
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
-from mutagenesis_visualization.main.bar_graphs.mean_differential import MeanDifferential
+from mutagenesis_visualization.main.bar_graphs.differential import Differential
 from mutagenesis_visualization.main.bar_graphs.position_bar import PositionBar
 from mutagenesis_visualization.main.bar_graphs.secondary import Secondary
 from mutagenesis_visualization.main.kernel.kernel import Kernel
@@ -19,15 +19,17 @@ from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 from mutagenesis_visualization.main.heatmaps.heatmap_columns import HeatmapColumns
 from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
 from mutagenesis_visualization.main.heatmaps.miniheatmap import Miniheatmap
+from mutagenesis_visualization.main.other_stats.rank import Rank
 from mutagenesis_visualization.main.other_stats.box import Box
 from mutagenesis_visualization.main.other_stats.cumulative import Cumulative
 from mutagenesis_visualization.main.other_stats.roc_analysis import ROC
 from mutagenesis_visualization.main.pca_analysis.correlation import Correlation
 from mutagenesis_visualization.main.pca_analysis.individual_correlation import IndividualCorrelation
 from mutagenesis_visualization.main.pca_analysis.pca import PCA
+from mutagenesis_visualization.main.plotly.differential import DifferentialP
+from mutagenesis_visualization.main.plotly.enrichment_bar import EnrichmentBarP
 from mutagenesis_visualization.main.plotly.heatmap import HeatmapP
 from mutagenesis_visualization.main.plotly.histogram import HistogramP
-from mutagenesis_visualization.main.plotly.mean_enrichment import MeanEnrichmentP
 from mutagenesis_visualization.main.plotly.rank import RankP
 from mutagenesis_visualization.main.plotly.scatter_3d_pdb import Scatter3DPDB
 from mutagenesis_visualization.main.plotly.scatter_3d import Scatter3D
@@ -173,9 +175,9 @@ class Screen:
 
         # bar
         self.enrichment_bar: EnrichmentBar = EnrichmentBar(
-            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids
+            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids, secondary=self.secondary
         )
-        self.mean_differential: MeanDifferential = MeanDifferential(
+        self.differential: Differential = Differential(
             dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids, secondary = self.secondary
         )
         self.position_bar: PositionBar = PositionBar(dataframe=self.dataframe, aminoacids=self.aminoacids)
@@ -202,15 +204,16 @@ class Screen:
             dataframe_snv=self.dataframe_snv,
             dataframe_nonsnv=self.dataframe_nonsnv, aminoacids=self.aminoacids
         )
-        # rank plot
+        self.rank: Rank = Rank(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.roc: ROC = ROC(dataframe=self.dataframe, aminoacids=self.aminoacids)
 
         # plotly
+        self.plotly_differential: DifferentialP = DifferentialP(dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids)
+        self.plotly_enrichment_bar: EnrichmentBarP = EnrichmentBarP(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.plotly_heatmap: HeatmapP = HeatmapP(
             sequence=self.sequence, dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
         )
         self.plotly_histogram: HistogramP = HistogramP(dataframe=self.dataframe, aminoacids=self.aminoacids)
-        self.plotly_mean: MeanEnrichmentP = MeanEnrichmentP(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.plotly_rank: RankP = RankP(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.plotly_scatter: ScatterP = ScatterP(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.plotly_scatter_3d: Scatter3D = Scatter3D(
