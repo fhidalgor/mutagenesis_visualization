@@ -1,7 +1,7 @@
 """
 This module contains the class that plots scatters.
 """
-from typing import Union, Dict, Any, Optional
+from typing import Union, Dict, Any
 from pathlib import Path
 import copy
 import numpy as np
@@ -20,7 +20,7 @@ class Scatter(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-    def plot(
+    def __call__(
         self,
         screen_object: Any,
         mode: str = 'pointmutant',
@@ -92,8 +92,7 @@ class Scatter(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         return temp_kwargs
 

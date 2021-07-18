@@ -23,7 +23,7 @@ class Scatter3DPDB(Plotly):
     This class uses plotly to generate a 3D scatter plot of the protein
     and the enrichment scores where you can add PDB properties.
     """
-    def plot(
+    def __call__(
         self,
         pdb_path: str = None,
         plot: List[str] = ['Distance', 'SASA', 'log B-factor'],
@@ -151,6 +151,5 @@ class Scatter3DPDB(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         return temp_kwargs

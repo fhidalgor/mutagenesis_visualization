@@ -27,9 +27,10 @@ start_position = 2
 fillna = 0
 
 object = Screen(dataset, sequence, aminoacids, start_position, fillna, secondary)
-object.miniheatmap.plot(position_offset = -1, background_correction=True)
-#object.plotly_scatter_3D_pdbprop.plot("mutagenesis_visualization/data/5p21.pdb")
-
+#object.miniheatmap.plot(position_offset = -1, background_correction=True)
+#object.plotly_scatter_3d_pdbprop("mutagenesis_visualization/data/5p21.pdb")
+#object.position_bar(position=15)
+object.mean_differential(object, show_cartoon = True)
 
 
 

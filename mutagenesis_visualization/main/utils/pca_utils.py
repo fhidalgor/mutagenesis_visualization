@@ -1,7 +1,9 @@
+from typing import List
 import numpy as np
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
+from pandas.core.frame import DataFrame
 from sklearn.decomposition import PCA
 
 
@@ -45,7 +47,7 @@ def calculate_clusters(dataset, dimensions, random_state):
     return dimensionstoplot, pca.explained_variance_ratio_
 
 
-def _grou_by_secondary(df, secondary):
+def _grou_by_secondary(df: DataFrame, secondary: List[str]) -> DataFrame:
     """
     Groups each secondary motif and makes the mean.
 
@@ -58,21 +60,18 @@ def _grou_by_secondary(df, secondary):
     return df
 
 
-def calculate_correlation_by_secondary(df, secondary):
-    dataset = _grou_by_secondary(df, secondary)
+def calculate_correlation_by_secondary(df: DataFrame, secondary) -> DataFrame:
+    dataset: DataFrame = _grou_by_secondary(df, secondary)
     dataset = dataset.pivot_table(values='Score', index='Secondary', columns='Aminoacid')
-    dataset = dataset.T.corr()
-
-    return dataset
+    return dataset.T.corr()
 
 
-def calculate_correlation(df, order_aminoacids):
+def calculate_correlation(df: DataFrame, order_aminoacids) -> DataFrame:
 
-    dataset = df.copy()
+    dataset: DataFrame = df.copy()
     dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.corr()
     dataset = dataset.reindex(index=order_aminoacids)[order_aminoacids]
-
     return dataset
 
 
@@ -92,7 +91,7 @@ def calculate_substitution_correlations(self, aminoacids, groups):
     """
 
     # Get correlation values
-    corr_values = _calculate_correlation(self.dataframe, aminoacids)**2
+    corr_values = calculate_correlation(self.dataframe, aminoacids)**2
     corr_values.reset_index(inplace=True)
 
     # Get combinations

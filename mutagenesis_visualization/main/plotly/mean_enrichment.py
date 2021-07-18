@@ -16,7 +16,7 @@ class MeanEnrichmentP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
-    def plot(
+    def __call__(
         self,
         mode: str = 'mean',
         output_html: Union[None, str, Path] = None,
@@ -121,8 +121,7 @@ class MeanEnrichmentP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')

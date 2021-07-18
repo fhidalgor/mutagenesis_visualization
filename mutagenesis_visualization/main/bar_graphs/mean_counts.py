@@ -31,7 +31,7 @@ class MeanCounts(Pyplot):
         super().__init__(dataset=dataset)
         self.positions: List[int] = positions
 
-    def plot(
+    def __call__(
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -94,8 +94,7 @@ class MeanCounts(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Mean counts')
         return temp_kwargs

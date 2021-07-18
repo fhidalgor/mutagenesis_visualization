@@ -16,7 +16,7 @@ class RankP(Plotly):
     """
     This class uses plotly to generate a rank plot.
     """
-    def plot(
+    def __call__(
         self,
         mode: str = 'pointmutant',
         output_html: Union[None, str, Path] = None,
@@ -103,8 +103,7 @@ class RankP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Rank')
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')

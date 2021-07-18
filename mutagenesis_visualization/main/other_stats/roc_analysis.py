@@ -19,7 +19,7 @@ class ROC(Pyplot):
     """
     Class to generate a ROC analysis.
     """
-    def plot(
+    def __call__(
         self,
         df_class: DataFrame,
         mode: str = 'pointmutant',
@@ -102,7 +102,6 @@ class ROC(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2.5))
         return temp_kwargs

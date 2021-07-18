@@ -1,14 +1,16 @@
 """
 This module contains utils to manipulate dataframes.
 """
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 import numpy as np
 import pandas as pd
 import itertools
 
+from pandas.core.frame import DataFrame
+
 
 def transform_dataset(
-    dataset,
+    dataset: Any,
     sequence: str,
     aminoacids: str,
     start_position: int,
@@ -20,7 +22,7 @@ def transform_dataset(
     """
 
     # make a dataframe
-    df_input: pd.DataFrame = pd.DataFrame()
+    df_input: DataFrame = pd.DataFrame()
 
     # Define Columns
     df_input['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
@@ -83,11 +85,11 @@ def transform_secondary(
 
 
 def df_rearrange(
-    df_input: pd.DataFrame,
+    df_input: DataFrame,
     new_order: str,
     values: str = 'Score',
     show_snv: bool = False,
-) -> pd.DataFrame:
+) -> DataFrame:
     """
     Convert a df_input into a numpy array for mutagenesis data. Allows the
     option of keeping NaN scores. Returns copy
@@ -104,29 +106,32 @@ def df_rearrange(
     return df_pivoted.reindex(index=list(new_order))
 
 
-def common_elements_list(a: list, b: list) -> list:
+def return_common_elements(a: list, b: list) -> list:
     """
     Return common elements of two lists.
     """
     return [value for value in a if value in b]
 
 
-def _transpose(df_input: pd.DataFrame, values: str = 'Score') -> pd.DataFrame:
+def _transpose(df_input: DataFrame, values: str = 'Score') -> DataFrame:
     """
-    Convert a df_input into a numpy array for mutagenesis data. Returns copy
+    Convert a df_input into a numpy array for mutagenesis data.
+    Returns copy.
     """
     return df_input.pivot_table(values=values, index='Aminoacid', columns=['Position']).T
 
 
-def select_aa(df_input: pd.DataFrame, selection, values: str = 'Score') -> pd.DataFrame:
-    """returns copy"""
+def select_aa(df_input: DataFrame, selection: List[str], values: str = 'Score') -> DataFrame:
+    """
+    Returns copy.
+    """
     df_input = _transpose(df_input.copy(), values)
     return df_input[selection].T
 
 
 def parse_pivot(
-    df_imported: pd.DataFrame, col_variant='variant', col_data='DMS', fill_value=np.nan
-):
+    df_imported: DataFrame, col_variant: str='variant', col_data: str='DMS', fill_value: any=np.nan
+) -> Tuple[DataFrame, str]:
     """
     Parses a dataframe that contains saturation mutagenesis data in the Variant/Scores format.
 
@@ -155,8 +160,7 @@ def parse_pivot(
         List of the amino acids that form the protein sequence.
     """
 
-    # Copy
-    df_input = df_imported.copy()
+    df_input: DataFrame = df_imported.copy()
 
     # Extract position and amino acids that are being mutated
     df_input['Position'] = df_input[col_variant].str.extract(r'(\d+)').astype(int)
@@ -188,9 +192,9 @@ def color_data(row, color_gof: str, color_lof: str) -> str:
 
 
 def process_mean_residue(
-    dataframe_1: pd.DataFrame,
-    dataframe_2: pd.DataFrame,
-) -> pd.DataFrame:
+    dataframe_1: DataFrame,
+    dataframe_2: DataFrame,
+) -> DataFrame:
     """
     Given two dataframes, it groups by position and truncates the
     longer one. It also drops nan values. Returns joined dataframe
@@ -204,7 +208,7 @@ def process_mean_residue(
     min_length: int = min(len(dataset_1), len(dataset_2))
 
     # convert to dataframe and eliminate Nans
-    df_ouput: pd.DataFrame = pd.DataFrame()
+    df_ouput: DataFrame = pd.DataFrame()
     df_ouput['dataset_1'] = list(dataset_1['Score'])[0 : min_length]
     df_ouput['dataset_2'] = list(dataset_2['Score'])[0 : min_length]
     df_ouput['Position'] = list(dataset_1['Position'])[0 : min_length]
@@ -214,16 +218,17 @@ def process_mean_residue(
 
 
 def process_by_pointmutant(
-    dataframe_1: pd.DataFrame,
-    dataframe_2: pd.DataFrame,
-) -> pd.DataFrame:
+    dataframe_1: DataFrame,
+    dataframe_2: DataFrame
+) -> DataFrame:
     """
-    Given two dataframes, it truncates the longer one. It also drops nan values.
-    Returns joined dataframe that contains the Scores and the Variants.
+    Given two dataframes, it truncates the longer one. It also drops nan
+    values. Returns joined dataframe that contains the Scores and the
+    Variants.
     """
     # truncate so both datasets have same length and delete stop codons
     min_length: int = min(len(dataframe_1), len(dataframe_2))
-    df_ouput: pd.DataFrame = pd.DataFrame()
+    df_ouput: DataFrame = pd.DataFrame()
     df_ouput['dataset_1'] = list(dataframe_1['Score_NaN'])[: min_length]
     df_ouput['dataset_2'] = list(dataframe_2['Score_NaN'])[: min_length]
     df_ouput['Variant'] = list(dataframe_1['Variant'])[: min_length]

@@ -18,7 +18,7 @@ class Pyplot:
     """
     def __init__(
         self,
-        aminoacids: List[str] = None,
+        aminoacids: Union[str, List[str]],
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
@@ -33,6 +33,8 @@ class Pyplot:
         """
         Docstring placeholder
         """
+        if isinstance(aminoacids, str):
+            aminoacids = list(aminoacids)
         self.aminoacids: List[str] = aminoacids
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
@@ -51,6 +53,10 @@ class Pyplot:
         self.gs_object: Optional[Any] = None
         self.df_output: Optional[DataFrame] = None
         self.screen_object: Optional[Any] = None
+        self.sequence_updated: Optional[str] = None
+        self.ax_object2 = None
+        self.ax_object3 = None
+        self.average_residue = None
 
     def _save_work(self, output_file: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
         """
@@ -72,7 +78,15 @@ class Pyplot:
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        return temp_kwargs.update(kwargs)
+        temp_kwargs.update(kwargs)
+        temp_kwargs['aminoacids'] = kwargs.get('aminoacids', self.aminoacids)
+        if "*" in self.aminoacids and len(self.aminoacids)==21:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW*'))
+        elif len(self.aminoacids)==20:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW'))
+        else:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', self.aminoacids)
+        return temp_kwargs
 
     def _load_parameters(self, ) -> None:
         """

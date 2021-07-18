@@ -15,7 +15,7 @@ class Box(Pyplot):
     """
     Class to generate a box plot.
     """
-    def plot(
+    def __call__(
         self,
         binned_x: array,
         y: array,
@@ -88,7 +88,6 @@ class Box(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         return temp_kwargs

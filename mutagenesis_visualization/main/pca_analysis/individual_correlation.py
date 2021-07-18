@@ -2,7 +2,6 @@
 This module contains the correlation class.
 """
 from typing import Union, Dict, Any
-import copy
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +15,7 @@ class IndividualCorrelation(Pyplot):
     This class will conduct an individual correlation from the enrichment
     scores.
     """
-    def plot(
+    def __call__(
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -90,8 +89,7 @@ class IndividualCorrelation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
         temp_kwargs['yscale'] = kwargs.get('yscale', (0, 1))
         return temp_kwargs

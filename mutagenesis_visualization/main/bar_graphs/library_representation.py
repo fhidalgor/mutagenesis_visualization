@@ -34,7 +34,7 @@ class LibraryRepresentation(Pyplot):
         self.positions: List[int] = positions
         self.df_percentage: Optional[pd.DataFrame] = None
 
-    def plot(
+    def __call__(
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -119,8 +119,7 @@ class LibraryRepresentation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         return temp_kwargs
 

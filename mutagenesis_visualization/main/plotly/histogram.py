@@ -15,7 +15,7 @@ class HistogramP(Plotly):
     """
     This class uses plotly to generate a histogram plot.
     """
-    def plot(
+    def __call__(
         self,
         mode='pointmutant',
         output_html: Union[None, str, Path] = None,
@@ -52,7 +52,7 @@ class HistogramP(Plotly):
 
         # Create second histogram
         if mode != 'pointmutant':
-            df_output = select_grouping(self, mode)
+            df_output = select_grouping(self.dataframe, mode)
             # Add second trace
             self.fig.add_trace(
                 go.Histogram(
@@ -121,8 +121,7 @@ class HistogramP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Enrichment score')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')

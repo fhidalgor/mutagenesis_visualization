@@ -18,7 +18,7 @@ class MeanDifferential(Pyplot):
     """
     Class to generate a mean enrichment bar plot.
     """
-    def plot(
+    def __call__(
         self,
         screen_object: Any,
         show_cartoon: bool = False,
@@ -98,8 +98,7 @@ class MeanDifferential(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
         temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
         temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')

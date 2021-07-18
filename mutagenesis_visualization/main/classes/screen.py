@@ -2,17 +2,19 @@
 This module contains the class Screen, which groups the plotting classes.
 """
 # Regular libraries
+from numpy.core.fromnumeric import amin
 from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 from typing import List, Optional, Any
 import numpy as np
 from pandas import DataFrame
 
-from mutagenesis_visualization.main.bar_graphs.mean_barplot import MeanBar
+from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.mean_differential import MeanDifferential
-from mutagenesis_visualization.main.bar_graphs.mean_position import MeanPosition
+from mutagenesis_visualization.main.bar_graphs.position_bar import PositionBar
 from mutagenesis_visualization.main.bar_graphs.secondary import Secondary
 from mutagenesis_visualization.main.kernel.kernel import Kernel
 from mutagenesis_visualization.main.kernel.histogram import Histogram
+from mutagenesis_visualization.main.kernel.multiple_kernels import MultipleKernel
 from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 from mutagenesis_visualization.main.heatmaps.heatmap_columns import HeatmapColumns
 from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
@@ -98,9 +100,9 @@ class Screen:
         self,
         dataset: Any,
         sequence: str,
-        aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*'),
-        start_position: Optional[int] = 2,
-        fillna: Optional[float] = 0,
+        aminoacids: List[str],
+        start_position: int = 2,
+        fillna: float = 0,
         secondary: Optional[list] = None,
     ):
         # Instances
@@ -120,7 +122,8 @@ class Screen:
         self.dataframe_nonsnv: DataFrame = select_nonsnv(self.dataframe)
 
         # Optional parameters
-        self.secondary: list = secondary
+        self.secondary: Optional[list] = secondary
+        self.secondary_dup: Optional[list] = None
         if self.secondary is not None:
             self.secondary, self.secondary_dup = transform_secondary(
                 self.dataset, self.secondary, self.start_position, self.aminoacids
@@ -130,12 +133,13 @@ class Screen:
         assert len(sequence) >= len(self.dataset[0]), "Input sequence is not long enough."
 
         # kernel
-        self.kernel: Kernel = Kernel(dataset=self.dataframe['Score_NaN'])
+        self.kernel: Kernel = Kernel(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.histogram: Histogram = Histogram(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv
+            dataframe_nonsnv=self.dataframe_nonsnv, aminoacids=self.aminoacids,
         )
+        self.multiple_kernel: MultipleKernel = MultipleKernel(dataframe = self.dataframe, aminoacids=self.aminoacids)
 
         # heatmaps
         self.heatmap: Heatmap = Heatmap(
@@ -143,20 +147,20 @@ class Screen:
             sequence=self.sequence,
             start_position=self.start_position,
             dataframe_stopcodons=self.dataframe_stopcodons,
-            secondary=self.secondary
+            secondary=self.secondary, aminoacids=self.aminoacids
         )
 
         self.heatmap_rows: HeatmapRows = HeatmapRows(
             dataframe=self.dataframe,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
+            dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
         )
         self.heatmap_columns: HeatmapColumns = HeatmapColumns(
             dataframe=self.dataframe,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
+            dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
         )
         self.miniheatmap: Miniheatmap = Miniheatmap(
             dataframe=self.dataframe,
@@ -168,56 +172,56 @@ class Screen:
         )
 
         # bar
-        self.differential: MeanDifferential = MeanDifferential(
-            dataframe=self.dataframe, start_position=self.start_position
+        self.enrichment_bar: EnrichmentBar = EnrichmentBar(
+            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids
         )
-        self.mean: MeanBar = MeanBar(dataframe=self.dataframe)
-        self.position: MeanPosition = MeanPosition(
-            dataframe=self.dataframe, start_position=self.start_position
+        self.mean_differential: MeanDifferential = MeanDifferential(
+            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids, secondary = self.secondary
         )
+        self.position_bar: PositionBar = PositionBar(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.secondary_mean: Secondary = Secondary(
-            dataframe=self.dataframe, secondary_dup=self.secondary_dup
+            dataframe=self.dataframe, secondary_dup=self.secondary_dup, aminoacids=self.aminoacids
         )
 
         # scatter
-        self.scatter: Scatter = Scatter(dataframe=self.dataframe)
+        self.scatter: Scatter = Scatter(dataframe=self.dataframe, aminoacids=self.aminoacids)
 
         # PCA
         self.correlation: Correlation = Correlation(
-            dataframe_stopcodons=self.dataframe_stopcodons, start_position=self.start_position
+            dataframe_stopcodons=self.dataframe_stopcodons, start_position=self.start_position, aminoacids=self.aminoacids
         )
         self.individual_correlation: IndividualCorrelation = IndividualCorrelation(
-            dataframe=self.dataframe
+            dataframe=self.dataframe, aminoacids=self.aminoacids
         )
-        self.pca: PCA = PCA(dataframe=self.dataframe)
+        self.pca: PCA = PCA(dataframe=self.dataframe, secondary_dup = self.secondary_dup, aminoacids=self.aminoacids)
 
         # other stats
-        self.box: Box = Box()
+        self.box: Box = Box(aminoacids=self.aminoacids)
         self.cumulative: Cumulative = Cumulative(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv
+            dataframe_nonsnv=self.dataframe_nonsnv, aminoacids=self.aminoacids
         )
         # rank plot
-        self.roc: ROC = ROC(dataframe=self.dataframe)
+        self.roc: ROC = ROC(dataframe=self.dataframe, aminoacids=self.aminoacids)
 
         # plotly
         self.plotly_heatmap: HeatmapP = HeatmapP(
-            sequence=self.sequence, dataframe_stopcodons=self.dataframe_stopcodons
+            sequence=self.sequence, dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
         )
-        self.plotly_histogram: HistogramP = HistogramP(dataframe=self.dataframe)
-        self.plotly_mean: MeanEnrichmentP = MeanEnrichmentP(dataframe=self.dataframe)
-        self.plotly_rank: RankP = RankP(dataframe=self.dataframe)
-        self.plotly_scatter: ScatterP = ScatterP(dataframe=self.dataframe)
-        self.plotly_scatter_3D: Scatter3D = Scatter3D(
+        self.plotly_histogram: HistogramP = HistogramP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_mean: MeanEnrichmentP = MeanEnrichmentP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_rank: RankP = RankP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_scatter: ScatterP = ScatterP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_scatter_3d: Scatter3D = Scatter3D(
             dataframe=self.dataframe,
             start_position=self.start_position,
-            end_position=self.end_position
+            end_position=self.end_position, aminoacids=self.aminoacids
         )
-        self.plotly_scatter_3D_pdbprop: Scatter3DPDB = Scatter3DPDB(
+        self.plotly_scatter_3d_pdbprop: Scatter3DPDB = Scatter3DPDB(
             dataframe=self.dataframe,
             start_position=self.start_position,
-            end_position=self.end_position
+            end_position=self.end_position, aminoacids=self.aminoacids
         )
 
         # pymol

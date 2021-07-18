@@ -25,29 +25,7 @@ class Heatmap(Pyplot):
     This class plots a heatmat with the enrichment scores.
     """
 
-    # add secondary parameter
-    def __init__(
-        self,
-        dataframe: Optional[pd.DataFrame],
-        sequence: Optional[str],
-        start_position: Optional[str],
-        dataframe_stopcodons: pd.DataFrame,
-        secondary: list,
-    ) -> None:
-        super().__init__(
-            dataset=None,
-            dataframe=dataframe,
-            sequence=sequence,
-            start_position=start_position,
-        )
-        self.dataframe_stopcodons: pd.DataFrame = dataframe_stopcodons
-        self.sequence_updated: Optional[str] = None
-        self.ax_object2 = None
-        self.ax_object3 = None
-        self.average_residue = None
-        self.secondary: list = secondary
-
-    def plot(
+    def __call__(
         self,
         nancolor: str = 'lime',
         show_cartoon: bool = False,
@@ -356,8 +334,7 @@ class Heatmap(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]

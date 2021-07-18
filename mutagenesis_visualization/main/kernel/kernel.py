@@ -14,7 +14,7 @@ class Kernel(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-    def plot(
+    def __call__(
         self,
         cumulative=False,
         output_file: Union[None, str, Path] = None,
@@ -43,7 +43,7 @@ class Kernel(Pyplot):
 
         # plot kernel
         self.ax_object = sns.kdeplot(
-            self.dataset,
+            self.dataframe['Score_NaN'],
             cumulative=cumulative,
             color='red',
             lw=2,
@@ -65,8 +65,7 @@ class Kernel(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')

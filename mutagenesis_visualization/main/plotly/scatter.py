@@ -4,19 +4,18 @@ This module contains the plotly scatter plot.
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 import copy
-from pandas import DataFrame
 import plotly.io as pio
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
-from mutagenesis_visualization.main.utils.pandas_functions import process_mean_residue
+from mutagenesis_visualization.main.utils.pandas_functions import (process_mean_residue, process_by_pointmutant)
 
 
 class ScatterP(Plotly):
     """
     This class uses plotly to generate a scatter plot.
     """
-    def plot(
+    def __call__(
         self,
         screen_object: Any,
         mode: str = 'pointmutant',
@@ -45,11 +44,10 @@ class ScatterP(Plotly):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self.screen_object: Any = screen_object
 
         # Chose mode:
         if mode == 'pointmutant':
-            self.df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
+            self.df_output = process_by_pointmutant(self.dataframe, screen_object.dataframe)
         elif mode == 'mean':
             self.df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
             self.df_output['Variant'] = self.df_output['Position']
@@ -114,7 +112,6 @@ class ScatterP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         return temp_kwargs

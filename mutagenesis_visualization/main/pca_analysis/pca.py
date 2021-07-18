@@ -21,7 +21,7 @@ class PCA(Pyplot):
     """
     This class will conduct a PCA from the enrichment scores.
     """
-    def plot(
+    def __call__(
         self,
         mode: str = 'aminoacid',
         dimensions: List[int] = [0, 1],
@@ -64,21 +64,21 @@ class PCA(Pyplot):
 
         # calculate correlation heatmap. Choose mode
         dataset = self.dataframe.copy()
-        if mode == 'aminoacid':
+        if mode.lower() == 'aminoacid':
             if '*' in temp_kwargs['neworder_aminoacids']:
                 temp_kwargs['neworder_aminoacids'].remove('*')
-            dataset = calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
+            self.df_output = calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
             textlabels = temp_kwargs['neworder_aminoacids']
-        elif mode == 'secondary':
-            dataset = calculate_correlation_by_secondary(dataset, self.secondary_dup)
+        elif mode.lower() == 'secondary':
+            self.df_output = calculate_correlation_by_secondary(dataset, self.secondary_dup)
             textlabels = list(dataset.columns)
-        elif mode == 'individual':
-            dataset = calculate_correlation_by_residue(dataset)
+        elif mode.lower() == 'individual':
+            self.df_output = calculate_correlation_by_residue(dataset)
             textlabels = list(dataset.columns)
 
         # plot using plot_clusters
         dimensions_to_plot, variance = calculate_clusters(
-            dataset, dimensions, temp_kwargs['random_state']
+            self.df_output, dimensions, temp_kwargs['random_state']
         )
 
         # x and y
@@ -118,11 +118,10 @@ class PCA(Pyplot):
 
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         return temp_kwargs

@@ -15,7 +15,7 @@ class Histogram(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-    def plot(
+    def __call__(
         self,
         population: str = 'All',
         output_file: Union[None, str, Path] = None,
@@ -71,8 +71,7 @@ class Histogram(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
         temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))

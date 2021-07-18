@@ -17,7 +17,7 @@ class Correlation(Pyplot):
     """
     This class will conduct a correlation from the enrichment scores.
     """
-    def plot(
+    def __call__(
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -38,19 +38,19 @@ class Correlation(Pyplot):
         self._load_parameters()
 
         # calculate correlation heatmap
-        self.dataset = calculate_correlation(
+        self.df_output = calculate_correlation(
             self.dataframe_stopcodons,
             temp_kwargs['neworder_aminoacids'],
         )
 
         # declare figure and subplots
-        self.fig = plt.figure(figsize=(2.5 * len(self.dataset.columns) / 19 * 1.05, 2.5))
+        self.fig = plt.figure(figsize=(2.5 * len(self.df_output.columns) / 19 * 1.05, 2.5))
         self.gs_object = gridspec.GridSpec(nrows=1, ncols=1)
         self.ax_object = plt.subplot(self.gs_object[0])
 
         # main heatmap
         heatmap = self.ax_object.pcolor(
-            self.dataset.corr(),
+            self.df_output.corr(),
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
             cmap='Greys',
@@ -77,8 +77,8 @@ class Correlation(Pyplot):
         """
         # ____________axes manipulation____________________________________________
         # put the major ticks at the middle of each cell
-        self.ax_object.set_xticks(np.arange(self.dataset.shape[1]) + 0.5, minor=False)
-        self.ax_object.set_yticks(np.arange(self.dataset.shape[0]) + 0.5, minor=False)
+        self.ax_object.set_xticks(np.arange(self.df_output.shape[1]) + 0.5, minor=False)
+        self.ax_object.set_yticks(np.arange(self.df_output.shape[0]) + 0.5, minor=False)
 
         # position of axis labels
         self.ax_object.tick_params('x', direction='out', pad=-2.5)
@@ -94,7 +94,7 @@ class Correlation(Pyplot):
 
         # so labels of x and y do not show up and my labels show up instead
         self.ax_object.set_xticklabels(
-            list(self.dataset.columns),
+            list(self.df_output.columns),
             fontsize=6.5,
             fontname="Arial",
             color='k',
@@ -122,8 +122,8 @@ class Correlation(Pyplot):
         )
         self.cb_object.update_ticks()
         plt.text(
-            len(self.dataset.columns) + 1.2 * len(self.dataset.columns) / 19 * 1.05,
-            len(self.dataset.columns) / 2.5,
+            len(self.df_output.columns) + 1.2 * len(self.df_output.columns) / 19 * 1.05,
+            len(self.df_output.columns) / 2.5,
             'R',
             horizontalalignment='center',
             fontsize=7,
@@ -144,8 +144,7 @@ class Correlation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
         return temp_kwargs

@@ -13,7 +13,7 @@ class Cumulative(Pyplot):
     This class will plot a cumulative function on the enrichment scores
     from first to last amino acid.
     """
-    def plot(
+    def __call__(
         self,
         mode: str = 'all',
         output_file: Union[None, str, Path] = None,
@@ -88,8 +88,7 @@ class Cumulative(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 20)

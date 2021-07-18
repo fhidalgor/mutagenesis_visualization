@@ -38,11 +38,11 @@ def pymol_fitness(df_input: DataFrame, gof, lof, mode, position_correction):
     return residues
 
 
-def _array_to_pymol(aminoacid_positions: List[str]):
+def _array_to_pymol(aminoacid_positions: List[str]) -> str:
     """
     Input an array with positions of aminoacids, return it in pymol format.
     """
-    pymol = ''
+    pymol: str = ''
     for aminoacid in aminoacid_positions:
         pymol += str(aminoacid) + '+'
 

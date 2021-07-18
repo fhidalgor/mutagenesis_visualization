@@ -2,7 +2,7 @@
 This module contains the parent class for all the plot classes.
 """
 from pathlib import Path
-from typing import Union, Dict, Any, Optional
+from typing import Union, Dict, Any, Optional, List
 import copy
 from pandas import DataFrame
 
@@ -16,6 +16,7 @@ class Plotly:
     """
     def __init__(
         self,
+        aminoacids: Union[str, List[str]] = list('ACDEFGHIKLMNPQRSTVWY*'),
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
@@ -28,6 +29,9 @@ class Plotly:
         """
         Docstring placeholder
         """
+        if isinstance(aminoacids, str):
+            aminoacids = list(aminoacids)
+        self.aminoacids: List[str] = aminoacids
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
         self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons

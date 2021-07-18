@@ -19,7 +19,7 @@ class HeatmapP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
-    def plot(
+    def __call__(
         self,
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -130,8 +130,7 @@ class HeatmapP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (8, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', '')
         temp_kwargs['y_label'] = kwargs.get('y_label', '')

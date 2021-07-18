@@ -22,7 +22,7 @@ class Scatter3D(Plotly):
     This class uses plotly to generate a 3D scatter plot of the protein
     and the enrichment scores.
     """
-    def plot(
+    def __call__(
         self,
         pdb_path: str,
         mode: str = 'mean',
@@ -132,8 +132,7 @@ class Scatter3D(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'x (Å)')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'y (Å)')
         temp_kwargs['z_label'] = kwargs.get('z_label', 'z (Å)')

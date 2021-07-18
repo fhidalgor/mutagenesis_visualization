@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.pandas_functions import (
-    df_rearrange, common_elements_list
+    df_rearrange, return_common_elements
 )
 
 
@@ -84,7 +84,7 @@ def condense_heatmap(df_input: DataFrame, new_order: List[str]) -> DataFrame:
     df_pivoted = df_pivoted.sort_values(by=['Aminoacid'])
 
     # Sort in x axis desired order
-    x_order = common_elements_list(new_order, list(df_pivoted.columns))
+    x_order = return_common_elements(new_order, list(df_pivoted.columns))
 
     # Drop amino acid column
     data_dropped = df_pivoted.drop(['Aminoacid'], axis=1)

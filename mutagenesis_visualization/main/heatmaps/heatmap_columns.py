@@ -20,25 +20,8 @@ class HeatmapColumns(Pyplot):
     This class plots a heatmap with the enrichment scores where you
     can show selected columns.
     """
-    def __init__(
-        self,
-        dataframe: Optional[pd.DataFrame],
-        sequence: Optional[str],
-        start_position: Optional[str],
-        dataframe_stopcodons: pd.DataFrame,
-    ) -> None:
-        super().__init__(
-            dataframe=dataframe,
-            sequence=sequence,
-            start_position=start_position,
-            dataframe_stopcodons=dataframe_stopcodons
-        )
-        self.sequence_updated: Optional[str] = None
-        self.ax_object2 = None
-        self.ax_object3 = None
-        self.average_residue = None
 
-    def plot(
+    def __call__(
         self,
         segment: Tuple[int],
         ylabel_color: str = 'k',
@@ -172,8 +155,7 @@ class HeatmapColumns(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
-        temp_kwargs.update(kwargs)
+        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
