@@ -7,6 +7,7 @@ from pandas import DataFrame
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import gridspec
+from matplotlib.ticker import AutoMinorLocator
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pandas_functions import process_rmse_residue
@@ -84,9 +85,9 @@ class Differential(Pyplot):
 
         # Needs to be worked for selecting the longer one
         # cartoon
-        title_pad = 0
+        title_pad = 1
         if show_cartoon:
-            title_pad = 2.5
+            title_pad = 6
             generate_cartoon(
                 self.secondary,
                 self.start_position,
@@ -112,33 +113,37 @@ class Differential(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
-        temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 5)
-        temp_kwargs['color'] = kwargs.get('color', 'grey')
+        temp_kwargs['figsize'] = kwargs.get('figsize', (5, 2.5))
+        temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
 
         if kwargs["metric"] == 'mean':
-            temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
         elif kwargs["metric"] == 'rmse':
-            temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Differential')
         if kwargs["metric"] == 'squared':
-            temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Differential')
         return temp_kwargs
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
         # add grid
-        plt.grid()
+        if temp_kwargs['grid']:
+            self.ax_object.grid(which='major', color = 'silver', linewidth=1)
+            self.ax_object.grid(which='minor', color = 'silver', linewidth=0.5)
+            # Show the minor ticks and grid.
+            self.ax_object.minorticks_on()
+            # Now hide the minor ticks (but leave the gridlines).
+            self.ax_object.tick_params(which='minor', bottom=False, left=False)
+            # Only show minor gridlines once in between major gridlines.
+            self.ax_object.xaxis.set_minor_locator(AutoMinorLocator(2))
 
         # self.ax_objectes parameters
         self.ax_object.set_ylim(temp_kwargs['yscale'])
@@ -147,7 +152,7 @@ class Differential(Pyplot):
             fontsize=10,
             fontname="Arial",
             color='k',
-            labelpad=-5,
+            labelpad=0,
             rotation=90
         )
         self.ax_object.set_xticks(

@@ -77,6 +77,9 @@ def generate_default_kwargs() -> Dict[str, Any]:
     show: boolean, default True
         Whether to execute plt.show() or not on a matplotlib object.
 
+    close: boolean, default False
+        Whether to execute plt.close() or not on a matplotlib object.
+
     random_state : int, default 554
         Random state used for PCA function.
 
@@ -121,9 +124,11 @@ def generate_default_kwargs() -> Dict[str, Any]:
         'cartoon_colors': ['lightgreen', 'lavender', 'k'],
         'text_labels': None,
         'show': True,
+        'close': False,
         'random_state': 554,
         'bins': 50,
         'return_plot_object': False,
+        'grid': False,
     }
 
     return default_kwargs

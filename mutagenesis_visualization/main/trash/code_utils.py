@@ -139,12 +139,9 @@ def _common(a, b):
 
 def _transpose(df, values='Score'):
     """
-    convert a df into a numpy array for mutagenesis data
-
-    Returns copy
+    Convert a df into a numpy array for mutagenesis data.
     """
-    df = df.pivot_table(values=values, index='Aminoacid', columns=['Position']).T
-    return df
+    return df.pivot_table(values=values, index='Aminoacid', columns=['Position']).T
 
 
 def _select_aa(df, selection, values='Score'):
@@ -250,7 +247,7 @@ def _select_nonSNV(df):
 
     Parameters
     -----------
-    df : pd.dataframe
+    df : DataFrame
 
     Returns
     --------

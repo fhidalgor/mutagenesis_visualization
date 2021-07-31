@@ -1,9 +1,11 @@
 """
-This module has the class to generate the variants to order to Twist.
+This module has the class to generate the variants to order to Twist
+or other DNA synthesis companies.
 """
 from pathlib import Path
 from typing import Union, List
 import pandas as pd
+from pandas.core.frame import DataFrame
 
 
 class CreateVariants:
@@ -14,7 +16,7 @@ class CreateVariants:
         self.dna: str = ""
         self.codon_list: List[str] = []
         self.seq_list: List[str] = []
-        self.df_output: pd.DataFrame = pd.DataFrame()
+        self.df_output: DataFrame = pd.DataFrame()
 
     def __call__(self, dna: str, codon_list: Union[list, str]) -> DataFrame:
         """
@@ -45,7 +47,7 @@ class CreateVariants:
         self.seq_list = self._enumerate_variants_2()
 
         # Make dataframe
-        self.df_output: pd.DataFrame = pd.DataFrame()
+        self.df_output: DataFrame = pd.DataFrame()
         self.df_output['Sequences'] = self.seq_list
         return self.df_output
 
@@ -60,7 +62,7 @@ class CreateVariants:
         if Path(output_file).suffix == '.xlsx':
             self.df_output.to_excel(Path(output_file), sheet_name='Variants', index=False)
         elif Path(output_file).suffix == '.fasta' or Path(output_file).suffix == '.txt':
-            self._list_to_fasta(self, output_file)
+            self._list_to_fasta(output_file)
 
     def _enumerate_variants_2(self) -> None:
         """

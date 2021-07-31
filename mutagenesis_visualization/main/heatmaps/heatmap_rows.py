@@ -4,11 +4,10 @@ selected rows.
 """
 from typing import Any, Dict, Union, Optional, List
 from pathlib import Path
-import copy
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.heatmap_utils import (
@@ -29,7 +28,7 @@ class HeatmapRows(Pyplot):
         nancolor: str = 'lime',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a heatmap plot enrichment scores of selected aminoacids.
 
@@ -54,12 +53,12 @@ class HeatmapRows(Pyplot):
 
         # Check if mean or not. Add group and pivot df_main.
         if selection == 'mean':
-            df_main: pd.DataFrame = add_snv_boolean(self.dataframe.copy()
+            df_main: DataFrame = add_snv_boolean(self.dataframe.copy()
                                                     ).groupby(by='Position').mean()['Score_NaN']
             y_labels = [""]
             dataset = np.array([df_main.to_numpy()])
         else:
-            df_main: pd.DataFrame = select_aa(
+            df_main = select_aa(
                 self.dataframe_stopcodons,
                 selection,
                 values='Score_NaN',
@@ -74,16 +73,16 @@ class HeatmapRows(Pyplot):
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
 
         self.fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs_object = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[len(dataset[0]), 1])
-        ax_object = plt.subplot(gs_object[0, 0])
-        cbar1 = plt.subplot(gs_object[0, 1])
+        self.gs_object: gridspec.GridSpec = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[len(dataset[0]), 1])
+        self.ax_object = plt.subplot(self.gs_object[0, 0])
+        cbar1 = plt.subplot(self.gs_object[0, 1])
 
         # Change color of values that are NaN
         cmap = temp_kwargs['colormap']
         cmap.set_bad(color=nancolor)
 
         # main heatmap
-        heatmap = ax_object.pcolormesh(
+        heatmap = self.ax_object.pcolormesh(
             dataset,
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
@@ -95,34 +94,34 @@ class HeatmapRows(Pyplot):
         )
 
         # put the major ticks at the middle of each cell
-        ax_object.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
-        ax_object.set_yticks(np.arange(dataset.shape[0]) + 0.5, minor=False)
+        self.ax_object.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
+        self.ax_object.set_yticks(np.arange(dataset.shape[0]) + 0.5, minor=False)
 
         # position of axis labels
-        ax_object.tick_params('x', direction='out', pad=-2.5)
-        ax_object.tick_params('y', direction='out', pad=0.4)
+        self.ax_object.tick_params('x', direction='out', pad=-2.5)
+        self.ax_object.tick_params('y', direction='out', pad=0.4)
 
         # second axis
-        ax2_object = ax_object.twiny()
+        ax2_object = self.ax_object.twiny()
         ax2_object.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
         ax2_object.tick_params(direction='out', pad=4)
 
         # Set the limits of the new axis from the original axis limits
-        ax2_object.set_xlim(ax_object.get_xlim())
+        ax2_object.set_xlim(self.ax_object.get_xlim())
 
         # want a more natural, table-like display
-        ax_object.invert_yaxis()
-        ax_object.xaxis.tick_top()
+        self.ax_object.invert_yaxis()
+        self.ax_object.xaxis.tick_top()
 
         # so labels of x and y do not show up and my labels show up instead
-        ax_object.set_xticklabels(
+        self.ax_object.set_xticklabels(
             list(self.sequence),
             fontsize=6.5,
             fontname="Arial",
             color='k',
             minor=False,
         )
-        ax_object.set_yticklabels(y_labels, fontsize=6, fontname="Arial", color='k', minor=False)
+        self.ax_object.set_yticklabels(y_labels, fontsize=6, fontname="Arial", color='k', minor=False)
         ax2_object.set_xticklabels(
             temp_kwargs['number_sequencelabels'][0 : len(dataset[0])],
             fontsize=10,
@@ -132,11 +131,11 @@ class HeatmapRows(Pyplot):
         )
 
         # align the labels of the y axis
-        for ylabel in ax_object.get_yticklabels():
+        for ylabel in self.ax_object.get_yticklabels():
             ylabel.set_horizontalalignment('center')
 
         # for coloring the residues that are 10,20...
-        for xtick, color in zip(ax_object.get_xticklabels(), temp_kwargs['color_sequencelabels']):
+        for xtick, color in zip(self.ax_object.get_xticklabels(), temp_kwargs['color_sequencelabels']):
             xtick.set_color(color)
 
         # for putting title on graph
@@ -163,11 +162,11 @@ class HeatmapRows(Pyplot):
             color='k',
         )
         cb_object.update_ticks()
-        gs_object.update(hspace=0.1, wspace=0.1 / len(dataset[0]) * 50)
+        self.gs_object.update(hspace=0.1, wspace=0.1 / len(dataset[0]) * 50)
 
         # remove ticks
-        ax_object.xaxis.set_ticks_position('none')
-        ax_object.yaxis.set_ticks_position('none')
+        self.ax_object.xaxis.set_ticks_position('none')
+        self.ax_object.yaxis.set_ticks_position('none')
         ax2_object.yaxis.set_ticks_position('none')
         ax2_object.xaxis.set_ticks_position('none')
 
@@ -176,7 +175,7 @@ class HeatmapRows(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

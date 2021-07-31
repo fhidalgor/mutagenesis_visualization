@@ -14,9 +14,9 @@ DEMO_OBJECTS:DemoObjects = DemoObjects()
 OBJ_TEST_1 = DEMO_OBJECTS.hras_rbd
 OBJ_TEST_2 = DEMO_OBJECTS.bla
 
-#OBJ_TEST_1.plotly_enrichment_bar(tick_spacing= 5)
+OBJ_TEST_1.differential(OBJ_TEST_2, tick_spacing= 10, grid=True)
 
-OBJ_TEST_1.plotly_differential(OBJ_TEST_2, plot_type='line',tick_spacing= 5)
+#OBJ_TEST_1.plotly_rank()
 
 
 

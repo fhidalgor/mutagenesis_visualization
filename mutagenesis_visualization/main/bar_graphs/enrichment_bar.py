@@ -24,7 +24,7 @@ class EnrichmentBar(Pyplot):
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Plot in a bargraph the enrichment for each residue of the
         protein. Red for gain of function, blue for loss of function.
@@ -74,7 +74,7 @@ class EnrichmentBar(Pyplot):
         # make figure
         if show_cartoon:
             self.fig = plt.figure(figsize=temp_kwargs['figsize'])
-            gs_object = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=[5, 1])
+            gs_object: gridspec.GridSpec = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=[5, 1])
             self.ax_object = plt.subplot(gs_object[0])
         else:
             self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -89,7 +89,7 @@ class EnrichmentBar(Pyplot):
         )
 
         # cartoon
-        title_pad = 0
+        title_pad: float = 0
         if show_cartoon:
             generate_cartoon(
                 self.secondary,
@@ -111,7 +111,7 @@ class EnrichmentBar(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
@@ -120,7 +120,7 @@ class EnrichmentBar(Pyplot):
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
         return temp_kwargs
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """

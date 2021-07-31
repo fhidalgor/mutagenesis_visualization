@@ -2,11 +2,11 @@
 This module contains the class Screen, which groups the plotting classes.
 """
 # Regular libraries
-from numpy.core.fromnumeric import amin
-from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union, Dict
 import numpy as np
 from pandas import DataFrame
+from itertools import combinations
+from pathlib import Path
 
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.differential import Differential
@@ -79,15 +79,18 @@ class Screen:
         We have set the default value to 2 because normally the Methionine
         in position 1 is not mutated.
 
+    fillna : float, default 0
+        How to replace NaN values.
+
     secondary : list, optional
         This parameter is used to group the data by secondary structure.
         The format is the name of the secondary structure multiplied by
         the residue length of that motif.
         Example : [['β1']*(8),['L1']*(7),['α1']*(9),...,].
 
-    fillna : float, default 0
-        How to replace NaN values.
-
+    replicates: list[np.array, Dataframe], optional
+        If you have multiple replicates for that experiment, pass them
+        in the same format as dataset.
 
     Attributes
     ------------
@@ -100,15 +103,19 @@ class Screen:
     """
     def __init__(
         self,
-        dataset: Any,
+        dataset: Union[np.array, DataFrame],
         sequence: str,
         aminoacids: List[str],
         start_position: int = 2,
         fillna: float = 0,
         secondary: Optional[list] = None,
+        replicates: Optional[List[Union[np.array, DataFrame]]] = None,
     ):
-        # Instances
-        self.dataset: np.array = np.array(dataset)
+
+        if isinstance(dataset, DataFrame):
+            self.dataset: np.array = np.array(dataset)
+        else:
+            self.dataset: np.array = dataset
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
         elif isinstance(aminoacids, str):
@@ -130,6 +137,15 @@ class Screen:
             self.secondary, self.secondary_dup = transform_secondary(
                 self.dataset, self.secondary, self.start_position, self.aminoacids
             )
+
+        self.replicates: Optional[List[Union[np.array, DataFrame]]] = replicates
+        self.replicates_dataframes: List[DataFrame] = []
+        if replicates:
+            for replicate in replicates:
+                _ , df_replicate = transform_dataset(
+                np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
+            )
+            self.replicates_dataframes.append(df_replicate)
 
         # Assert messages
         assert len(sequence) >= len(self.dataset[0]), "Input sequence is not long enough."
@@ -226,6 +242,20 @@ class Screen:
             start_position=self.start_position,
             end_position=self.end_position, aminoacids=self.aminoacids
         )
+
+    def scatter_replicates(self, mode: str = 'pointmutant', output_file: Union[None, str, Path] = None, title: str = None, show: bool=False, close: bool =True) -> None:
+        """
+        Produce replicates of scatter plots.
+        """
+        combination_replicates = list(combinations(range(0, len(self.replicates)), 2))
+        for comb in combination_replicates:
+            x_label: str = "Replicate " + str(comb[0] + 1)
+            y_label: str = "Replicate " + str(comb[1] + 1)
+
+            scatter_obj_1: Scatter = Scatter(dataframe=self.replicates_dataframes[comb[0]], aminoacids=self.aminoacids)
+            scatter_obj_2: Scatter = Scatter(dataframe=self.replicates_dataframes[comb[1]], aminoacids=self.aminoacids)
+
+            scatter_obj_1(scatter_obj_2,mode = mode, output_file=output_file.with_name(output_file.stem+"_"+str(comb[0])+"_vs_"+str(comb[1])+output_file.suffix), x_label = x_label, y_label = y_label,title = title, show=show, close=close)
 
         # pymol
         #try:

@@ -12,6 +12,7 @@ DICT_OBJ: dict = {
     'obj_test_1': OBJ_TEST_1,
     'obj_test_2': OBJ_TEST_2
 }
+OBJ_TEST_COUNTS = DEMO_OBJECTS.hras_counts
 
 def test_enrichment_bar():
     """
@@ -57,13 +58,13 @@ def test_enrichment_bar():
             )
 
 
-def test_mean_differential():
+def test_differential():
     """
     Test the differential bar plot.
     """
-    def _test_mean_differential_output(obj_test, parameters):
+    def _test_differential_output(obj_test, parameters):
         try:
-            obj_test.mean_differential(obj_test,
+            obj_test.differential(obj_test,
                 **parameters
             )  # pass dictionary as arguments of method
         except Exception as e:
@@ -89,10 +90,10 @@ def test_mean_differential():
     # Assert
     for obj_label, obj_test in DICT_OBJ.items(): # Loop over the dictionary
         for parameters in list_params: # Loop over the parameters
-            assert _test_mean_differential_output( # Assert that that set of parameters works on that object
+            assert _test_differential_output( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,
-            ) is False, "mean_differential failed with {} object and {} parameters".format(
+            ) is False, "differential failed with {} object and {} parameters".format(
                 obj_label,
                 parameters,
             )
@@ -181,12 +182,15 @@ def test_secondary():
                 parameters,
             )
 
-"""def test_library_representation():
-    def _test_library_representation(obj_test, parameters):
+def test_library_representation() -> None:
+    """
+    Test the library representation method.
+    """
+    def _test_library_representation(parameters) -> bool:
         try:
-            obj_test.library_representation(
+            OBJ_TEST_COUNTS.library_representation(
                 **parameters
-            )  # pass dictionary as arguments of method
+            )
         except Exception as e:
             print(e)
             print(traceback.format_exc())
@@ -208,24 +212,20 @@ def test_secondary():
     ]
 
     # Assert
-    for obj_label, obj_test in DICT_OBJ.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
-            assert _test_library_representation( # Assert that that set of parameters works on that object
-                obj_test,
-                parameters,
-            ) is False, "plot_library failed with {} object and {} parameters".format(
-                obj_label,
-                parameters,
-            )"""
+    for parameters in list_params: # Loop over the parameters
+        assert _test_library_representation( # Assert that that set of parameters works on that object
+            parameters,
+        ) is False, "plot_library failed with {} object and {} parameters".format(
+            parameters,
+        )
 
-'''
-def test_mean_counts():
+def test_mean_counts() -> None:
     """
     Test the mean counts bar plot.
     """
-    def _test_mean_counts_output(obj_test, parameters):
+    def _test_mean_counts_output(parameters) -> bool:
         try:
-            obj_test.mean_counts(
+            OBJ_TEST_COUNTS.mean_counts(
                 **parameters
             )  # pass dictionary as arguments of method
         except Exception as e:
@@ -248,14 +248,10 @@ def test_mean_counts():
         },
     ]
 
-    # Assert
-    for obj_label, obj_test in DICT_OBJ.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
-            assert _test_mean_counts_output( # Assert that that set of parameters works on that object
-                obj_test,
-                parameters,
-            ) is False, "plot_meancounts failed with {} object and {} parameters".format(
-                obj_label,
-                parameters,
-            )
-'''
+# Assert
+    for parameters in list_params: # Loop over the parameters
+        assert _test_mean_counts_output( # Assert that that set of parameters works on that object
+            parameters,
+        ) is False, "plot_meancounts failed with {} object and {} parameters".format(
+            parameters,
+        )

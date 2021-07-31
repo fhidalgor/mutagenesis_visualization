@@ -2,27 +2,28 @@
 This module contains the count dna reads function.
 """
 
-from typing import List, Union
+from typing import List, Union, Tuple
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from Bio.Seq import Seq
-from pathlib import Path
-
 from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.process_data.count_fastq import count_fastq
-from mutagenesis_visualization.main.utils.process_data_utils import (enumerate_variants, codon_table, are_syn)
+from mutagenesis_visualization.main.process_data.process_data_utils import (
+    enumerate_variants, generate_codon_table, are_syn
+)
 
 
 def count_reads(
-    dna_sequence,
+    dna_sequence: str,
     input_file: Union[str, Path],
-    codon_list: str ='NNS',
-    counts_wt: bool =True,
-    start_position: int =2,
+    codon_list: str = 'NNS',
+    counts_wt: bool = True,
+    start_position: int = 2,
     output_file: Union[None, str, Path] = None,
-    full: bool =False
-):
+    full: bool = False
+) -> Tuple[DataFrame, DataFrame]:
     """
     Process a trimmed fastq file containing DNA reads and returns the
     counts of each DNA sequence specified by the user.
@@ -124,19 +125,24 @@ def count_reads(
     df_output['Codon'] = codon_list * len(wt_protein)
     df_output['WTCodon'] = np.ravel([[codon] * len(codon_list) for codon in wtseq_list])
     df_output['Aminoacid'] = np.ravel([[aa] * len(codon_list) for aa in wt_protein])
-    df_output['SynWT'] = df_output.apply(lambda x: are_syn(x['Codon'], x['WTCodon'], codon_table()), axis=1)
+    df_output['SynWT'] = df_output.apply(
+        lambda x: are_syn(x['Codon'], x['WTCodon'], generate_codon_table()), axis=1
+    )
     df_output['Counts'] = list(variants.values())
 
     if counts_wt:
         try:  # try is to fix the Bug Che discovered
-            df_output.loc[df_output['Codon'] == df_output['WTCodon'], 'Counts'] = variants[dna_sequence]
+            df_output.loc[df_output['Codon'] == df_output['WTCodon'],
+                          'Counts'] = variants[dna_sequence]
         except:
             pass
     else:
         df_output.loc[df_output['Codon'] == df_output['WTCodon'], 'Counts'] = np.nan
 
     # Pivot table and reindex
-    df_counts = df_output.pivot_table(values='Counts', index='Codon', columns=['Position'], dropna=False)
+    df_counts = df_output.pivot_table(
+        values='Counts', index='Codon', columns=['Position'], dropna=False
+    )
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon

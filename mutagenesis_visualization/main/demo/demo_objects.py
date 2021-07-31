@@ -5,8 +5,10 @@ from typing import Dict, Union, List
 from pandas.core.frame import DataFrame
 import numpy as np
 
+from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
+from mutagenesis_visualization.main.process_data.count_reads import count_reads
 
 DEMO_DATASETS: Dict[str, Union[np.array, DataFrame]] = load_demo_datasets()
 
@@ -26,6 +28,7 @@ class DemoObjects:
         self.sumo: Screen = self._generate_sumo_obj()
         self.tat: Screen = self._generate_tat_obj()
         self.ube2i: Screen = self._generate_ube2i_obj()
+        self.hras_counts: Counts = self._return_hras_counts()
 
     def _generate_hras_rbd_object(self) -> Screen:
         """
@@ -256,3 +259,27 @@ class DemoObjects:
         start_position = DEMO_DATASETS['df_b11L5F'].columns[0]
 
         return Screen(DEMO_DATASETS['df_b11L5F'], sequence_b11L5F, aminoacids, start_position, 0)
+
+    def _return_hras_counts(self) -> Counts:
+        """
+        This method will generate a *Counts* object.
+        """
+        # H-Ras dna sequence
+        hras_dna_sequence: str = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' + 'tcattgatggggagacgtgcctgttggacatcctg'
+
+        # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
+        codon_list: List[str] = [
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG",
+            "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC",
+            "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
+        ]
+
+        df_counts_pre, _ = count_reads(
+            hras_dna_sequence,
+            "mutagenesis_visualization/data/hras.trimmed.fastq",
+            codon_list,
+            counts_wt=False,
+            start_position=2
+        )
+
+        return Counts(dataframe=df_counts_pre)

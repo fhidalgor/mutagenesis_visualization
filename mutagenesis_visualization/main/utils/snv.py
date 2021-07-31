@@ -14,24 +14,24 @@ def select_nonsnv(df_input: DataFrame) -> DataFrame:
 
     Parameters
     -----------
-    df_input : pd.DataFrame
+    df_input : DataFrame
 
     Returns
     --------
     Dataframe containing a column of variants that are non-SNV, and the Score.
     """
     # Dataframe with SNV
-    df_snv: pd.DataFrame = select_snv(df_input)
+    df_snv: DataFrame = select_snv(df_input)
 
     # Merge and eliminate duplicates. Keep Non-SNV
-    df_nonsnv: pd.DataFrame = pd.concat([df_snv, df_input],
+    df_nonsnv: DataFrame = pd.concat([df_snv, df_input],
                                         sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
     df_nonsnv.drop_duplicates(subset="Variant", keep=False, inplace=True)
 
     return df_nonsnv
 
 
-def select_snv(df_input: pd.DataFrame) -> DataFrame:
+def select_snv(df_input: DataFrame) -> DataFrame:
     """
     Select for SNV variants in DSM dataset
 
@@ -59,7 +59,7 @@ def select_snv(df_input: pd.DataFrame) -> DataFrame:
     return df_input
 
 
-def _aminoacids_snv(aa1: str, aa2: str, codon_table, same_aa_SNV: bool = True) -> bool:
+def _aminoacids_snv(aa1: str, aa2: str, codon_table: Dict[str, List[str]], same_aa_SNV: bool = True) -> bool:
     """
     Determine if two amino acids are snv (one base difference)
 
@@ -93,7 +93,7 @@ def _aminoacids_snv(aa1: str, aa2: str, codon_table, same_aa_SNV: bool = True) -
     return False
 
 
-def add_snv_boolean(df_input: pd.DataFrame) -> DataFrame:
+def add_snv_boolean(df_input: DataFrame) -> DataFrame:
     """
     Add a column to dataframe indication if the variant is a SNV or not
 
@@ -107,7 +107,7 @@ def add_snv_boolean(df_input: pd.DataFrame) -> DataFrame:
     """
 
     # Generate dictionary with aa and codon translation
-    codon_table: dict = _dict_codon_to_aa()
+    codon_table: Dict[str, List[str]] = _dict_codon_to_aa()
 
     # Add column with True/False input
     df_input["SNV?"] = df_input.apply(
@@ -228,7 +228,7 @@ def _aa_to_codons(aminoacid: str) -> List[str]:
     return codons
 
 
-def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> DataFrame:
+def _aa_to_codons_df(df_input: DataFrame, namecolumn: str) -> DataFrame:
     """
     Inputs a dataframe with a column of amino acids, returns all syn for each amino acidcodons.
     Used dict_codon_to_aa() and _aa_to_codons.
@@ -254,14 +254,14 @@ def _aa_to_codons_df(df_input: pd.DataFrame, namecolumn: str) -> DataFrame:
     return df_input
 
 
-def translate_codons(df_input: pd.DataFrame) -> List[str]:
+def translate_codons(df_input: DataFrame) -> List[str]:
     """
     Translate the index of the df_input from codons to AA.
     """
     return [str(Seq(codon).translate()) for codon in list(df_input.index)]
 
 
-def is_dna(df_input: pd.DataFrame) -> bool:
+def is_dna(df_input: DataFrame) -> bool:
     """
     Check if the index of the dataframe are the DNA codons.
     """

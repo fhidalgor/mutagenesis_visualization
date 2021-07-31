@@ -3,16 +3,15 @@ This module has the class for a bar plot of the library representation.
 """
 from pathlib import Path
 from typing import Union, Dict, Any, List, Optional
-import copy
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import ticker
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
-def _percentage_column(df_input: pd.DataFrame):
+def _percentage_column(df_input: DataFrame) -> DataFrame:
     """
     Make the percentage per column.
     """
@@ -25,14 +24,13 @@ class LibraryRepresentation(Pyplot):
     """
     def __init__(
         self,
-        dataset: pd.DataFrame,
+        dataframe: DataFrame,
         aminoacids: List[str],
         positions: List[int],
     ) -> None:
-        super().__init__(dataset=dataset)
-        self.aminoacids: List[str] = aminoacids
+        super().__init__(dataframe=dataframe, aminoacids = aminoacids)
         self.positions: List[int] = positions
-        self.df_percentage: Optional[pd.DataFrame] = None
+        self.df_percentage: Optional[DataFrame] = None
 
     def __call__(
         self,
@@ -53,11 +51,11 @@ class LibraryRepresentation(Pyplot):
 
         **kwargs : other keyword arguments
          """
-        temp_kwargs = self._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self._load_parameters()
 
         # Transform data
-        self.df_percentage = _percentage_column(self._group_codons_to_aa(self.dataset))
+        self.df_percentage = _percentage_column(self._group_codons_to_aa(self.dataframe))
 
         # colors
         colors = plt.cm.tab20(np.linspace(0, 1, 20))
@@ -75,7 +73,7 @@ class LibraryRepresentation(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
@@ -115,7 +113,7 @@ class LibraryRepresentation(Pyplot):
             loc='upper center'
         )
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
@@ -123,7 +121,7 @@ class LibraryRepresentation(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         return temp_kwargs
 
-    def _group_codons_to_aa(self, df_input: pd.DataFrame):
+    def _group_codons_to_aa(self, df_input: DataFrame) -> DataFrame:
         """
         Group different codons that are synonymous. Returns sum of counts.
         """

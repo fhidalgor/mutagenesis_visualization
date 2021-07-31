@@ -56,10 +56,11 @@ class Kernel(Pyplot):
         Change stylistic parameters of the plot.
         """
         plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname='Arial', color='k', labelpad=0)
-        plt.ylabel(['y_label'], fontsize=10, fontname='Arial', color='k', labelpad=3)
+        plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname='Arial', color='k', labelpad=3)
         plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
+        self.ax_object.get_legend().remove()
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """

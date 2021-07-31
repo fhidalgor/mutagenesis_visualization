@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.heatmap_utils import labels
@@ -28,7 +29,7 @@ class HeatmapColumns(Pyplot):
         nancolor: str = 'lime',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a heatmap plot enrichment scores but only plots a selected segment.
 
@@ -56,7 +57,7 @@ class HeatmapColumns(Pyplot):
         self._load_parameters()
 
         # sort data in specified order by user
-        df_whole: pd.DataFrame = df_rearrange(
+        df_whole: DataFrame = df_rearrange(
             self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'], values='Score_NaN'
         )
 
@@ -71,7 +72,7 @@ class HeatmapColumns(Pyplot):
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
 
         self.fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        gs_object = gridspec.GridSpec(nrows=1, ncols=1)
+        gs_object: gridspec.GridSpec = gridspec.GridSpec(nrows=1, ncols=1)
         # needed to set autoscale off to avoid missalignment
         ax_object = plt.subplot(gs_object[0])
 
@@ -151,7 +152,7 @@ class HeatmapColumns(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

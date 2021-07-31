@@ -5,7 +5,7 @@ This module contains the scatter tests.
 import traceback
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 
-def test_plot_scatter():
+def test_plot_scatter() -> None:
 
     demo_objects:DemoObjects = DemoObjects()
     dict_objects: dict = {"hras":demo_objects.hras_rbd, "bla":demo_objects.bla}

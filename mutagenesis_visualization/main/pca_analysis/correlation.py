@@ -71,7 +71,7 @@ class Correlation(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
@@ -140,7 +140,7 @@ class Correlation(Pyplot):
             pad=10,
         )
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

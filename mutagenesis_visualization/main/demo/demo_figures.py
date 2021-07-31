@@ -1,6 +1,7 @@
 """
 This module contains demo data that can be loaded.
 """
+from typing import List
 import numpy as np
 
 from mutagenesis_visualization.main.classes.screen import Screen
@@ -31,6 +32,9 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
     # Define protein sequence
     hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
 
+    # Set aminoacids
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
+
     # Define secondary structure
     secondary: list = [['L0'],
                        ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15), ['L2'] * (36 - 25),
@@ -43,7 +47,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
 
     # Create object
     hras_rbd: Screen = Screen(
-        dataset=hras_enrichment_rbd, sequence=hras_sequence, secondary=secondary
+        dataset=hras_enrichment_rbd, sequence=hras_sequence, aminoacids = aminoacids, secondary=secondary
     )
 
     if figure.lower() == 'heatmap':
@@ -54,7 +58,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
         hras_rbd.miniheatmap(title='Wt residue H-Ras', show=show)
     elif figure.lower() == 'mean':
         # Mean enrichment by position
-        hras_rbd.mean(
+        hras_rbd.enrichment_bar(
             figsize=[6, 2.5], mode='mean', show_cartoon=True, yscale=[-2, 0.5], title='', show=show
         )
     elif figure.lower() == 'kernel':
@@ -65,7 +69,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
         hras_rbd.pca(dimensions=[0, 1], figsize=(2, 2), adjustlabels=True, title='', show=show)
     elif figure.lower() == 'position':
         # Create plot for position 117
-        hras_rbd.position(
+        hras_rbd.position_bar(
             position=117,
             yscale=(-1.5, 0.8),
             figsize=(3.5, 2),

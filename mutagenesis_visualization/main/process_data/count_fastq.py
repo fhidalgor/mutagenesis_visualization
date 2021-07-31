@@ -2,11 +2,12 @@
 This module contains the function to count dna variants in fastq files.
 """
 from typing import Tuple
+from collections import OrderedDict
 import numpy as np
 from Bio import SeqIO
-from collections import OrderedDict
 
-from mutagenesis_visualization.main.utils.process_data_utils import initialize_ordered_dict
+from mutagenesis_visualization.main.process_data.process_data_utils import initialize_ordered_dict
+
 
 def count_fastq(variants, input_file) -> Tuple[dict, int, int]:
     """
@@ -34,7 +35,7 @@ def count_fastq(variants, input_file) -> Tuple[dict, int, int]:
         all the key values.
     """
     # if variant input is not an ordered dict, convert to ordered dict
-    if not (isinstance(variants, OrderedDict)):
+    if not isinstance(variants, OrderedDict):
         variants = initialize_ordered_dict(variants)
 
     # iterate over fastq file and count reads

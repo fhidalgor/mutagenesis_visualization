@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Union, Dict, Any, Optional, List
 import copy
 from pandas import DataFrame
-
+from plotly.graph_objects import Figure
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 
 
@@ -16,22 +16,24 @@ class Plotly:
     """
     def __init__(
         self,
-        aminoacids: Union[str, List[str]],
+        aminoacids: Union[str, List[str], None] = None,
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
         dataframe_snv: Optional[DataFrame] = None,
         dataframe_nonsnv: Optional[DataFrame] = None,
         sequence: Optional[str] = None,
-        start_position: Optional[str] = None,
-        end_position: Optional[str] = None,
+        start_position: Optional[int] = None,
+        end_position: Optional[int] = None,
     ) -> None:
         """
         Docstring placeholder
         """
         if isinstance(aminoacids, str):
-            aminoacids = list(aminoacids)
-        self.aminoacids: List[str] = aminoacids
+            self.aminoacids: List[str]  = list(aminoacids)
+        elif isinstance(aminoacids, list):
+            self.aminoacids = aminoacids
+
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
         self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
@@ -44,12 +46,16 @@ class Plotly:
         self.fig: Any = None
         self.df_output: Optional[DataFrame] = None
 
-    def _save_html(self, output_html: Union[None, str, Path]) -> None:
+    def _save_html(self, output_html: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
         """
         Save figure to html.
         """
         if output_html:
+            if '.html' not in output_html:
+                output_html += '.html'
             self.fig.write_html(str(Path(output_html)))
+        if temp_kwargs['show']:
+            self.fig.show(config={'displayModeBar': False})
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -69,7 +75,7 @@ class Plotly:
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         pass
 
-    def return_plot_object(self):
+    def return_plot_object(self) -> Figure:
         """
         Return matplotlib object.
         """

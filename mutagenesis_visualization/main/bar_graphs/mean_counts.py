@@ -3,14 +3,13 @@ This module has the class for a bar plot of the mean counts.
 """
 from pathlib import Path
 from typing import Union, Dict, Any, List
-import copy
-import pandas as pd
 import matplotlib.pyplot as plt
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
 
-def input_text(text_entries: List[str]):
+def input_text(text_entries: List[str]) -> None:
     """
     The user can input text as a variable by manually giving the coordinates.
     """
@@ -25,10 +24,11 @@ class MeanCounts(Pyplot):
     """
     def __init__(
         self,
-        dataset: pd.DataFrame,
+        dataframe: DataFrame,
         positions: List[int],
+        aminoacids: List[str],
     ) -> None:
-        super().__init__(dataset=dataset)
+        super().__init__(dataframe=dataframe, aminoacids = aminoacids)
         self.positions: List[int] = positions
 
     def __call__(
@@ -51,17 +51,17 @@ class MeanCounts(Pyplot):
                 and the text. Example: text_labels = [[x0,y0,text0]
                 [x1,y1,text1]].
         """
-        temp_kwargs = self._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self._load_parameters()
 
         # plot
         self.fig, ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
-        self.ax_object = self.dataset.mean().T.plot.bar(ax=ax_object, color='red')
+        self.ax_object = self.dataframe.mean().T.plot.bar(ax=ax_object, color='red')
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
@@ -90,7 +90,7 @@ class MeanCounts(Pyplot):
         # Put text labels
         input_text(temp_kwargs['text_labels'])
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

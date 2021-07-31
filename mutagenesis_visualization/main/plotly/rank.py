@@ -3,12 +3,9 @@ This module contains the plotly rank plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import copy
 import numpy as np
-from pandas import DataFrame
 import plotly.io as pio
-import plotly.express as px
-
+import plotly.graph_objects as go
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 
 
@@ -21,7 +18,7 @@ class RankP(Plotly):
         mode: str = 'pointmutant',
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a plotly rank plot so every mutation/residue is sorted based
         on enrichment score.
@@ -50,17 +47,20 @@ class RankP(Plotly):
             self.df_output.sort_values(by=['Score'], inplace=True)
             self.df_output['Variant'] = self.df_output['Position']
 
-        # Create figure
-        self.fig = px.scatter(
-            x=np.arange(len(self.df_output), 0, -1),
-            y=self.df_output['Score'],
-            text=self.df_output['Variant'],
+        self.fig = go.Figure(
+            data=[
+                go.Scatter(
+                    x=np.arange(len(self.df_output), 0, -1),
+                    y=self.df_output['Score'],
+                    text=self.df_output['Variant'],
+                    marker_color=temp_kwargs['color'],
+                    line = None,
+                    mode = "markers")
+            ]
         )
 
-        self._save_html(output_html)
+        self._save_html(output_html, temp_kwargs)
 
-        if temp_kwargs['show']:
-            self.fig.show(config={'displayModeBar': False})
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """

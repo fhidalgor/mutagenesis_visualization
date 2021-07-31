@@ -74,11 +74,11 @@ def transform_secondary(
     trimmedsecondary = secondary_list[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     # Multiply each element by number of aminoacids. not use stop codon
-    aminoacids = list(np.copy(aminoacids))
-    if '*' in aminoacids:
-        aminoacids.remove('*')
+    aminoacids_list: List[str] = list(np.copy(aminoacids))
+    if '*' in aminoacids_list:
+        aminoacids_list.remove('*')
     secondary_dup = [
-        x for item in trimmedsecondary for x in itertools.repeat(item, len(aminoacids))
+        x for item in trimmedsecondary for x in itertools.repeat(item, len(aminoacids_list))
     ]
 
     return trimmedsecondary, secondary_dup
@@ -130,8 +130,8 @@ def select_aa(df_input: DataFrame, selection: List[str], values: str = 'Score') 
 
 
 def parse_pivot(
-    df_imported: DataFrame, col_variant: str='variant', col_data: str='DMS', fill_value: any=np.nan
-) -> Tuple[DataFrame, str]:
+    df_imported: DataFrame, col_variant: str='variant', col_data: str='DMS', fill_value: Any =np.nan
+) -> Tuple[DataFrame, List[str]]:
     """
     Parses a dataframe that contains saturation mutagenesis data in the Variant/Scores format.
 
@@ -185,7 +185,7 @@ def parse_pivot(
     return df_pivoted, sequence
 
 
-def color_data(row, color_gof: str, color_lof: str) -> str:
+def color_data(row: DataFrame, color_gof: str, color_lof: str) -> str:
     if row["Score"] > 0:
         return color_gof
     return color_lof

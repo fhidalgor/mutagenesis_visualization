@@ -7,16 +7,16 @@ except ModuleNotFoundError:
     pass
 
 
-def pymol_fitness(df_input: DataFrame, gof, lof, mode, position_correction):
+def pymol_fitness(dataframe: DataFrame, gof:float, lof:float, mode: str, position_correction: int) -> List[str]:
     """
-    You input the dataframe. Removes stop codons.
-    Returns the positions that are going to be colored blue,red and white."""
+    Returns the positions that are going to be colored blue,red and white.
+    """
 
     # Select grouping
     if mode.lower() == 'mean':
-        df_grouped = df_input.groupby(['Position'], as_index=False).mean()
+        df_grouped = dataframe.groupby(['Position'], as_index=False).mean()
     else:
-        df_grouped = df_input.loc[df_input['Aminoacid'] == mode]
+        df_grouped = dataframe.loc[dataframe['Aminoacid'] == mode]
 
     # Color of mutations
     blue_mutations = df_grouped[df_grouped['Score'] < lof]
@@ -24,9 +24,9 @@ def pymol_fitness(df_input: DataFrame, gof, lof, mode, position_correction):
     white_mutations = df_grouped[df_grouped['Score'].between(lof, gof, inclusive=True)]
 
     # Pymol Format
-    blue_pymol = _array_to_pymol(blue_mutations['Position'] + position_correction)
-    red_pymol = _array_to_pymol(red_mutations['Position'] + position_correction)
-    white_pymol = _array_to_pymol(white_mutations['Position'] + position_correction)
+    blue_pymol: str = _array_to_pymol(blue_mutations['Position'] + position_correction)
+    red_pymol: str = _array_to_pymol(red_mutations['Position'] + position_correction)
+    white_pymol: str = _array_to_pymol(white_mutations['Position'] + position_correction)
 
     residues = [blue_pymol, red_pymol, white_pymol]
 
@@ -42,15 +42,15 @@ def _array_to_pymol(aminoacid_positions: List[str]) -> str:
     """
     Input an array with positions of aminoacids, return it in pymol format.
     """
-    pymol: str = ''
+    aminoacids_pymol: str = ''
     for aminoacid in aminoacid_positions:
-        pymol += str(aminoacid) + '+'
+        aminoacids_pymol += str(aminoacid) + '+'
 
     # delete last '+'
-    return pymol[:-1]
+    return aminoacids_pymol[:-1]
 
 
-def light_parameters():
+def light_parameters() -> None:
     """
     Group the light and ray parameters for pymol figures.
     """
@@ -71,4 +71,3 @@ def light_parameters():
     pymol.set('stick_radius', '0.2')
     pymol.set('sphere_scale', '0.2')
     pymol.set('sphere_quality', '4')
-    return

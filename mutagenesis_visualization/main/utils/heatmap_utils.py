@@ -1,12 +1,14 @@
 """
 Auxiliar functions used in the heatmaps.
 """
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import numpy as np
 from collections import Counter
+from pandas.core.frame import DataFrame
 from scipy.cluster import hierarchy
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import pandas as pd
 
 
@@ -16,14 +18,14 @@ def labels(start_position: int = 1) -> Tuple[List[str], List[int]]:
         'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
         for index in range(0, 1000)
     ])
-    color_sequencelabels: List[int] = list([
+    color_sequencelabels: List[Union[str, int]] = list([
         index + start_position if index in np.arange(10 - (start_position % 10), 1000, 10) else ''
         for index in range(0, 1000)
     ])
     return number_sequencelabels, color_sequencelabels
 
 
-def hierarchical_sort(df_input: pd.DataFrame) -> list:
+def hierarchical_sort(df_input: DataFrame) -> list:
     """
     Sorts columns of dataset using hierarchical clustering and returns
     order to rearrange dataset.
@@ -41,13 +43,13 @@ def hierarchical_sort(df_input: pd.DataFrame) -> list:
 def generate_cartoon(
     secondary: list,
     start_position: int,
-    gs_object,
+    gs_object: gridspec.GridSpec,
     n_row: int,
-    colors,
+    colors: List[str],
     bottom_space: float = 0,
     fig_inches: float = 13.91,
     show_labels: bool = True,
-):
+) -> plt.Axes:
     """
     Generates cartoon for heatmap.
     """

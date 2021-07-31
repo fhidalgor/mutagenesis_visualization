@@ -7,32 +7,34 @@ import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 from scipy import stats
-
-from mutagenesis_visualization.main.utils.process_data_utils import (stopcodon_correction, array_to_df_enrichments, group_by_aa, filter_by_mad, nan_mode, kernel_correction, replace_inf)
+from mutagenesis_visualization.main.process_data.process_data_utils import (
+    stopcodon_correction, array_to_df_enrichments, group_by_aa, filter_by_mad, nan_mode,
+    kernel_correction, replace_inf
+)
 
 
 def calculate_enrichment(
-    pre_lib: np.array,
-    post_lib:  np.array,
-    pre_wt: Optional[np.array]=None,
-    post_wt: Optional[np.array]=None,
-    aminoacids: List[str]=list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
-    zeroing: str='population',
-    how: str='median',
-    norm_std: bool=True,
-    stopcodon: bool=False,
-    min_counts: int =25,
-    min_countswt: int =100,
-    std_scale: float =0.2,
-    mpop: float =2,
-    mad_filtering: bool=True,
-    mwt: float=2,
-    infinite: float =3,
+    pre_lib: Union[str, DataFrame, np.array],
+    post_lib: Union[str, DataFrame, np.array],
+    pre_wt: Union[str, None, np.array] = None,
+    post_wt: Union[str, None, np.array] = None,
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
+    zeroing: str = 'population',
+    how: str = 'median',
+    norm_std: bool = True,
+    stopcodon: bool = False,
+    min_counts: int = 25,
+    min_countswt: int = 100,
+    std_scale: float = 0.2,
+    mpop: float = 2,
+    mad_filtering: bool = True,
+    mwt: float = 2,
+    infinite: float = 3,
     output_file: Union[None, str, Path] = None
 ) -> np.array:
     """
-    Determine the enrichment scores of a selection experiment, where there is a
-    preselected population (input) and a selected population (output).
+    Determine the enrichment scores of a selection experiment, where there
+    is a preselected population (input) and a selected population (output).
 
     Parameters
     -----------
@@ -142,8 +144,8 @@ def calculate_enrichment(
         pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
-    df: DataFrame = pd.DataFrame(data=log10_counts)
-    log10_counts_grouped = group_by_aa(df, aminoacids)
+    df_temp: DataFrame = pd.DataFrame(data=log10_counts)
+    log10_counts_grouped: DataFrame = group_by_aa(df_temp, aminoacids)
 
     # MAD filtering
     if mad_filtering:
@@ -183,7 +185,7 @@ def calculate_enrichment(
             zeroed = log10_counts_grouped - median_wt
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_wt
-        elif norm_std == True:
+        if norm_std is True:
             zeroed = zeroed * std_scale / 2 / std_wt
     elif zeroing == 'population':
         if how == 'mean':
@@ -192,17 +194,17 @@ def calculate_enrichment(
             zeroed = log10_counts_grouped - median_pop
         elif how == 'mode':
             zeroed = log10_counts_grouped - mode_pop
-        elif norm_std == True:
+        if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'counts':
         # Get the ratio of counts
         ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
         zeroed = log10_counts_grouped + ratio
-        if norm_std == True:
+        if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':
         zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, aminoacids)
-        zeroed, kernel_std = kernel_correction(zeroed_0, aminoacids, cutoff=1)
+        zeroed, kernel_std = kernel_correction(zeroed_0, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
     elif zeroing == 'zscore':
@@ -217,8 +219,10 @@ def calculate_enrichment(
 
     return zeroed
 
+
 def get_enrichment(
-    input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts: int, stopcodon: bool, infinite: float
+    input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts: int, stopcodon: bool,
+    infinite: float
 ) -> np.array:
     """
     Calculate log10 enrichment scores from input and output counts.

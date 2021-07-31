@@ -4,6 +4,7 @@ This module has the class to generate primers for saturation mutagenesis.
 from typing import Tuple, Union, Optional, List
 from pathlib import Path
 import pandas as pd
+from pandas.core.frame import DataFrame
 from Bio.Seq import Seq
 from Bio.SeqUtils import MeltingTemp as mt
 
@@ -105,6 +106,7 @@ class GeneratePrimers:
         self.end = end.upper()
         self.start_codon: int = self.dna.find(self.start)
         self.end_codon: int = self.dna.find(self.end)
+        self.df_primers: DataFrame = pd.DataFrame()
 
     def __call__(
         self,
@@ -147,7 +149,7 @@ class GeneratePrimers:
         )
 
         # Create dataframe
-        self.df_primers: pd.DataFrame = pd.DataFrame({
+        self.df_primers: DataFrame = pd.DataFrame({
             'FP_label': label_fp,
             'FP_seq': forward_primers,
             'RP_label': label_rp,

@@ -107,18 +107,15 @@ class Scatter3D(Plotly):
         )
 
         self._tune_plot(temp_kwargs)
-        self._save_html(output_html)
+        self._save_html(output_html, temp_kwargs)
 
-        # show only if asked
-        if temp_kwargs['show']:
-            self.fig.show(config={'displayModeBar': False})
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
         # update axes
-        self.fig = update_axes(self.fig, temp_kwargs)
+        update_axes(self.fig, temp_kwargs)
 
         # for the clickable part
         self.fig.update_traces(
@@ -126,7 +123,7 @@ class Scatter3D(Plotly):
             hovertemplate='Position: %{hovertext}',
         )
         # title
-        self.fig = update_layout(self.fig, temp_kwargs)
+        update_layout(self.fig, temp_kwargs)
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """

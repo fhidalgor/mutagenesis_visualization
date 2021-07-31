@@ -17,21 +17,10 @@ except ModuleNotFoundError:
     pass
 
 
-class Pymol:
+class Pymol(Pyplot):
     """
     This class acts as a wrapper with the ipymol github repo.
     """
-    def __init__(
-        self,
-        dataframe: DataFrame,
-        dataframe_snv: DataFrame,
-        dataframe_nonsnv: DataFrame,
-        dataframe_stopcodons: DataFrame,
-    ) -> None:
-        dataframe: DataFrame = dataframe
-        dataframe_snv: DataFrame = dataframe_snv
-        dataframe_nonsnv: DataFrame = dataframe_nonsnv
-        dataframe_stopcodons: DataFrame = dataframe_stopcodons
 
     def __call__(
         self,
@@ -39,7 +28,7 @@ class Pymol:
         mode: str = 'mean',
         residues: List[str] = None,
         position_correction: int = 0,
-        **kwargs
+        **kwargs: Dict[str, Any]
     ) -> None:
         """
         Color pymol structure residues. User can specify the residues to
@@ -95,14 +84,14 @@ class Pymol:
         are colored according to the enrichment scores.
 
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(default_kwargs)
+        temp_kwargs: Dict[str, Any] = copy.deepcopy(generate_default_kwargs())
         temp_kwargs.update(kwargs)
         temp_kwargs['color_lof'] = kwargs.get('color_lof', 'neptunium')
 
         # Calculate residues only if they are not given by the user
         if residues is None:
             residues = pymol_fitness(
-                self.df_input.copy(),
+                self.dataframe.copy(),
                 temp_kwargs['gof'],
                 temp_kwargs['lof'],
                 mode,

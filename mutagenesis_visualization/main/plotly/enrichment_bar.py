@@ -68,10 +68,7 @@ class EnrichmentBarP(Plotly):
         )
 
         self._tune_plot(temp_kwargs)
-        self._save_html(output_html)
-
-        if temp_kwargs['show']:
-            self.fig.show(config={'displayModeBar': False})
+        self._save_html(output_html, temp_kwargs)
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """

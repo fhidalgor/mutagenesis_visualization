@@ -2,8 +2,8 @@
 This module contains the class Counts.
 """
 from typing import List, Optional
-import pandas as pd
 import numpy as np
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.utils.snv import is_dna, translate_codons
 from mutagenesis_visualization.main.bar_graphs.library_representation import LibraryRepresentation
@@ -35,11 +35,11 @@ class Counts:
     """
     def __init__(
         self,
-        dataframe: pd.DataFrame,
+        dataframe: DataFrame,
         start_position: Optional[int] = None,
         aminoacids: Optional[List[str]] = None,
     ):
-        self.dataframe: pd.DataFrame = dataframe
+        self.dataframe: DataFrame = dataframe
         self.positions: List[int] = list(self.dataframe.columns)
         self.start_position: int = self.positions[0]
         if start_position:
@@ -54,9 +54,9 @@ class Counts:
         else:
             self.aminoacids = list(self.dataframe.index)
 
-        self.mean_counts = MeanCounts(dataset=self.dataframe, positions=self.positions)
+        self.mean_counts = MeanCounts(dataframe=self.dataframe, positions=self.positions, aminoacids = self.aminoacids)
         self.library_representation = LibraryRepresentation(
-            dataset=self.dataframe,
+            dataframe=self.dataframe,
             aminoacids=self.aminoacids,
             positions=self.positions,
         )

@@ -2,23 +2,20 @@
 This module contains sample *Screen* objects that can be used to
 explore this API.
 """
-from typing import Dict, Union, List
+from typing import Dict, Union
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
-from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.utils.pandas_functions import parse_pivot
-from mutagenesis_visualization.main.process_data import (
-    count_reads,
-    count_fastq,
-)
+
 
 PDB_5P21: str = "mutagenesis_visualization/data/5p21.pdb"
 PDB_1ERM: str = "mutagenesis_visualization/data/1erm.pdb"
 PDB_1A5R: str = "mutagenesis_visualization/data/1a5r.pdb"
 PDB_1ND4: str = "mutagenesis_visualization/data/1nd4.pdb"
 DEMO_FASTA: str = "mutagenesis_visualization/data/Ras_family_trimmed.fasta"
-
+HRAS_RBD_COUNTS: str = "mutagenesis_visualization/data/hrasRBD_counts.xlsx"
+HRAS_GAPGEF_COUNTS: str = "mutagenesis_visualization/data/hrasGAPGEF_counts.xlsx"
 
 def load_demo_datasets() -> Dict[str, Union[np.array, DataFrame]]:
     """
@@ -79,26 +76,3 @@ def load_demo_datasets() -> Dict[str, Union[np.array, DataFrame]]:
     data_dict['df_b11L5F'], _ = parse_pivot(df_b11L5F_raw, col_data='relative_tryp_stability_score')
 
     return data_dict
-
-
-def return_hras_counts() -> Counts:
-
-    # H-Ras dna sequence
-    hras_dnasequence: str = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' + 'tcattgatggggagacgtgcctgttggacatcctg'
-
-    # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
-    codon_list: List[str] = [
-        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG",
-        "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC",
-        "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
-    ]
-
-    df_counts_pre, _ = count_reads(
-        hras_dnasequence,
-        "mutagenesis_visualization/data/hras.trimmed.fastq",
-        codon_list,
-        counts_wt=False,
-        start_position=2
-    )
-
-    return Counts(df=df_counts_pre)

@@ -61,7 +61,7 @@ def msa_enrichment(self, path, start_position, threshold=0.01):
     return df_shannon, df_freq
 
 
-def _merge_shannon_enrichment(self, shannon_entropy, start_position):
+def _merge_shannon_enrichment(self, shannon_entropy, start_position: int):
 
     # Create df with shannon entropy by residue and average enrichment score by residue
     df_shannon = pd.DataFrame()
@@ -108,26 +108,26 @@ def _msa_to_df(msa, correctionfactor=1):
     return df_final / df_final.sum(axis=1).max()
 
 
-def _merge_msa_enrichment(self, df_msa, start_position, threshold):
+def _merge_msa_enrichment(self, df_msa, start_position: int, threshold):
     """
     Merges msa conservation of each individual amino acid with the
     enrichment scores.
     """
 
     # make a dataframe
-    df = pd.DataFrame()
+    df_temp: DataFrame = pd.DataFrame()
 
     # Create column with position and aminoacid label
-    df['Position'] = np.ravel([[i] * len(df_msa.T)
-                               for i in range(start_position,
-                                              len(df_msa) + start_position)])
-    df['Aminoacid'] = list(df_msa.columns) * len(df_msa)
+    df_temp['Position'] = np.ravel([[i] * len(df_msa.T)
+                                    for i in range(start_position,
+                                                   len(df_msa) + start_position)])
+    df_temp['Aminoacid'] = list(df_msa.columns) * len(df_msa)
 
     # Add conservation from MSA
-    df['Conservation'] = list(df_msa.stack(dropna=False))
+    df_temp['Conservation'] = list(df_msa.stack(dropna=False))
 
     # Merge with enrichment scores
-    df_merged = self.dataframe.merge(df, how='inner', on=['Position', 'Aminoacid'])
+    df_merged = self.dataframe.merge(df_temp, how='inner', on=['Position', 'Aminoacid'])
 
     # Copycat conservation
     df_merged['Class'] = df_merged['Conservation']

@@ -7,7 +7,7 @@ from pandas.core.frame import DataFrame
 from sklearn.decomposition import PCA
 
 
-def auto_text(x, y, textlabels):
+def auto_text(x: List[str], y: List[str], textlabels: List[str]):
     """
     Auto anotates text labels.
     """
@@ -60,13 +60,13 @@ def _grou_by_secondary(df: DataFrame, secondary: List[str]) -> DataFrame:
     return df
 
 
-def calculate_correlation_by_secondary(df: DataFrame, secondary) -> DataFrame:
+def calculate_correlation_by_secondary(df: DataFrame, secondary: List[str]) -> DataFrame:
     dataset: DataFrame = _grou_by_secondary(df, secondary)
     dataset = dataset.pivot_table(values='Score', index='Secondary', columns='Aminoacid')
     return dataset.T.corr()
 
 
-def calculate_correlation(df: DataFrame, order_aminoacids) -> DataFrame:
+def calculate_correlation(df: DataFrame, order_aminoacids: List[str]) -> DataFrame:
 
     dataset: DataFrame = df.copy()
     dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
@@ -75,16 +75,16 @@ def calculate_correlation(df: DataFrame, order_aminoacids) -> DataFrame:
     return dataset
 
 
-def calculate_correlation_by_residue(df):
+def calculate_correlation_by_residue(df_input: DataFrame):
 
-    dataset = df.copy()
+    dataset = df_input.copy()
     dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.T.corr()
 
     return dataset
 
 
-def calculate_substitution_correlations(self, aminoacids, groups):
+def calculate_substitution_correlations(self, aminoacids: List[str], groups: List[str]) -> DataFrame:
     """
     If a set of residues was chosen, how well would they represent
     the entire population.
@@ -114,7 +114,7 @@ def calculate_substitution_correlations(self, aminoacids, groups):
     return _polishdf(df)
 
 
-def _polishdf(df):
+def _polishdf(df: DataFrame) -> DataFrame:
     df_mean = df.copy()
     df_mean = df.mean().to_frame()
     df_mean.reset_index(drop=False, inplace=True)
@@ -124,5 +124,5 @@ def _polishdf(df):
     return df_mean
 
 
-def _find_correlation(aa1, aa2, corr_values):
+def _find_correlation(aa1, aa2, corr_values) -> float:
     return float(corr_values[aa1].loc[corr_values['Aminoacid'] == aa2])

@@ -8,9 +8,10 @@ import pandas as pd
 from Bio.PDB import PDBParser
 import freesasa
 from pandas.core.frame import DataFrame
+from plotly.graph_objects import Figure
 
 
-def select_grouping(dataframe: pd.DataFrame, mode: str) -> DataFrame:
+def select_grouping(dataframe: DataFrame, mode: str) -> DataFrame:
     """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
@@ -83,8 +84,8 @@ def parse_pdb_coordinates(
     end_position: int,
     position_correction: int,
     chain: str,
-    sasa=False
-):
+    sasa: bool =False
+) -> DataFrame:
     """
     Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
     If PDB is missing atoms, it can handle it.
@@ -135,7 +136,7 @@ def parse_pdb_coordinates(
         result = freesasa.calc(structure_sasa)
         # Calculate sasa
         sasa = freesasa.selectArea(commands, structure_sasa, result)
-        df_sasa = pd.DataFrame(columns=['SASA'], data=sasa.values())
+        df_sasa: DataFrame = pd.DataFrame(columns=['SASA'], data=sasa.values())
         df_sasa['log B-factor'] = bfactors
         df_sasa['Position'] = positions_worked
 
@@ -145,7 +146,7 @@ def parse_pdb_coordinates(
     return df_coordinates
 
 
-def matplotlib_to_plotly(cmap, pl_entries=255):
+def matplotlib_to_plotly(cmap, pl_entries: int =255) -> list:
     """
     Convert a matplotlib colorscale into plotly rgb format.
     """
@@ -159,7 +160,7 @@ def matplotlib_to_plotly(cmap, pl_entries=255):
     return pl_colorscale
 
 
-def update_layout(fig, temp_kwargs: Dict[str, Any]):
+def update_layout(fig: Figure, temp_kwargs: Dict[str, Any]) -> None:
     fig.update_layout(
         font=dict(family="Arial, monospace", size=12, color="black"),
         title={
@@ -175,10 +176,9 @@ def update_layout(fig, temp_kwargs: Dict[str, Any]):
         showticklabels=True,
         )
     )
-    return fig
 
 
-def update_axes(fig, temp_kwargs: Dict[str, Any]):
+def update_axes(fig: Figure, temp_kwargs: Dict[str, Any]) -> None:
     """
     Separeated this portion of the code because it is clumsy. It changes
     the axes looks.
@@ -215,4 +215,3 @@ def update_axes(fig, temp_kwargs: Dict[str, Any]):
             )
         )
     )
-    return fig

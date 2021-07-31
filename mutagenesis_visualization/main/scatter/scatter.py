@@ -3,9 +3,8 @@ This module contains the class that plots scatters.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import numpy as np
-import pandas as pd
+from pandas.core.frame import DataFrame
 from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from matplotlib import ticker
@@ -48,8 +47,8 @@ class Scatter(Pyplot):
         self._load_parameters()
 
         # Chose mode:
-        if mode == 'pointmutant':
-            df_output: pd.DataFrame = process_by_pointmutant(
+        if mode.lower() == 'pointmutant':
+            df_output: DataFrame = process_by_pointmutant(
                 self.dataframe, screen_object.dataframe
             )
         else:
@@ -88,7 +87,7 @@ class Scatter(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
@@ -96,7 +95,7 @@ class Scatter(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         return temp_kwargs
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """

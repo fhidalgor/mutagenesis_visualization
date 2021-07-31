@@ -2,7 +2,7 @@
 Utils for process data.
 """
 from pathlib import Path
-from typing import Dict, Union, List
+from typing import Dict, Tuple, Union, List
 import numpy as np
 import pandas as pd
 from collections import OrderedDict
@@ -10,7 +10,7 @@ from pandas.core.frame import DataFrame
 from scipy import stats
 
 
-def codon_table() -> Dict[str, str]:
+def generate_codon_table() -> Dict[str, str]:
     """
     Returns codon table dictionary.
     """
@@ -27,18 +27,18 @@ def codon_table() -> Dict[str, str]:
     }
 
 
-def are_syn(codon1: str, codon2: str, codontable) -> Union[bool, str]:
+def are_syn(codon1: str, codon2: str, codon_table: Dict[str, str]) -> Union[bool, str]:
     """
     Determine if 2 codons are synonymous.
     """
     if codon1 == codon2:
         return 'wt codon'  # changed from False
-    if _translate(codon1, codontable) is not _translate(codon2, codontable):
+    if _translate_dna(codon1, codon_table) is not _translate_dna(codon2, codon_table):
         return False
     return True
 
 
-def _translate(seq: str, codon_table: Dict[str, str]) -> str:
+def _translate_dna(seq: str, codon_table: Dict[str, str]) -> str:
     """
     Translate DNA sequence to protein.
     """
@@ -50,7 +50,8 @@ def _translate(seq: str, codon_table: Dict[str, str]) -> str:
     return protein
 
 
-def enumerate_variants(wtSeqList: List[str], codon_list: List[str], dna_sequence: str) -> Dict[str, int]:
+def enumerate_variants(wtseq_list: List[str], codon_list: List[str],
+                       dna_sequence: str) -> Dict[str, int]:
     """
     Will return an ordered dictionary with variants initialized to 0 counts.
     """
@@ -61,9 +62,10 @@ def enumerate_variants(wtSeqList: List[str], codon_list: List[str], dna_sequence
     firstwtseq: bool = False
 
     # Loop over codons
-    for position in range(0, len(wtSeqList)):
+    for position in range(0, len(wtseq_list)):
         for codons in (codon_list):
-            variant = ''.join(wtSeqList[0 : position]) + codons + ''.join(wtSeqList[position + 1 :])
+            variant = ''.join(wtseq_list[0 : position]
+                              ) + codons + ''.join(wtseq_list[position + 1 :])
             if (variant == dna_sequence):  # Store redundant wild-types
                 if firstwtseq:
                     variant = 'wtSeq' + str(position)
@@ -88,9 +90,12 @@ def initialize_ordered_dict(list_variants: List[str]) -> dict:
     return OrderedDict(dictionary)
 
 
-def stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodon):
-    """This aux function will take as an input the counts for pre and post selection (and also for wT subset),
-    and will return the corrected output counts"""
+def stopcodon_correction(input_lib: np.array, output_lib: np.array, input_stopcodon: np.array, output_stopcodon: np.array):
+    """
+    This aux function will take as an input the counts for pre and post
+    selection (and also for wT subset), and will return the corrected
+    output counts.
+    """
 
     # calculate stop codons frequencies
     frequency_stopcodons = output_stopcodon / input_stopcodon
@@ -108,21 +113,23 @@ def stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodo
     return output_lib_corr
 
 
-def filter_by_mad(data, m: float=2):
-    """This aux function will take a numpy array, calculate median and MAD,
-    and filter the data removing outliers"""
+def filter_by_mad(data: np.array, m: float = 2) -> np.array:
+    """
+    This aux function will take a numpy array, calculate median and MAD,
+    and filter the data removing outliers.
+    """
 
-    # turn data into df to do mad calculations
-    df = pd.DataFrame(np.array(data), columns=['Data'])
-    median = df['Data'].median(axis=0)
-    mad = df['Data'].mad(axis=0)
-    df['Abs_Dev'] = np.abs(data - median) / mad
+    # turn data into df_output to do mad calculations
+    df_output = pd.DataFrame(np.array(data), columns=['Data'])
+    median = df_output['Data'].median(axis=0)
+    mad = df_output['Data'].mad(axis=0)
+    df_output['Abs_Dev'] = np.abs(data - median) / mad
 
     # filter values m times away from median, by default m = 2
-    df['Abs_Dev'].mask(df['Abs_Dev'] > m, inplace=True)  # mask values
-    df.dropna(how='any', inplace=True)  # eliminte NANs
+    df_output['Abs_Dev'].mask(df_output['Abs_Dev'] > m, inplace=True)  # mask values
+    df_output.dropna(how='any', inplace=True)  # eliminte NANs
 
-    return df['Data'].to_numpy()
+    return df_output['Data'].to_numpy()
 
 
 def replace_inf(array, infinite):
@@ -152,7 +159,7 @@ def group_by_aa(df_input: DataFrame, aminoacids: List[str]) -> DataFrame:
     return df_output
 
 
-def nan_mode(data):
+def nan_mode(data: np.array) -> np.array:
     """
     Input is wt log enrichments, and return the mode of the histogram
     (aka the x coordinate at which y is max).
@@ -173,12 +180,15 @@ def nan_mode(data):
 
 
 # corrects the mutagenesis data and returns the height of the peak
-def kernel_correction(data, aminoacids, cutoff=2):
-    """input the library matrix, returns the corrected version. I set to 0 the max of the peak of the normal dist
-    ignores stop codons. Not used for dataframes, only numpy arrays"""
+def kernel_correction(data: Union[DataFrame, np.array], cutoff: float = 2) -> Tuple[np.array, float]:
+    """
+    Input the library matrix, returns the corrected version. I set
+    to 0 the max of the peak of the normal dist ignores stop codons.
+    Not used for dataframes, only numpy arrays.
+    """
 
     # Get data into right format
-    data_corrected, kernel_processed_data = _kernel_datapreparation(data, cutoff)
+    data_corrected, kernel_processed_data = _kernel_data_preparation(data, cutoff)
 
     # Find max of kernel peak
     indexmax = np.where(
@@ -189,7 +199,7 @@ def kernel_correction(data, aminoacids, cutoff=2):
     data_final = data - data_corrected[indexmax].mean()
 
     # find std of kernel. It uses the already max peak x=0 normalized data
-    data_final_flatten, data_final_kernel_processed_data = _kernel_datapreparation(
+    data_final_flatten, data_final_kernel_processed_data = _kernel_data_preparation(
         data_final, cutoff
     )
     std = _kernel_std(data_final_flatten, data_final_kernel_processed_data)
@@ -197,15 +207,15 @@ def kernel_correction(data, aminoacids, cutoff=2):
     return data_final, std
 
 
-def _kernel_datapreparation(data, cutoff):
+def _kernel_data_preparation(data: Union[DataFrame, np.array], cutoff: float) -> Tuple[np.array, np.array]:
     """
-    This function will copy the data, eliminate stop codon, eliminate values lower than -1,
-    flatten and eliminate np.nan. Will return the data in that format + the adjusted kernel
-
+    This function will copy the data, eliminate stop codon, eliminate
+    values lower than -1, flatten and eliminate np.nan. Will return the
+    data in that format + the adjusted kernel.
     """
 
     # Eliminate stop codon
-    data_corrected = np.array(data.drop('*', errors='ignore').copy())
+    data_corrected: np.array = np.array(data.drop('*', errors='ignore').copy())
 
     # Eliminate values lower than -1
     data_corrected = data_corrected[(data_corrected >= -cutoff) & (data_corrected <= cutoff)]
@@ -219,7 +229,7 @@ def _kernel_datapreparation(data, cutoff):
     return data_corrected, kernel_processed_data
 
 
-def _kernel_std(data, kernel):
+def _kernel_std(data: np.array, kernel) -> float:
     """
     Input the library matrix (and wont count stop codon), and will return
     the std of the normal distribution.
@@ -259,19 +269,16 @@ def _kernel_std(data, kernel):
     return min(std_l, std_r)
 
 
-def _array_to_df_enrichments(lib, aminoacids):
-    """
-    aux function to transform array in df with index of amino acids.
-
-    """
-
-    df = pd.DataFrame(index=aminoacids, data=lib)
-    return df.astype(float)
-
-
 def _read_counts(
-    excel_path, sheet_pre, sheet_post, columns, nrows_pop, nrows_wt, columns_wt=None, skiprows=1
-):
+    excel_path,
+    sheet_pre,
+    sheet_post,
+    columns,
+    nrows_pop,
+    nrows_wt,
+    columns_wt=None,
+    skiprows=1
+) -> Tuple[list, list, list, list]:
     """Aux"""
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     list_pre, list_sel, list_pre_wt, list_sel_wt = ([] for i in range(4))
@@ -341,8 +348,8 @@ def _assemble_list(
         enrichment_lib.append(enrichment_log10)
 
     # Concatenate sublibraries
-    df = pd.concat(enrichment_lib, ignore_index=True, axis=1)
-    return df
+    df_output = pd.concat(enrichment_lib, ignore_index=True, axis=1)
+    return df_output
 
 
 def array_to_df_enrichments(lib, aminoacids: List[str]) -> DataFrame:
@@ -352,3 +359,11 @@ def array_to_df_enrichments(lib, aminoacids: List[str]) -> DataFrame:
 
     df_output: DataFrame = pd.DataFrame(index=aminoacids, data=lib)
     return df_output.astype(float)
+
+def rearrange_dataframe(df_input: DataFrame, values_column: str, index_order: List[str]) -> DataFrame:
+    """
+    Convert a df that contains mutagenesis data in column format into a
+    matrix format.
+    """
+    df_pivoted: DataFrame = df_input.pivot_table(values=values_column, index='Aminoacid', columns=['Position'], dropna=False)
+    return df_pivoted.reindex(index=index_order)

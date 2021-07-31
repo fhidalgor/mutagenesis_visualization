@@ -3,8 +3,9 @@ This module contains the plotly scatter plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
-import copy
 import plotly.io as pio
+import plotly.graph_objects as go
+
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
@@ -22,7 +23,7 @@ class ScatterP(Plotly):
         show_results: bool = False,
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a scatter plot between object and a second object of the
         same class.
@@ -62,10 +63,7 @@ class ScatterP(Plotly):
         )
 
         self._tune_plot(temp_kwargs)
-        self._save_html(output_html)
-
-        if temp_kwargs['show']:
-            self.fig.show(config={'displayModeBar': False})
+        self._save_html(output_html, temp_kwargs)
 
         if show_results:
             px.get_trendline_results(self.fig).px_fit_results.iloc[0].summary()
@@ -81,7 +79,7 @@ class ScatterP(Plotly):
         # hide text labels
         self.fig.update_traces(
             hovertext=self.df_output['Variant'],
-            hovertemplate='Score_x: %{x}<br>Score: %{y}<br>Score_y: %{hovertext}<extra></extra>',
+            hovertemplate='Score_x: %{x}<br>Score_y: %{y}<br>Variant: %{hovertext}<extra></extra>',
         )
         self.fig.update_xaxes(
             title_text=temp_kwargs['x_label'],

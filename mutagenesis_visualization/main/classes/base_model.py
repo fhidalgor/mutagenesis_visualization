@@ -2,11 +2,12 @@
 This module contains the parent class for all the plot classes.
 """
 from pathlib import Path
-from typing import Union, Dict, Any, Optional, List
+from typing import Tuple, Union, Dict, Any, Optional, List
 import copy
 from matplotlib import rcParams
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 
@@ -18,7 +19,7 @@ class Pyplot:
     """
     def __init__(
         self,
-        aminoacids: Union[str, List[str]],
+        aminoacids: Union[str, List[str], None] = None,
         dataset: Optional[Any] = None,
         dataframe: Optional[DataFrame] = None,
         dataframe_stopcodons: Optional[DataFrame] = None,
@@ -26,7 +27,7 @@ class Pyplot:
         dataframe_nonsnv: Optional[DataFrame] = None,
         sequence: Optional[str] = None,
         sequence_raw: Optional[str] = None,
-        start_position: Optional[str] = None,
+        start_position: Optional[int] = None,
         secondary: Optional[list] = None,
         secondary_dup: Optional[list] = None,
     ) -> None:
@@ -34,8 +35,9 @@ class Pyplot:
         Docstring placeholder
         """
         if isinstance(aminoacids, str):
-            aminoacids = list(aminoacids)
-        self.aminoacids: List[str] = aminoacids
+            self.aminoacids: List[str]  = list(aminoacids)
+        elif isinstance(aminoacids, list):
+            self.aminoacids = aminoacids
         self.dataset: Any = dataset
         self.dataframe: Optional[DataFrame] = dataframe
         self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
@@ -72,6 +74,9 @@ class Pyplot:
             )
         if temp_kwargs['show']:
             plt.show()
+
+        if temp_kwargs['close']:
+            plt.close()
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -123,8 +128,20 @@ class Pyplot:
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         pass
 
-    def return_plot_object(self, ):
+    def return_plot_object(self) -> Tuple:
         """
         Return matplotlib object.
         """
         return self.fig, self.ax_object
+
+    def return_dataframe(self) -> DataFrame:
+        """
+        Return the dataframe that contains the massaged data.
+        """
+        return self.df_output
+
+    def export_dataframe_to_csv(self, output_file: Union[str, Path]) -> None:
+        """
+        Return the dataframe that contains the massaged data.
+        """
+        self.df_output.to_csv(Path(output_file), index=False)

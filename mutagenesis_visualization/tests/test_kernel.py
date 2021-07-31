@@ -7,8 +7,11 @@ from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 DEMO_OBJECTS:DemoObjects = DemoObjects()
 OBJ_TEST = DEMO_OBJECTS.hras_rbd
 
-def test_kernel():
-    def _test_kernel_output(parameters):
+def test_kernel() -> None:
+    """
+    Test the kernel method.
+    """
+    def _test_kernel_output(parameters) -> bool:
         try:
             OBJ_TEST.kernel(
                 **parameters
@@ -31,11 +34,14 @@ def test_kernel():
     for parameters in list_params:
         assert _test_kernel_output(
             parameters
-        ) == False, "plot_kernel failed with {} parameters".format(parameters)
+        ) is False, "plot_kernel failed with {} parameters".format(parameters)
 
 
-def test_histogram():
-    def _test_histogram_output(parameters):
+def test_histogram() -> None:
+    """
+    Test the histogram method.
+    """
+    def _test_histogram_output(parameters) -> bool:
         try:
             OBJ_TEST.histogram(
                 **parameters
@@ -63,11 +69,11 @@ def test_histogram():
             parameters
         )
 
-def test_multiple_kernel():
+def test_multiple_kernel() -> None:
     """
     Test of the multiple kernels method.
     """
-    def _test_multiple_kernel(parameters):
+    def _test_multiple_kernel(parameters) -> bool:
         try:
             OBJ_TEST.multiple_kernel(DEMO_OBJECTS.bla, **parameters)
         except Exception as e:

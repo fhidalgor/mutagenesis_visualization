@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
+from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.heatmap_utils import (
@@ -66,7 +67,7 @@ class Heatmap(Pyplot):
         self._load_parameters()
 
         # sort data by rows in specified order by user
-        self.df_output: pd.DataFrame = df_rearrange(
+        self.df_output: DataFrame = df_rearrange(
             add_snv_boolean(self.dataframe_stopcodons.copy()),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
@@ -92,8 +93,8 @@ class Heatmap(Pyplot):
             temp = pd.DataFrame(average)
             average = temp[sorted_columns_corrected]
             # Change the sequence order
-            self.sequence_updated = pd.DataFrame(list(self.sequence)).T[sorted_columns]
-            self.sequence_updated = list(self.sequence_updated.iloc[0])
+            temp_df: DataFrame = pd.DataFrame(list(self.sequence)).T[sorted_columns]
+            self.sequence_updated = list(temp_df.iloc[0])
         elif len(average) == 1:
             average = [np.array(average[0])]
 
@@ -325,12 +326,12 @@ class Heatmap(Pyplot):
         if temp_kwargs['return_plot_object']:
             return self.fig, self.ax_object, self.ax_object2, self.ax_object3, self.average_residue
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

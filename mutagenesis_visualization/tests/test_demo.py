@@ -1,12 +1,16 @@
+"""
+This module tests the demo methods and class.
+"""
 from typing import List
+import traceback
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
-from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets, return_hras_counts
+from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
 from mutagenesis_visualization.main.demo.demo_figures import run_demo
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 
 
-def test_run_demo():
+def test_run_demo() -> None:
     """
     This function will test that demo is capable of generating the
     types of figures ('heatmap', 'miniheatmap', 'mean', 'kernel', 'pca',
@@ -14,7 +18,7 @@ def test_run_demo():
     that demo() is supposed to. Will raise an error if at least one of
     the plots does not work.
     """
-    def _test_output_run_demo(argument: str) -> None:
+    def _test_output_run_demo(argument: str) -> bool:
         """
         Aux function for test_demo.
         Will try to run a demo function, will return True if there is an error.
@@ -22,7 +26,9 @@ def test_run_demo():
         try:
             run_demo(argument, show=False)
             return False
-        except:
+        except Exception as e:
+            print(e)
+            print(traceback.format_exc())
             return True
 
     arguments: List[str] = [
@@ -45,19 +51,13 @@ def test_load_demo_datasets() -> None:
         str(type(load_demo_datasets()))
     ) == "<class 'dict'>", "function demo_datasets failed"
 
-def test_return_hras_counts() -> None:
-    """
-    Test return_hras_counts.
-    """
-    demo_object: Counts = return_hras_counts()
-    assert isinstance(demo_object, Counts)
 
 def test_demo_objects() -> None:
     """
     Test class DemoObjects.
     """
     demo_object: DemoObjects = DemoObjects()
-    assert isinstance(demo_object.hras_RBD, Screen)
+    assert isinstance(demo_object.hras_rbd, Screen)
     assert isinstance(demo_object.bla, Screen)
     assert isinstance(demo_object.sumo, Screen)
     assert isinstance(demo_object.mapk1, Screen)
@@ -67,3 +67,4 @@ def test_demo_objects() -> None:
     assert isinstance(demo_object.asynuclein, Screen)
     assert isinstance(demo_object.aph, Screen)
     assert isinstance(demo_object.b11L5F, Screen)
+    assert isinstance(demo_object.hras_counts, Counts)
