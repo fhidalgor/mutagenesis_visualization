@@ -101,9 +101,9 @@ class GeneratePrimers:
             For example, if you will stop mutating at the stop codon, copy a
             few more dna bases ie. 'TAAATGATT'.
         """
-        self.dna = dna.upper()
-        self.start = start.upper()
-        self.end = end.upper()
+        self.dna: str = dna.upper()
+        self.start: str = start.upper()
+        self.end: str = end.upper()
         self.start_codon: int = self.dna.find(self.start)
         self.end_codon: int = self.dna.find(self.end)
         self.df_primers: DataFrame = pd.DataFrame()
@@ -164,6 +164,10 @@ class GeneratePrimers:
         -----------
         output_file : str
             File where the list of primers will be exported to. Only exports
-            to excel. Example: 'path/primers.xlsx'.
+            to excel or csv. Example: 'path/primers.xlsx'.
         """
-        self.df_primers.to_excel(Path(output_file), sheet_name='Primers', index=False)
+        assert Path(output_file).suffix == "csv" or Path(output_file).suffix == "xlsx"
+        if Path(output_file).suffix == "csv":
+            self.df_primers.to_csv(Path(output_file), index=False)
+        else:
+            self.df_primers.to_excel(Path(output_file), sheet_name='Primers', index=False)

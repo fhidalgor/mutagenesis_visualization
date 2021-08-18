@@ -4,6 +4,7 @@ Utils for process data.
 from pathlib import Path
 from typing import Dict, Tuple, Union, List
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from collections import OrderedDict
 from pandas.core.frame import DataFrame
@@ -90,7 +91,7 @@ def initialize_ordered_dict(list_variants: List[str]) -> dict:
     return OrderedDict(dictionary)
 
 
-def stopcodon_correction(input_lib: np.array, output_lib: np.array, input_stopcodon: np.array, output_stopcodon: np.array):
+def stopcodon_correction(input_lib: npt.NDArray, output_lib:npt.NDArray, input_stopcodon:npt.NDArray, output_stopcodon:npt.NDArray) -> npt.NDArray:
     """
     This aux function will take as an input the counts for pre and post
     selection (and also for wT subset), and will return the corrected
@@ -113,7 +114,7 @@ def stopcodon_correction(input_lib: np.array, output_lib: np.array, input_stopco
     return output_lib_corr
 
 
-def filter_by_mad(data: np.array, m: float = 2) -> np.array:
+def filter_by_mad(data:npt.NDArray, m: float = 2) -> npt.NDArray:
     """
     This aux function will take a numpy array, calculate median and MAD,
     and filter the data removing outliers.
@@ -132,11 +133,11 @@ def filter_by_mad(data: np.array, m: float = 2) -> np.array:
     return df_output['Data'].to_numpy()
 
 
-def replace_inf(array, infinite):
+def replace_inf(array: npt.NDArray, infinite: float) -> npt.NDArray:
     """
     Replace values over a threshold with a min or max value.
     """
-    np.warnings.filterwarnings('ignore')
+    #np.warnings.filterwarnings('ignore')
     array[array == -np.inf] = -infinite
     array[array < -infinite] = -infinite
     array[array == +np.inf] = +infinite
@@ -159,7 +160,7 @@ def group_by_aa(df_input: DataFrame, aminoacids: List[str]) -> DataFrame:
     return df_output
 
 
-def nan_mode(data: np.array) -> np.array:
+def nan_mode(data:npt.NDArray) -> npt.NDArray:
     """
     Input is wt log enrichments, and return the mode of the histogram
     (aka the x coordinate at which y is max).
@@ -180,7 +181,7 @@ def nan_mode(data: np.array) -> np.array:
 
 
 # corrects the mutagenesis data and returns the height of the peak
-def kernel_correction(data: Union[DataFrame, np.array], cutoff: float = 2) -> Tuple[np.array, float]:
+def kernel_correction(data: Union[DataFrame, npt.NDArray], cutoff: float = 2) -> Tuple[npt.NDArray, float]:
     """
     Input the library matrix, returns the corrected version. I set
     to 0 the max of the peak of the normal dist ignores stop codons.
@@ -207,7 +208,7 @@ def kernel_correction(data: Union[DataFrame, np.array], cutoff: float = 2) -> Tu
     return data_final, std
 
 
-def _kernel_data_preparation(data: Union[DataFrame, np.array], cutoff: float) -> Tuple[np.array, np.array]:
+def _kernel_data_preparation(data: DataFrame, cutoff: float) -> Tuple[npt.NDArray, npt.NDArray]:
     """
     This function will copy the data, eliminate stop codon, eliminate
     values lower than -1, flatten and eliminate np.nan. Will return the
@@ -215,7 +216,7 @@ def _kernel_data_preparation(data: Union[DataFrame, np.array], cutoff: float) ->
     """
 
     # Eliminate stop codon
-    data_corrected: np.array = np.array(data.drop('*', errors='ignore').copy())
+    data_corrected:npt.NDArray = np.array(data.drop('*', errors='ignore').copy())
 
     # Eliminate values lower than -1
     data_corrected = data_corrected[(data_corrected >= -cutoff) & (data_corrected <= cutoff)]
@@ -229,7 +230,7 @@ def _kernel_data_preparation(data: Union[DataFrame, np.array], cutoff: float) ->
     return data_corrected, kernel_processed_data
 
 
-def _kernel_std(data: np.array, kernel) -> float:
+def _kernel_std(data:npt.NDArray, kernel) -> float:
     """
     Input the library matrix (and wont count stop codon), and will return
     the std of the normal distribution.

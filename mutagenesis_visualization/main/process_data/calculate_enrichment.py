@@ -4,6 +4,7 @@ This module contais the enrichment calculations from dna counts.
 from typing import Union, Optional, List
 from pathlib import Path
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas.core.frame import DataFrame
 from scipy import stats
@@ -14,10 +15,10 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
 
 
 def calculate_enrichment(
-    pre_lib: Union[str, DataFrame, np.array],
-    post_lib: Union[str, DataFrame, np.array],
-    pre_wt: Union[str, None, np.array] = None,
-    post_wt: Union[str, None, np.array] = None,
+    pre_lib: Union[str, DataFrame, npt.NDArray],
+    post_lib: Union[str, DataFrame, npt.NDArray],
+    pre_wt: Union[str, None, npt.NDArray] = None,
+    post_wt: Union[str, None, npt.NDArray] = None,
     aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
     zeroing: str = 'population',
     how: str = 'median',
@@ -31,7 +32,7 @@ def calculate_enrichment(
     mwt: float = 2,
     infinite: float = 3,
     output_file: Union[None, str, Path] = None
-) -> np.array:
+) -> npt.NDArray:
     """
     Determine the enrichment scores of a selection experiment, where there
     is a preselected population (input) and a selected population (output).
@@ -223,7 +224,7 @@ def calculate_enrichment(
 def get_enrichment(
     input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts: int, stopcodon: bool,
     infinite: float
-) -> np.array:
+) -> npt.NDArray:
     """
     Calculate log10 enrichment scores from input and output counts.
     """

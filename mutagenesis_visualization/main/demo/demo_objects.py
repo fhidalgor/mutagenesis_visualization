@@ -23,6 +23,7 @@ class DemoObjects:
         self.b11L5F: Screen = self._generate_b11L5F_obj()
         self.bla: Screen = self._generate_bla_obj()
         self.hras_rbd: Screen = self._generate_hras_rbd_object()
+        self.hras_gapgef: Screen = self._generate_hras_gapgef_object()
         self.mapk1: Screen = self._generate_mapk1_obj()
         self.rev: Screen = self._generate_rev_obj()
         self.sumo: Screen = self._generate_sumo_obj()
@@ -49,6 +50,27 @@ class DemoObjects:
 
         return Screen(
             dataset=DEMO_DATASETS['array_hras_RBD'], sequence=hras_sequence, aminoacids = list('ACDEFGHIKLMNPQRSTVWY*'), secondary=secondary
+        )
+
+    def _generate_hras_gapgef_object(self) -> Screen:
+        """
+        Create object hras_gapgef.
+        """
+        # Define protein sequence
+        hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+
+        # Define secondary structure
+        secondary: list = [
+            ['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15), ['L2'] * (36 - 25),
+            ['β2'] * (46 - 36), ['L3'] * (48 - 46), ['β3'] * (58 - 48), ['L4'] * (64 - 58),
+            ['α2'] * (74 - 64), ['L5'] * (76 - 74), ['β4'] * (83 - 76), ['L6'] * (86 - 83),
+            ['α3'] * (103 - 86), ['L7'] * (110 - 103), ['β5'] * (116 - 110), ['L8'] * (126 - 116),
+            ['α4'] * (137 - 126), ['L9'] * (140 - 137), ['β6'] * (143 - 140), ['L10'] * (151 - 143),
+            ['α5'] * (172 - 151), ['L11'] * (190 - 172)
+        ]
+
+        return Screen(
+            dataset=DEMO_DATASETS['array_hras_gapgef'], sequence=hras_sequence, aminoacids = list('ACDEFGHIKLMNPQRSTVWY*'), secondary=secondary
         )
 
     def _generate_bla_obj(self) -> Screen:

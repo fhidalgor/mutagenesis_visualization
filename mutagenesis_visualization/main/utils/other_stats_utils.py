@@ -1,40 +1,34 @@
 """
 Utilities used in the other stats methods.
 """
-from typing import List
+from typing import List, Tuple
 
 import copy
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas.core.frame import DataFrame
 from sklearn import metrics
 
-from mutagenesis_visualization.main.utils.pandas_functions import (
-    df_rearrange, return_common_elements
-)
+from mutagenesis_visualization.main.utils.pandas_functions import return_common_elements
 
 
-def select_grouping(df, mode):
+def select_grouping(df_input: DataFrame, mode: str) -> DataFrame:
     """
     Choose the subset of substitutions based on mode input.
     For example, if mode=='A', then return data for Alanine.
-
     """
-    # convert to upper case
-    mode = mode.upper()
 
     # Select grouping
-    if mode == 'POINTMUTANT':
-        pass
+    if mode.upper() == 'POINTMUTANT':
+        return df_input
     elif mode == 'MEAN':
-        df = df.groupby('Position', as_index=False).mean()
+        return df_input.groupby('Position', as_index=False).mean()
     else:
-        df = df.loc[self.dataframe['Aminoacid'] == mode].copy()
-
-    return df
+        return df_input.loc[df_input['Aminoacid'] == mode].copy()
 
 
-def roc_auc(df):
+def roc_auc(df: DataFrame) -> Tuple:
     """
     Calculate roc rates and auc.
 
@@ -45,15 +39,13 @@ def roc_auc(df):
     return fpr, tpr, auc, thresholds
 
 
-def merge_class_variants(df_score, df_class, mode):
+def merge_class_variants(df_score: DataFrame, df_class: DataFrame, mode: str) -> DataFrame:
     """
     Merge the input dataframe containing the class (true score) for
     variants and the enrichment scores
     """
-    # convert to upper case
-    mode = mode.upper()
 
-    if mode == 'POINTMUTANT':
+    if mode.upper() == 'POINTMUTANT':
         # Cut other data
         df_class = df_class[['Variant', 'Class']].copy()
         # Merge DMS with true score dataset
@@ -95,7 +87,7 @@ def condense_heatmap(df_input: DataFrame, new_order: List[str]) -> DataFrame:
 
 
 def _offset_sequence(
-    dataset: np.array, sequence: str, start_position: int, position_offset: int
+    dataset: npt.NDArray, sequence: str, start_position: int, position_offset: int
 ) -> str:
     """
     Internal function that offsets the input sequence.
@@ -121,7 +113,7 @@ def _offset_sequence(
 
 
 def transform_dataset_offset(
-    dataset: np.array,
+    dataset: npt.NDArray,
     dataframe: DataFrame,
     dataframe_stopcodons: DataFrame,
     sequence_raw: str,

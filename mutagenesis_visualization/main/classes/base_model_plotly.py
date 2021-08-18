@@ -77,6 +77,6 @@ class Plotly:
 
     def return_plot_object(self) -> Figure:
         """
-        Return matplotlib object.
+        Return plotly object.
         """
         return self.fig

@@ -18,7 +18,7 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
 def count_reads(
     dna_sequence: str,
     input_file: Union[str, Path],
-    codon_list: str = 'NNS',
+    codon_list: Union[List[str], str] = 'NNS',
     counts_wt: bool = True,
     start_position: int = 2,
     output_file: Union[None, str, Path] = None,
@@ -85,7 +85,7 @@ def count_reads(
     assert len(dna_sequence) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
 
     # Make upper case in case input was lower case
-    dna_sequence: str = dna_sequence.upper()
+    dna_sequence = dna_sequence.upper()
     if isinstance(codon_list, str):  #check if codon_list is a String
         codon_list = codon_list.upper()
     else:

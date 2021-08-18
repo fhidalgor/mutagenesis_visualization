@@ -23,7 +23,7 @@ def test_assemble_sublibraries() -> None:
     # - treat the columns_wt arguments as either there or not
     # You're left with testing columns, nrows_pop, and columns_wt as a bool
 
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    alphabet: str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     pairs = [a + b for a, b in product(alphabet, alphabet)]
     all_columns = list(alphabet[5:]) + pairs[:144]
     col_lists = [partition_list(all_columns, i) for i in range(2, 6)]

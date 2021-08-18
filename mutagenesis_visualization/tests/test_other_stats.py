@@ -149,18 +149,3 @@ def test_cumulative():
                 obj_label,
                 parameters,
             )
-
-'''def test_box():
-    # At some point, arguments cannot be vectors, only labels of dataframe
-    # Define aux function
-    def _test_box():
-        try:
-            box([0,1,2,3],[4,3,2,1])
-        except Exception as e:
-            print(e)
-            print(traceback.format_exc())
-            return True
-        return False
-
-    assert _test_box() is False
-'''

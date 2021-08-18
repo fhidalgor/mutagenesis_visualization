@@ -4,6 +4,8 @@ This module contains the class Screen, which groups the plotting classes.
 # Regular libraries
 from typing import List, Optional, Any, Union, Dict
 import numpy as np
+from numpy import typing as npt
+
 from pandas import DataFrame
 from itertools import combinations
 from pathlib import Path
@@ -20,7 +22,6 @@ from mutagenesis_visualization.main.heatmaps.heatmap_columns import HeatmapColum
 from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
 from mutagenesis_visualization.main.heatmaps.miniheatmap import Miniheatmap
 from mutagenesis_visualization.main.other_stats.rank import Rank
-from mutagenesis_visualization.main.other_stats.box import Box
 from mutagenesis_visualization.main.other_stats.cumulative import Cumulative
 from mutagenesis_visualization.main.other_stats.roc_analysis import ROC
 from mutagenesis_visualization.main.pca_analysis.correlation import Correlation
@@ -113,9 +114,9 @@ class Screen:
     ):
 
         if isinstance(dataset, DataFrame):
-            self.dataset: np.array = np.array(dataset)
+            self.dataset: npt.NDArray = np.array(dataset)
         else:
-            self.dataset: np.array = dataset
+            self.dataset: npt.NDArray = dataset
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
         elif isinstance(aminoacids, str):
@@ -214,7 +215,6 @@ class Screen:
         self.pca: PCA = PCA(dataframe=self.dataframe, secondary_dup = self.secondary_dup, aminoacids=self.aminoacids)
 
         # other stats
-        self.box: Box = Box(aminoacids=self.aminoacids)
         self.cumulative: Cumulative = Cumulative(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,

@@ -3,7 +3,6 @@ This module contains the box plot class.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from matplotlib import ticker

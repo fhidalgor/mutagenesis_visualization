@@ -3,6 +3,7 @@ This module contains demo data that can be loaded.
 """
 from typing import List
 import numpy as np
+from numpy import typing as npt
 
 from mutagenesis_visualization.main.classes.screen import Screen
 
@@ -25,7 +26,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
     """
 
     # Load enrichment scores
-    hras_enrichment_rbd: np.array = np.genfromtxt(
+    hras_enrichment_rbd: npt.NDArray = np.genfromtxt(
         "mutagenesis_visualization/data/HRas166_RBD.csv", delimiter=','
     )
 

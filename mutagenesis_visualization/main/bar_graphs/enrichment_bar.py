@@ -1,8 +1,7 @@
 """
 This module contains the class that plots the mean position bar plot.
 """
-from typing import Union, Dict, Any
-import copy
+from typing import Union, Dict, Any, Literal
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,7 +19,7 @@ class EnrichmentBar(Pyplot):
     """
     def __call__(
         self,
-        mode: str = 'mean',
+        mode: str = "mean",
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
@@ -59,7 +58,7 @@ class EnrichmentBar(Pyplot):
         self._load_parameters()
 
         # Select grouping
-        if mode == 'mean':
+        if mode.lower() == 'mean':
             self.df_output = self.dataframe.groupby('Position', as_index=False).mean()
         else:
             self.df_output = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()

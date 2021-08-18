@@ -1,11 +1,13 @@
 """
 This module tests the process data methods and functions.
 """
-import pandas as pd
-from pandas.core.frame import DataFrame
+from typing import List
 from itertools import product
 from random import randint, random
 import logging
+import pandas as pd
+from pandas.core.frame import DataFrame
+
 from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
 
 
@@ -14,7 +16,7 @@ log: logging.Logger = logging.getLogger('test_calculate_enrichment.py')
 
 def test_calculate_enrichment() -> None:
     # Read counts from file (could be txt, csv, xlsx, etc...)
-    prefix = "mutagenesis_visualization/"
+    prefix: str = "mutagenesis_visualization/"
     # prefix = "../../"
     df_counts_pre = pd.read_excel(
         prefix + 'data/hrasGAPGEF_counts.xlsx',
@@ -37,10 +39,10 @@ def test_calculate_enrichment() -> None:
     # Ras parameters to create an object
 
     # Order of amino acids (from count_reads)
-    aminoacids_NNS = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+    aminoacids_NNS: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
 
     # TODO: do 0 and then a random number from 100 - 1000
-    stopcodon = ["True", "False"]
+    stopcodon: List[str] = ["True", "False"]
     min_counts = [0, randint(100, 1000)]
     mpop = [0.01, (random() + 0.01) * 10]  # mpop 0 causes an error
     common_args = [stopcodon, min_counts, mpop]

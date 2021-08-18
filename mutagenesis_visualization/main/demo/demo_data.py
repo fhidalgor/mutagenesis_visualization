@@ -41,7 +41,7 @@ def load_demo_datasets() -> Dict[str, Union[np.array, DataFrame]]:
         "mutagenesis_visualization/data/HRas166_GAPGEF.csv",
         delimiter=',',
     )
-    data_dict['array_hras_GAPGEF'] = hras_enrichment_gapgef
+    data_dict['array_hras_gapgef'] = hras_enrichment_gapgef
 
     # Beta lactamase data
     df_bla_raw = pd.read_pickle("mutagenesis_visualization/data/df_bla_raw.pkl")
