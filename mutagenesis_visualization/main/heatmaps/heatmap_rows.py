@@ -2,7 +2,7 @@
 This module contains the object to create a heatmap specifying the
 selected rows.
 """
-from typing import Any, Dict, Union, Optional, List
+from typing import Any, Dict, Union, List
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,10 +23,10 @@ class HeatmapRows(Pyplot):
     """
     def __call__(
         self,
-        selection: List[str] = ['E', 'Q', 'A', 'P', 'V', 'Y'],
+        selection: List[str],
         nancolor: str = 'lime',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a heatmap plot enrichment scores of selected aminoacids.
@@ -35,7 +35,7 @@ class HeatmapRows(Pyplot):
         ----------
         self : object from class *Screen*
 
-        selection : list of aa to show, default ['E','Q','A','P','V','Y'].
+        selection : list of aa to show.
             If you only want the mean displayed, type selection = 'mean'.
 
         nancolor : str, default 'lime'
@@ -184,7 +184,7 @@ class HeatmapRows(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

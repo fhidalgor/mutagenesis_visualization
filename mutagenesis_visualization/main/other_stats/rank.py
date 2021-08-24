@@ -17,7 +17,7 @@ class Rank(Pyplot):
         self,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Any
     ) -> None:
         """
         Generate a rank plot so every mutation/residue is sorted based
@@ -54,7 +54,7 @@ class Rank(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

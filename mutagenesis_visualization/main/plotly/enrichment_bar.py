@@ -19,7 +19,7 @@ class EnrichmentBarP(Plotly):
         self,
         mode: str = 'mean',
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a plotly mean plot.
@@ -115,7 +115,7 @@ class EnrichmentBarP(Plotly):
             mirror=True,
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

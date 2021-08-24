@@ -3,6 +3,7 @@ This module tests the demo methods and class.
 """
 from typing import List
 import traceback
+import logging
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
@@ -26,30 +27,27 @@ def test_run_demo() -> None:
         try:
             run_demo(argument, show=False)
             return False
-        except Exception as e:
-            print(e)
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
 
     arguments: List[str] = [
-        'heatmap', 'miniheatmap', 'mean', 'kernel', 'pca', 'position',
-        'secondary_mean', 'correlation', 'individual_correlation'
+        'heatmap', 'miniheatmap', 'mean', 'kernel', 'pca', 'position', 'secondary_mean',
+        'correlation', 'individual_correlation'
     ]
     solutions = [_test_output_run_demo(argument) for argument in arguments]
 
     failed = [arg for arg, sol in zip(arguments, solutions) if sol is True]
 
-    assert any(solutions) == False, 'the following failed: {}'.format(
-        str(failed)
-    )
+    assert any(solutions) == False, 'the following failed: {}'.format(str(failed))
+
 
 def test_load_demo_datasets() -> None:
     """
     Test that function returns dictionary.
     """
-    assert (
-        str(type(load_demo_datasets()))
-    ) == "<class 'dict'>", "function demo_datasets failed"
+    assert (str(type(load_demo_datasets()))) == "<class 'dict'>", "function demo_datasets failed"
 
 
 def test_demo_objects() -> None:

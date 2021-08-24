@@ -3,6 +3,7 @@ This module tests the classes.
 """
 from typing import List
 import traceback
+import logging
 import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
@@ -10,7 +11,8 @@ from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
 
-def test_counts()-> None:
+
+def test_counts() -> None:
     """
     Test the class *Counts*.
     """
@@ -19,17 +21,16 @@ def test_counts()-> None:
     )
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
 
-    def _test_counts_output(parameters)->bool:
+    def _test_counts_output(parameters: dict) -> bool:
         try:
             Counts(**parameters)
-        except Exception as e:
-            print(e)
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-    list_params = [{'dataframe': df_input},
-                   {'dataframe': df_input, 'start_position': 1},
+    list_params: List[dict] = [{'dataframe': df_input}, {'dataframe': df_input, 'start_position': 1},
                    {'dataframe': df_input, 'aminoacids': aminoacids}]
     for parameters in list_params:
         assert _test_counts_output(
@@ -37,7 +38,7 @@ def test_counts()-> None:
         ) is False, "class Counts failed with {} parameters".format(parameters)
 
 
-def test_screen()-> None:
+def test_screen() -> None:
     """
     Test the class *Screen*.
     """
@@ -46,17 +47,18 @@ def test_screen()-> None:
     secondary: list = ['β1'] * len(sequence)
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
 
-    def _test_screen_output(parameters)->bool:
+    def _test_screen_output(parameters: dict) -> bool:
         try:
             Screen(**parameters)
-        except Exception as e:
-            print(e)
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-    list_params = [{'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids},
-                   {'dataset': df_input, 'sequence': sequence,  'aminoacids': aminoacids, 'secondary': secondary}]
+    list_params: List[dict] = [{'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids}, {
+        'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids, 'secondary': secondary
+    }]
 
     for parameters in list_params:
         assert _test_screen_output(

@@ -22,10 +22,9 @@ def select_grouping(df_input: DataFrame, mode: str) -> DataFrame:
     # Select grouping
     if mode.upper() == 'POINTMUTANT':
         return df_input
-    elif mode == 'MEAN':
+    elif mode.upper() == 'MEAN':
         return df_input.groupby('Position', as_index=False).mean()
-    else:
-        return df_input.loc[df_input['Aminoacid'] == mode].copy()
+    return df_input.loc[df_input['Aminoacid'] == mode].copy()
 
 
 def roc_auc(df: DataFrame) -> Tuple:

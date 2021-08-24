@@ -64,7 +64,7 @@ class CreateVariants:
         elif Path(output_file).suffix == '.fasta' or Path(output_file).suffix == '.txt':
             self._list_to_fasta(output_file)
 
-    def _enumerate_variants_2(self) -> None:
+    def _enumerate_variants_2(self) -> List[str]:
         """
         Copy of _enumerate variants with slight changes. Does return the
         wild-type sequence as the first item of the list.

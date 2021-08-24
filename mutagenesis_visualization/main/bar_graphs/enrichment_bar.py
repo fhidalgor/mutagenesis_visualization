@@ -22,7 +22,7 @@ class EnrichmentBar(Pyplot):
         mode: str = "mean",
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Plot in a bargraph the enrichment for each residue of the
@@ -116,7 +116,7 @@ class EnrichmentBar(Pyplot):
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

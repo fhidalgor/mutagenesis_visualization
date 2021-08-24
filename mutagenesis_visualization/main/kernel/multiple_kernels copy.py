@@ -111,7 +111,7 @@ class MultipleKernel(Pyplot):
             handletextpad=0.5
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

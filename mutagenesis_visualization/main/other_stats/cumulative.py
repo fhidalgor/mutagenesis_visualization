@@ -1,6 +1,8 @@
+"""
+This module contains the plot cumulative enrichment class.
+"""
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from matplotlib import ticker
@@ -17,7 +19,7 @@ class Cumulative(Pyplot):
         self,
         mode: str = 'all',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates a cumulative plot of the enrichment scores by position.
@@ -83,13 +85,15 @@ class Cumulative(Pyplot):
     def _filter_by_snv(self, mode: str) -> DataFrame:
         if mode.lower() == 'all':
             return self.dataframe
-        elif mode.lower() == 'snv':
+        if mode.lower() == 'snv':
             return self.dataframe_snv
-        elif mode.lower() == 'nonsnv':
+        if mode.lower() == 'nonsnv':
             return self.dataframe_nonsnv
-        return self.dataframe.groupby(by='Position', as_index=False).mean()
+        if mode.lower() == 'mean':
+            return self.dataframe.groupby(by='Position', as_index=False).mean()
+        raise ValueError("mode not selected")
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

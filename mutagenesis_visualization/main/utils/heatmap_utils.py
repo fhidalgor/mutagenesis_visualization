@@ -2,17 +2,20 @@
 Auxiliar functions used in the heatmaps.
 """
 from typing import List, Tuple, Union
+from collections import Counter
 import numpy as np
 from numpy import typing as npt
-from collections import Counter
 from pandas.core.frame import DataFrame
 from scipy.cluster import hierarchy
-import matplotlib.patches as patches
-import matplotlib.pyplot as plt
+from matplotlib import patches
+from matplotlib import pyplot as plt
 from matplotlib import gridspec
 
 
 def labels(start_position: int = 1) -> Tuple[List[str], List[Union[str, int]]]:
+    """
+    Write heatmap labels
+    """
     # residue label and color
     number_sequencelabels: List[str] = list([
         'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
@@ -35,8 +38,8 @@ def hierarchical_sort(df_input: DataFrame) -> npt.NDArray:
     df_nan_replaced = df_input.fillna(0)
 
     # give sorted column order
-    Z = hierarchy.ward(df_nan_replaced.T)
-    new_order: npt.NDArray = hierarchy.leaves_list(Z)
+    hierarchy_z = hierarchy.ward(df_nan_replaced.T)
+    new_order: npt.NDArray = hierarchy.leaves_list(hierarchy_z)
     return new_order
 
 

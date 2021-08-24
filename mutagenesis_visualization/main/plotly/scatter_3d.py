@@ -2,9 +2,7 @@
 This module contains the plotly 3D scatter plot.
 """
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
-import copy
-from pandas import DataFrame
+from typing import Any, Dict, Union
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
@@ -31,7 +29,7 @@ class Scatter3D(Plotly):
         chain: str = 'A',
         squared: bool = False,
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates a 3-D scatter plot of the x,y,z coordinates of the C-alpha
@@ -124,7 +122,7 @@ class Scatter3D(Plotly):
         # title
         update_layout(self.fig, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

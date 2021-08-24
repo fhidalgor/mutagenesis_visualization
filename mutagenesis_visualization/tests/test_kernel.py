@@ -2,32 +2,37 @@
 This module tests the kernel and histogram methods.
 """
 import traceback
+import logging
+from typing import List
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 
-DEMO_OBJECTS:DemoObjects = DemoObjects()
+DEMO_OBJECTS: DemoObjects = DemoObjects()
 OBJ_TEST = DEMO_OBJECTS.hras_rbd
+
 
 def test_kernel() -> None:
     """
     Test the kernel method.
     """
-    def _test_kernel_output(parameters) -> bool:
+    def _test_kernel_output(parameters: dict) -> bool:
         try:
-            OBJ_TEST.kernel(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
+            OBJ_TEST.kernel(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
+
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
+    list_params: List[dict] = [
         {'show': False},
         {'cumulative': True, 'show': False},
-        {'y_label': 'testing', 'title':'this is a test', 'x_label':'testing', 'xscale':2, 'show': False} #y_label does not change
+        {
+            'y_label': 'testing', 'title': 'this is a test', 'x_label': 'testing', 'xscale': 2,
+            'show': False
+        }  #y_label does not change
     ]
 
     # Assert
@@ -41,21 +46,19 @@ def test_histogram() -> None:
     """
     Test the histogram method.
     """
-    def _test_histogram_output(parameters) -> bool:
+    def _test_histogram_output(parameters: dict) -> bool:
         try:
-            OBJ_TEST.histogram(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
+            OBJ_TEST.histogram(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
+    list_params: List[dict] = [
         {'show': False},
         {'population': 'SNV', 'show': False},
         {'population': 'nonSNV', 'show': False},
@@ -65,33 +68,33 @@ def test_histogram() -> None:
     for parameters in list_params:
         assert _test_histogram_output(
             parameters
-        ) == False, "plot_histogram failed with {} parameters".format(
-            parameters
-        )
+        ) == False, "plot_histogram failed with {} parameters".format(parameters)
+
 
 def test_multiple_kernel() -> None:
     """
     Test of the multiple kernels method.
     """
-    def _test_multiple_kernel(parameters) -> bool:
+    def _test_multiple_kernel(parameters: dict) -> bool:
         try:
             OBJ_TEST.multiple_kernel(DEMO_OBJECTS.bla, **parameters)
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
-        {   'label_kernels': ["H-Ras", "BLA"],
+    list_params: List[dict] = [
+        {
+            'label_kernels': ["H-Ras", "BLA"],
             'show': False,
         },
-        {   'label_kernels': ["H-Ras", "BLA"],
-            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False, 'title':
-            'go bears'
+        {
+            'label_kernels': ["H-Ras", "BLA"], 'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show':
+            False, 'title': 'go bears'
         },
     ]
 

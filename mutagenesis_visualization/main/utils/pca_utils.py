@@ -28,7 +28,8 @@ def auto_text(x: List[str], y: List[str], textlabels: List[str]) -> list:
     return texts
 
 
-def calculate_clusters(dataset: DataFrame, dimensions:Tuple[int, int], random_state: int) -> Tuple[DataFrame, List[float]]:
+def calculate_clusters(dataset: DataFrame, dimensions: Tuple[int, int],
+                       random_state: int) -> Tuple[DataFrame, List[float]]:
     """
     Input the dataframe that needs to be correlated, the dimensions,
     and will calculate PCA descomposition.
@@ -64,13 +65,18 @@ def _grou_by_secondary(df: DataFrame, secondary: List[str]) -> DataFrame:
 
 
 def calculate_correlation_by_secondary(df: DataFrame, secondary: List[str]) -> DataFrame:
+    """
+    Calculate correlation by secondary structure grouping.
+    """
     dataset: DataFrame = _grou_by_secondary(df, secondary)
     dataset = dataset.pivot_table(values='Score', index='Secondary', columns='Aminoacid')
     return dataset.T.corr()
 
 
 def calculate_correlation(df: DataFrame, order_aminoacids: List[str]) -> DataFrame:
-
+    """
+    Calculate correlation by variant.
+    """
     dataset: DataFrame = df.copy()
     dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
     dataset = dataset.corr()
@@ -79,7 +85,9 @@ def calculate_correlation(df: DataFrame, order_aminoacids: List[str]) -> DataFra
 
 
 def calculate_correlation_by_residue(df_input: DataFrame) -> DataFrame:
-
+    """
+    Calculate correlation by position.
+    """
     df_output = df_input.copy()
     df_output = df_output.pivot_table(values='Score', index='Position', columns='Aminoacid')
     return df_output.T.corr()

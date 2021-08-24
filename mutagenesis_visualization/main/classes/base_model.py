@@ -51,11 +51,11 @@ class Pyplot:
         self.sequence: str = sequence
         self.sequence_raw: str = sequence_raw
         self.start_position: int = start_position
-        if not secondary:
+        if secondary:
             self.secondary: list = secondary
-        if not secondary_dup:
+        if secondary_dup:
             self.secondary_dup: list = secondary_dup
-        self.kwargs: Dict[str, Any] = generate_default_kwargs()
+        self.kwargs: Any = generate_default_kwargs()
         self.fig: Figure = Figure()
         self.ax_object: plt.Axes = None
         self.cb_object: plt.Axes = None
@@ -87,7 +87,7 @@ class Pyplot:
         if temp_kwargs['close']:
             plt.close()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

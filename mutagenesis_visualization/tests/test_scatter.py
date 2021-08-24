@@ -3,20 +3,25 @@ This module contains the scatter tests.
 """
 
 import traceback
+import logging
+from typing import Dict
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
+from mutagenesis_visualization.main.classes.screen import Screen
+
 
 def test_plot_scatter() -> None:
+    """
+    Test plot scatter function.
+    """
+    demo_objects: DemoObjects = DemoObjects()
+    dict_objects: Dict[str, Screen] = {"hras": demo_objects.hras_rbd, "bla": demo_objects.bla}
 
-    demo_objects:DemoObjects = DemoObjects()
-    dict_objects: dict = {"hras":demo_objects.hras_rbd, "bla":demo_objects.bla}
     # Define aux function
-    def _test_plot_scatter(obj_test, parameters: list) -> bool:
+    def _test_plot_scatter(obj_test: Screen, parameters: list) -> bool:
         try:
-            obj_test.scatter(obj_test,
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
-            print(e)
+            obj_test.scatter(obj_test, **parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
@@ -35,8 +40,8 @@ def test_plot_scatter() -> None:
     ]
 
     # Assert
-    for obj_label, obj_test in dict_objects.items(): # Loop over the dictionary
-        for parameters in list_params: # Loop over the parameters
+    for obj_label, obj_test in dict_objects.items():  # Loop over the dictionary
+        for parameters in list_params:  # Loop over the parameters
             assert _test_plot_scatter( # Assert that that set of parameters works on that object
                 obj_test,
                 parameters,

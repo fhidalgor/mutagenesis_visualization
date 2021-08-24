@@ -86,13 +86,13 @@ def count_reads(
 
     # Make upper case in case input was lower case
     dna_sequence = dna_sequence.upper()
+    # Create list with codons of sequence
+    wtseq_list: List[str] = [dna_sequence[i : i + 3] for i in range(0, len(dna_sequence), 3)]
+
     if isinstance(codon_list, str):  #check if codon_list is a String
         codon_list = codon_list.upper()
     else:
         codon_list = [item.upper() for item in codon_list]
-
-    # Create list with codons of sequence
-    wtseq_list: List[str] = [dna_sequence[i : i + 3] for i in range(0, len(dna_sequence), 3)]
 
     # codon_list
     if codon_list == 'NNS':
@@ -109,10 +109,11 @@ def count_reads(
         ]
 
     # Enumerate variants
+    assert not isinstance(codon_list, str), "Error when using codon list"
     variants = enumerate_variants(wtseq_list, codon_list, dna_sequence)
 
     # Count variant frequency
-    variants, totalreads, usefulreads = count_fastq(variants, input_file)
+    variants, totalreads, usefulreads = count_fastq(list(variants.keys()), input_file)
 
     # Convert to df_output
     wt_protein: Seq = Seq(dna_sequence).translate()
@@ -165,5 +166,5 @@ def count_reads(
 
     if full:
         percent_useful: float = usefulreads / totalreads * 100
-        return df_counts, df_wt, f"{usefulreads}/{totalreads} useful reads ({percent_useful:.1f}%)"
+        print(f"{usefulreads}/{totalreads} useful reads ({percent_useful:.1f}%)")
     return df_counts, df_wt

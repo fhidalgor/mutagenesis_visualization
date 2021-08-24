@@ -2,7 +2,6 @@
 This module contains the pca class.
 """
 from typing import Tuple, Union, Dict, Any
-import copy
 from pathlib import Path
 import matplotlib.pyplot as plt
 from adjustText import adjust_text
@@ -24,10 +23,10 @@ class PCA(Pyplot):
     def __call__(
         self,
         mode: str = 'aminoacid',
-        dimensions: Tuple[int,int] = (0,1),
+        dimensions: Tuple[int, int] = (0, 1),
         adjust_labels: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates a plot of two PCA dimensions.
@@ -70,6 +69,7 @@ class PCA(Pyplot):
             self.df_output = calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
             textlabels = temp_kwargs['neworder_aminoacids']
         elif mode.lower() == 'secondary':
+            assert self.secondary_dup is not None, "add secondary structure information."
             self.df_output = calculate_correlation_by_secondary(dataset, self.secondary_dup)
             textlabels = list(dataset.columns)
         elif mode.lower() == 'individual':
@@ -118,7 +118,7 @@ class PCA(Pyplot):
 
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

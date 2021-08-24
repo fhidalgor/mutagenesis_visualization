@@ -20,7 +20,7 @@ class HeatmapP(Plotly):
     def __call__(
         self,
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a plotly histogram plot.
@@ -121,7 +121,7 @@ class HeatmapP(Plotly):
             title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5},
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

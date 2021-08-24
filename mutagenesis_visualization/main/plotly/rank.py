@@ -17,7 +17,7 @@ class RankP(Plotly):
         self,
         mode: str = 'pointmutant',
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a plotly rank plot so every mutation/residue is sorted based
@@ -99,7 +99,7 @@ class RankP(Plotly):
             title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

@@ -3,10 +3,8 @@ This module contains the class that plots histograms.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
@@ -19,7 +17,7 @@ class Histogram(Pyplot):
         self,
         population: str = 'All',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a histogram plot. Can plot single nucleotide variants
@@ -67,7 +65,7 @@ class Histogram(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

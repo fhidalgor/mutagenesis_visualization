@@ -154,13 +154,16 @@ def matplotlib_to_plotly(cmap: Any, pl_entries: int = 255) -> list:
     pl_colorscale = []
 
     for k in range(pl_entries):
-        C = list(map(np.uint8, np.array(cmap(k * h)[: 3]) * 255))
-        pl_colorscale.append([k * h, 'rgb' + str((C[0], C[1], C[2]))])
+        colors = list(map(np.uint8, np.array(cmap(k * h)[: 3]) * 255))
+        pl_colorscale.append([k * h, 'rgb' + str((colors[0], colors[1], colors[2]))])
 
     return pl_colorscale
 
 
 def update_layout(fig: Figure, temp_kwargs: Dict[str, Any]) -> None:
+    """
+    Update layout of plotly figure.
+    """
     fig.update_layout(
         font=dict(family="Arial, monospace", size=12, color="black"),
         title={

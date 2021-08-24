@@ -10,7 +10,6 @@ from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
 
-
 log: logging.Logger = logging.getLogger('test_calculate_enrichment.py')
 
 
@@ -58,9 +57,7 @@ def test_calculate_enrichment() -> None:
     log.info(f"{mpop=}")
     log.info(f"{std_scale=}")
 
-    args_how_scale = product(
-        zeroing_compatible, how, [True], std_scale, *common_args
-    )
+    args_how_scale = product(zeroing_compatible, how, [True], std_scale, *common_args)
     args_how_no_scale = product(zeroing_compatible, how, [False], *common_args)
     args_no_how_scale = product(zeroing_other, [True], std_scale, *common_args)
     args_no_how_no_scale = product(zeroing_other, [False], *common_args)
@@ -70,8 +67,8 @@ def test_calculate_enrichment() -> None:
         zeroing, how, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
-            df_counts_pre.iloc[:, :54],
-            df_counts_sel.iloc[:, :54],
+            df_counts_pre.iloc[:, : 54],
+            df_counts_sel.iloc[:, : 54],
             zeroing=zeroing,
             how=how,
             norm_std=norm_std,
@@ -89,8 +86,8 @@ def test_calculate_enrichment() -> None:
         zeroing, how, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
-            df_counts_pre.iloc[:, :54],
-            df_counts_sel.iloc[:, :54],
+            df_counts_pre.iloc[:, : 54],
+            df_counts_sel.iloc[:, : 54],
             zeroing=zeroing,
             how=how,
             norm_std=norm_std,
@@ -107,8 +104,8 @@ def test_calculate_enrichment() -> None:
         zeroing, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
-            df_counts_pre.iloc[:, :54],
-            df_counts_sel.iloc[:, :54],
+            df_counts_pre.iloc[:, : 54],
+            df_counts_sel.iloc[:, : 54],
             zeroing=zeroing,
             norm_std=norm_std,
             std_scale=std_scale,
@@ -125,8 +122,8 @@ def test_calculate_enrichment() -> None:
         zeroing, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(
-            df_counts_pre.iloc[:, :54],
-            df_counts_sel.iloc[:, :54],
+            df_counts_pre.iloc[:, : 54],
+            df_counts_sel.iloc[:, : 54],
             zeroing=zeroing,
             norm_std=norm_std,
             aminoacids=aminoacids_NNS,

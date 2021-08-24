@@ -3,7 +3,6 @@ This module contains the kernel class.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -18,7 +17,7 @@ class Kernel(Pyplot):
         self,
         cumulative: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Plot univariate or bivariate distributions using kernel density estimation.
@@ -79,7 +78,7 @@ class Kernel(Pyplot):
         plt.grid()
         self.ax_object.get_legend().remove()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

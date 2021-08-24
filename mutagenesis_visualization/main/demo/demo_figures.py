@@ -70,7 +70,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
         hras_rbd.kernel(histogram=True, title='H-Ras 2-166', xscale=[-2, 1], show=show)
     elif figure.lower() == 'pca':
         # PCA by amino acid substitution
-        hras_rbd.pca(dimensions=[0, 1], figsize=(2, 2), adjustlabels=True, title='', show=show)
+        hras_rbd.pca(dimensions=(0, 1), figsize=(2, 2), adjustlabels=True, title='', show=show)
     elif figure.lower() == 'position':
         # Create plot for position 117
         hras_rbd.position_bar(
@@ -101,4 +101,3 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
         )
     else:
         raise NameError('Select a valid name for a demo figure.')
-    return

@@ -19,7 +19,7 @@ def calculate_enrichment(
     post_lib: Union[str, DataFrame, npt.NDArray],
     pre_wt: Union[str, None, npt.NDArray] = None,
     post_wt: Union[str, None, npt.NDArray] = None,
-    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*'),
+    aminoacids: Optional[List[str]] = None,
     zeroing: str = 'population',
     how: str = 'median',
     norm_std: bool = True,
@@ -129,20 +129,23 @@ def calculate_enrichment(
     if isinstance(post_wt, str):
         post_wt = np.loadtxt(post_wt)
 
+    if not aminoacids:
+        aminoacids = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+
     # Convert to df
-    pre_lib = array_to_df_enrichments(pre_lib, aminoacids)
-    post_lib = array_to_df_enrichments(post_lib, aminoacids)
+    pre_lib_df: DataFrame = array_to_df_enrichments(pre_lib, aminoacids)
+    post_lib_df: DataFrame = array_to_df_enrichments(post_lib, aminoacids)
 
     # Locate stop codons
     input_stopcodon: str = ''
     output_stopcodon: str = ''
     if stopcodon:
-        input_stopcodon = pre_lib.loc['*'].astype(float)
-        output_stopcodon = post_lib.loc['*'].astype(float)
+        input_stopcodon = pre_lib_df.loc['*'].astype(float)
+        output_stopcodon = post_lib_df.loc['*'].astype(float)
 
     # Log10 of the counts for library and wt alleles
-    log10_counts = get_enrichment(
-        pre_lib, post_lib, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
+    log10_counts = get_log_enrichment(
+        pre_lib_df, post_lib_df, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
     df_temp: DataFrame = pd.DataFrame(data=log10_counts)
@@ -162,7 +165,7 @@ def calculate_enrichment(
 
     # Wt counts
     if pre_wt is not None:
-        log10_wtcounts = get_enrichment(
+        log10_wtcounts = get_log_enrichment(
             pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt, stopcodon, infinite
         )
         # MAD filtering
@@ -204,7 +207,7 @@ def calculate_enrichment(
         if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':
-        zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, aminoacids)
+        zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, cutoff=1)
         zeroed, kernel_std = kernel_correction(zeroed_0, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
@@ -221,9 +224,14 @@ def calculate_enrichment(
     return zeroed
 
 
-def get_enrichment(
-    input_lib, output_lib, input_stopcodon, output_stopcodon, min_counts: int, stopcodon: bool,
-    infinite: float
+def get_log_enrichment(
+    input_lib: DataFrame,
+    output_lib: DataFrame,
+    input_stopcodon: DataFrame,
+    output_stopcodon: DataFrame,
+    min_counts: int,
+    stopcodon: bool,
+    infinite: float,
 ) -> npt.NDArray:
     """
     Calculate log10 enrichment scores from input and output counts.

@@ -22,7 +22,7 @@ class DifferentialP(Plotly):
         plot_type: str = 'bar',
         mode: str = 'mean',
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a plotly mean plot.
@@ -123,7 +123,7 @@ class DifferentialP(Plotly):
             mirror=True,
         )
 
-    def _update_kwargs_2(self, kwargs: Dict[str, Any], metric: str) -> Dict[str, Any]:
+    def _update_kwargs_2(self, kwargs: Any, metric: str) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
@@ -132,7 +132,7 @@ class DifferentialP(Plotly):
         temp_kwargs['color'] = kwargs.get('color', 'black')
         temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
 
-        if metric== 'mean':
+        if metric == 'mean':
             temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
         elif metric == 'rmse':

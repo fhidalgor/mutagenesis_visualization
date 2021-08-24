@@ -2,10 +2,8 @@
 This module contains the plotly scatter plot.
 """
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 import plotly.io as pio
-import plotly.graph_objects as go
-
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
@@ -24,7 +22,7 @@ class ScatterP(Plotly):
         mode: str = 'pointmutant',
         show_results: bool = False,
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a scatter plot between object and a second object of the
@@ -108,7 +106,7 @@ class ScatterP(Plotly):
             title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

@@ -1,12 +1,11 @@
 """
 Utils for process data.
 """
-from pathlib import Path
-from typing import Dict, Tuple, Union, List
+from typing import Any, Dict, Tuple, Union, List
+from collections import OrderedDict
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from collections import OrderedDict
 from pandas.core.frame import DataFrame
 from scipy import stats
 
@@ -64,10 +63,10 @@ def enumerate_variants(wtseq_list: List[str], codon_list: List[str],
 
     # Loop over codons
     for position in range(0, len(wtseq_list)):
-        for codons in (codon_list):
+        for codons in codon_list:
             variant = ''.join(wtseq_list[0 : position]
                               ) + codons + ''.join(wtseq_list[position + 1 :])
-            if (variant == dna_sequence):  # Store redundant wild-types
+            if variant == dna_sequence:  # Store redundant wild-types
                 if firstwtseq:
                     variant = 'wtSeq' + str(position)
                 firstwtseq = True
@@ -234,14 +233,13 @@ def _kernel_data_preparation(data: DataFrame, cutoff: float) -> Tuple[npt.NDArra
     return data_corrected, kernel_processed_data
 
 
-def _kernel_std(data: npt.NDArray, kernel) -> float:
+def _kernel_std(data: npt.NDArray, kernel: Any) -> float:
     """
     Input the library matrix (and wont count stop codon), and will return
     the std of the normal distribution.
     To calculate the std, it will find the FWHM and divide by 2.355
     https://en.wikipedia.org/wiki/Full_width_at_half_maximum
     The algorithm will give back the min std between both sides of the peak.
-
     """
 
     # find ymax and the x value of the max height
@@ -274,90 +272,7 @@ def _kernel_std(data: npt.NDArray, kernel) -> float:
     return min(std_l, std_r)
 
 
-def _read_counts(
-    excel_path,
-    sheet_pre,
-    sheet_post,
-    columns,
-    nrows_pop,
-    nrows_wt,
-    columns_wt=None,
-    skiprows=1
-) -> Tuple[list, list, list, list]:
-    """Aux"""
-    # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
-    list_pre, list_sel, list_pre_wt, list_sel_wt = ([] for i in range(4))
-
-    # Read counts from excel
-    replicates = np.arange(0, len(sheet_pre))
-    for column, column_wt, nrow_wt, rep in zip(columns, columns_wt, nrows_wt, replicates):
-        # Pre counts
-        list_pre.append(
-            pd.read_excel(
-                excel_path, sheet_pre, skiprows=skiprows, usecols=column, nrows=nrows_pop
-            )
-        )
-        # Sel counts
-        list_sel.append(
-            pd.read_excel(
-                excel_path, sheet_post, skiprows=skiprows, usecols=column, nrows=nrows_pop
-            )
-        )
-        if columns_wt is None:
-            list_pre_wt.append(None)
-            list_sel_wt.append(None)
-        else:
-            # Pre counts wild-type alleles
-            list_pre_wt.append(
-                pd.read_excel(excel_path, sheet_pre, usecols=column_wt, nrows=nrow_wt)
-            )
-            # Sel counts wild-type alleles
-            list_sel_wt.append(
-                pd.read_excel(excel_path, sheet_post, usecols=column_wt, nrows=nrow_wt)
-            )
-    return list_pre, list_sel, list_pre_wt, list_sel_wt
-
-
-def _assemble_list(
-    list_pre,
-    list_sel,
-    list_pre_wt,
-    list_sel_wt,
-    aminoacids,
-    zeroing,
-    how,
-    norm_std,
-    stopcodon,
-    min_counts,
-    min_countswt,
-    std_scale,
-    mpop,
-    mwt,
-    infinite,
-    output_file: Union[None, str, Path] = None
-):
-    """
-    gets the output from _read_counts and assembles the sublibraries
-
-    """
-
-    enrichment_lib = []
-
-    for pre, sel, pre_wt, sel_wt in zip(list_pre, list_sel, list_pre_wt, list_sel_wt):
-        # log 10
-        enrichment_log10 = calculate_enrichment(
-            pre, sel, pre_wt, sel_wt, aminoacids, zeroing, how, norm_std, stopcodon, min_counts,
-            min_countswt, std_scale, mpop, mwt, infinite
-        )
-        # Store in list
-        enrichment_lib.append(enrichment_log10)
-
-    # Concatenate sublibraries
-    df_output = pd.concat(enrichment_lib, ignore_index=True, axis=1)
-    return df_output
-
-
-def array_to_df_enrichments(lib, aminoacids: List[str]) -> DataFrame:
+def array_to_df_enrichments(lib: npt.NDArray, aminoacids: List[str]) -> DataFrame:
     """
     Aux function to transform array in df with index of amino acids.
     """

@@ -2,11 +2,9 @@
 This module contains the object to create a heatmap specifying the
 selected columns.
 """
-from typing import Any, Dict, Tuple, Union, Optional
+from typing import Any, Dict, Tuple, Union
 from pathlib import Path
-import copy
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from pandas.core.frame import DataFrame
@@ -27,7 +25,7 @@ class HeatmapColumns(Pyplot):
         ylabel_color: str = 'k',
         nancolor: str = 'lime',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a heatmap plot enrichment scores but only plots a selected segment.
@@ -154,7 +152,7 @@ class HeatmapColumns(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

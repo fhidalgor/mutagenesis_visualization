@@ -1,22 +1,20 @@
 """
 This module tests the process data methods and functions.
 """
-from pathlib import Path
-import pandas as pd
-from pandas.core.frame import DataFrame
-from pandas.testing import assert_frame_equal
-import os
-from itertools import product
-from random import randint, random
 import logging
-import tempfile
+from itertools import product
+from random import randint
 from collections import OrderedDict
-import numpy as np
 
+from mutagenesis_visualization.main.process_data.process_data_utils import (initialize_ordered_dict)
 log: logging.Logger = logging.getLogger('test_process_data')
 
+PATH: str = "mutagenesis_visualization/data/hrasGAPGEF_counts.xlsx"
 
 def test_assemble_sublibraries() -> None:
+    """
+    Test assemble sublibraries function.
+    """
     # There aren't actually very many arguments to test here.  Once you remove
     # - all arguments that are just forwarded to calculate_enrichment
     # - the filename and excel sheet arguments
@@ -25,19 +23,17 @@ def test_assemble_sublibraries() -> None:
 
     alphabet: str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     pairs = [a + b for a, b in product(alphabet, alphabet)]
-    all_columns = list(alphabet[5:]) + pairs[:144]
+    all_columns = list(alphabet[5 :]) + pairs[: 144]
     col_lists = [partition_list(all_columns, i) for i in range(2, 6)]
 
     nrows_list = [randint(1, 31) for _ in range(3)] + [32]
     aminos = list(reversed("AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*"))
-    amino_list = [list(reversed(aminos[:rows])) for rows in nrows_list]
+    amino_list = [list(reversed(aminos[: rows])) for rows in nrows_list]
 
     col_wt_list = [['A', 'B', 'C']]
 
     args = product(col_lists, col_wt_list, zip(nrows_list, amino_list))
 
-    filename = "mutagenesis_visualization/data/hrasGAPGEF_counts.xlsx"
-    # filename = "../../data/hrasGAPGEF_counts.xlsx"
     sheet_pre = "R1_before"
     sheet_post = "R1_after"
     columns_wt = ['A', 'B', 'C']
@@ -48,7 +44,7 @@ def test_assemble_sublibraries() -> None:
         nrows_pop, aminos = nrows_aminos
         #print(f"{columns=}\t{columns_wt=}\t{nrows_pop=}")
         df = assemble_sublibraries(
-            excel_path=filename,
+            excel_path=PATH,
             sheet_pre=sheet_pre,
             sheet_post=sheet_post,
             columns=columns,
@@ -60,8 +56,10 @@ def test_assemble_sublibraries() -> None:
         )
 
 
-def partition_list(array, num_partitions):
-    """Partition array randomly where each partition has at least one item."""
+def partition_list(array, num_partitions) -> list:
+    """
+    Partition array randomly where each partition has at least one item.
+    """
     if num_partitions < 2:
         return [f"{array[0]}:{array[-1]}"]
     partition_idxs = []
@@ -81,39 +79,15 @@ def partition_list(array, num_partitions):
             partition_idxs.append(num)
     partition_idxs.sort()
     parts = [f"{array[0]}:{array[partition_idxs[0] - 1]}"]
-    for start, end in zip(partition_idxs, partition_idxs[1:]):
+    for start, end in zip(partition_idxs, partition_idxs[1 :]):
         parts.append(f"{array[start]}:{array[end - 1]}")
     parts.append(f"{array[partition_idxs[-1]]}:{array[-1]}")
     return parts
 
-def test_initialize_ordereddict() -> None:
-    variants = _initialize_ordereddict(['ACC', 'CCT'])
+
+def test_initialize_ordered_dict() -> None:
+    """
+    Test if an odered dict is initialized.
+    """
+    variants = initialize_ordered_dict(['ACC', 'CCT'])
     assert (isinstance(variants, OrderedDict))
-
-
-def test_msa_enrichment() -> None:
-
-    # File location
-    # Use relative file import to access the data folder
-    try:
-        location = os.path.dirname(os.path.realpath(__file__))
-        my_file = os.path.join(location, '../../data/for_tests', "msa.fasta")
-    except NameError:
-        my_file = os.path.join('../../data/for_tests', "msa.fasta")
-
-    # Create fake data
-    class test_obj:
-        dataframe = pd.DataFrame(
-            index=[
-                'Q', 'V', 'W', 'L', 'I', 'M', 'K', 'C', 'N', 'S', 'Y', 'D', 'F',
-                'G', 'R', 'E', 'H', 'P', 'T', 'A'
-            ]
-        )
-        dataframe['Position'] = np.arange(0,20)
-        dataframe['Score'] = [0]*20
-        dataframe['Aminoacid'] = list('ACDEFGHIKLMNPQRSTVWY')
-    # Create test object
-    test = test_obj()
-    # Get df
-    df, df_freq = msa_enrichment(test, my_file, 0)
-    assert df['Shannon'].sum() == 0

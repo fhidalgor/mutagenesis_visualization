@@ -2,13 +2,17 @@
 This module will test the pca analysis methods.
 """
 import traceback
+import logging
+from typing import List
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
+from mutagenesis_visualization.main.classes.screen import Screen
 
-DEMO_OBJECTS:DemoObjects = DemoObjects()
+DEMO_OBJECTS: DemoObjects = DemoObjects()
 OBJ_TEST_1 = DEMO_OBJECTS.hras_rbd
-OBJ_TEST_2 = DEMO_OBJECTS.aph
+OBJ_TEST_2 = DEMO_OBJECTS.sumo
 
-def test_correlation()-> None:
+
+def test_correlation() -> None:
     """
     Test the correlation method.
     """
@@ -19,21 +23,18 @@ def test_correlation()-> None:
     }
 
     # Define aux function
-    def _test_correlation(obj_test, parameters) -> bool:
+    def _test_correlation(obj_test: Screen, parameters: dict) -> bool:
         try:
-            obj_test.correlation(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
-            print(e)
+            obj_test.correlation(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
+    list_params: List[dict] = [
         {
             'show': False,
         },
@@ -56,7 +57,7 @@ def test_correlation()-> None:
             )
 
 
-def test_individual_correlation()-> None:
+def test_individual_correlation() -> None:
     """
     Test the individual correlation method.
     """
@@ -67,21 +68,18 @@ def test_individual_correlation()-> None:
     }
 
     # Define aux function
-    def _test_individual_correlation(obj_test, parameters) -> bool:
+    def _test_individual_correlation(obj_test: Screen, parameters: dict) -> bool:
         try:
-            obj_test.individual_correlation(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
-            print(e)
+            obj_test.individual_correlation(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
+    list_params: List[dict] = [
         {
             'show': False,
         },
@@ -103,6 +101,7 @@ def test_individual_correlation()-> None:
                 parameters,
             )
 
+
 def test_pca() -> None:
     """
     Test the pca method.
@@ -113,13 +112,12 @@ def test_pca() -> None:
         'obj_test_2': OBJ_TEST_2,
     }
 
-
     # Define aux function
-    def _test_pca(obj_test, parameters: list) -> bool:
+    def _test_pca(obj_test: Screen, parameters: list) -> bool:
         try:
             obj_test.pca(**parameters)  # pass dictionary as arguments of method
-        except Exception as e:
-            print(e)
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
@@ -152,4 +150,3 @@ def test_pca() -> None:
                 obj_label,
                 parameters,
             )
-test_pca()

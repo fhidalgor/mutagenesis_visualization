@@ -2,7 +2,6 @@
 This module contains the correlation class.
 """
 from typing import Union, Dict, Any
-import copy
 from pathlib import Path
 import numpy as np
 from matplotlib import gridspec
@@ -20,7 +19,7 @@ class Correlation(Pyplot):
     def __call__(
         self,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a correlation of each amino acid.
@@ -140,7 +139,7 @@ class Correlation(Pyplot):
             pad=10,
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

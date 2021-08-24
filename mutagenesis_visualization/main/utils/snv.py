@@ -1,10 +1,10 @@
 """
 This module contains functions that manipulate SNV-related variants.
 """
+import itertools
 from typing import List, Dict
 from collections import defaultdict
 import pandas as pd
-import itertools
 from Bio.Seq import Seq
 from pandas.core.frame import DataFrame
 
@@ -61,7 +61,7 @@ def select_snv(df_input: DataFrame) -> DataFrame:
 
 
 def _aminoacids_snv(
-    aa1: str, aa2: str, codon_table: Dict[str, List[str]], same_aa_SNV: bool = True
+    aa1: str, aa2: str, codon_table: Dict[str, List[str]], same_aa_snv: bool = True
 ) -> bool:
     """
     Determine if two amino acids are snv (one base difference)
@@ -71,7 +71,7 @@ def _aminoacids_snv(
     aa1 : str
     aa2 : str
     codon_table : dict (did not want to generate each time I run the function)
-    same_aa_SNV : boolean, default True
+    same_aa_snv : boolean, default True
         If True, it will consider the same amino acid to be SNV of itself
 
     Returns
@@ -79,7 +79,7 @@ def _aminoacids_snv(
     boolean, True/False
     """
     # Check if aa1 is aa2
-    if not (same_aa_SNV) and (aa1.upper() == aa2.upper()):
+    if not (same_aa_snv) and (aa1.upper() == aa2.upper()):
         return False
 
     # Convert amino acids to codons
@@ -120,7 +120,7 @@ def add_snv_boolean(df_input: DataFrame) -> DataFrame:
     return df_input
 
 
-def _codons_pointmutants(codon1: str, codon2: str, same_codon_SNV: bool = False) -> bool:
+def _codons_pointmutants(codon1: str, codon2: str, same_codon_snv: bool = False) -> bool:
     """
     Determine if two codons are SNV. Returns a boolean.
     If the codon is the same, will return False.
@@ -130,7 +130,7 @@ def _codons_pointmutants(codon1: str, codon2: str, same_codon_SNV: bool = False)
     -----------
     codon1 : str
     codon2 : str
-    same_codon_SNV : boolean, default False
+    same_codon_snv : boolean, default False
         If True, it will consider the same codon to be SNV of itself
 
     Returns
@@ -139,7 +139,7 @@ def _codons_pointmutants(codon1: str, codon2: str, same_codon_SNV: bool = False)
     """
 
     # Check if codons are the same
-    if same_codon_SNV and codon1.upper() == codon2.upper():
+    if same_codon_snv and codon1.upper() == codon2.upper():
         return True
 
     counter_occurrences = 0

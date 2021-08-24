@@ -3,9 +3,9 @@ This module contains utils to manipulate dataframes.
 """
 from typing import Any, Tuple, List
 import copy
+import itertools
 import numpy as np
 import pandas as pd
-import itertools
 
 from pandas.core.frame import DataFrame
 
@@ -61,7 +61,7 @@ def transform_secondary(
     secondary: list,
     start_position: int,
     aminoacids: List[str],
-) -> Tuple[list, list]:
+) -> Tuple[List[str], List[str]]:
     """
     Internal function that trims the input secondary structure. Returns
     list containing trimmed secondary structure (20 times each element).
@@ -189,6 +189,9 @@ def parse_pivot(
 
 
 def color_data(row: DataFrame, color_gof: str, color_lof: str) -> str:
+    """
+    Color data according to enrichment score value.
+    """
     if row["Score"] > 0:
         return color_gof
     return color_lof

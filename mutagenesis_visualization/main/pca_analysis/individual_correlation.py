@@ -18,7 +18,7 @@ class IndividualCorrelation(Pyplot):
     def __call__(
         self,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates a bar plot of the correlation of each amino acid mutational
@@ -85,7 +85,7 @@ class IndividualCorrelation(Pyplot):
 
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

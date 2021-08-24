@@ -34,7 +34,7 @@ class MeanCounts(Pyplot):
     def __call__(
         self,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Plot in a bargraph the mean counts for each residue of the protein.
@@ -90,7 +90,7 @@ class MeanCounts(Pyplot):
         # Put text labels
         input_text(temp_kwargs['text_labels'])
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

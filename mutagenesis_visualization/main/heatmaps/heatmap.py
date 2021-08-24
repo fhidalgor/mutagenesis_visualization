@@ -2,9 +2,8 @@
 This module contains the class to plot a regular heatmap from enrichment
 scores.
 """
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Union
 from pathlib import Path
-import copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,7 +31,7 @@ class Heatmap(Pyplot):
         show_snv: bool = False,
         hierarchical: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a heatmap plot of the enrichment scores.
@@ -326,7 +325,7 @@ class Heatmap(Pyplot):
 
         self._save_work(output_file, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

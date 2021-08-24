@@ -3,12 +3,11 @@ This module contains the class Screen, which groups the plotting classes.
 """
 # Regular libraries
 from typing import List, Optional, Any, Union, Dict
+from pathlib import Path
 import numpy as np
 from numpy import typing as npt
-
 from pandas import DataFrame
 from itertools import combinations
-from pathlib import Path
 
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.differential import Differential
@@ -109,7 +108,7 @@ class Screen:
         aminoacids: List[str],
         start_position: int = 2,
         fillna: float = 0,
-        secondary: Optional[list] = None,
+        secondary: Optional[List[List[str]]] = None,
         replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = None,
     ):
 
@@ -132,11 +131,11 @@ class Screen:
         self.dataframe_nonsnv: DataFrame = select_nonsnv(self.dataframe)
 
         # Optional parameters
-        self.secondary: Optional[list] = secondary
-        self.secondary_dup: Optional[list] = None
-        if self.secondary is not None:
+        self.secondary_dup: Optional[List[str]] = None
+        self.secondary: Optional[List[str]] = None
+        if secondary:
             self.secondary, self.secondary_dup = transform_secondary(
-                self.dataset, self.secondary, self.start_position, self.aminoacids
+                self.dataset, secondary, self.start_position, self.aminoacids
             )
 
         self.replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = replicates
@@ -219,7 +218,6 @@ class Screen:
         # scatter
         self.scatter: Scatter = Scatter(dataframe=self.dataframe, aminoacids=self.aminoacids)
 
-        # PCA
         self.correlation: Correlation = Correlation(
             dataframe_stopcodons=self.dataframe_stopcodons,
             start_position=self.start_position,

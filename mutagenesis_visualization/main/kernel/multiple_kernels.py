@@ -23,7 +23,7 @@ class MultipleKernel(Pyplot):
         label_kernels: List[str],
         colors: Optional[List[str]] = None,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Any
     ) -> None:
         """
         Generate a kernel density plot for multiple objects.
@@ -106,7 +106,7 @@ class MultipleKernel(Pyplot):
             handletextpad=0.5
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

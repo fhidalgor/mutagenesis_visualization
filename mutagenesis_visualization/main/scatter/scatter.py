@@ -24,7 +24,7 @@ class Scatter(Pyplot):
         screen_object: Any,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a scatter plot between object and a second object of the
@@ -85,7 +85,7 @@ class Scatter(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

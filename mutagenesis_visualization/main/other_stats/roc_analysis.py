@@ -23,7 +23,7 @@ class ROC(Pyplot):
         df_class: DataFrame,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates ROC AUC plot. It compares enrichment scores to some labels
@@ -102,7 +102,7 @@ class ROC(Pyplot):
             frameon=False,
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

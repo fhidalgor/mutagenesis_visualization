@@ -3,7 +3,6 @@ This module contains the plotly histogram plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import copy
 import plotly.io as pio
 import plotly.graph_objects as go
 
@@ -19,7 +18,7 @@ class HistogramP(Plotly):
         self,
         mode: str = 'pointmutant',
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a plotly histogram plot.
@@ -114,7 +113,7 @@ class HistogramP(Plotly):
             title={'text': temp_kwargs['title'], 'xanchor': 'center', 'yanchor': 'top', 'x': 0.5}
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

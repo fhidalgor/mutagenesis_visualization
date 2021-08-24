@@ -1,6 +1,8 @@
+"""
+This module contains the Pymol wrapper class to plot in pymol.
+"""
 from os import path
-from pathlib import Path
-from typing import Union, List, Dict, Any
+from typing import List, Dict, Any
 import copy
 
 from pandas.core.frame import DataFrame
@@ -27,7 +29,7 @@ class Pymol(Pyplot):
         mode: str = 'mean',
         residues: List[str] = None,
         position_correction: int = 0,
-        **kwargs: Dict[str, Any]
+        **kwargs: Any
     ) -> None:
         """
         Color pymol structure residues. User can specify the residues to

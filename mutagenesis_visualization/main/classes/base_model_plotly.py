@@ -42,7 +42,7 @@ class Plotly:
         self.sequence: Optional[str] = sequence
         self.start_position: Optional[int] = start_position
         self.end_position: Optional[int] = end_position
-        self.kwargs: Dict[str, Any] = generate_default_kwargs()
+        self.kwargs: Any = generate_default_kwargs()
         self.fig: Any = None
         self.df_output: Optional[DataFrame] = None
 
@@ -57,7 +57,7 @@ class Plotly:
         if temp_kwargs['show']:
             self.fig.show(config={'displayModeBar': False})
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

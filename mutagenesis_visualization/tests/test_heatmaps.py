@@ -3,32 +3,31 @@ This module will test the heatmap plotting methods.
 """
 
 import traceback
+import logging
+from typing import List
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
 
-
-DEMO_OBJECTS:DemoObjects = DemoObjects()
+DEMO_OBJECTS: DemoObjects = DemoObjects()
 OBJ_TEST = DEMO_OBJECTS.hras_rbd
+
 
 def test_heatmap() -> None:
     """
     Test the heatmap plot method.
     """
-    def _test_heatmap_output(parameters) -> bool:
+    def _test_heatmap_output(parameters: dict) -> bool:
         try:
-            OBJ_TEST.heatmap(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
-            print(e)
+            OBJ_TEST.heatmap(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}, {'hierarchical': True, 'show':
-                                     False}, {'show_snv': True, 'show': False},
-                   {'show_cartoon': True, 'show': False}]
+    list_params: List[dict] = [{'show': False}, {'hierarchical': True, 'show': False},
+                   {'show_snv': True, 'show': False}, {'show_cartoon': True, 'show': False}]
 
     # Assert
     for parameters in list_params:
@@ -37,26 +36,23 @@ def test_heatmap() -> None:
         ) is False, "plot_heatmap failed with {} parameters".format(parameters)
 
 
-
 def test_heatmap_rows() -> None:
     """
     Test the heatmap rows plot method.
     """
-    def _test_heatmap_rows_output(parameters) -> bool:
+    def _test_heatmap_rows_output(parameters: dict) -> bool:
         try:
-            OBJ_TEST.heatmap_rows(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
+            OBJ_TEST.heatmap_rows(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'show': False}]
+    list_params: List[dict] = [{'show': False}]
 
     # Assert
     for parameters in list_params:
@@ -69,21 +65,19 @@ def test_heatmap_columns() -> None:
     """
     Test the heatmap columns plot method.
     """
-    def _test_heatmap_columns_output(parameters) -> bool:
+    def _test_heatmap_columns_output(parameters: dict) -> bool:
         try:
-            OBJ_TEST.heatmap_columns(
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
+            OBJ_TEST.heatmap_columns(**parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [{'segment':[20,40],'show': False}]
+    list_params: List[dict] = [{'segment': [20, 40], 'show': False}]
 
     # Assert
     for parameters in list_params:
@@ -91,32 +85,32 @@ def test_heatmap_columns() -> None:
             parameters
         ) is False, "plot_heatmap_columns failed with {} parameters".format(parameters)
 
+
 def test_plot_miniheatmap() -> None:
     """
     Test the miniheatmap method.
     """
+
     # Define aux function
-    def _test_plot_miniheatmap(parameters) -> bool:
+    def _test_plot_miniheatmap(parameters: dict) -> bool:
         error = False
         try:
-            OBJ_TEST.miniheatmap(offset=0,
-                **parameters
-            )  # pass dictionary as arguments of method
-        except Exception as e:
+            OBJ_TEST.miniheatmap(offset=0, **parameters)  # pass dictionary as arguments of method
+        except Exception as e: # pylint: disable=broad-except
 
-            print(e)
+            logging.exception(e)
             print(traceback.format_exc())
             error = True
         return error
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params = [
+    list_params: List[dict] = [
         {
             'show': False,
         },
         {
-            'neworder_aminoacids':list('ACDEFGHIKLMNPQRSTVWY*'),
+            'neworder_aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,

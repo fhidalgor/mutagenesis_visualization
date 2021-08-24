@@ -3,9 +3,7 @@ This module contains the plotly 3D scatter plot where you can add PDB
 properties.
 """
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, List
-import copy
-from pandas import DataFrame
+from typing import Any, Dict, List, Union, Optional
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
@@ -26,13 +24,13 @@ class Scatter3DPDB(Plotly):
     def __call__(
         self,
         pdb_path: str = None,
-        plot: List[str] = ['Distance', 'SASA', 'log B-factor'],
+        plot: Optional[List[str]] = None,
         mode: str = 'mean',
         custom: Any = None,
         position_correction: int = 0,
         chain: str = 'A',
         output_html: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generates a 3-D scatter plot of different properties obtained from
@@ -90,6 +88,9 @@ class Scatter3DPDB(Plotly):
         temp_kwargs['y_label'] = kwargs.get('y_label', plot[1])
         temp_kwargs['z_label'] = kwargs.get('z_label', plot[2])
 
+        if not plot:
+            plot = ['Distance', 'SASA', 'log B-factor']
+
         # Get Scores and colors
         df_scores = color_3d_scatter(
             self.dataframe,
@@ -143,7 +144,7 @@ class Scatter3DPDB(Plotly):
         # title
         update_layout(self.fig, temp_kwargs)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

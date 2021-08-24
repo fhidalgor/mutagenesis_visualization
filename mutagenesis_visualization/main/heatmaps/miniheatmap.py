@@ -3,7 +3,6 @@ This module contains the box plot class.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -24,7 +23,7 @@ class Miniheatmap(Pyplot):
         position_offset: int = 0,
         background_correction: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Generate a miniheatmap plot enrichment scores of mutagenesis selection
@@ -191,7 +190,7 @@ class Miniheatmap(Pyplot):
         )
         plt.ylabel('Amino Acid Substitution', fontsize=temp_kwargs["y_label_fontsize"], labelpad=-1)
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
         """

@@ -25,7 +25,7 @@ class Differential(Pyplot):
         plot_type: str = 'bar',
         show_cartoon: bool = False,
         output_file: Union[None, str, Path] = None,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,
     ) -> None:
         """
         Plot the mean positional difference between two experiments.
@@ -112,7 +112,7 @@ class Differential(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs_2(self, kwargs: Dict[str, Any], metric: str) -> Dict[str, Any]:
+    def _update_kwargs_2(self, kwargs: Any, metric: str) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
@@ -123,7 +123,7 @@ class Differential(Pyplot):
 
         if metric == 'mean':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
-        elif metric== 'rmse':
+        elif metric == 'rmse':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Differential')
         if metric == 'squared':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Differential')

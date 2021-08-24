@@ -18,7 +18,7 @@ HRAS_RBD_COUNTS: str = "mutagenesis_visualization/data/hrasRBD_counts.xlsx"
 HRAS_GAPGEF_COUNTS: str = "mutagenesis_visualization/data/hrasGAPGEF_counts.xlsx"
 
 
-def load_demo_datasets() -> Dict[str,DataFrame]:
+def load_demo_datasets() -> Dict[str, DataFrame]:
     """
     Loads example datasets so the user can play with it.
 
@@ -32,16 +32,20 @@ def load_demo_datasets() -> Dict[str,DataFrame]:
     data_dict: Dict[str, DataFrame] = {}
 
     # Retrieve H-Ras datasets and store in dict
-    hras_enrichment_rbd = pd.DataFrame(np.genfromtxt(
-        "mutagenesis_visualization/data/HRas166_RBD.csv",
-        delimiter=',',
-    ))
+    hras_enrichment_rbd = pd.DataFrame(
+        np.genfromtxt(
+            "mutagenesis_visualization/data/HRas166_RBD.csv",
+            delimiter=',',
+        )
+    )
     data_dict['array_hras_RBD'] = hras_enrichment_rbd
 
-    hras_enrichment_gapgef = pd.DataFrame(np.genfromtxt(
-        "mutagenesis_visualization/data/HRas166_GAPGEF.csv",
-        delimiter=',',
-    ))
+    hras_enrichment_gapgef = pd.DataFrame(
+        np.genfromtxt(
+            "mutagenesis_visualization/data/HRas166_GAPGEF.csv",
+            delimiter=',',
+        )
+    )
     data_dict['array_hras_gapgef'] = hras_enrichment_gapgef
 
     # Beta lactamase data
@@ -73,7 +77,7 @@ def load_demo_datasets() -> Dict[str,DataFrame]:
     data_dict['df_aph'] = pd.read_pickle("mutagenesis_visualization/data/df_aph.pkl")
 
     # b11L5
-    df_b11L5F_raw = pd.read_pickle("mutagenesis_visualization/data/df_b11L5F_raw.pkl")
-    data_dict['df_b11L5F'], _ = parse_pivot(df_b11L5F_raw, col_data='relative_tryp_stability_score')
+    df_b11l5f_raw = pd.read_pickle("mutagenesis_visualization/data/df_b11l5f_raw.pkl")
+    data_dict['df_b11l5f'], _ = parse_pivot(df_b11l5f_raw, col_data='relative_tryp_stability_score')
 
     return data_dict

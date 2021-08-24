@@ -1,5 +1,8 @@
-from pandas.core.frame import DataFrame
+"""
+This module contains the utils for the Pymol class.
+"""
 from typing import List
+from pandas.core.frame import DataFrame
 
 try:
     from ipymol import viewer as pymol
@@ -40,7 +43,7 @@ def pymol_fitness(
     return residues
 
 
-def _array_to_pymol(aminoacid_positions: List[str]) -> str:
+def _array_to_pymol(aminoacid_positions: List[int]) -> str:
     """
     Input an array with positions of aminoacids, return it in pymol format.
     """
