@@ -149,7 +149,7 @@ class GeneratePrimers:
         )
 
         # Create dataframe
-        self.df_primers: DataFrame = pd.DataFrame({
+        self.df_primers = pd.DataFrame({
             'FP_label': label_fp,
             'FP_seq': forward_primers,
             'RP_label': label_rp,

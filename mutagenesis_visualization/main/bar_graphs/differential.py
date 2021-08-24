@@ -54,14 +54,11 @@ class Differential(Pyplot):
 
         **kwargs : other keyword arguments
         """
-        kwargs["metric"] = metric.lower()
-        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        temp_kwargs: Dict[str, Any] = self._update_kwargs_2(kwargs, metric)
+        self.graph_parameters()
 
         self.df_output: DataFrame = process_rmse_residue(
-            self.dataframe,
-            screen_object.dataframe,
-            temp_kwargs['metric']
+            self.dataframe, screen_object.dataframe, metric
         )
         # make cartoon
         if show_cartoon:
@@ -73,7 +70,9 @@ class Differential(Pyplot):
 
         # plot
         if plot_type.lower() == 'line':
-            self.ax_object.plot(self.df_output['Position'], self.df_output['d1 - d2'], color=temp_kwargs['color'])
+            self.ax_object.plot(
+                self.df_output['Position'], self.df_output['d1 - d2'], color=temp_kwargs['color']
+            )
         else:
             self.ax_object.bar(
                 self.df_output['Position'],
@@ -113,20 +112,20 @@ class Differential(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs_2(self, kwargs: Dict[str, Any], metric: str) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (5, 2.5))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
 
-        if kwargs["metric"] == 'mean':
+        if metric == 'mean':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
-        elif kwargs["metric"] == 'rmse':
+        elif metric== 'rmse':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Differential')
-        if kwargs["metric"] == 'squared':
+        if metric == 'squared':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Differential')
         return temp_kwargs
 
@@ -136,8 +135,8 @@ class Differential(Pyplot):
         """
         # add grid
         if temp_kwargs['grid']:
-            self.ax_object.grid(which='major', color = 'silver', linewidth=1)
-            self.ax_object.grid(which='minor', color = 'silver', linewidth=0.5)
+            self.ax_object.grid(which='major', color='silver', linewidth=1)
+            self.ax_object.grid(which='minor', color='silver', linewidth=0.5)
             # Show the minor ticks and grid.
             self.ax_object.minorticks_on()
             # Now hide the minor ticks (but leave the gridlines).
@@ -156,8 +155,10 @@ class Differential(Pyplot):
             rotation=90
         )
         self.ax_object.set_xticks(
-            np.arange(self.start_position,
-                      len(self.df_output) + self.start_position, temp_kwargs['tick_spacing'])
+            np.arange(
+                self.start_position,
+                len(self.df_output) + self.start_position, temp_kwargs['tick_spacing']
+            )
         )
         self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
         self.ax_object.set_xlim(

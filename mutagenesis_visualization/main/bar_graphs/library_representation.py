@@ -28,7 +28,7 @@ class LibraryRepresentation(Pyplot):
         aminoacids: List[str],
         positions: List[int],
     ) -> None:
-        super().__init__(dataframe=dataframe, aminoacids = aminoacids)
+        super().__init__(dataframe=dataframe, aminoacids=aminoacids)
         self.positions: List[int] = positions
         self.df_percentage: Optional[DataFrame] = None
 
@@ -52,7 +52,7 @@ class LibraryRepresentation(Pyplot):
         **kwargs : other keyword arguments
          """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Transform data
         self.df_percentage = _percentage_column(self._group_codons_to_aa(self.dataframe))
@@ -117,7 +117,7 @@ class LibraryRepresentation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         return temp_kwargs
 

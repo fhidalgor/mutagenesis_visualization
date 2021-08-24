@@ -1,7 +1,7 @@
 """
 This module contains the class that plots the mean position bar plot.
 """
-from typing import Union, Dict, Any, Literal
+from typing import Union, Dict, Any
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,7 +55,7 @@ class EnrichmentBar(Pyplot):
                 Choose color to color positions with an enrichment score < 0.
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Select grouping
         if mode.lower() == 'mean':
@@ -82,7 +82,7 @@ class EnrichmentBar(Pyplot):
         self.ax_object.bar(
             self.df_output['Position'],
             self.df_output['Score'],
-            width = 1.2,
+            width=1.2,
             color=self.df_output['Color'],
             snap=False,
         )
@@ -102,7 +102,13 @@ class EnrichmentBar(Pyplot):
             title_pad = 2.5
 
         # Plot title
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=title_pad)
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k',
+            pad=title_pad
+        )
 
         # Put text labels
         input_text(temp_kwargs['text_labels'])
@@ -114,7 +120,7 @@ class EnrichmentBar(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
         return temp_kwargs

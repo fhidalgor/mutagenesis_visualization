@@ -101,7 +101,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
 
     """
     default_kwargs: Dict[str, Any] = {
-        'figsize':None,
+        'figsize': None,
         'figsize_x': None,
         'figsize_y': None,
         'colormap': _generate_colormap(),
@@ -129,6 +129,10 @@ def generate_default_kwargs() -> Dict[str, Any]:
         'bins': 50,
         'return_plot_object': False,
         'grid': False,
+        'metric': "",
+        'title_fontsize': 12,
+        'x_label_fontsize': 10,
+        'y_label_fontsize': 10,
     }
 
     return default_kwargs

@@ -2,6 +2,7 @@
 This module contains utils to manipulate dataframes.
 """
 from typing import Any, Tuple, List
+import copy
 import numpy as np
 import pandas as pd
 import itertools
@@ -12,7 +13,7 @@ from pandas.core.frame import DataFrame
 def transform_dataset(
     dataset: Any,
     sequence: str,
-    aminoacids: str,
+    aminoacids: List[str],
     start_position: int,
     fillna: float,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -23,7 +24,6 @@ def transform_dataset(
 
     # make a dataframe
     df_input: DataFrame = pd.DataFrame()
-
     # Define Columns
     df_input['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
 
@@ -60,7 +60,7 @@ def transform_secondary(
     dataset: Any,
     secondary: list,
     start_position: int,
-    aminoacids: str,
+    aminoacids: List[str],
 ) -> Tuple[list, list]:
     """
     Internal function that trims the input secondary structure. Returns
@@ -74,7 +74,7 @@ def transform_secondary(
     trimmedsecondary = secondary_list[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     # Multiply each element by number of aminoacids. not use stop codon
-    aminoacids_list: List[str] = list(np.copy(aminoacids))
+    aminoacids_list: List[str] = copy.deepcopy(aminoacids)
     if '*' in aminoacids_list:
         aminoacids_list.remove('*')
     secondary_dup = [
@@ -130,7 +130,10 @@ def select_aa(df_input: DataFrame, selection: List[str], values: str = 'Score') 
 
 
 def parse_pivot(
-    df_imported: DataFrame, col_variant: str='variant', col_data: str='DMS', fill_value: Any =np.nan
+    df_imported: DataFrame,
+    col_variant: str = 'variant',
+    col_data: str = 'DMS',
+    fill_value: Any = np.nan
 ) -> Tuple[DataFrame, List[str]]:
     """
     Parses a dataframe that contains saturation mutagenesis data in the Variant/Scores format.
@@ -216,6 +219,7 @@ def process_mean_residue(
     df_ouput.dropna(how='any', inplace=True)
     return df_ouput
 
+
 def process_rmse_residue(
     dataframe_1: DataFrame,
     dataframe_2: DataFrame,
@@ -248,10 +252,7 @@ def process_rmse_residue(
     return df_diff
 
 
-def process_by_pointmutant(
-    dataframe_1: DataFrame,
-    dataframe_2: DataFrame
-) -> DataFrame:
+def process_by_pointmutant(dataframe_1: DataFrame, dataframe_2: DataFrame) -> DataFrame:
     """
     Given two dataframes, it truncates the longer one. It also drops nan
     values. Returns joined dataframe that contains the Scores and the

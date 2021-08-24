@@ -3,7 +3,6 @@ This module contains the box plot class.
 """
 from typing import Union, Dict, Any
 from pathlib import Path
-import copy
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 import numpy as np
@@ -46,7 +45,7 @@ class Secondary(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Get data
         df_output: DataFrame = _calculate_secondary(self.dataframe, self.secondary_dup)
@@ -104,7 +103,7 @@ class Secondary(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         #temp_kwargs['yscale'] = kwargs.get('yscale', (-2, 1))
         return temp_kwargs

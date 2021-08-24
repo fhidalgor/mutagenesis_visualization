@@ -20,7 +20,7 @@ class Histogram(Pyplot):
         population: str = 'All',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a histogram plot. Can plot single nucleotide variants
         (SNVs) or non-SNVs only.
@@ -49,7 +49,7 @@ class Histogram(Pyplot):
         """
         temp_kwargs = self._update_kwargs(kwargs)
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
-        self._load_parameters()
+        self.graph_parameters()
 
         # Select case input data
         self.dataset = self.dataframe['Score_NaN']
@@ -67,30 +67,41 @@ class Histogram(Pyplot):
         if temp_kwargs['show']:
             plt.show()
 
-    def _update_kwargs(self, kwargs) -> Dict[str, Any]:
+    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
         temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
         return temp_kwargs
 
-    def _tune_plot(self, temp_kwargs) -> None:
+    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
         # axes labels and title
         plt.xlabel(
             r'$∆E^i_x$' if temp_kwargs['x_label'] == 'x_label' else temp_kwargs['x_label'],
-            fontsize=10,
+            fontsize=temp_kwargs["x_label_fontsize"],
             fontname="Arial",
             color='k',
             labelpad=0
         )
-        plt.ylabel('Probability density', fontsize=10, fontname="Arial", color='k', labelpad=3)
-        plt.title(temp_kwargs['title'], fontsize=10, fontname='Arial', color='k')
+        plt.ylabel(
+            'Probability density',
+            fontsize=temp_kwargs["y_label_fontsize"],
+            fontname="Arial",
+            color='k',
+            labelpad=3
+        )
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )
 
         # axes limits. spacer will be 1 or the
         plt.xlim(temp_kwargs['xscale'])

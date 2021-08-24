@@ -50,7 +50,7 @@ class MultipleKernel(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # hard copy of data
         dict_copy = copy.deepcopy(dict_entries)
@@ -69,7 +69,9 @@ class MultipleKernel(Pyplot):
                 dataset.drop('*', errors='ignore', inplace=True)
                 dataset = dataset.stack()
                 # plot stacked matrix
-                self.ax_object = sns.kdeplot(dataset[~np.isnan(dataset)], color=color, lw=2, label=label)
+                self.ax_object = sns.kdeplot(
+                    dataset[~np.isnan(dataset)], color=color, lw=2, label=label
+                )
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
@@ -78,9 +80,26 @@ class MultipleKernel(Pyplot):
         """
         Change stylistic parameters of the plot.
         """
-        plt.xlabel(r'$∆E^i_x$', fontsize=10, fontname='Arial', color='k', labelpad=0)
-        plt.ylabel('Probability density', fontsize=10, fontname='Arial', color='k', labelpad=3)
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        plt.xlabel(
+            r'$∆E^i_x$',
+            fontsize=temp_kwargs["x_label_fontsize"],
+            fontname='Arial',
+            color='k',
+            labelpad=0
+        )
+        plt.ylabel(
+            'Probability density',
+            fontsize=temp_kwargs["y_label_fontsize"],
+            fontname='Arial',
+            color='k',
+            labelpad=3
+        )
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
         plt.legend(
@@ -91,11 +110,12 @@ class MultipleKernel(Pyplot):
             handlelength=1,
             handletextpad=0.5
         )
+
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
         temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
         return temp_kwargs

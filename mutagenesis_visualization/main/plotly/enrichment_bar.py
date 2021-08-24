@@ -75,9 +75,7 @@ class EnrichmentBarP(Plotly):
         Change stylistic parameters of the plot.
         """
 
-        self.fig.update_traces(
-            hovertemplate='Position: %{x}<br>Score: %{y}<extra></extra>'
-        )
+        self.fig.update_traces(hovertemplate='Position: %{x}<br>Score: %{y}<extra></extra>')
 
         # Color and width of bars
         #self.fig.update_traces(marker_line_width=0, )
@@ -121,7 +119,7 @@ class EnrichmentBarP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Enrichment score')

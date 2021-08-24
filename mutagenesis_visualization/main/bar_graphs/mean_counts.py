@@ -28,7 +28,7 @@ class MeanCounts(Pyplot):
         positions: List[int],
         aminoacids: List[str],
     ) -> None:
-        super().__init__(dataframe=dataframe, aminoacids = aminoacids)
+        super().__init__(dataframe=dataframe, aminoacids=aminoacids)
         self.positions: List[int] = positions
 
     def __call__(
@@ -52,7 +52,7 @@ class MeanCounts(Pyplot):
                 [x1,y1,text1]].
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # plot
         self.fig, ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -94,7 +94,7 @@ class MeanCounts(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Mean counts')
         return temp_kwargs

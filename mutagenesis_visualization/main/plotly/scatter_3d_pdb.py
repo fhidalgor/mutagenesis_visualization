@@ -147,5 +147,5 @@ class Scatter3DPDB(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         return temp_kwargs

@@ -21,7 +21,6 @@ class Pymol(Pyplot):
     """
     This class acts as a wrapper with the ipymol github repo.
     """
-
     def __call__(
         self,
         pdb: str,

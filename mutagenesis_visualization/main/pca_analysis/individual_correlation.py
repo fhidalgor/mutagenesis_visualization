@@ -19,7 +19,7 @@ class IndividualCorrelation(Pyplot):
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generates a bar plot of the correlation of each amino acid mutational
         profile (row of the heatmap) with the rest of amino acids (rows)
@@ -35,7 +35,7 @@ class IndividualCorrelation(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Get data
         if '*' in temp_kwargs['neworder_aminoacids']:
@@ -89,7 +89,7 @@ class IndividualCorrelation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
         temp_kwargs['yscale'] = kwargs.get('yscale', (0, 1))
         return temp_kwargs

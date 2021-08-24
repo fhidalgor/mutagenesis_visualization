@@ -8,11 +8,17 @@ import numpy as np
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 
+
 class Rank(Pyplot):
     """
     Class to generate a mean enrichment bar plot.
     """
-    def __call__(self,mode: str='pointmutant', output_file: Union[None, str, Path] = None, **kwargs):
+    def __call__(
+        self,
+        mode: str = 'pointmutant',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Dict[str, Any]
+    ) -> None:
         """
         Generate a rank plot so every mutation/residue is sorted based
         on enrichment score.
@@ -32,7 +38,7 @@ class Rank(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Sort by enrichment scores
         self.df_output = self.dataframe.sort_values(by=['Score']).copy()
@@ -52,7 +58,7 @@ class Rank(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Rank')
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
@@ -68,8 +74,19 @@ class Rank(Pyplot):
         # Titles
         plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8)
         # Labels
-        plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0)
-        plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
+        plt.ylabel(
+            temp_kwargs['y_label'],
+            fontsize=temp_kwargs["y_label_fontsize"],
+            fontname="Arial",
+            color='k',
+            labelpad=0
+        )
+        plt.xlabel(
+            temp_kwargs['x_label'],
+            fontsize=temp_kwargs["x_label_fontsize"],
+            fontname="Arial",
+            color='k'
+        )
 
         # other graph parameters
         plt.xlim(temp_kwargs['xscale'])

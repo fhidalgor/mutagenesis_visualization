@@ -1,7 +1,7 @@
 """
 This module contains the pca class.
 """
-from typing import List, Union, Dict, Any
+from typing import Tuple, Union, Dict, Any
 import copy
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -24,11 +24,11 @@ class PCA(Pyplot):
     def __call__(
         self,
         mode: str = 'aminoacid',
-        dimensions: List[int] = [0, 1],
+        dimensions: Tuple[int,int] = (0,1),
         adjust_labels: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generates a plot of two PCA dimensions.
 
@@ -40,7 +40,7 @@ class PCA(Pyplot):
             Can also do PCA by secondary structure element if set to
             "secondary" or by individual residue if set to "individual".
 
-        dimensions : list, default [0,1]
+        dimensions : tuple, default (0,1)
             Specify which two PCA dimensions to plot. By default PCA1 vs
             PCA2. Max dimension is 5.
 
@@ -60,7 +60,7 @@ class PCA(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # calculate correlation heatmap. Choose mode
         dataset = self.dataframe.copy()
@@ -91,13 +91,13 @@ class PCA(Pyplot):
         # labels
         plt.xlabel(
             'PCA ' + str(dimensions[0] + 1) + ': ' + str(int(variance[dimensions[0]] * 100)) + '%',
-            fontsize=10,
+            fontsize=temp_kwargs["x_label_fontsize"],
             labelpad=5,
             fontweight='normal'
         )
         plt.ylabel(
             'PCA ' + str(dimensions[1] + 1) + ': ' + str(int(variance[dimensions[1]] * 100)) + '%',
-            fontsize=10,
+            fontsize=temp_kwargs["y_label_fontsize"],
             labelpad=-2,
             fontweight='normal'
         )
@@ -122,6 +122,6 @@ class PCA(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         return temp_kwargs

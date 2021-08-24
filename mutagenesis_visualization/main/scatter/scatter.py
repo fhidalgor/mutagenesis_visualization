@@ -44,13 +44,11 @@ class Scatter(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Chose mode:
         if mode.lower() == 'pointmutant':
-            df_output: DataFrame = process_by_pointmutant(
-                self.dataframe, screen_object.dataframe
-            )
+            df_output: DataFrame = process_by_pointmutant(self.dataframe, screen_object.dataframe)
         else:
             df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
 
@@ -91,7 +89,7 @@ class Scatter(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
         return temp_kwargs
 
@@ -100,9 +98,26 @@ class Scatter(Pyplot):
         Change stylistic parameters of the plot.
         """
         # Titles
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8)
-        plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname="Arial", color='k', labelpad=0)
-        plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname="Arial", color='k')
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k',
+            pad=8
+        )
+        plt.ylabel(
+            temp_kwargs['y_label'],
+            fontsize=temp_kwargs["y_label_fontsize"],
+            fontname="Arial",
+            color='k',
+            labelpad=0
+        )
+        plt.xlabel(
+            temp_kwargs['x_label'],
+            fontsize=temp_kwargs["x_label_fontsize"],
+            fontname="Arial",
+            color='k'
+        )
 
         plt.grid()
 

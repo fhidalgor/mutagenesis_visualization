@@ -9,7 +9,9 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
-from mutagenesis_visualization.main.utils.pandas_functions import (process_mean_residue, process_by_pointmutant)
+from mutagenesis_visualization.main.utils.pandas_functions import (
+    process_mean_residue, process_by_pointmutant
+)
 
 
 class ScatterP(Plotly):
@@ -110,6 +112,6 @@ class ScatterP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         return temp_kwargs

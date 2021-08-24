@@ -54,13 +54,13 @@ class RankP(Plotly):
                     y=self.df_output['Score'],
                     text=self.df_output['Variant'],
                     marker_color=temp_kwargs['color'],
-                    line = None,
-                    mode = "markers")
+                    line=None,
+                    mode="markers"
+                )
             ]
         )
 
         self._save_html(output_html, temp_kwargs)
-
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
@@ -103,7 +103,7 @@ class RankP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Rank')
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')

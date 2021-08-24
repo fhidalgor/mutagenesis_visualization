@@ -21,7 +21,6 @@ class HeatmapRows(Pyplot):
     """
     This class plots a heatmat withe the enrichment scores.
     """
-
     def __call__(
         self,
         selection: List[str] = ['E', 'Q', 'A', 'P', 'V', 'Y'],
@@ -49,12 +48,12 @@ class HeatmapRows(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Check if mean or not. Add group and pivot df_main.
         if selection == 'mean':
             df_main: DataFrame = add_snv_boolean(self.dataframe.copy()
-                                                    ).groupby(by='Position').mean()['Score_NaN']
+                                                 ).groupby(by='Position').mean()['Score_NaN']
             y_labels = [""]
             dataset = np.array([df_main.to_numpy()])
         else:
@@ -73,7 +72,9 @@ class HeatmapRows(Pyplot):
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
 
         self.fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
-        self.gs_object: gridspec.GridSpec = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[len(dataset[0]), 1])
+        self.gs_object: gridspec.GridSpec = gridspec.GridSpec(
+            nrows=1, ncols=2, width_ratios=[len(dataset[0]), 1]
+        )
         self.ax_object = plt.subplot(self.gs_object[0, 0])
         cbar1 = plt.subplot(self.gs_object[0, 1])
 
@@ -121,7 +122,9 @@ class HeatmapRows(Pyplot):
             color='k',
             minor=False,
         )
-        self.ax_object.set_yticklabels(y_labels, fontsize=6, fontname="Arial", color='k', minor=False)
+        self.ax_object.set_yticklabels(
+            y_labels, fontsize=6, fontname="Arial", color='k', minor=False
+        )
         ax2_object.set_xticklabels(
             temp_kwargs['number_sequencelabels'][0 : len(dataset[0])],
             fontsize=10,
@@ -135,11 +138,17 @@ class HeatmapRows(Pyplot):
             ylabel.set_horizontalalignment('center')
 
         # for coloring the residues that are 10,20...
-        for xtick, color in zip(self.ax_object.get_xticklabels(), temp_kwargs['color_sequencelabels']):
+        for xtick, color in zip(self.ax_object.get_xticklabels(),
+                                temp_kwargs['color_sequencelabels']):
             xtick.set_color(color)
 
         # for putting title on graph
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=12)
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=temp_kwargs["title_fontsize"]
+        )
 
         # for color bar format
         cbar1.axis('off')
@@ -179,7 +188,7 @@ class HeatmapRows(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]

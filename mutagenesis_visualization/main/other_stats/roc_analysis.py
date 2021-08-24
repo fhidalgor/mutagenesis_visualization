@@ -24,7 +24,7 @@ class ROC(Pyplot):
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generates ROC AUC plot. It compares enrichment scores to some labels
         that the user has specified.
@@ -47,7 +47,7 @@ class ROC(Pyplot):
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # Chose mode: !!! not used
         df_grouped: DataFrame = select_grouping(self.dataframe, mode)
@@ -79,7 +79,12 @@ class ROC(Pyplot):
         self.ax_object.yaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
 
         # Axis labels
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )
         plt.ylabel(
             'True Positive Rate',
             fontsize=12,
@@ -101,6 +106,6 @@ class ROC(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2.5))
         return temp_kwargs

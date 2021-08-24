@@ -44,7 +44,7 @@ class Counts:
         self.start_position: int = self.positions[0]
         if start_position:
             self.start_position = start_position
-            self.positions = np.arange(start_position, len(self.dataframe.columns) + 1)
+            self.positions = np.arange(start_position, len(self.dataframe.columns) + start_position)
 
         # if aminoacids is none, use the index of the dataframe
         if aminoacids:
@@ -54,7 +54,11 @@ class Counts:
         else:
             self.aminoacids = list(self.dataframe.index)
 
-        self.mean_counts = MeanCounts(dataframe=self.dataframe, positions=self.positions, aminoacids = self.aminoacids)
+        assert len(self.aminoacids) > 0
+
+        self.mean_counts = MeanCounts(
+            dataframe=self.dataframe, positions=self.positions, aminoacids=self.aminoacids
+        )
         self.library_representation = LibraryRepresentation(
             dataframe=self.dataframe,
             aminoacids=self.aminoacids,

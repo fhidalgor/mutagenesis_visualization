@@ -84,7 +84,7 @@ def parse_pdb_coordinates(
     end_position: int,
     position_correction: int,
     chain: str,
-    sasa: bool =False
+    sasa: bool = False
 ) -> DataFrame:
     """
     Parse coordinate of CA atoms. Will also return the bfactor and SASA using freesasa.
@@ -135,8 +135,8 @@ def parse_pdb_coordinates(
         structure_sasa = freesasa.Structure(pdb_path)
         result = freesasa.calc(structure_sasa)
         # Calculate sasa
-        sasa = freesasa.selectArea(commands, structure_sasa, result)
-        df_sasa: DataFrame = pd.DataFrame(columns=['SASA'], data=sasa.values())
+        sasa_area = freesasa.selectArea(commands, structure_sasa, result)
+        df_sasa: DataFrame = pd.DataFrame(columns=['SASA'], data=sasa_area.values())
         df_sasa['log B-factor'] = bfactors
         df_sasa['Position'] = positions_worked
 
@@ -146,7 +146,7 @@ def parse_pdb_coordinates(
     return df_coordinates
 
 
-def matplotlib_to_plotly(cmap, pl_entries: int =255) -> list:
+def matplotlib_to_plotly(cmap: Any, pl_entries: int = 255) -> list:
     """
     Convert a matplotlib colorscale into plotly rgb format.
     """

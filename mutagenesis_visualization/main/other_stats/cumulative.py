@@ -18,7 +18,7 @@ class Cumulative(Pyplot):
         mode: str = 'all',
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generates a cumulative plot of the enrichment scores by position.
 
@@ -37,7 +37,7 @@ class Cumulative(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # create figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
@@ -65,7 +65,12 @@ class Cumulative(Pyplot):
         self.ax_object.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))
 
         # Axis labels
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )
         plt.ylabel(temp_kwargs['y_label'], fontsize=12, fontname="Arial", color='k', labelpad=5)
         plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
 
@@ -88,7 +93,7 @@ class Cumulative(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 20)

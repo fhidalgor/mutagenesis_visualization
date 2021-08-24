@@ -7,7 +7,9 @@ except ModuleNotFoundError:
     pass
 
 
-def pymol_fitness(dataframe: DataFrame, gof:float, lof:float, mode: str, position_correction: int) -> List[str]:
+def pymol_fitness(
+    dataframe: DataFrame, gof: float, lof: float, mode: str, position_correction: int
+) -> List[str]:
     """
     Returns the positions that are going to be colored blue,red and white.
     """

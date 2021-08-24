@@ -8,6 +8,7 @@ import itertools
 from Bio.Seq import Seq
 from pandas.core.frame import DataFrame
 
+
 def select_nonsnv(df_input: DataFrame) -> DataFrame:
     """
     Generate a dataframe that contains the non-SNV variants and the enrichment score
@@ -25,7 +26,7 @@ def select_nonsnv(df_input: DataFrame) -> DataFrame:
 
     # Merge and eliminate duplicates. Keep Non-SNV
     df_nonsnv: DataFrame = pd.concat([df_snv, df_input],
-                                        sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
+                                     sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
     df_nonsnv.drop_duplicates(subset="Variant", keep=False, inplace=True)
 
     return df_nonsnv
@@ -59,7 +60,9 @@ def select_snv(df_input: DataFrame) -> DataFrame:
     return df_input
 
 
-def _aminoacids_snv(aa1: str, aa2: str, codon_table: Dict[str, List[str]], same_aa_SNV: bool = True) -> bool:
+def _aminoacids_snv(
+    aa1: str, aa2: str, codon_table: Dict[str, List[str]], same_aa_SNV: bool = True
+) -> bool:
     """
     Determine if two amino acids are snv (one base difference)
 

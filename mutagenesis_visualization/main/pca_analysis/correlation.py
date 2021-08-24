@@ -21,7 +21,7 @@ class Correlation(Pyplot):
         self,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Generate a correlation of each amino acid.
 
@@ -35,7 +35,7 @@ class Correlation(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # calculate correlation heatmap
         self.df_output = calculate_correlation(
@@ -144,7 +144,7 @@ class Correlation(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
         return temp_kwargs

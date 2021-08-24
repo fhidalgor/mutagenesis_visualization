@@ -8,16 +8,17 @@ import pandas as pd
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.pandas_functions import parse_pivot
 
-
 PDB_5P21: str = "mutagenesis_visualization/data/5p21.pdb"
 PDB_1ERM: str = "mutagenesis_visualization/data/1erm.pdb"
 PDB_1A5R: str = "mutagenesis_visualization/data/1a5r.pdb"
 PDB_1ND4: str = "mutagenesis_visualization/data/1nd4.pdb"
 DEMO_FASTA: str = "mutagenesis_visualization/data/Ras_family_trimmed.fasta"
+HRAS_FASTQ: str = "mutagenesis_visualization/data/hras.trimmed.fastq"
 HRAS_RBD_COUNTS: str = "mutagenesis_visualization/data/hrasRBD_counts.xlsx"
 HRAS_GAPGEF_COUNTS: str = "mutagenesis_visualization/data/hrasGAPGEF_counts.xlsx"
 
-def load_demo_datasets() -> Dict[str, Union[np.array, DataFrame]]:
+
+def load_demo_datasets() -> Dict[str,DataFrame]:
     """
     Loads example datasets so the user can play with it.
 
@@ -28,19 +29,19 @@ def load_demo_datasets() -> Dict[str, Union[np.array, DataFrame]]:
 
     """
     # Create dictionary where to store data
-    data_dict: Dict[str, Union[np.array, DataFrame]] = {}
+    data_dict: Dict[str, DataFrame] = {}
 
     # Retrieve H-Ras datasets and store in dict
-    hras_enrichment_rbd = np.genfromtxt(
+    hras_enrichment_rbd = pd.DataFrame(np.genfromtxt(
         "mutagenesis_visualization/data/HRas166_RBD.csv",
         delimiter=',',
-    )
+    ))
     data_dict['array_hras_RBD'] = hras_enrichment_rbd
 
-    hras_enrichment_gapgef = np.genfromtxt(
+    hras_enrichment_gapgef = pd.DataFrame(np.genfromtxt(
         "mutagenesis_visualization/data/HRas166_GAPGEF.csv",
         delimiter=',',
-    )
+    ))
     data_dict['array_hras_gapgef'] = hras_enrichment_gapgef
 
     # Beta lactamase data

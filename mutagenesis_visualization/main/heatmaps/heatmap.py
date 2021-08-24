@@ -25,7 +25,6 @@ class Heatmap(Pyplot):
     """
     This class plots a heatmat with the enrichment scores.
     """
-
     def __call__(
         self,
         nancolor: str = 'lime',
@@ -64,7 +63,7 @@ class Heatmap(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # sort data by rows in specified order by user
         self.df_output: DataFrame = df_rearrange(
@@ -307,7 +306,12 @@ class Heatmap(Pyplot):
         gs_object.update(hspace=0.1, wspace=0.1 / len(self.df_output.columns) * 50)
 
         # for putting title on graph
-        plt.title(temp_kwargs['title'], horizontalalignment='center', fontname="Arial", fontsize=12)
+        plt.title(
+            temp_kwargs['title'],
+            horizontalalignment='center',
+            fontname="Arial",
+            fontsize=temp_kwargs["title_fontsize"]
+        )
 
         # Cartoon
         if show_cartoon:
@@ -322,20 +326,11 @@ class Heatmap(Pyplot):
 
         self._save_work(output_file, temp_kwargs)
 
-        # return matplotlib object
-        if temp_kwargs['return_plot_object']:
-            return self.fig, self.ax_object, self.ax_object2, self.ax_object3, self.average_residue
-
-    def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
-        """
-        Change stylistic parameters of the plot.
-        """
-
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]

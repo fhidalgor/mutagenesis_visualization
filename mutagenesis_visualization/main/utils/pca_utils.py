@@ -1,13 +1,16 @@
-from typing import List
+"""
+This module contains utils functions for PCA plot.
+"""
+from typing import List, Tuple, Union
+import itertools
 import numpy as np
 import pandas as pd
-import itertools
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from sklearn.decomposition import PCA
 
 
-def auto_text(x: List[str], y: List[str], textlabels: List[str]):
+def auto_text(x: List[str], y: List[str], textlabels: List[str]) -> list:
     """
     Auto anotates text labels.
     """
@@ -25,7 +28,7 @@ def auto_text(x: List[str], y: List[str], textlabels: List[str]):
     return texts
 
 
-def calculate_clusters(dataset, dimensions, random_state):
+def calculate_clusters(dataset: DataFrame, dimensions:Tuple[int, int], random_state: int) -> Tuple[DataFrame, List[float]]:
     """
     Input the dataframe that needs to be correlated, the dimensions,
     and will calculate PCA descomposition.
@@ -38,8 +41,8 @@ def calculate_clusters(dataset, dimensions, random_state):
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa = pd.DataFrame((model.components_).T,
-                         columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
+    df_aa: DataFrame = pd.DataFrame((model.components_).T,
+                                    columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -75,23 +78,23 @@ def calculate_correlation(df: DataFrame, order_aminoacids: List[str]) -> DataFra
     return dataset
 
 
-def calculate_correlation_by_residue(df_input: DataFrame):
+def calculate_correlation_by_residue(df_input: DataFrame) -> DataFrame:
 
-    dataset = df_input.copy()
-    dataset = dataset.pivot_table(values='Score', index='Position', columns='Aminoacid')
-    dataset = dataset.T.corr()
-
-    return dataset
+    df_output = df_input.copy()
+    df_output = df_output.pivot_table(values='Score', index='Position', columns='Aminoacid')
+    return df_output.T.corr()
 
 
-def calculate_substitution_correlations(self, aminoacids: List[str], groups: List[str]) -> DataFrame:
+def calculate_substitution_correlations(
+    df_input: DataFrame, aminoacids: List[str], groups: List[str]
+) -> DataFrame:
     """
     If a set of residues was chosen, how well would they represent
     the entire population.
     """
 
     # Get correlation values
-    corr_values = calculate_correlation(self.dataframe, aminoacids)**2
+    corr_values = calculate_correlation(df_input, aminoacids)**2
     corr_values.reset_index(inplace=True)
 
     # Get combinations
@@ -101,7 +104,7 @@ def calculate_substitution_correlations(self, aminoacids: List[str], groups: Lis
     df = pd.DataFrame()
     df['Aminoacids'] = list(itertools.chain.from_iterable(groups))
     for combination in replacement_combinations:  # Iterate over a combination
-        temp_list = []
+        temp_list: List[Union[int, float]] = []
 
         # Iterate over a group of the combination
         for group, aa_selected in zip(groups, combination):
@@ -124,5 +127,5 @@ def _polishdf(df: DataFrame) -> DataFrame:
     return df_mean
 
 
-def _find_correlation(aa1, aa2, corr_values) -> float:
+def _find_correlation(aa1: str, aa2: str, corr_values: DataFrame) -> float:
     return float(corr_values[aa1].loc[corr_values['Aminoacid'] == aa2])

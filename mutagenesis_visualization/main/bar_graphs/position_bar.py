@@ -37,7 +37,7 @@ class PositionBar(Pyplot):
         **kwargs : other keyword arguments
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
         # Select position
         df_output = self.dataframe.loc[self.dataframe['Position'] == position].copy()
 
@@ -69,7 +69,7 @@ class PositionBar(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
         temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
@@ -97,4 +97,9 @@ class PositionBar(Pyplot):
             color='k',
             labelpad=4,
         )
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )

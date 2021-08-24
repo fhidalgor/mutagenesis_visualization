@@ -7,10 +7,10 @@ import numpy as np
 
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
-from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
+from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets, HRAS_FASTQ
 from mutagenesis_visualization.main.process_data.count_reads import count_reads
 
-DEMO_DATASETS: Dict[str, Union[np.array, DataFrame]] = load_demo_datasets()
+DEMO_DATASETS: Dict[str, DataFrame] = load_demo_datasets()
 
 
 class DemoObjects:
@@ -49,7 +49,10 @@ class DemoObjects:
         ]
 
         return Screen(
-            dataset=DEMO_DATASETS['array_hras_RBD'], sequence=hras_sequence, aminoacids = list('ACDEFGHIKLMNPQRSTVWY*'), secondary=secondary
+            dataset=DEMO_DATASETS['array_hras_RBD'],
+            sequence=hras_sequence,
+            aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
+            secondary=secondary
         )
 
     def _generate_hras_gapgef_object(self) -> Screen:
@@ -70,7 +73,10 @@ class DemoObjects:
         ]
 
         return Screen(
-            dataset=DEMO_DATASETS['array_hras_gapgef'], sequence=hras_sequence, aminoacids = list('ACDEFGHIKLMNPQRSTVWY*'), secondary=secondary
+            dataset=DEMO_DATASETS['array_hras_gapgef'],
+            sequence=hras_sequence,
+            aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
+            secondary=secondary
         )
 
     def _generate_bla_obj(self) -> Screen:
@@ -291,17 +297,13 @@ class DemoObjects:
 
         # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
         codon_list: List[str] = [
-            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG",
-            "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC",
-            "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
+            "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC",
+            "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG",
+            "AGC", "ACC", "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
         ]
 
         df_counts_pre, _ = count_reads(
-            hras_dna_sequence,
-            "mutagenesis_visualization/data/hras.trimmed.fastq",
-            codon_list,
-            counts_wt=False,
-            start_position=2
+            hras_dna_sequence, HRAS_FASTQ, codon_list, counts_wt=False, start_position=2
         )
 
         return Counts(dataframe=df_counts_pre)

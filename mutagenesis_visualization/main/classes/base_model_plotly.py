@@ -30,7 +30,7 @@ class Plotly:
         Docstring placeholder
         """
         if isinstance(aminoacids, str):
-            self.aminoacids: List[str]  = list(aminoacids)
+            self.aminoacids: List[str] = list(aminoacids)
         elif isinstance(aminoacids, list):
             self.aminoacids = aminoacids
 
@@ -51,8 +51,8 @@ class Plotly:
         Save figure to html.
         """
         if output_html:
-            if '.html' not in output_html:
-                output_html += '.html'
+            if '.html' not in str(output_html):
+                output_html = str(output_html) + '.html'
             self.fig.write_html(str(Path(output_html)))
         if temp_kwargs['show']:
             self.fig.show(config={'displayModeBar': False})
@@ -64,10 +64,14 @@ class Plotly:
         temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
         temp_kwargs.update(kwargs)
         temp_kwargs['aminoacids'] = kwargs.get('aminoacids', self.aminoacids)
-        if "*" in self.aminoacids and len(self.aminoacids)==21:
-            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW*'))
-        elif len(self.aminoacids)==20:
-            temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW'))
+        if "*" in self.aminoacids and len(self.aminoacids) == 21:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get(
+                'neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW*')
+            )
+        elif len(self.aminoacids) == 20:
+            temp_kwargs['neworder_aminoacids'] = kwargs.get(
+                'neworder_aminoacids', list('DEKHRGNQASTPCVYMILFW')
+            )
         else:
             temp_kwargs['neworder_aminoacids'] = kwargs.get('neworder_aminoacids', self.aminoacids)
         return temp_kwargs

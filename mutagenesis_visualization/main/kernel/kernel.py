@@ -16,7 +16,7 @@ class Kernel(Pyplot):
     """
     def __call__(
         self,
-        cumulative=False,
+        cumulative: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ) -> None:
@@ -37,7 +37,7 @@ class Kernel(Pyplot):
                 If true, will return plotting objects (ie. fig, ax_object).
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
 
@@ -55,9 +55,26 @@ class Kernel(Pyplot):
         """
         Change stylistic parameters of the plot.
         """
-        plt.xlabel(temp_kwargs['x_label'], fontsize=10, fontname='Arial', color='k', labelpad=0)
-        plt.ylabel(temp_kwargs['y_label'], fontsize=10, fontname='Arial', color='k', labelpad=3)
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k')
+        plt.xlabel(
+            temp_kwargs['x_label'],
+            fontsize=temp_kwargs["x_label_fontsize"],
+            fontname='Arial',
+            color='k',
+            labelpad=0
+        )
+        plt.ylabel(
+            temp_kwargs['y_label'],
+            fontsize=temp_kwargs["y_label_fontsize"],
+            fontname='Arial',
+            color='k',
+            labelpad=3
+        )
+        plt.title(
+            temp_kwargs['title'],
+            fontsize=temp_kwargs["title_fontsize"],
+            fontname='Arial',
+            color='k'
+        )
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
         self.ax_object.get_legend().remove()
@@ -66,7 +83,7 @@ class Kernel(Pyplot):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')

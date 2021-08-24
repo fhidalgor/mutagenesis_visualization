@@ -47,7 +47,7 @@ class CreateVariants:
         self.seq_list = self._enumerate_variants_2()
 
         # Make dataframe
-        self.df_output: DataFrame = pd.DataFrame()
+        self.df_output = pd.DataFrame()
         self.df_output['Sequences'] = self.seq_list
         return self.df_output
 

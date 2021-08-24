@@ -3,16 +3,16 @@ Auxiliar functions used in the heatmaps.
 """
 from typing import List, Tuple, Union
 import numpy as np
+from numpy import typing as npt
 from collections import Counter
 from pandas.core.frame import DataFrame
 from scipy.cluster import hierarchy
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-import pandas as pd
 
 
-def labels(start_position: int = 1) -> Tuple[List[str], List[int]]:
+def labels(start_position: int = 1) -> Tuple[List[str], List[Union[str, int]]]:
     # residue label and color
     number_sequencelabels: List[str] = list([
         'b' if index in np.arange(10 - (start_position % 10), 1000, 10) else 'k'
@@ -25,7 +25,7 @@ def labels(start_position: int = 1) -> Tuple[List[str], List[int]]:
     return number_sequencelabels, color_sequencelabels
 
 
-def hierarchical_sort(df_input: DataFrame) -> list:
+def hierarchical_sort(df_input: DataFrame) -> npt.NDArray:
     """
     Sorts columns of dataset using hierarchical clustering and returns
     order to rearrange dataset.
@@ -36,7 +36,7 @@ def hierarchical_sort(df_input: DataFrame) -> list:
 
     # give sorted column order
     Z = hierarchy.ward(df_nan_replaced.T)
-    new_order: list = hierarchy.leaves_list(Z)
+    new_order: npt.NDArray = hierarchy.leaves_list(Z)
     return new_order
 
 
@@ -57,14 +57,13 @@ def generate_cartoon(
     cartoon = plt.subplot(gs_object[n_row, 0])
 
     # Generate coordinates of labels
-    labels = list(Counter(secondary).keys())
-    length = list(Counter(secondary).values())
-    cumsum = length[:-1]
+    secondary_labels = list(Counter(secondary).keys())
+    secondary_lengths = list(Counter(secondary).values())
+    cumsum = secondary_lengths[:-1]
     cumsum.insert(0, start_position)
-    cumsum = np.cumsum(cumsum)
 
     # Create cartoon
-    for label, length, cum in zip(labels, length, cumsum):
+    for label, length, cum in zip(secondary_labels, secondary_lengths, np.cumsum(cumsum)):
         if 'β' in label:
             loopstructure = _loop(cum, length, color=colors[2])
             cartoon.add_patch(loopstructure)
@@ -120,7 +119,7 @@ def generate_cartoon(
     cartoon.set_position(box)
 
 
-def _sheet(starting_aa: float, length_aa: float, color: str = 'lightgreen') -> patches.FancyArrow:
+def _sheet(starting_aa: float, length_aa: int, color: str = 'lightgreen') -> patches.FancyArrow:
     return patches.FancyArrow(
         starting_aa,
         0.25,
@@ -138,7 +137,7 @@ def _sheet(starting_aa: float, length_aa: float, color: str = 'lightgreen') -> p
     )
 
 
-def _helix(starting_aa: float, length_aa: float, color: str = 'lavender') -> plt.Rectangle:
+def _helix(starting_aa: float, length_aa: int, color: str = 'lavender') -> plt.Rectangle:
     """
     Produces matplotlib.Rectangle of length specified by length_aa.
     Used for the helix lines.
@@ -146,7 +145,7 @@ def _helix(starting_aa: float, length_aa: float, color: str = 'lavender') -> plt
     return plt.Rectangle((starting_aa, -0.85), length_aa, 2.2, fc=color, ec='k')
 
 
-def _loop(starting_aa: float, length_aa: float, color: str = 'k') -> plt.Rectangle:
+def _loop(starting_aa: float, length_aa: int, color: str = 'k') -> plt.Rectangle:
     """
     Produces matplotlib.Rectangle of length specified by length_aa.
     Used for the loop lines.

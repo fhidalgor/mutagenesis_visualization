@@ -17,7 +17,7 @@ class HistogramP(Plotly):
     """
     def __call__(
         self,
-        mode: str='pointmutant',
+        mode: str = 'pointmutant',
         output_html: Union[None, str, Path] = None,
         **kwargs: Dict[str, Any],
     ) -> None:
@@ -118,7 +118,7 @@ class HistogramP(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 3))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Enrichment score')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')

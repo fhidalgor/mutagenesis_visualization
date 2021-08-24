@@ -104,23 +104,23 @@ class Screen:
     """
     def __init__(
         self,
-        dataset: Union[np.array, DataFrame],
+        dataset: Union[npt.NDArray, DataFrame],
         sequence: str,
         aminoacids: List[str],
         start_position: int = 2,
         fillna: float = 0,
         secondary: Optional[list] = None,
-        replicates: Optional[List[Union[np.array, DataFrame]]] = None,
+        replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = None,
     ):
 
         if isinstance(dataset, DataFrame):
             self.dataset: npt.NDArray = np.array(dataset)
         else:
-            self.dataset: npt.NDArray = dataset
+            self.dataset = dataset
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
         elif isinstance(aminoacids, str):
-            self.aminoacids: List[str] = list(aminoacids)
+            self.aminoacids = list(aminoacids)
         self.start_position: int = start_position
         self.end_position: int = len(self.dataset[0]) + start_position
         self.sequence_raw: str = sequence  # unchanged
@@ -139,13 +139,13 @@ class Screen:
                 self.dataset, self.secondary, self.start_position, self.aminoacids
             )
 
-        self.replicates: Optional[List[Union[np.array, DataFrame]]] = replicates
+        self.replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = replicates
         self.replicates_dataframes: List[DataFrame] = []
         if replicates:
             for replicate in replicates:
-                _ , df_replicate = transform_dataset(
-                np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
-            )
+                _, df_replicate = transform_dataset(
+                    np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
+                )
             self.replicates_dataframes.append(df_replicate)
 
         # Assert messages
@@ -156,9 +156,12 @@ class Screen:
         self.histogram: Histogram = Histogram(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv, aminoacids=self.aminoacids,
+            dataframe_nonsnv=self.dataframe_nonsnv,
+            aminoacids=self.aminoacids,
         )
-        self.multiple_kernel: MultipleKernel = MultipleKernel(dataframe = self.dataframe, aminoacids=self.aminoacids)
+        self.multiple_kernel: MultipleKernel = MultipleKernel(
+            dataframe=self.dataframe, aminoacids=self.aminoacids
+        )
 
         # heatmaps
         self.heatmap: Heatmap = Heatmap(
@@ -166,20 +169,23 @@ class Screen:
             sequence=self.sequence,
             start_position=self.start_position,
             dataframe_stopcodons=self.dataframe_stopcodons,
-            secondary=self.secondary, aminoacids=self.aminoacids
+            secondary=self.secondary,
+            aminoacids=self.aminoacids
         )
 
         self.heatmap_rows: HeatmapRows = HeatmapRows(
             dataframe=self.dataframe,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            aminoacids=self.aminoacids
         )
         self.heatmap_columns: HeatmapColumns = HeatmapColumns(
             dataframe=self.dataframe,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            aminoacids=self.aminoacids
         )
         self.miniheatmap: Miniheatmap = Miniheatmap(
             dataframe=self.dataframe,
@@ -192,12 +198,20 @@ class Screen:
 
         # bar
         self.enrichment_bar: EnrichmentBar = EnrichmentBar(
-            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids, secondary=self.secondary
+            dataframe=self.dataframe,
+            start_position=self.start_position,
+            aminoacids=self.aminoacids,
+            secondary=self.secondary
         )
         self.differential: Differential = Differential(
-            dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids, secondary = self.secondary
+            dataframe=self.dataframe,
+            start_position=self.start_position,
+            aminoacids=self.aminoacids,
+            secondary=self.secondary
         )
-        self.position_bar: PositionBar = PositionBar(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.position_bar: PositionBar = PositionBar(
+            dataframe=self.dataframe, aminoacids=self.aminoacids
+        )
         self.secondary_mean: Secondary = Secondary(
             dataframe=self.dataframe, secondary_dup=self.secondary_dup, aminoacids=self.aminoacids
         )
@@ -207,58 +221,97 @@ class Screen:
 
         # PCA
         self.correlation: Correlation = Correlation(
-            dataframe_stopcodons=self.dataframe_stopcodons, start_position=self.start_position, aminoacids=self.aminoacids
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            start_position=self.start_position,
+            aminoacids=self.aminoacids
         )
         self.individual_correlation: IndividualCorrelation = IndividualCorrelation(
             dataframe=self.dataframe, aminoacids=self.aminoacids
         )
-        self.pca: PCA = PCA(dataframe=self.dataframe, secondary_dup = self.secondary_dup, aminoacids=self.aminoacids)
+        self.pca: PCA = PCA(
+            dataframe=self.dataframe, secondary_dup=self.secondary_dup, aminoacids=self.aminoacids
+        )
 
         # other stats
         self.cumulative: Cumulative = Cumulative(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv, aminoacids=self.aminoacids
+            dataframe_nonsnv=self.dataframe_nonsnv,
+            aminoacids=self.aminoacids
         )
         self.rank: Rank = Rank(dataframe=self.dataframe, aminoacids=self.aminoacids)
         self.roc: ROC = ROC(dataframe=self.dataframe, aminoacids=self.aminoacids)
 
         # plotly
-        self.plotly_differential: DifferentialP = DifferentialP(dataframe=self.dataframe, start_position=self.start_position, aminoacids=self.aminoacids)
-        self.plotly_enrichment_bar: EnrichmentBarP = EnrichmentBarP(dataframe=self.dataframe, aminoacids=self.aminoacids)
-        self.plotly_heatmap: HeatmapP = HeatmapP(
-            sequence=self.sequence, dataframe_stopcodons=self.dataframe_stopcodons, aminoacids=self.aminoacids
+        self.plotly_differential: DifferentialP = DifferentialP(
+            dataframe=self.dataframe,
+            start_position=self.start_position,
+            aminoacids=self.aminoacids
         )
-        self.plotly_histogram: HistogramP = HistogramP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_enrichment_bar: EnrichmentBarP = EnrichmentBarP(
+            dataframe=self.dataframe, aminoacids=self.aminoacids
+        )
+        self.plotly_heatmap: HeatmapP = HeatmapP(
+            sequence=self.sequence,
+            dataframe_stopcodons=self.dataframe_stopcodons,
+            aminoacids=self.aminoacids
+        )
+        self.plotly_histogram: HistogramP = HistogramP(
+            dataframe=self.dataframe, aminoacids=self.aminoacids
+        )
         self.plotly_rank: RankP = RankP(dataframe=self.dataframe, aminoacids=self.aminoacids)
-        self.plotly_scatter: ScatterP = ScatterP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_scatter: ScatterP = ScatterP(
+            dataframe=self.dataframe, aminoacids=self.aminoacids
+        )
         self.plotly_scatter_3d: Scatter3D = Scatter3D(
             dataframe=self.dataframe,
             start_position=self.start_position,
-            end_position=self.end_position, aminoacids=self.aminoacids
+            end_position=self.end_position,
+            aminoacids=self.aminoacids
         )
         self.plotly_scatter_3d_pdbprop: Scatter3DPDB = Scatter3DPDB(
             dataframe=self.dataframe,
             start_position=self.start_position,
-            end_position=self.end_position, aminoacids=self.aminoacids
+            end_position=self.end_position,
+            aminoacids=self.aminoacids
         )
-
-    def scatter_replicates(self, mode: str = 'pointmutant', output_file: Union[None, str, Path] = None, title: str = None, show: bool=False, close: bool =True) -> None:
+        # pymol
+        #try:
+        #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
+        #except ModuleNotFoundError:
+        """    def scatter_replicates(
+            self,
+            mode: str = 'pointmutant',
+            output_file: Union[None, str, Path] = None,
+            title: str = None,
+            show: bool = False,
+            close: bool = True
+        ) -> None:
         """
-        Produce replicates of scatter plots.
+        #Produce replicates of scatter plots.
         """
         combination_replicates = list(combinations(range(0, len(self.replicates)), 2))
         for comb in combination_replicates:
             x_label: str = "Replicate " + str(comb[0] + 1)
             y_label: str = "Replicate " + str(comb[1] + 1)
 
-            scatter_obj_1: Scatter = Scatter(dataframe=self.replicates_dataframes[comb[0]], aminoacids=self.aminoacids)
-            scatter_obj_2: Scatter = Scatter(dataframe=self.replicates_dataframes[comb[1]], aminoacids=self.aminoacids)
+            scatter_obj_1: Scatter = Scatter(
+                dataframe=self.replicates_dataframes[comb[0]], aminoacids=self.aminoacids
+            )
+            scatter_obj_2: Scatter = Scatter(
+                dataframe=self.replicates_dataframes[comb[1]], aminoacids=self.aminoacids
+            )
 
-            scatter_obj_1(scatter_obj_2,mode = mode, output_file=output_file.with_name(output_file.stem+"_"+str(comb[0])+"_vs_"+str(comb[1])+output_file.suffix), x_label = x_label, y_label = y_label,title = title, show=show, close=close)
-
-        # pymol
-        #try:
-        #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
-        #except ModuleNotFoundError:
-        #pass
+            scatter_obj_1(
+                scatter_obj_2,
+                mode=mode,
+                output_file=output_file.with_name(
+                    output_file.stem + "_" + str(comb[0]) + "_vs_" + str(comb[1]) +
+                    output_file.suffix
+                ),
+                x_label=x_label,
+                y_label=y_label,
+                title=title,
+                show=show,
+                close=close
+            )"""

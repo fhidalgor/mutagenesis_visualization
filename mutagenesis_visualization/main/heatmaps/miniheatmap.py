@@ -52,7 +52,7 @@ class Miniheatmap(Pyplot):
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
-        self._load_parameters()
+        self.graph_parameters()
 
         # do offset if appropriate
         self.df_output = transform_dataset_offset(
@@ -186,16 +186,16 @@ class Miniheatmap(Pyplot):
             temp_kwargs['title'],
             horizontalalignment='center',
             fontname="Arial",
-            fontsize=10,
+            fontsize=temp_kwargs["title_fontsize"],
             pad=10
         )
-        plt.ylabel('Amino Acid Substitution', fontsize=10, labelpad=-1)
+        plt.ylabel('Amino Acid Substitution', fontsize=temp_kwargs["y_label_fontsize"], labelpad=-1)
 
     def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         # load labels
         temp_kwargs['aminoacids'] = self.aminoacids
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]

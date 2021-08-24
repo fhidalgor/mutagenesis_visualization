@@ -2,7 +2,7 @@
 This module contains the plotly mean enrichment plot.
 """
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, Literal, Union
 from pandas.core.frame import DataFrame
 import plotly.io as pio
 import plotly.graph_objects as go
@@ -18,7 +18,7 @@ class DifferentialP(Plotly):
     def __call__(
         self,
         screen_object: Any,
-        metric: str = 'rmse',
+        metric: Literal["rmse", "squared", "mean"] = 'rmse',
         plot_type: str = 'bar',
         mode: str = 'mean',
         output_html: Union[None, str, Path] = None,
@@ -45,13 +45,10 @@ class DifferentialP(Plotly):
 
         **kwargs : other keyword arguments
         """
-        kwargs["metric"] = metric.lower()
-        temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = self._update_kwargs_2(kwargs, metric)
 
         self.df_output: DataFrame = process_rmse_residue(
-            self.dataframe,
-            screen_object.dataframe,
-            temp_kwargs['metric']
+            self.dataframe, screen_object.dataframe, metric
         )
 
         # Create figure
@@ -75,7 +72,8 @@ class DifferentialP(Plotly):
                     go.Scatter(
                         x=self.df_output['Position'],
                         y=self.df_output['d1 - d2'],
-                        line=dict(color=temp_kwargs['color'], width=2))
+                        line=dict(color=temp_kwargs['color'], width=2)
+                    )
                 ]
             )
 
@@ -89,9 +87,7 @@ class DifferentialP(Plotly):
 
         # Color and width of bars
         #self.fig.update_traces (marker_line_width=0, )
-        self.fig.update_traces(
-            hovertemplate='Position: %{x}<br>Difference: %{y}<extra></extra>'
-        )
+        self.fig.update_traces(hovertemplate='Position: %{x}<br>Difference: %{y}<extra></extra>')
         # Layout and title parameters https://plotly.com/python/figure-labels/
         self.fig.update_layout(
             width=temp_kwargs['figsize'][0] * 120,
@@ -127,23 +123,22 @@ class DifferentialP(Plotly):
             mirror=True,
         )
 
-    def _update_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _update_kwargs_2(self, kwargs: Dict[str, Any], metric: str) -> Dict[str, Any]:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 5)
         temp_kwargs['color'] = kwargs.get('color', 'black')
         temp_kwargs['figsize'] = kwargs.get('figsize', (4.5, 3))
-        #temp_kwargs['title'] = kwargs.get('title', '{} differential '.format(kwargs["metric"]))
 
-        if kwargs["metric"] == 'mean':
+        if metric== 'mean':
             temp_kwargs['yscale'] = kwargs.get('yscale', (-1, 1))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
-        elif kwargs["metric"] == 'rmse':
+        elif metric == 'rmse':
             temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Differential')
-        if kwargs["metric"] == 'squared':
+        if metric == 'squared':
             temp_kwargs['yscale'] = kwargs.get('yscale', (0, 2))
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Differential')
 

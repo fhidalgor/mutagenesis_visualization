@@ -121,3 +121,17 @@ max-attributes=10
 
 # Maximum number of boolean expressions in an if statement.
 max-bool-expr=7
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=20
+
+# Ignore comments when computing similarities.
+ignore-comments=no
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=no
+
+# Ignore imports when computing similarities.
+ignore-imports=no

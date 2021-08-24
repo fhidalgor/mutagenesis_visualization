@@ -109,7 +109,6 @@ class Scatter3D(Plotly):
         self._tune_plot(temp_kwargs)
         self._save_html(output_html, temp_kwargs)
 
-
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
@@ -129,7 +128,7 @@ class Scatter3D(Plotly):
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] =  super()._update_kwargs(kwargs)
+        temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'x (Å)')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'y (Å)')
         temp_kwargs['z_label'] = kwargs.get('z_label', 'z (Å)')
