@@ -52,7 +52,7 @@ def test_heatmap_rows() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'show': False}]
+    list_params: List[dict] = [{"selection": "mean",'show': False}]
 
     # Assert
     for parameters in list_params:

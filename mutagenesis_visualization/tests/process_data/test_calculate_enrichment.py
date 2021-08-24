@@ -9,6 +9,7 @@ import pandas as pd
 from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
+from mutagenesis_visualization.main.utils.data_paths import HRAS_GAPGEF_COUNTS
 
 log: logging.Logger = logging.getLogger('test_calculate_enrichment.py')
 
@@ -18,7 +19,7 @@ def test_calculate_enrichment() -> None:
     prefix: str = "mutagenesis_visualization/"
     # prefix = "../../"
     df_counts_pre = pd.read_excel(
-        prefix + 'data/hrasGAPGEF_counts.xlsx',
+        HRAS_GAPGEF_COUNTS,
         'R1_before',
         skiprows=1,
         index_col='Codons',
@@ -27,7 +28,7 @@ def test_calculate_enrichment() -> None:
     )
 
     df_counts_sel = pd.read_excel(
-        prefix + 'data/hrasGAPGEF_counts.xlsx',
+        HRAS_GAPGEF_COUNTS,
         'R1_after',
         skiprows=1,
         index_col='Codons',

@@ -5,7 +5,7 @@ This module contains the plotly figures tests.
 import traceback
 import logging
 from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
-from mutagenesis_visualization.main.demo.demo_data import PDB_5P21
+from mutagenesis_visualization.main.utils.data_paths import PDB_5P21
 
 DEMO_OBJECTS: DemoObjects = DemoObjects()
 OBJ_TEST = DEMO_OBJECTS.hras_rbd

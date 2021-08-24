@@ -111,10 +111,10 @@ def count_reads(
     # Enumerate variants
     assert not isinstance(codon_list, str), "Error when using codon list"
     variants = enumerate_variants(wtseq_list, codon_list, dna_sequence)
+    assert dna_sequence in list(variants.keys()), "DNA sequence not compatible with codon list."
 
     # Count variant frequency
     variants, totalreads, usefulreads = count_fastq(list(variants.keys()), input_file)
-
     # Convert to df_output
     wt_protein: Seq = Seq(dna_sequence).translate()
     df_output: DataFrame = pd.DataFrame()
@@ -132,11 +132,8 @@ def count_reads(
     df_output['Counts'] = list(variants.values())
 
     if counts_wt:
-        try:  # try is to fix the Bug Che discovered
-            df_output.loc[df_output['Codon'] == df_output['WTCodon'],
-                          'Counts'] = variants[dna_sequence]
-        except:
-            pass
+        # try is to fix the Bug Che discovered
+        df_output.loc[df_output['Codon'] == df_output['WTCodon'], 'Counts'] = variants[dna_sequence]
     else:
         df_output.loc[df_output['Codon'] == df_output['WTCodon'], 'Counts'] = np.nan
 
@@ -147,10 +144,7 @@ def count_reads(
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon
-    df_wt = df_output.loc[(df_output['SynWT'] is True) | (df_output['SynWT'] == 'wt codon')][
-        [  # perhaps I need to remove this again
-            'Counts'  # removed
-        ]]
+    df_wt = df_output.loc[df_output['SynWT'] == True][['Counts']]
 
     # Export files
     if output_file:

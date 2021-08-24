@@ -1,0 +1,28 @@
+# YAML 1.2
+---
+abstract: |
+    "Mutagenesis_visualization is a Python package aimed to generate publication-quality figures for site-saturation mutagenesis datasets.
+
+    The package main focus is to perform the processing, statistical analysis and visualization steps of your pipeline, but it additionally offers tools to calculate enrichment scores from FASTQ files."
+authors:
+  -
+    affiliation: "UC Berkeley"
+    family-names: Hidalgo
+    given-names: Frank
+  -
+    affiliation: "UC Berkeley"
+    family-names: Templeton
+    given-names: Sage
+  -
+    family-names: Olavarria Gallegos
+    given-names: Che
+  -
+    affiliation: "UC Berkeley"
+    family-names: Wang
+    given-names: Joanne
+cff-version: "1.1.0"
+license: "GPLv3+"
+message: "If you use this software, please cite it using these metadata."
+title: "mutagenesis_visualization"
+version: "1.0.0"
+...

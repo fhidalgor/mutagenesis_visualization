@@ -47,7 +47,7 @@ def test_primer_design() -> None:
     primers21: Tuple[str, str] = _primer_design(
         dna, codon='NNS', codon_position=21, length_primer=18, melting_temp=None
     )
-    assert isinstance(primers3, Tuple[str, str]), 'error the output is not a tuple'
+    assert isinstance(primers3, tuple), 'error the output is not a tuple'
 
     assert primers0 == (
         'NNSAATGCGcccccaATGaaaaaaTAAaaACGG', 'CCGTttTTAttttttCATtgggggCGCATTSNN'

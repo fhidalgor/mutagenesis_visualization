@@ -64,5 +64,5 @@ def test_demo_objects() -> None:
     assert isinstance(demo_object.rev, Screen)
     assert isinstance(demo_object.asynuclein, Screen)
     assert isinstance(demo_object.aph, Screen)
-    assert isinstance(demo_object.b11L5F, Screen)
+    assert isinstance(demo_object.b11l5f, Screen)
     assert isinstance(demo_object.hras_counts, Counts)
