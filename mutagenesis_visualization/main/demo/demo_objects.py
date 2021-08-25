@@ -7,8 +7,9 @@ import numpy as np
 
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
-from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets, HRAS_FASTQ
+from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
 from mutagenesis_visualization.main.process_data.count_reads import count_reads
+from mutagenesis_visualization.main.utils.data_paths import HRAS_FASTQ
 
 DEMO_DATASETS: Dict[str, DataFrame] = load_demo_datasets()
 
