@@ -6,37 +6,22 @@ This section shows how to use the mutagenesis_visualization package. The plottin
 Import modules
 --------------
 
-.. code:: ipython3
+.. code:: python
 
     # running locally, if you pip install then you just have to import the module
+    from typing import List
     import numpy as np
-    import pandas as pd
     import matplotlib as plt
     import copy
-    
-    try:
-        import mutagenesis_visualization as mut
-    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
-        import sys
-        sys.path.append('../../')
-        import mutagenesis_visualization as mut
+    from mutagenesis_visualization.main.classes.screen import Screen
+    from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV, HRAS_RBD_COUNTS_CSV
+
 
 Create object of class Screen
 -----------------------------
 
 Class reviewed in this section:
     - :class:`mutagenesis_visualization.Screen`
-    - :func:`mutagenesis_visualization.demo_datasets`
-
-We will first load the sample datasets. They are part of the package.
-You would ignore this step if you are trying to use your own dataset.
-
-.. code:: ipython3
-
-    # This step is analogous at loading a csv file
-    data_dict = mut.demo_datasets()  # load example datasets
-    hras_enrichment_GAPGEF = data_dict['array_hras_GAPGEF']
-    hras_enrichment_RBD = data_dict['array_hras_RBD']
 
 In order to create plots, the first step is to create a
 ``Screen.object``. The enrichment scores will be passed using the
@@ -47,25 +32,22 @@ optional, but without it some plots will not work. In this example, we
 are importing two datasets and creating two objects named
 ``hras_GAPGEF`` and ``hras_RBD``.
 
-.. code:: ipython3
+.. code:: python
 
     # Load enrichment scores. This is how you would load them from a local file.
-    hras_enrichment_GAPGEF = np.genfromtxt(
-        '../data/HRas166_GAPGEF.csv', delimiter=','
-    )
-    
-    hras_enrichment_RBD = np.genfromtxt('../data/HRas166_RBD.csv', delimiter=',')
+    hras_enrichment_GAPGEF = np.genfromtxt(HRAS_GAPGEF_COUNTS_CSV, delimiter=',')
+    hras_enrichment_RBD = np.genfromtxt(HRAS_RBD_COUNTS_CSV, delimiter=',')
     
     # Define protein sequence
-    hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
+    hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
                     + 'SAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVES'\
                     + 'RQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
     
     # Order of amino acid substitutions in the hras_enrichment dataset
-    aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
     # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
-    start_position = 2
+    start_position: int = 2
     
     # Define secondary structure
     secondary = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9), ['α1'] * (25 - 15),
@@ -78,14 +60,14 @@ are importing two datasets and creating two objects named
                  ['L11'] * (190 - 172)]
     
     # Substitute Nan values with 0
-    fillna = 0
+    fillna: int = 0
     
     # Create objects
-    hras_GAPGEF = mut.Screen(
+    hras_GAPGEF: Screen = Screen(
         hras_enrichment_GAPGEF, hras_sequence, aminoacids, start_position, fillna,
         secondary
     )
-    hras_RBD = mut.Screen(
+    hras_RBD: Screen = Screen(
         hras_enrichment_RBD, hras_sequence, aminoacids, start_position, fillna,
         secondary
     )
@@ -102,17 +84,17 @@ Methods reviewed in this section:
 Once the object ``hras_RBD`` is created, we will plot a heatmap of the
 enrichment scores using the method ``object.heatmap``.
 
-.. code:: ipython3
+.. code:: python
 
     # Create full heatmap
-    hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True, output_file=None)
+    hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
 
 .. image:: images/exported_images/hras_fullheatmap.png
 
 If you set the parameter ``hierarchical=True``, it will sort the columns
 using hierarchical clustering
 
-.. code:: ipython3
+.. code:: python
 
     hras_RBD.heatmap(title='H-Ras 2-166', hierarchical=True, output_file=None)
 
@@ -121,7 +103,7 @@ using hierarchical clustering
 You can change the scale and the color map using the parameters
 ``colorbar_scale`` and ``colormap``.
 
-.. code:: ipython3
+.. code:: python
 
     # Load a color map from matplotlib
     colormap = copy.copy((plt.cm.get_cmap('PuOr')))
@@ -132,7 +114,6 @@ You can change the scale and the color map using the parameters
         colorbar_scale=(-2, 2),
         colormap=colormap,
         show_cartoon=True,
-        output_file=None
     )
 
 .. image:: images/exported_images/hras_fullheatmap_colormap.png
@@ -145,12 +126,11 @@ so you can quickly evaluate which mutations are accessible through
 random DNA mutations. In the example of Ras, the frequency of non-SNV
 substitutions at residues 12 and 13 is dramatically lower.
 
-.. code:: ipython3
+.. code:: python
 
     # Create full heatmap showing only SNV mutants
     hras_RBD.heatmap(
-        title='H-Ras 2-166', show_cartoon=True, show_snv=True, output_file=None
-    )
+        title='H-Ras 2-166', show_cartoon=True, show_snv=True)
 
 .. image:: images/exported_images/hras_fullheatmap_snv.png
 
@@ -162,13 +142,12 @@ specify which amino acids to show with ``selection``.
 Heatmap slices
 --------------
 
-.. code:: ipython3
+.. code:: python
 
     # Create heatmap of selected aminoacid substitutions
     hras_RBD.heatmap_rows(
         title='H-Ras 2-166',
         selection=['E', 'Q', 'A', 'P', 'V', 'Y'],
-        output_file=None
     )
 
 .. image:: images/exported_images/hras_selectionheatmap.png
@@ -177,10 +156,10 @@ If we want to display only a few positions in the protein (columns), we
 will use the method ``object.heatmap_columns``. The parameter
 ``segment`` will indicate which are the contigous columns to show.
 
-.. code:: ipython3
+.. code:: python
 
     # Create a heatmap of a subset region in the protein
-    hras_RBD.heatmap_columns(segment=[20, 40], output_file=None)
+    hras_RBD.heatmap_columns(segment=[20, 40])
 
 .. image:: images/exported_images/hras_subsetheatmap.png
    :width: 200px
@@ -192,10 +171,10 @@ Miniheamap
 A summarized heatmap can also be generated. It is useful to evaluate
 global trends in the data. The command to use is ``object.miniheatmap``.
 
-.. code:: ipython3
+.. code:: python
 
     # Condensed heatmap
-    hras_RBD.miniheatmap(title='Wt residue H-Ras', output_file=None)
+    hras_RBD.miniheatmap(title='Wt residue H-Ras')
 
 .. image:: images/exported_images/hras_miniheatmap.png
    :width: 250px
@@ -206,14 +185,13 @@ mutated residue. For instance, the column of prolines is the average of
 all the columns that had a proline in the n-1 position. To accomplish
 this, ``set offset=-1``.
 
-.. code:: ipython3
+.. code:: python
 
     # Condensed heatmap offset no background correction
     hras_RBD.miniheatmap(
         title='Wt residue H-Ras',
         offset=-1,
         background_correction=False,
-        output_file='../../docs/images/exported_images/hras_miniheatmap_offset.png'
     )
 
 .. image:: images/exported_images/hras_miniheatmap_offset.png
@@ -226,15 +204,13 @@ subtract the mean enrichment score for every substitution type. In the
 example, proline is the only residues than wen situated before the
 mutation, it seems to have a detrimental effect.
 
-.. code:: ipython3
+.. code:: python
 
-    # Condensed heatmap offset no background correction
+    # Condensed heatmap offset with background correction
     hras_RBD.miniheatmap(
         title='Wt residue H-Ras',
         offset=-1,
         background_correction=True,
-        output_file=
-        '../../docs/images/exported_images/hras_miniheatmap_offset_bgcorrection.png',
     )
 
 .. image:: images/exported_images/hras_miniheatmap_offset_bgcorrection.png
@@ -245,5 +221,3 @@ Reference
 ---------
 
 .. [#Pradeep2017] Bandaru, P., Shah, N. H., Bhattacharyya, M., Barton, J. P., Kondo, Y., Cofsky, J. C., … Kuriyan, J. (2017). Deconstruction of the Ras switching cycle through saturation mutagenesis. ELife, 6. `DOI: 10.7554/eLife.27810  <https://elifesciences.org/articles/27810>`_
-
-.. [#Tareen2019] Tareen, A., & Kinney, J. B. (2020). Logomaker: beautiful sequence logos in Python. Bioinformatics, 36(7), 2272–2274. `doi:10.1093/bioinformatics/btz921 <https://academic.oup.com/bioinformatics/article/36/7/2272/5671693>`_

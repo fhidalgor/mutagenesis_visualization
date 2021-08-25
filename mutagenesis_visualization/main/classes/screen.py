@@ -277,7 +277,8 @@ class Screen:
         #try:
         #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
         #except ModuleNotFoundError:
-        """    def scatter_replicates(
+
+    def scatter_replicates(
             self,
             mode: str = 'pointmutant',
             output_file: Union[None, str, Path] = None,
@@ -312,4 +313,4 @@ class Screen:
                 title=title,
                 show=show,
                 close=close
-            )"""
+            )

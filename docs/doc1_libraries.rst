@@ -8,15 +8,6 @@ We will also generate each possible point mutant sequence and export it
 to a Fasta file, which can be useful if you use Twist Bioscience to
 generate your site saturation library.
 
-.. code:: ipython3
-
-    try:
-        import mutagenesis_visualization as mut
-    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
-        import sys
-        sys.path.append('../../')
-        import mutagenesis_visualization as mut
-
 Design primers
 --------------
 
@@ -25,50 +16,41 @@ mutable part.
 
 .. code:: ipython3
 
-    # DNA
-    dna = 'TGTACAGTAATACAAGGGGTGTTATGGAAAAAATTATGCCGGAAGAAGAATACAGCGAATTTAAAGAACTGATTCTGCAGAAGGAACTGCACGTGGTGTATGCACTGAGCCACGTGTGTGGCCAGGATCGTACCCTGCTGGCCAGTATCTTACTGCGCATCTTTCTGCACGAGAAGCTGGAGAGCCTGTTACTGTGCACACTGAACGATCGCGAGATCAGCATGGAAGATGAAGCCACCACCCTGTTCCGCGCAACAACCCTGGCCAGCACCCTGATGGAGCAGTATATGAAAGCCACCGCCACCCAGTTCGTGCATCATGCCCTGAAAGATAGCATTTTAAAAATTATGGAAAGCAAACAGAGCTGCGAACTGAGCCCGAGCAAGCTGGAGAAAAACGAGGACGTGAACACCAACCTGACCCACCTGCTGAACATTCTGAGCGAACTGGTGGAAAAAATCTTTATGGCAAGCGAAATCCTGCCTCCGACCCTGCGTTACATCTACGGCTGCCTGCAGAAGAGCGTGCAGCATAAATGGCCGACCAATACCACCATGCGCACACGTGTGGTGAGCGGTTTTGTGTTCCTGCGTCTGATCTGCCCGGCAATCCTGAACCCGCGCATGTTCAACATCATTAGCGACAGCCCGAGTCCTATCGCAGCACGTACCCTGATCCTGGTGGCAAAAAGCGTGCAAAATCTGGCCAACCTGGTGGAATTTGGCGCCAAAGAGCCGTACATGGAAGGCGTGAATCCGTTTATCAAAAGTAACAAACATCGCATGATCATGTTCCTGGACGAACTGGGCAACGTTCCGGAACTGCCGGATACAACCGAACATAGTCGCACAGACCTGAGTCGTGACCTGGCCGCCCTGCATGAAATCTGCGTGGCCCATAGCGATGAGCTGCGCACACTGAGCAACGAGCGTGGCGCCCAGCAGCACGTGCTGAAGAAACTGCTGGCCATTACCGAACTGCTGCAACAAAAGCAGAACCAGTACACCAAAACCAACGACGTGCGTtatccgtatgatgtgccggattatgcgTAAccatcacttggctagaggcatc'
+    from typing import List
+    from pandas.core.frame import DataFrame
+    from mutagenesis_visualization.main.classes.generate_primers import GeneratePrimers
     
-    # Start of protein. Note 'ATG' codon
-    start = ('ATGGAAAAAATTATGCCGGAAGAA')
+    # DNA
+    dna: str = 'TGTACAGTAATACAAGGGGTGTTATGGAAAAAATTATGCCGGAAGAAGAATACAGCGAATTTAAAGAACTGATTCTGCAGAAGGAACTGCACGTGGTGTATGCACTGAGCCACGTGTGTGGCCAGGATCGTACCCTGCTGGCCAGTATCTTACTGCGCATCTTTCTGCACGAGAAGCTGGAGAGCCTGTTACTGTGCACACTGAACGATCGCGAGATCAGCATGGAAGATGAAGCCACCACCCTGTTCCGCGCAACAACCCTGGCCAGCACCCTGATGGAGCAGTATATGAAAGCCACCGCCACCCAGTTCGTGCATCATGCCCTGAAAGATAGCATTTTAAAAATTATGGAAAGCAAACAGAGCTGCGAACTGAGCCCGAGCAAGCTGGAGAAAAACGAGGACGTGAACACCAACCTGACCCACCTGCTGAACATTCTGAGCGAACTGGTGGAAAAAATCTTTATGGCAAGCGAAATCCTGCCTCCGACCCTGCGTTACATCTACGGCTGCCTGCAGAAGAGCGTGCAGCATAAATGGCCGACCAATACCACCATGCGCACACGTGTGGTGAGCGGTTTTGTGTTCCTGCGTCTGATCTGCCCGGCAATCCTGAACCCGCGCATGTTCAACATCATTAGCGACAGCCCGAGTCCTATCGCAGCACGTACCCTGATCCTGGTGGCAAAAAGCGTGCAAAATCTGGCCAACCTGGTGGAATTTGGCGCCAAAGAGCCGTACATGGAAGGCGTGAATCCGTTTATCAAAAGTAACAAACATCGCATGATCATGTTCCTGGACGAACTGGGCAACGTTCCGGAACTGCCGGATACAACCGAACATAGTCGCACAGACCTGAGTCGTGACCTGGCCGCCCTGCATGAAATCTGCGTGGCCCATAGCGATGAGCTGCGCACACTGAGCAACGAGCGTGGCGCCCAGCAGCACGTGCTGAAGAAACTGCTGGCCATTACCGAACTGCTGCAACAAAAGCAGAACCAGTACACCAAAACCAACGACGTGCGTtatccgtatgatgtgccggattatgcgccatcacttggctagaggcatc'
+                                                   #^
+    # Start of protein. Note 'ATG' codon is the first codon.
+    start: str = 'ATGGAAAAAATTATGCCGGAAGAA'
     
     # The 'tat' codon will be the first codon that is not mutated
-    end = ('tatccgtatgatgtgccggattatgcg')
+    end: str = 'tatccgtatgatgtgccggattatgcg'
+    
+    # Initialize instance of class GeneratePrimers
+    generate_primers : GeneratePrimers = GeneratePrimers(dna, start, end)
+
 
 Set all primers to have the same base pair length.
 
 .. code:: ipython3
 
-    df_primers = mut.generate_primers(
-        dna,
-        start,
-        end,
-        output_file=None,
-        codon='NNS',
-        length_primer=15,
-        return_df=True
-    )
+    df_primers: DataFrame = generate_primers(codon='NNS', length_primer=15)
 
 Set all primers to have the same melting temperature.
 
 .. code:: ipython3
 
-    df_primers_tm = mut.generate_primers(
-        dna, start, end, output_file=None, codon='NNS', tm=60, return_df=True
-    )
+    df_primers_tm: DataFrame = generate_primers(codon='NNS', tm=60)
 
-If you just want to export the file to excel:
+If you just want to export the file to excel. This command must be run
+after first generating a dataframe.
 
 .. code:: ipython3
 
-    mut.generate_primers(
-        dna,
-        start,
-        end,
-        output_file='primers.xlsx',
-        codon='NNS',
-        tm=60,
-        return_df=False
-    )
+    generate_primers.export_file(output_file="path/to/file.xlsx")
 
 .. image:: images/exported_images/primers.png
    :width: 450px
@@ -82,22 +64,28 @@ generate the mutants.
 
 .. code:: ipython3
 
+    from mutagenesis_visualization.main.classes.create_variants import CreateVariants
+    
     # list of codons we want to use
-    codon_list = ["GCC", "GCG", "TGC", "GAC", "GAG", "TTC"]
+    codon_list: List[str] = ["GCC", "GCG", "TGC", "GAC", "GAG", "TTC"]
     # DNA sequence we are going to use as the template
-    dna = 'ATGGCCGTGGGGTGTTATGGATGTACAGTAATACAAGGGGTGTTATGGAAAAAATTATGCCGGAAGAAGAATACAGCGAATTTAAAG'
+    dna: str = 'ATGGCCGTGGGGTGTTATGGATGTACAGTAATACAAGGGGTGTTATGGAAAAAATTATGCCGGAAGAAGAATACAGCGAATTTAAAG'
+    
+    # Initialize instance
+    create_variants: CreateVariants = CreateVariants()
 
 Get a dataframe with the sequences:
 
 .. code:: ipython3
 
-    df = mut.create_variants(dna, codon_list, output_file=None, return_df=True)
+    df_variants: DataFrame = create_variants(dna, codon_list)
 
-If you just want to export the file to fasta:
+If you just want to export the file to fasta. This command must be run
+after first generating a dataframe.
 
 .. code:: ipython3
 
-    mut.create_variants(dna, codon_list, output_file='sequences.fasta')
+    create_variants(output_file='sequences.fasta')
 
 .. image:: images/exported_images/fasta.png
    :width: 300px
@@ -107,4 +95,4 @@ If you just want to export the file to excel:
 
 .. code:: ipython3
 
-    mut.create_variants(dna, codon_list, output_file='sequences.xlsx')
+    create_variants(output_file='sequences.xlsx')

@@ -7,29 +7,26 @@ If you already have your own processing pipeline built, you can skip this sectio
 Import modules and load data
 ----------------------------
 
-.. code:: ipython3
+.. code:: python
 
+    from typing import List
     import numpy as np
     import pandas as pd
-    import copy
+    from pandas.core.frame import DataFrame
     
-    try:
-        import mutagenesis_visualization as mut
-    except ModuleNotFoundError:  # This step is only for when I run the notebooks locally
-        import sys
-        sys.path.append('../../')
-        import mutagenesis_visualization as mut
+    from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
+    from mutagenesis_visualization.main.demo.demo_data import HRAS_RBD_COUNTS
+    from mutagenesis_visualization.main.kernel.multiple_kernels import MultipleKernel
+    from mutagenesis_visualization.main.classes.screen import Screen
 
-In here we are loading and assembling the data by hand instead of using the function ``assemble_sublibraries`` found in :ref:`Multiple sublibraries` so you can see how it is done. In case you have stored your data in another format different to us, you can tweak the following code. 
 
-.. code:: ipython3
+.. code:: python
 
     # List of sheets and columns to use
-    sheets_pre = ['R1_before', 'R2_before', 'R3_before']
-    sheets_sel = ['R1_after', 'R2_after', 'R3_after']
-    columns = ['F:BG', 'BH:DK', 'DL:FN']
-    columns_wt = ['A', 'B', 'C']
-    path = '../data/hrasRBD_counts.xlsx'  # change path
+    sheets_pre: List[str] = ['R1_before', 'R2_before', 'R3_before']
+    sheets_sel: List[str] = ['R1_after', 'R2_after', 'R3_after']
+    columns: List[str] = ['F:BG', 'BH:DK', 'DL:FN']
+    columns_wt: List[str] = ['A', 'B', 'C']
     
     # Create dictionary with data. Loading 3 replicates, each of them is divided into 3 pools
     dict_pre, dict_sel, dict_pre_wt, dict_sel_wt = ({} for i in range(4))
@@ -40,21 +37,21 @@ In here we are loading and assembling the data by hand instead of using the func
             # Pre counts
             label_pre = str(sheet_pre + '_' + column_wt)
             dict_pre[label_pre] = pd.read_excel(
-                path, sheet_pre, skiprows=1, usecols=column, nrows=32
+                HRAS_RBD_COUNTS, sheet_pre, skiprows=1, usecols=column, nrows=32
             )
             # Pre counts wild-type alleles
             dict_pre_wt[label_pre] = pd.read_excel(
-                path, sheet_pre, usecols=column_wt
+                HRAS_RBD_COUNTS, sheet_pre, usecols=column_wt
             )
     
             # Sel counts
             label_sel = str(sheet_sel + '_' + column_wt)
             dict_sel[label_sel] = pd.read_excel(
-                path, sheet_sel, skiprows=1, usecols=column, nrows=32
+                HRAS_RBD_COUNTS, sheet_sel, skiprows=1, usecols=column, nrows=32
             )
             # Sel counts wild-type alleles
             dict_sel_wt[label_sel] = pd.read_excel(
-                path, sheet_sel, usecols=column_wt
+                HRAS_RBD_COUNTS, sheet_sel, usecols=column_wt
             )
 
 Calculate log10 enrichment
@@ -67,16 +64,16 @@ counts ratios, their center is overlapping. However, because we have not
 normalized by the number of counts, and there are more counts in the
 selected than in the pre-selected population, the center is >0.
 
-.. code:: ipython3
+.. code:: python
 
     # Auxiliar function to convert +-inf values to an arbitrary number (ie +-2)
-    def _replace_inf(df):
+    def _replace_inf(df: DataFrame) -> DataFrame:
         df.replace(to_replace=np.inf, value=2, inplace=True)
         df.replace(to_replace=-np.inf, value=-2, inplace=True)
         return df
     
     
-    aminoacids = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
@@ -88,11 +85,10 @@ selected than in the pre-selected population, the center is >0.
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, ' + r'$log_{10}$' + '(sel/pre)',
         xscale=(-0.5, 0.75),
-        output_file=None
     )
 
 .. image:: images/exported_images/hras_kdesub1.png
@@ -113,7 +109,7 @@ Counts normalization
 Normalizing by the number of counts improves normalization. Now the
 population center is closer to 0. To do so, set ``zeroing='counts'``.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment = {}
     
@@ -121,17 +117,16 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='counts', stopcodon=False
         )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, zeroing = counts',
         xscale=(-1, 1),
-        output_file=None
     )
 
 .. image:: images/exported_images/hras_zeroingcounts.png
@@ -149,11 +144,11 @@ does not include this option because it may lead to errors. Here we are
 showing how it would be done by hand. In this example, it works fine.
 But in other datasets we have, it has been a source of error.
 
-.. code:: ipython3
+.. code:: python
 
     # calculate log10 enrichment for each replicate
     
-    aminoacids = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     enrichment = {}
     
     # calculate log10 enrichment for each replicate
@@ -170,11 +165,11 @@ But in other datasets we have, it has been a source of error.
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, zeroing = wt_allele only',
         xscale=(-0.5, 0.5),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_zeroingwtallele.png
@@ -189,7 +184,7 @@ synonymous wild-type population because there is less variance.
 ``calculate_enrichment`` has such an options by using ``zeroing='wt'``
 and then ``how='median', 'mean' or 'mode'``.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment = {}
     
@@ -197,7 +192,7 @@ and then ``how='median', 'mean' or 'mode'``.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key],
             dict_sel[sel_key],
             dict_pre_wt[pre_key],
@@ -209,11 +204,11 @@ and then ``how='median', 'mean' or 'mode'``.
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, zeroing = wt',
         xscale=(-1.5, 1),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_zeroingwtpop.png
@@ -230,7 +225,7 @@ distribution will be calculated assuming a gaussian distribution. Not
 only the three replicates are centered, but also they have the same
 spread.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment = {}
     
@@ -238,7 +233,7 @@ spread.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key],
             dict_sel[sel_key],
             zeroing='population',
@@ -248,11 +243,11 @@ spread.
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, zeroing = population',
         xscale=(-1, 1),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_zeroingpopulation.png
@@ -269,7 +264,7 @@ properly but also do scale the data so each pool main peak has the same
 standard deviation. Results are quite similar to setting
 ``zeroing='population'`` and ``how='mode'``.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment = {}
     
@@ -277,17 +272,17 @@ standard deviation. Results are quite similar to setting
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=False
         )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, zeroing = kernel',
         xscale=(-1.5, 1),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_zeroingkernel.png
@@ -306,7 +301,7 @@ option, set ``stopcodon=True``. You will notice that it get rids of the
 shoulder peak, and now the distribution looks unimodal with a big left
 shoulder.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment = {}
     
@@ -314,17 +309,17 @@ shoulder.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=True
         )
         enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment,
         title='Sublibrary 1, baseline subtraction',
         xscale=(-5, 1.5),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_baselinesubtr.png
@@ -344,16 +339,16 @@ example we are changing the ``std_scale`` parameter for each of the
 three replicates shown. Note that the higher the scalar, the higher the
 spread.
 
-.. code:: ipython3
+.. code:: python
 
     enrichment_scalar = {}
-    scalars = [0.1, 0.2, 0.3]
+    scalars: List[str] = [0.1, 0.2, 0.3]
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key, scalar in zip(list(dict_pre.keys())[:3],
                                         list(dict_sel.keys())[:3], scalars):
         # Enrichment
-        enrichment_log10 = mut.calculate_enrichment(
+        enrichment_log10 = calculate_enrichment(
             dict_pre[pre_key],
             dict_sel[sel_key],
             zeroing='kernel',
@@ -363,11 +358,11 @@ spread.
         enrichment_scalar[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    mut.plot_multiplekernel(
+    plot_multiplekernel(
         enrichment_scalar,
         title='Sublibrary 1, scaling',
         xscale=(-5, 1.5),
-        output_file=None
+    
     )
 
 .. image:: images/exported_images/hras_scaling.png
@@ -385,12 +380,12 @@ step. Then use ``zeroing = 'kernel'`` to zero the data and use
 You may need to use different parameters for your purposes. Feel free to
 get in touch if you have questions regarding data normalization.
 
-.. code:: ipython3
+.. code:: python
 
     # Labels
-    labels = ['Sublibrary 1', 'Sublibrary 2', 'Sublibrary 3']
-    zeroing_options = ['population', 'counts', 'wt', 'kernel']
-    title = 'Rep-A sublibraries, zeroing = '
+    labels: List[str] = ['Sublibrary 1', 'Sublibrary 2', 'Sublibrary 3']
+    zeroing_options: List[str] = ['population', 'counts', 'wt', 'kernel']
+    title: str = 'Rep-A sublibraries, zeroing = '
     
     # xscale
     xscales = [(-2, 1), (-2.5, 0.5), (-3.5, 1.5), (-3.5, 1.5)]
@@ -402,7 +397,7 @@ get in touch if you have questions regarding data normalization.
         for pre_key, sel_key, label in zip(list(dict_pre.keys())[::3],
                                            list(dict_sel.keys())[::3], labels):
             # log 10
-            enrichment_log10 = mut.calculate_enrichment(
+            enrichment_log10 = calculate_enrichment(
                 dict_pre[pre_key],
                 dict_sel[sel_key],
                 dict_pre_wt[pre_key],
@@ -426,7 +421,7 @@ get in touch if you have questions regarding data normalization.
         df_lib[option] = df
     
         # Plot
-        mut.plot_multiplekernel(
+        plot_multiplekernel(
             enrichment_lib, title=title + option, xscale=xscale, output_file=None
         )
 
@@ -454,25 +449,25 @@ normalization methods. We are not going to scale the data, so some
 heatmaps may look more washed out than others. That is not an issue
 since can easily be changed by using ``std_scale``.
 
-.. code:: ipython3
+.. code:: python
 
     # First we need to create the objects
     
     # Define protein sequence
-    hras_sequence = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
+    hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
                     + 'SAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVES'\
                     + 'RQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
     
     # Order of amino acid substitutions in the hras_enrichment dataset
-    aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
     # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
-    start_position = 2
+    start_position: int = 2
     
     # Create objects
     objects = {}
     for key, value in df_lib.items():
-        temp = mut.Screen(value, hras_sequence, aminoacids, start_position)
+        temp = Screen(value, hras_sequence, aminoacids, start_position)
         objects[key] = temp
 
 Now that the objects are created and stored in a dictionary, we will use
@@ -484,9 +479,9 @@ caused by the algorithm not being able to center the data properly, and
 everything seems to be loss of function. That is why it is important to
 select the method of normalization that works with your data.
 
-.. code:: ipython3
+.. code:: python
 
-    titles = ['population', 'counts', 'wt', 'kernel']
+    titles: List[str] = ['population', 'counts', 'wt', 'kernel']
     
     # Create objects
     for obj, title in zip(objects.values(), titles):

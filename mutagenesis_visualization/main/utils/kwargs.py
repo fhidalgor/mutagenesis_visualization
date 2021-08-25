@@ -8,7 +8,10 @@ from matplotlib.colors import LinearSegmentedColormap
 def generate_default_kwargs() -> Dict[str, Any]:
     """
     Kwargs used in the methods and some other functions. Not all kwargs work on
-    each method, read the individual description.
+    each method, read the individual description. Don't call this function
+    on its own, use the parameters within the plotting methods.
+
+    Example: mut.heatmap(colormap=colormap of interest)
 
     Parameters
     -----------
