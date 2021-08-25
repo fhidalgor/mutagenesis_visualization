@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 #mutagenesis_visualization/data/hras.trimmed.fastq
+
+# Other
+figures_jk/

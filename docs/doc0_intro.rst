@@ -3,9 +3,9 @@ Tutorial introduction
 
 Let’s take a look to the workflow:
 
-|image1|
+|image0|
 
-.. |image1| image:: _static/workflow_v3.png
+.. |image0| image:: _static/workflow_v3.png
 
 To start, you can use this software to **design site-saturation
 sequences** (*doc1_library.ipynb*). From here, you will pause your work

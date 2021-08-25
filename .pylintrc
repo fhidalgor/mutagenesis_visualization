@@ -1,0 +1,137 @@
+[MASTER]
+
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use.
+jobs=0
+
+# Allow loading of arbitrary C extensions. Extensions are imported into the
+# active Python interpreter and may run arbitrary code.
+unsafe-load-any-extension=yes
+
+
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifiers separated by comma (,) or put this
+# option multiple times (only on the command line, not in the configuration
+# file where it should appear only once). You can also use "--disable=all" to
+# disable everything first and then reenable specific checks. For example, if
+# you want to run only the similarities checker, you can use "--disable=all
+# --enable=similarities". If you want to run only the classes checker, but have
+# no Warning level messages displayed, use "--disable=all --enable=classes
+# --disable=W".
+
+
+# Notes on the above:
+# raw-checker-failed: Copied from default configuration, to avoid errors
+# locally-disabled: Makes it possible to # pylint: disable=... specific error messages
+# locally-enabled: Makes it possible to re-enable pylint after disabling it in a block context
+# file-ignored: Allows ignoring messages in entire files
+# suppressed-message: Allows ignoring messages
+# no-absolute-import: Not necessary in Python 3
+# old-division: Not necessary in Python 3
+# input-builtin: Not necessary in Python 3
+# round-builtin: Not necessary in Python 3
+# eq-without-hash: Not necessary in Python 3
+# useless-object-inheritance: Inheriting from object helps with 2/3 compatibility, so should be permissible
+# too-few-public-methods: Subverts developer intent too often
+# too-many-public-methods: Subverts developer intent too often
+# too-many-arguments: Subverts developer intent too often
+# missing-docstring: When pylint ??? is released should be changed to missing-module-docstring
+# logging-not-lazy: I'm too lazy to be lazy...
+# logging-format-interpolation: I'm too lazy to be lazy...
+# logging-fstring-interpolation: I'm too lazy to be lazy...
+# no-self-use: This check doesn't make sense for tests
+# len-as-condition: Good idea but doesn't work for Pandas Series and DataFrames
+# ungrouped-imports: isort catches these errors, and we don't want to have conflicts with it
+# wrong-import-order: isort catches these errors, and we don't want to have conflicts with it
+# fixme: Marks TODO comments (and more), but needed for documenting long-term tasks in code
+# bad-continuation: Too strict (can't have one value per line with one additional level of indentation), and autopep8
+# catches the style problems we care about here
+# duplicate-code: Shows up too often, too much risk of false positives
+# protected-access: Makes unit tests difficult to write, too many warnings
+# redefined-outer-name: Causes issues with PyTest fixtures
+# unsubscriptable-object: Has false positive issues with typing module, see https://github.com/PyCQA/pylint/issues/2377
+# Fixed when running under Python 3.7. mypy likely catches many of these errors as well.
+
+
+[REPORTS]
+
+# Activate the evaluation score.
+score=no
+
+
+[BASIC]
+
+# Regular expression matching correct argument names. Overrides argument-
+# naming-style.
+argument-rgx=[a-z_][a-z0-9_]*$
+
+# Regular expression matching correct attribute names. Overrides attr-naming-
+# style.
+attr-rgx=[a-z0-9_]+$
+
+# Regular expression matching correct class names. Overrides class-naming-
+# style.
+class-rgx=_?[A-Z][A-Za-z0-9]*$
+
+# Good variable names which should always be accepted, separated by a comma.
+good-names=i,
+           j,
+           k,
+           ex,
+           Run,
+           _,
+           X,
+           y,
+           f,
+           app,
+           application
+
+# Regular expression matching correct variable names. Overrides variable-
+# naming-style.
+variable-rgx=[a-z0-9_]+$
+
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=110
+
+
+[TYPECHECK]
+
+# List of class names for which member attributes should not be checked (useful
+# for classes with dynamically set attributes). This supports the use of
+# qualified names.
+ignored-classes=optparse.Values,
+                thread._local,
+                _thread._local,
+                requests.structures.LookupDict,
+                unittest.case._AssertRaisesContext
+
+
+[DESIGN]
+
+# Maximum number of arguments for function / method.
+max-args=7
+
+# Maximum number of attributes for a class (see R0902).
+max-attributes=10
+
+# Maximum number of boolean expressions in an if statement.
+max-bool-expr=7
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=20
+
+# Ignore comments when computing similarities.
+ignore-comments=no
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=no
+
+# Ignore imports when computing similarities.
+ignore-imports=no
