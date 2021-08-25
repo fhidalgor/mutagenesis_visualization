@@ -9,13 +9,14 @@ version: 2
 sphinx:
   builder: html
   fail_on_warning: false
+  configuration: docs/conf.py
 
 # Optionally build your docs in additional formats such as PDF
 formats: all
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-  version: 3.9
+  version: 3.8
   system_packages: true #so numpy runs
   install:
     - requirements: docs/readthedocs_requirements.txt

@@ -3,7 +3,7 @@
 # language and version
 language: python
 python:
-  - "3.9"
+  - "3.8"
 
 # command to install dependencies
 install:

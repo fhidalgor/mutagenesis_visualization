@@ -4,17 +4,14 @@ Classes
 *CreateVariants* class
 ===============
 .. autoclass:: mutagenesis_visualization.main.classes.create_variants.CreateVariants
-    :members:
 
 *Counts* class
 ===============
 .. autoclass:: mutagenesis_visualization.main.classes.counts.Counts
-    :members:
 
 *GeneratePrimers* class
 ===============
 .. autoclass:: mutagenesis_visualization.main.classes.generate_primers.GeneratePrimers
-    :members:
 
 *Screen* class
 ===============
