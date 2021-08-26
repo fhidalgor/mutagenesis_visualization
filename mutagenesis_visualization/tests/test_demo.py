@@ -27,7 +27,7 @@ def test_run_demo() -> None:
         try:
             run_demo(argument, show=False)
             return False
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True

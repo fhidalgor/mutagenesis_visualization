@@ -6,6 +6,7 @@ from random import randint
 from collections import OrderedDict
 
 from mutagenesis_visualization.main.process_data.process_data_utils import (initialize_ordered_dict)
+
 log: logging.Logger = logging.getLogger('test_process_data')
 
 

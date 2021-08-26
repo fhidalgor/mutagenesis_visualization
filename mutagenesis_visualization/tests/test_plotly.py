@@ -18,7 +18,7 @@ def test_plotly_heatmap() -> None:
     def _test_plotly_heatmap_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.plotly_heatmap(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -50,7 +50,7 @@ def test_plotly_scatter() -> None:
             OBJ_TEST.plotly_scatter(
                 OBJ_TEST, **parameters
             )  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -83,7 +83,7 @@ def test_plotly_rank() -> None:
     def _test_plotly_rank_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.plotly_rank(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -116,7 +116,7 @@ def test_plotly_histogram() -> None:
     def _test_plotly_histogram_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.plotly_histogram(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -149,7 +149,7 @@ def test_plotly_enrichment_bar() -> None:
     def _test_plotly_enrichment_bar_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.plotly_enrichment_bar(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -182,7 +182,7 @@ def test_plotly_scatter_3d() -> None:
     def _test_plotly_scatter_3d_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.plotly_scatter_3d(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -230,7 +230,7 @@ def test_plotly_scatter_3d_pdbprop() -> None:
             OBJ_TEST.plotly_scatter_3d_pdbprop(
                 **parameters
             )  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())

@@ -20,11 +20,11 @@ def test_enrichment_bar() -> None:
     """
 
     # Define aux function
-    def _test_enrichment_bar_output(obj_test: Screen, parameters: dict)-> bool:
+    def _test_enrichment_bar_output(obj_test: Screen, parameters: dict) -> bool:
 
         try:
             obj_test.enrichment_bar(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -61,10 +61,10 @@ def test_differential() -> None:
     """
     Test the differential bar plot.
     """
-    def _test_differential_output(obj_test: Screen, parameters: dict)->bool:
+    def _test_differential_output(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.differential(obj_test, **parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -106,7 +106,7 @@ def test_position_bar() -> None:
             obj_test.position_bar(
                 position=115, **parameters
             )  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -146,7 +146,7 @@ def test_secondary() -> None:
     def _test_secondary(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.secondary_mean(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -184,7 +184,7 @@ def test_library_representation() -> None:
     def _test_library_representation(parameters: dict) -> bool:
         try:
             OBJ_TEST_COUNTS.library_representation(**parameters)
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -223,7 +223,7 @@ def test_mean_counts() -> None:
     def _test_mean_counts_output(parameters: dict) -> bool:
         try:
             OBJ_TEST_COUNTS.mean_counts(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True

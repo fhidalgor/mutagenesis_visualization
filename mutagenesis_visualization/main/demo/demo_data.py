@@ -7,9 +7,10 @@ import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.pandas_functions import parse_pivot
-from mutagenesis_visualization.main.utils.data_paths import (HRAS_RBD_COUNTS_CSV, HRAS_GAPGEF_COUNTS_CSV,
-DF_BLA_RAW_PKL, DF_SUMO1_RAW_PKL, DF_MAPK1_RAW_PKL, DF_UBE2I_RAW_PKL, DF_TAT_PKL, DF_REV_PKL,
-DF_ASYNUCLEIN_PKL, DF_APH_PKL, DF_B11L5F_RAW_PKL)
+from mutagenesis_visualization.main.utils.data_paths import (
+    HRAS_RBD_COUNTS_CSV, HRAS_GAPGEF_COUNTS_CSV, DF_BLA_RAW_PKL, DF_SUMO1_RAW_PKL, DF_MAPK1_RAW_PKL,
+    DF_UBE2I_RAW_PKL, DF_TAT_PKL, DF_REV_PKL, DF_ASYNUCLEIN_PKL, DF_APH_PKL, DF_B11L5F_RAW_PKL
+)
 
 
 def load_demo_datasets() -> Dict[str, DataFrame]:
@@ -26,17 +27,13 @@ def load_demo_datasets() -> Dict[str, DataFrame]:
     data_dict: Dict[str, DataFrame] = {}
 
     # Retrieve H-Ras datasets and store in dict
-    hras_enrichment_rbd = pd.DataFrame(
-        np.genfromtxt(HRAS_RBD_COUNTS_CSV,delimiter=',')
-    )
+    hras_enrichment_rbd = pd.DataFrame(np.genfromtxt(HRAS_RBD_COUNTS_CSV, delimiter=','))
     data_dict['array_hras_RBD'] = hras_enrichment_rbd
 
-    hras_enrichment_gapgef = pd.DataFrame(
-        np.genfromtxt(
-            HRAS_GAPGEF_COUNTS_CSV,
-            delimiter=',',
-        )
-    )
+    hras_enrichment_gapgef = pd.DataFrame(np.genfromtxt(
+        HRAS_GAPGEF_COUNTS_CSV,
+        delimiter=',',
+    ))
     data_dict['array_hras_gapgef'] = hras_enrichment_gapgef
 
     # Beta lactamase data

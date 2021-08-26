@@ -279,13 +279,13 @@ class Screen:
         #except ModuleNotFoundError:
 
     def scatter_replicates(
-            self,
-            mode: str = 'pointmutant',
-            output_file: Union[None, str, Path] = None,
-            title: str = None,
-            show: bool = False,
-            close: bool = True
-        ) -> None:
+        self,
+        mode: str = 'pointmutant',
+        output_file: Union[None, str, Path] = None,
+        title: str = None,
+        show: bool = False,
+        close: bool = True
+    ) -> None:
         """
         #Produce replicates of scatter plots.
         """

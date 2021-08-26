@@ -19,21 +19,11 @@ def test_calculate_enrichment() -> None:
     prefix: str = "mutagenesis_visualization/"
     # prefix = "../../"
     df_counts_pre = pd.read_excel(
-        HRAS_GAPGEF_COUNTS,
-        'R1_before',
-        skiprows=1,
-        index_col='Codons',
-        usecols='E:FN',
-        nrows=32
+        HRAS_GAPGEF_COUNTS, 'R1_before', skiprows=1, index_col='Codons', usecols='E:FN', nrows=32
     )
 
     df_counts_sel = pd.read_excel(
-        HRAS_GAPGEF_COUNTS,
-        'R1_after',
-        skiprows=1,
-        index_col='Codons',
-        usecols='E:FN',
-        nrows=32
+        HRAS_GAPGEF_COUNTS, 'R1_after', skiprows=1, index_col='Codons', usecols='E:FN', nrows=32
     )
 
     # Ras parameters to create an object

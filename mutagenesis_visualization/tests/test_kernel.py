@@ -17,7 +17,7 @@ def test_kernel() -> None:
     def _test_kernel_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.kernel(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -49,7 +49,7 @@ def test_histogram() -> None:
     def _test_histogram_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.histogram(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -78,7 +78,7 @@ def test_multiple_kernel() -> None:
     def _test_multiple_kernel(parameters: dict) -> bool:
         try:
             OBJ_TEST.multiple_kernel(DEMO_OBJECTS.bla, **parameters)
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())

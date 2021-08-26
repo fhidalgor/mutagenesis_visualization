@@ -20,7 +20,7 @@ def test_plot_scatter() -> None:
     def _test_plot_scatter(obj_test: Screen, parameters: list) -> bool:
         try:
             obj_test.scatter(obj_test, **parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True

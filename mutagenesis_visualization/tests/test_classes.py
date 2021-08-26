@@ -24,14 +24,15 @@ def test_counts() -> None:
     def _test_counts_output(parameters: dict) -> bool:
         try:
             Counts(**parameters)
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-    list_params: List[dict] = [{'dataframe': df_input}, {'dataframe': df_input, 'start_position': 1},
-                   {'dataframe': df_input, 'aminoacids': aminoacids}]
+    list_params: List[dict] = [{'dataframe':
+                                df_input}, {'dataframe': df_input, 'start_position': 1},
+                               {'dataframe': df_input, 'aminoacids': aminoacids}]
     for parameters in list_params:
         assert _test_counts_output(
             parameters
@@ -50,13 +51,15 @@ def test_screen() -> None:
     def _test_screen_output(parameters: dict) -> bool:
         try:
             Screen(**parameters)
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
         return False
 
-    list_params: List[dict] = [{'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids}, {
+    list_params: List[dict] = [{
+        'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids
+    }, {
         'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids, 'secondary': secondary
     }]
 

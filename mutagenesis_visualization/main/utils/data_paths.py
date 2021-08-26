@@ -31,7 +31,6 @@ DF_ASYNUCLEIN_PKL = pkg_resources.resource_filename(path_variable, "data/df_asyn
 DF_APH_PKL = pkg_resources.resource_filename(path_variable, "data/df_aph.pkl")
 DF_B11L5F_RAW_PKL = pkg_resources.resource_filename(path_variable, "data/df_b11l5f_raw.pkl")
 
-
 # FASTA and FASTQ
 DEMO_FASTA = pkg_resources.resource_filename(path_variable, "data/Ras_family_trimmed.fasta")
 HRAS_FASTQ = pkg_resources.resource_filename(path_variable, "data/hras.trimmed.fastq")

@@ -26,7 +26,7 @@ def test_rank() -> None:
     def _test_rank(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.rank(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -71,7 +71,7 @@ def test_roc() -> None:
     def _test_roc(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.roc(df_freq, **parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -111,7 +111,7 @@ def test_cumulative() -> None:
     def _test_cumulative(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.cumulative(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True

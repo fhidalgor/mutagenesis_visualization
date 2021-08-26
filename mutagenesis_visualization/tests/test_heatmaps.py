@@ -18,7 +18,7 @@ def test_heatmap() -> None:
     def _test_heatmap_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.heatmap(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -26,8 +26,9 @@ def test_heatmap() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'show': False}, {'hierarchical': True, 'show': False},
-                   {'show_snv': True, 'show': False}, {'show_cartoon': True, 'show': False}]
+    list_params: List[dict] = [{'show': False}, {'hierarchical': True, 'show':
+                                                 False}, {'show_snv': True, 'show': False},
+                               {'show_cartoon': True, 'show': False}]
 
     # Assert
     for parameters in list_params:
@@ -43,7 +44,7 @@ def test_heatmap_rows() -> None:
     def _test_heatmap_rows_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.heatmap_rows(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -52,7 +53,7 @@ def test_heatmap_rows() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{"selection": "mean",'show': False}]
+    list_params: List[dict] = [{"selection": "mean", 'show': False}]
 
     # Assert
     for parameters in list_params:
@@ -68,7 +69,7 @@ def test_heatmap_columns() -> None:
     def _test_heatmap_columns_output(parameters: dict) -> bool:
         try:
             OBJ_TEST.heatmap_columns(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())
@@ -96,7 +97,7 @@ def test_plot_miniheatmap() -> None:
         error = False
         try:
             OBJ_TEST.miniheatmap(offset=0, **parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
 
             logging.exception(e)
             print(traceback.format_exc())

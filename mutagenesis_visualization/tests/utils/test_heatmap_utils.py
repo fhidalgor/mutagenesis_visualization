@@ -3,7 +3,10 @@ This module will test the heatmap utils.
 """
 import pandas as pd
 from pandas.core.frame import DataFrame
-from mutagenesis_visualization.main.utils.heatmap_utils import (hierarchical_sort, _helix, labels, _sheet, _loop)
+from mutagenesis_visualization.main.utils.heatmap_utils import (
+    hierarchical_sort, _helix, labels, _sheet, _loop
+)
+
 
 def test_hierarchical_sort() -> None:
     """

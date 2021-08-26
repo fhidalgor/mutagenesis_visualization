@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/frankhidalgo/.cache/pypoetry/virtualenvs/mutagenesis-visualization-NsjifA68-py3.9/bin/python",
+    "python.pythonPath": "/home/frankhidalgo/.cache/pypoetry/virtualenvs/mutagenesis-visualization-US1tCWpD-py3.9/bin/python",
     "git.ignoreLimitWarning": true,
     "python.linting.pylintEnabled": true,
     "restructuredtext.confPath": "${workspaceFolder}/docs"

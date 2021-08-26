@@ -26,7 +26,7 @@ def test_correlation() -> None:
     def _test_correlation(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.correlation(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -71,7 +71,7 @@ def test_individual_correlation() -> None:
     def _test_individual_correlation(obj_test: Screen, parameters: dict) -> bool:
         try:
             obj_test.individual_correlation(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True
@@ -116,7 +116,7 @@ def test_pca() -> None:
     def _test_pca(obj_test: Screen, parameters: list) -> bool:
         try:
             obj_test.pca(**parameters)  # pass dictionary as arguments of method
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             logging.exception(e)
             print(traceback.format_exc())
             return True

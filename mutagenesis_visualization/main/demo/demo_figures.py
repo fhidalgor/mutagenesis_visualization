@@ -8,6 +8,7 @@ from numpy import typing as npt
 from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV
 
+
 def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
     """
     Performs a demonstration of the mutagenesis_visualization software.
@@ -26,9 +27,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
     """
 
     # Load enrichment scores
-    hras_enrichment_rbd: npt.NDArray = np.genfromtxt(
-        HRAS_RBD_COUNTS_CSV, delimiter=','
-    )
+    hras_enrichment_rbd: npt.NDArray = np.genfromtxt(HRAS_RBD_COUNTS_CSV, delimiter=',')
 
     # Define protein sequence
     hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'

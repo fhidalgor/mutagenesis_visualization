@@ -35,7 +35,7 @@ def test_primer_design() -> None:
     primers0: Tuple[str, str] = _primer_design(
         dna, codon='NNS', codon_position=0, length_primer=None, melting_temp=60
     )
-    primers1: Tuple[str, str]  = _primer_design(
+    primers1: Tuple[str, str] = _primer_design(
         dna, codon='NNS', codon_position=1, length_primer=None, melting_temp=60
     )
     primers2: Tuple[str, str] = _primer_design(

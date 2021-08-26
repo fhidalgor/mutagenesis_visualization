@@ -62,38 +62,9 @@ def test_count_reads() -> None:
 
     # Test CCT when not in codon list
     index = pd.Index([
-        "GCC",
-        "GCG",
-        "TGC",
-        "GAC",
-        "GAG",
-        "TTC",
-        "GGC",
-        "GGG",
-        "CAC",
-        "ATC",
-        "AAG",
-        "CTC",
-        "CTG",
-        "TTG",
-        "ATG",
-        "AAC",
-        "CCC",
-        "CCG",
-        "CAG",
-        "CGC",
-        "CGG",
-        "AGG",
-        "TCC",
-        "TCG",
-        "AGC",
-        "ACC",
-        "ACG",
-        "GTC",
-        "GTG",
-        "TGG",
-        "TAC",
-        "TAG"
+        "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC", "CTG",
+        "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG", "AGC", "ACC",
+        "ACG", "GTC", "GTG", "TGG", "TAC", "TAG"
     ])
     values_cct = [0] * 32
     expected_cct_counts = pd.DataFrame(values_cct, index=index, columns=column_counts)
