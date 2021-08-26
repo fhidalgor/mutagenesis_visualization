@@ -11,7 +11,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import sys
-#sys.path.append('../')
+sys.path.append('../')
 #sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 #sys.path.insert(0, os.path.abspath('../../mutagenesis_visualization/'))
 

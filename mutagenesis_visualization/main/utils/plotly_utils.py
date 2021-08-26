@@ -92,7 +92,6 @@ def parse_pdb_coordinates(
     """
 
     # Get structure from PDB
-    print(pdb_path)
     structure = PDBParser().get_structure('pdb', pdb_path)
 
     coordinates = []

@@ -54,7 +54,6 @@ def test_calculate_enrichment() -> None:
     args_no_how_no_scale = product(zeroing_other, [False], *common_args)
 
     for args in args_how_scale:
-        #print(args)
         zeroing, how, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         frequencies = calculate_enrichment(

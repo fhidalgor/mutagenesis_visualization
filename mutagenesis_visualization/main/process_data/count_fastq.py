@@ -1,9 +1,8 @@
 """
 This module contains the function to count dna variants in fastq files.
 """
-from typing import Tuple, Dict, Union, List
+from typing import Tuple, Union, List
 from pathlib import Path
-from collections import OrderedDict
 import numpy as np
 from Bio import SeqIO
 

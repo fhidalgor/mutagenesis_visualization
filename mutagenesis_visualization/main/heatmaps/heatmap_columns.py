@@ -130,9 +130,6 @@ class HeatmapColumns(Pyplot):
         )
 
         ax2_label = (segment[1] - segment[0] + 1) * ['']
-        print(segment[0])
-        print(segment[1])
-        print(ax2_label)
         ax2_label[0] = str(segment[0])
         ax2_label[-1] = str(segment[1])
         ax2_object.set_xticklabels(ax2_label, fontsize=7, fontname="Arial", color='k', minor=False)
