@@ -3,7 +3,7 @@
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-
+# https://sphinx-rtd-tutorial.readthedocs.io/en/latest/sphinx-config.html
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -11,6 +11,9 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import sys
+import os
+sys.path.insert(0, os.path.abspath('../'))
+
 #sys.path.append('../')
 #sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
 #sys.path.insert(0, os.path.abspath('../../mutagenesis_visualization/'))
