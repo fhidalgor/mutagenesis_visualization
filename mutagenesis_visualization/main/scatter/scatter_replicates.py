@@ -13,7 +13,13 @@ class ScatterReplicates(Pyplot):
     """
     Class to generate scatter plots of each pairwise replicate combination.
     """
-    def __call__(self, show_wild_type_counts_only: bool = False, mode: str = 'pointmutant', output_file: Union[None, str, Path] = None,**kwargs: Any) -> None:
+    def __call__(
+        self,
+        show_wild_type_counts_only: bool = False,
+        mode: str = 'pointmutant',
+        output_file: Union[None, str, Path] = None,
+        **kwargs: Any
+    ) -> None:
         """
         Generate a series of scatter plots between replicates.
 
@@ -47,14 +53,15 @@ class ScatterReplicates(Pyplot):
             )
 
             temp_kwargs = self._update_kwargs(kwargs)
-            temp_kwargs["x_label"]= "Replicate " + str(combination[0] + 1)
-            temp_kwargs["y_label"]= "Replicate " + str(combination[1] + 1)
+            temp_kwargs["x_label"] = "Replicate " + str(combination[0] + 1)
+            temp_kwargs["y_label"] = "Replicate " + str(combination[1] + 1)
             output_file_edited = None
             if output_file:
                 output_file = Path(output_file)
-                output_file_edited=output_file.with_name(
-                                output_file.stem + "_" + str(combination[0] + 1) + "_vs_" + str(combination[1] + 1) +
-                                output_file.suffix)
+                output_file_edited = output_file.with_name(
+                    output_file.stem + "_" + str(combination[0] + 1) + "_vs_" +
+                    str(combination[1] + 1) + output_file.suffix
+                )
             scatter_obj_1(
                 scatter_obj_2,
                 mode,

@@ -16,7 +16,7 @@ class Kernel(Pyplot):
         self,
         show_replicates: bool = False,
         show_wild_type_counts_only: bool = False,
-        cumulative: bool = False,
+        show_mean: bool = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -32,9 +32,9 @@ class Kernel(Pyplot):
             If set to true, it will plot the kernel distribution of the
             wild type alleles only.
 
-        cumulative : bool, optional, default False
-            If True, estimate a cumulative distribution function.
-            Only works for mean dataset.
+        show_mean: bool, optional default False
+            If set to true, it will plot the kernel distribution mean of
+            replicates when show_wild_type_counts_only is True.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and name of the file.
@@ -54,32 +54,26 @@ class Kernel(Pyplot):
 
         # plot kernel
         if show_replicates:
-            assert len(self.replicate_dataframes)>1, "No replicates found."
+            assert len(self.replicate_dataframes) > 1, "No replicates found."
             if show_wild_type_counts_only:
                 data_to_plot = [self.wildtype_scores_replicates, self.wildtype_scores]
             else:
                 data_to_plot = [self.replicate_dataframes, self.dataframe]
 
-            for i, replicate in enumerate(data_to_plot[0], start = 1):
+            for i, replicate in enumerate(data_to_plot[0], start=1):
                 label = "r{}".format(str(i))
                 self.ax_object = kdeplot(
                     replicate['Score_NaN'],
                     color=temp_kwargs["kernel_colors"][i],
                     lw=2,
-                    label = label
-                    )
-            self.ax_object = kdeplot(
-                data_to_plot[1]['Score_NaN'],
-                color=temp_kwargs["color"],
-                lw=2,
-                label="mean")
+                    label=label
+                )
+            if show_mean:
+                self.ax_object = kdeplot(
+                    data_to_plot[1]['Score_NaN'], color=temp_kwargs["color"], lw=2, label="mean"
+                )
 
-            plt.legend(
-                loc='best',
-                frameon=False,
-                handlelength=1,
-                handletextpad=0.5
-            )
+            plt.legend(loc='best', frameon=False, handlelength=1, handletextpad=0.5)
         else:
             if show_wild_type_counts_only:
                 data_to_plot = self.wildtype_scores
@@ -88,7 +82,6 @@ class Kernel(Pyplot):
                 data_to_plot = self.dataframe
             self.ax_object = kdeplot(
                 data_to_plot['Score_NaN'],
-                cumulative=cumulative,
                 color=temp_kwargs["color"],
                 lw=2,
             )
@@ -123,7 +116,6 @@ class Kernel(Pyplot):
         plt.xlim(temp_kwargs['xscale'])
         plt.grid()
 
-
     def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:
         """
         Update the kwargs.
@@ -132,5 +124,5 @@ class Kernel(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
-        temp_kwargs['kernel_colors'] = kwargs.get('kernel_colors', [None]*50)
+        temp_kwargs['kernel_colors'] = kwargs.get('kernel_colors', [None] * 50)
         return temp_kwargs

@@ -34,14 +34,14 @@ def transform_dataset(
     )
     df_output['Aminoacid'] = aminoacids * len(dataset[0])
     df_output['Variant'
-             ] = df_output['Sequence'] + df_output['Position'].astype(str) + df_output['Aminoacid']
+              ] = df_output['Sequence'] + df_output['Position'].astype(str) + df_output['Aminoacid']
     df_output['Score'] = np.ravel(dataset.T)
     df_output['Score_NaN'] = np.ravel(dataset.T)
 
     # Eliminate NaNs
     df_output['Score'].fillna(fillna, inplace=True)
 
-    df_not_stopcodons= df_output[df_output['Aminoacid'] != '*'].copy()
+    df_not_stopcodons = df_output[df_output['Aminoacid'] != '*'].copy()
 
     return df_output, df_not_stopcodons
 

@@ -5,6 +5,7 @@ from typing import Dict, Any
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import pyplot as plt
 
+
 def generate_default_kwargs() -> Dict[str, Any]:
     """
     Kwargs used in the methods and some other functions. Not all kwargs work on

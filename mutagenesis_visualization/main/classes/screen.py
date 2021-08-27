@@ -120,10 +120,8 @@ class Screen:
             self.dataset = dataset
         elif isinstance(dataset, list):
             self.dataset = np.nanmean([np.array(df_replicate) for df_replicate in dataset], 0)
-            if len(dataset)>1:
+            if len(dataset) > 1:
                 self.replicates = dataset
-
-
 
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
@@ -139,7 +137,8 @@ class Screen:
         )
         self.dataframe_snv: DataFrame = select_snv(self.dataframe)
         self.dataframe_nonsnv: DataFrame = select_nonsnv(self.dataframe)
-        self.wildtype_scores: DataFrame = self.dataframe.loc[self.dataframe["Sequence"]==self.dataframe["Aminoacid"]].drop_duplicates("Score_NaN")
+        self.wildtype_scores: DataFrame = self.dataframe.loc[
+            self.dataframe["Sequence"] == self.dataframe["Aminoacid"]].drop_duplicates("Score_NaN")
 
         # Optional parameters
         self.secondary_dup: Optional[List[str]] = None
@@ -156,15 +155,29 @@ class Screen:
                     np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
                 )
                 self.replicate_dataframes.append(df_replicate)
-                self.wildtype_scores_replicates.append(df_replicate.loc[df_replicate["Sequence"]==df_replicate["Aminoacid"]].drop_duplicates("Score_NaN"))
+                self.wildtype_scores_replicates.append(
+                    df_replicate.loc[df_replicate["Sequence"] == df_replicate["Aminoacid"]
+                                     ].drop_duplicates("Score_NaN")
+                )
 
-            self.scatter_replicates = ScatterReplicates(aminoacids=self.aminoacids, replicate_dataframes=self.replicate_dataframes, wildtype_scores=self.wildtype_scores, wildtype_scores_replicates=self.wildtype_scores_replicates)
+            self.scatter_replicates = ScatterReplicates(
+                aminoacids=self.aminoacids,
+                replicate_dataframes=self.replicate_dataframes,
+                wildtype_scores=self.wildtype_scores,
+                wildtype_scores_replicates=self.wildtype_scores_replicates
+            )
 
         # Assert messages
         assert len(sequence) >= len(self.dataset[0]), "Input sequence is not long enough."
 
         # kernel
-        self.kernel: Kernel = Kernel(dataframe=self.dataframe, replicate_dataframes=self.replicate_dataframes, aminoacids=self.aminoacids, wildtype_scores=self.wildtype_scores, wildtype_scores_replicates=self.wildtype_scores_replicates)
+        self.kernel: Kernel = Kernel(
+            dataframe=self.dataframe,
+            replicate_dataframes=self.replicate_dataframes,
+            aminoacids=self.aminoacids,
+            wildtype_scores=self.wildtype_scores,
+            wildtype_scores_replicates=self.wildtype_scores_replicates
+        )
 
         self.histogram: Histogram = Histogram(
             dataframe=self.dataframe,
