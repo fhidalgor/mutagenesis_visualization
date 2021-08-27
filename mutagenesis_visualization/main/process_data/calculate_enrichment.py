@@ -203,7 +203,7 @@ def calculate_enrichment(
     elif zeroing == 'counts':
         # Get the ratio of counts
         ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
-        zeroed = log10_counts_grouped + ratio
+        zeroed = log10_counts_grouped - ratio
         if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing == 'kernel':

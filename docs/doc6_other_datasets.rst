@@ -13,6 +13,7 @@ use this API.
 
 .. code:: python
 
+    %matplotlib inline
     from typing import Dict, Union, List
     from pandas.core.frame import DataFrame
     import numpy as np

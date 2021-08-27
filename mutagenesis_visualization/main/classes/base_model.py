@@ -4,6 +4,9 @@ This module contains the parent class for all the plot classes.
 from pathlib import Path
 from typing import Tuple, Union, Dict, Any, Optional, List, TYPE_CHECKING
 import copy
+import matplotlib
+matplotlib.use('TkAgg')
+
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -30,11 +33,15 @@ class Pyplot:
         dataframe_stopcodons: DataFrame = pd.DataFrame(),
         dataframe_snv: DataFrame = pd.DataFrame(),
         dataframe_nonsnv: DataFrame = pd.DataFrame(),
+        replicate_dataframes: Optional[List[DataFrame]]= None,
+        wildtype_scores_replicates: Optional[List[DataFrame]] = None,
+        wildtype_scores: DataFrame = pd.DataFrame(),
         sequence: str = "",
         sequence_raw: str = "",
         start_position: int = 0,
         secondary: Optional[List] = None,
         secondary_dup: Optional[List] = None,
+
     ) -> None:
         """
         Docstring placeholder
@@ -48,6 +55,15 @@ class Pyplot:
         self.dataframe_stopcodons: DataFrame = dataframe_stopcodons
         self.dataframe_snv: DataFrame = dataframe_snv
         self.dataframe_nonsnv: DataFrame = dataframe_nonsnv
+        if not replicate_dataframes:
+            self.replicate_dataframes: List[DataFrame]= [pd.DataFrame()]
+            self.wildtype_scores_replicates: List[DataFrame]= [pd.DataFrame()]
+
+        else:
+            self.replicate_dataframes=replicate_dataframes
+            self.wildtype_scores_replicates= wildtype_scores_replicates
+        self.wildtype_scores: DataFrame = wildtype_scores
+
         self.sequence: str = sequence
         self.sequence_raw: str = sequence_raw
         self.start_position: int = start_position

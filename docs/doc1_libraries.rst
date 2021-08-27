@@ -43,7 +43,7 @@ Set all primers to have the same melting temperature.
 
 .. code:: ipython3
 
-    df_primers_tm: DataFrame = generate_primers(codon='NNS', tm=60)
+    df_primers_tm: DataFrame = generate_primers(codon='NNS', melting_temp=60)
 
 If you just want to export the file to excel. This command must be run
 after first generating a dataframe.
@@ -85,7 +85,7 @@ after first generating a dataframe.
 
 .. code:: ipython3
 
-    create_variants(output_file='sequences.fasta')
+    create_variants.export_file(output_file="path/to/sequences.fasta")
 
 .. image:: images/exported_images/fasta.png
    :width: 300px
@@ -95,4 +95,4 @@ If you just want to export the file to excel:
 
 .. code:: ipython3
 
-    create_variants(output_file='sequences.xlsx')
+    create_variants.export_file(output_file="path/to/sequences.xlsx")

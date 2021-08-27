@@ -6,15 +6,16 @@ This section shows how to use the mutagenesis_visualization package. The plottin
 Import modules
 --------------
 
-.. code:: python
+.. code:: ipython3
 
     # running locally, if you pip install then you just have to import the module
+    %matplotlib inline
     from typing import List
     import numpy as np
     import matplotlib as plt
     import copy
     from mutagenesis_visualization.main.classes.screen import Screen
-    from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV, HRAS_RBD_COUNTS_CSV
+    from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV, HRAS_GAPGEF_COUNTS_CSV
 
 
 Create object of class Screen
@@ -32,7 +33,7 @@ optional, but without it some plots will not work. In this example, we
 are importing two datasets and creating two objects named
 ``hras_GAPGEF`` and ``hras_RBD``.
 
-.. code:: python
+.. code:: ipython3
 
     # Load enrichment scores. This is how you would load them from a local file.
     hras_enrichment_GAPGEF = np.genfromtxt(HRAS_GAPGEF_COUNTS_CSV, delimiter=',')
@@ -84,7 +85,7 @@ Methods reviewed in this section:
 Once the object ``hras_RBD`` is created, we will plot a heatmap of the
 enrichment scores using the method ``object.heatmap``.
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     hras_RBD.heatmap(title='H-Ras 2-166', show_cartoon=True)
@@ -94,7 +95,7 @@ enrichment scores using the method ``object.heatmap``.
 If you set the parameter ``hierarchical=True``, it will sort the columns
 using hierarchical clustering
 
-.. code:: python
+.. code:: ipython3
 
     hras_RBD.heatmap(title='H-Ras 2-166', hierarchical=True, output_file=None)
 
@@ -103,7 +104,7 @@ using hierarchical clustering
 You can change the scale and the color map using the parameters
 ``colorbar_scale`` and ``colormap``.
 
-.. code:: python
+.. code:: ipython3
 
     # Load a color map from matplotlib
     colormap = copy.copy((plt.cm.get_cmap('PuOr')))
@@ -126,7 +127,7 @@ so you can quickly evaluate which mutations are accessible through
 random DNA mutations. In the example of Ras, the frequency of non-SNV
 substitutions at residues 12 and 13 is dramatically lower.
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap showing only SNV mutants
     hras_RBD.heatmap(
@@ -142,7 +143,7 @@ specify which amino acids to show with ``selection``.
 Heatmap slices
 --------------
 
-.. code:: python
+.. code:: ipython3
 
     # Create heatmap of selected aminoacid substitutions
     hras_RBD.heatmap_rows(
@@ -156,7 +157,7 @@ If we want to display only a few positions in the protein (columns), we
 will use the method ``object.heatmap_columns``. The parameter
 ``segment`` will indicate which are the contigous columns to show.
 
-.. code:: python
+.. code:: ipython3
 
     # Create a heatmap of a subset region in the protein
     hras_RBD.heatmap_columns(segment=[20, 40])
@@ -171,7 +172,7 @@ Miniheamap
 A summarized heatmap can also be generated. It is useful to evaluate
 global trends in the data. The command to use is ``object.miniheatmap``.
 
-.. code:: python
+.. code:: ipython3
 
     # Condensed heatmap
     hras_RBD.miniheatmap(title='Wt residue H-Ras')
@@ -185,7 +186,7 @@ mutated residue. For instance, the column of prolines is the average of
 all the columns that had a proline in the n-1 position. To accomplish
 this, ``set offset=-1``.
 
-.. code:: python
+.. code:: ipython3
 
     # Condensed heatmap offset no background correction
     hras_RBD.miniheatmap(
@@ -204,7 +205,7 @@ subtract the mean enrichment score for every substitution type. In the
 example, proline is the only residues than wen situated before the
 mutation, it seems to have a detrimental effect.
 
-.. code:: python
+.. code:: ipython3
 
     # Condensed heatmap offset with background correction
     hras_RBD.miniheatmap(

@@ -16,35 +16,34 @@ def transform_dataset(
     aminoacids: List[str],
     start_position: int,
     fillna: float,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
+) -> Tuple[DataFrame, DataFrame]:
     """
     Internal function that constructs a dataframe from user inputs
     Returns dataframe containing [Position, Sequence, Aminoacid, Variant, Score]
     """
 
     # make a dataframe
-    df_input: DataFrame = pd.DataFrame()
+    df_output: DataFrame = pd.DataFrame()
     # Define Columns
-    df_input['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
+    df_output['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
 
     # Create column with position label
-    df_input['Position'] = np.ravel(
+    df_output['Position'] = np.ravel(
         [[i] * len(aminoacids) for i in range(start_position,
                                               len(dataset[0]) + start_position)]
     )
-    df_input['Aminoacid'] = aminoacids * len(dataset[0])
-    df_input['Variant'
-             ] = df_input['Sequence'] + df_input['Position'].astype(str) + df_input['Aminoacid']
-    df_input['Score'] = np.ravel(dataset.T)
-    df_input['Score_NaN'] = np.ravel(dataset.T)
+    df_output['Aminoacid'] = aminoacids * len(dataset[0])
+    df_output['Variant'
+             ] = df_output['Sequence'] + df_output['Position'].astype(str) + df_output['Aminoacid']
+    df_output['Score'] = np.ravel(dataset.T)
+    df_output['Score_NaN'] = np.ravel(dataset.T)
 
     # Eliminate NaNs
-    df_input['Score'].fillna(fillna, inplace=True)
+    df_output['Score'].fillna(fillna, inplace=True)
 
-    # Eliminate stop codons
-    df_clean = df_input[df_input['Aminoacid'] != '*'].copy()
+    df_not_stopcodons= df_output[df_output['Aminoacid'] != '*'].copy()
 
-    return df_input, df_clean
+    return df_output, df_not_stopcodons
 
 
 def transform_sequence(dataset: Any, sequence: str, start_position: int) -> str:

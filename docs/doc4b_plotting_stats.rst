@@ -9,6 +9,7 @@ Import modules
 .. code:: python
 
     # running locally, if you pip install then you just have to import the module
+    %matplotlib inline
     from typing import Dict, Union, List
     from pandas.core.frame import DataFrame
     import numpy as np

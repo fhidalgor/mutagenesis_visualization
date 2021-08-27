@@ -7,20 +7,37 @@ If you already have your own processing pipeline built, you can skip this sectio
 Import modules and load data
 ----------------------------
 
-.. code:: python
+.. code:: ipython3
 
+    %matplotlib inline
     from typing import List
     import numpy as np
     import pandas as pd
     from pandas.core.frame import DataFrame
     
     from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
-    from mutagenesis_visualization.main.demo.demo_data import HRAS_RBD_COUNTS
-    from mutagenesis_visualization.main.kernel.multiple_kernels import MultipleKernel
+    from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS
     from mutagenesis_visualization.main.classes.screen import Screen
 
 
-.. code:: python
+Now let’s add some information about Ras.
+
+.. code:: ipython3
+
+    # Define protein sequence
+    hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEY'\
+                    + 'SAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVES'\
+                    + 'RQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+    
+    
+    # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
+    start_position: int = 2
+    
+    # Substitute Nan values with 0
+    fillna: int = 0
+
+
+.. code:: ipython3
 
     # List of sheets and columns to use
     sheets_pre: List[str] = ['R1_before', 'R2_before', 'R3_before']
@@ -64,7 +81,7 @@ counts ratios, their center is overlapping. However, because we have not
 normalized by the number of counts, and there are more counts in the
 selected than in the pre-selected population, the center is >0.
 
-.. code:: python
+.. code:: ipython3
 
     # Auxiliar function to convert +-inf values to an arbitrary number (ie +-2)
     def _replace_inf(df: DataFrame) -> DataFrame:
@@ -85,11 +102,12 @@ selected than in the pre-selected population, the center is >0.
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, ' + r'$log_{10}$' + '(sel/pre)',
-        xscale=(-0.5, 0.75),
+    # Create objects
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, ' + r'$log_{10}$' + '(sel/pre)', xscale=(-0.5, 0.75))
 
 .. image:: images/exported_images/hras_kdesub1.png
    :width: 350px
@@ -109,7 +127,7 @@ Counts normalization
 Normalizing by the number of counts improves normalization. Now the
 population center is closer to 0. To do so, set ``zeroing='counts'``.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment = {}
     
@@ -117,17 +135,18 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = calculate_enrichment(
+        enrichment[pre_key[:2]] = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='counts', stopcodon=False
         )
-        enrichment[pre_key[:2]] = enrichment_log10
     
     # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, zeroing = counts',
-        xscale=(-1, 1),
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
+    
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = counts', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_zeroingcounts.png
    :width: 350px
@@ -144,7 +163,7 @@ does not include this option because it may lead to errors. Here we are
 showing how it would be done by hand. In this example, it works fine.
 But in other datasets we have, it has been a source of error.
 
-.. code:: python
+.. code:: ipython3
 
     # calculate log10 enrichment for each replicate
     
@@ -165,12 +184,10 @@ But in other datasets we have, it has been a source of error.
         enrichment_log10.set_index(['aminoacids'], inplace=True)
         enrichment[pre_key[:2]] = _replace_inf(enrichment_log10)
     
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, zeroing = wt_allele only',
-        xscale=(-0.5, 0.5),
-    
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = wt_allele only', xscale=(-0.5, 0.5))
 
 .. image:: images/exported_images/hras_zeroingwtallele.png
    :width: 350px
@@ -184,7 +201,7 @@ synonymous wild-type population because there is less variance.
 ``calculate_enrichment`` has such an options by using ``zeroing='wt'``
 and then ``how='median', 'mean' or 'mode'``.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment = {}
     
@@ -192,7 +209,7 @@ and then ``how='median', 'mean' or 'mode'``.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = calculate_enrichment(
+        enrichment[pre_key[:2]] = calculate_enrichment(
             dict_pre[pre_key],
             dict_sel[sel_key],
             dict_pre_wt[pre_key],
@@ -201,17 +218,57 @@ and then ``how='median', 'mean' or 'mode'``.
             how='mode',
             stopcodon=False
         )
-        enrichment[pre_key[:2]] = enrichment_log10
     
-    # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, zeroing = wt',
-        xscale=(-1.5, 1),
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = wt', xscale=(-1.5, 1))
 
 .. image:: images/exported_images/hras_zeroingwtpop.png
+   :width: 350px
+   :align: center
+
+Wt alleles observation
+~~~~~~~~~~~~~~~~~~~~~~
+
+If the population of synonymous wild-type alleles (alleles that are
+wild-type at a protein level, but not at a DNA level) is small, the
+distribution of this variants may have high variance from sample to
+sample. Also, you will notice that not all wild-type alleles are
+neutral. The spread of these alleles gives a sense of the noise in the
+experiment.
+
+At least for the following data, there is no correlation between the
+performance of wild-type alleles in different replicates, suggesting
+that the higher or lower enrichment scores are caused by noise and not a
+fitness difference caused by changes in protein expression.
+
+.. code:: ipython3
+
+    hras_object.kernel(show_replicates=True, show_wild_type_counts_only=True,title='Wild-type alleles', kernel_colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], xscale=(-0.5, 1), output_file="docs/images/exported_images/hras_wildtype_distribution.png")
+
+.. image:: images/exported_images/hras_wildtype_distribution.png
+   :width: 350px
+   :align: center
+
+
+Perform the scatter plots:
+
+.. code:: ipython3
+
+    hras_object.scatter_replicates(show_wild_type_counts_only=True,title='Wild-type alleles', xscale=(-1, 1), yscale=(-1, 1), output_file="docs/images/exported_images/hras_wildtype_scatter.png")
+
+.. image:: images/exported_images/hras_wildtype_scatter_1_vs_2.png
+   :width: 350px
+   :align: center
+
+.. image:: images/exported_images/hras_wildtype_scatter_1_vs_3.png
+   :width: 350px
+   :align: center
+
+.. image:: images/exported_images/hras_wildtype_scatter_2_vs_3.png
    :width: 350px
    :align: center
 
@@ -225,7 +282,7 @@ distribution will be calculated assuming a gaussian distribution. Not
 only the three replicates are centered, but also they have the same
 spread.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment = {}
     
@@ -233,22 +290,20 @@ spread.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = calculate_enrichment(
+        enrichment[pre_key[:2]]  = calculate_enrichment(
             dict_pre[pre_key],
             dict_sel[sel_key],
             zeroing='population',
             how='mode',
             stopcodon=False
         )
-        enrichment[pre_key[:2]] = enrichment_log10
     
-    # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, zeroing = population',
-        xscale=(-1, 1),
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = population', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_zeroingpopulation.png
    :width: 350px
@@ -264,7 +319,7 @@ properly but also do scale the data so each pool main peak has the same
 standard deviation. Results are quite similar to setting
 ``zeroing='population'`` and ``how='mode'``.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment = {}
     
@@ -272,18 +327,16 @@ standard deviation. Results are quite similar to setting
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = calculate_enrichment(
+        enrichment[pre_key[:2]] = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=False
         )
-        enrichment[pre_key[:2]] = enrichment_log10
     
-    # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, zeroing = kernel',
-        xscale=(-1.5, 1),
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = kernel', xscale=(-1.5,1))
 
 .. image:: images/exported_images/hras_zeroingkernel.png
    :width: 350px
@@ -301,7 +354,7 @@ option, set ``stopcodon=True``. You will notice that it get rids of the
 shoulder peak, and now the distribution looks unimodal with a big left
 shoulder.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment = {}
     
@@ -309,18 +362,17 @@ shoulder.
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
-        enrichment_log10 = calculate_enrichment(
+        enrichment[pre_key[:2]] = calculate_enrichment(
             dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=True
         )
-        enrichment[pre_key[:2]] = enrichment_log10
     
-    # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment,
-        title='Sublibrary 1, baseline subtraction',
-        xscale=(-5, 1.5),
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
+    hras_object: Screen = Screen(
+        list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
+        secondary
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, baseline subtraction', xscale=(-5, 1.5))
 
 .. image:: images/exported_images/hras_baselinesubtr.png
    :width: 350px
@@ -339,7 +391,7 @@ example we are changing the ``std_scale`` parameter for each of the
 three replicates shown. Note that the higher the scalar, the higher the
 spread.
 
-.. code:: python
+.. code:: ipython3
 
     enrichment_scalar = {}
     scalars: List[str] = [0.1, 0.2, 0.3]
@@ -357,13 +409,13 @@ spread.
         )
         enrichment_scalar[pre_key[:2]] = enrichment_log10
     
-    # Plot histogram and KDE
-    plot_multiplekernel(
-        enrichment_scalar,
-        title='Sublibrary 1, scaling',
-        xscale=(-5, 1.5),
     
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
+    
+    hras_object: Screen = Screen(
+        list(enrichment_scalar.values()), hras_sequence, aminoacids, start_position, fillna,
     )
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, scaling', xscale=(-5, 1.5))
 
 .. image:: images/exported_images/hras_scaling.png
    :width: 350px
@@ -380,12 +432,13 @@ step. Then use ``zeroing = 'kernel'`` to zero the data and use
 You may need to use different parameters for your purposes. Feel free to
 get in touch if you have questions regarding data normalization.
 
-.. code:: python
+.. code:: ipython3
 
     # Labels
     labels: List[str] = ['Sublibrary 1', 'Sublibrary 2', 'Sublibrary 3']
     zeroing_options: List[str] = ['population', 'counts', 'wt', 'kernel']
     title: str = 'Rep-A sublibraries, zeroing = '
+    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
     # xscale
     xscales = [(-2, 1), (-2.5, 0.5), (-3.5, 1.5), (-3.5, 1.5)]
@@ -397,7 +450,7 @@ get in touch if you have questions regarding data normalization.
         for pre_key, sel_key, label in zip(list(dict_pre.keys())[::3],
                                            list(dict_sel.keys())[::3], labels):
             # log 10
-            enrichment_log10 = calculate_enrichment(
+            enrichment_lib[label]  = calculate_enrichment(
                 dict_pre[pre_key],
                 dict_sel[sel_key],
                 dict_pre_wt[pre_key],
@@ -407,23 +460,26 @@ get in touch if you have questions regarding data normalization.
                 stopcodon=True,
                 infinite=2
             )
-            # Store in dictionary
-            enrichment_lib[label] = enrichment_log10
     
         # Concatenate sublibraries and store in dict
-        df = pd.concat([
+        df_lib[option] = pd.concat([
             enrichment_lib['Sublibrary 1'], enrichment_lib['Sublibrary 2'],
             enrichment_lib['Sublibrary 3']
-        ],
-                       ignore_index=True,
-                       axis=1)
+        ],ignore_index=True, axis=1)
     
-        df_lib[option] = df
     
         # Plot
-        plot_multiplekernel(
-            enrichment_lib, title=title + option, xscale=xscale, output_file=None
+    
+        hras_sublibrary1: Screen = Screen(
+            enrichment_lib['Sublibrary 1'], hras_sequence, aminoacids, start_position, fillna,
         )
+        hras_sublibrary2: Screen = Screen(
+            enrichment_lib['Sublibrary 2'], hras_sequence, aminoacids, start_position, fillna,
+        )
+        hras_sublibrary3: Screen = Screen(
+            enrichment_lib['Sublibrary 3'], hras_sequence, aminoacids, start_position, fillna,
+        )
+        hras_sublibrary1.multiple_kernel([hras_sublibrary2, hras_sublibrary3], label_kernels = labels, title=title + option, xscale=xscale)
 
 .. image:: images/exported_images/hras_repA_zeroingpopulation.png
    :width: 350px
@@ -449,7 +505,7 @@ normalization methods. We are not going to scale the data, so some
 heatmaps may look more washed out than others. That is not an issue
 since can easily be changed by using ``std_scale``.
 
-.. code:: python
+.. code:: ipython3
 
     # First we need to create the objects
     
@@ -479,13 +535,13 @@ caused by the algorithm not being able to center the data properly, and
 everything seems to be loss of function. That is why it is important to
 select the method of normalization that works with your data.
 
-.. code:: python
+.. code:: ipython3
 
     titles: List[str] = ['population', 'counts', 'wt', 'kernel']
     
     # Create objects
     for obj, title in zip(objects.values(), titles):
-        obj.heatmap(title='Normalization by ' + title + ' method', output_file=None)
+        obj.heatmap(title='Normalization by ' + title + ' method')
 
 .. image:: images/exported_images/hras_heatmap_norm_population.png
 

@@ -2,12 +2,10 @@
 This module contains the class Screen, which groups the plotting classes.
 """
 # Regular libraries
-from typing import List, Optional, Any, Union, Dict
-from pathlib import Path
+from typing import List, Optional, Union
 import numpy as np
 from numpy import typing as npt
 from pandas import DataFrame
-from itertools import combinations
 
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.differential import Differential
@@ -35,6 +33,7 @@ from mutagenesis_visualization.main.plotly.scatter_3d_pdb import Scatter3DPDB
 from mutagenesis_visualization.main.plotly.scatter_3d import Scatter3D
 from mutagenesis_visualization.main.plotly.scatter import ScatterP
 from mutagenesis_visualization.main.scatter.scatter import Scatter
+from mutagenesis_visualization.main.scatter.scatter_replicates import ScatterReplicates
 from mutagenesis_visualization.main.utils.snv import select_snv, select_nonsnv
 from mutagenesis_visualization.main.utils.pandas_functions import (
     transform_dataset, transform_sequence, transform_secondary
@@ -103,32 +102,44 @@ class Screen:
     """
     def __init__(
         self,
-        dataset: Union[npt.NDArray, DataFrame],
+        dataset: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]],
         sequence: str,
         aminoacids: List[str],
         start_position: int = 2,
         fillna: float = 0,
         secondary: Optional[List[List[str]]] = None,
-        replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = None,
     ):
+
+        self.replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = None
+        self.replicate_dataframes: List[DataFrame] = []
+        self.wildtype_scores_replicates: List[DataFrame] = []
 
         if isinstance(dataset, DataFrame):
             self.dataset: npt.NDArray = np.array(dataset)
-        else:
+        elif isinstance(dataset, np.ndarray):
             self.dataset = dataset
+        elif isinstance(dataset, list):
+            self.dataset = np.nanmean([np.array(df_replicate) for df_replicate in dataset], 0)
+            if len(dataset)>1:
+                self.replicates = dataset
+
+
+
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
         elif isinstance(aminoacids, str):
             self.aminoacids = list(aminoacids)
+
         self.start_position: int = start_position
         self.end_position: int = len(self.dataset[0]) + start_position
-        self.sequence_raw: str = sequence  # unchanged
+        self.sequence_raw: str = sequence  # unchanged protein sequence
         self.sequence: str = transform_sequence(self.dataset, sequence, self.start_position)
         self.dataframe_stopcodons, self.dataframe = transform_dataset(
             self.dataset, self.sequence, self.aminoacids, self.start_position, fillna
         )
         self.dataframe_snv: DataFrame = select_snv(self.dataframe)
         self.dataframe_nonsnv: DataFrame = select_nonsnv(self.dataframe)
+        self.wildtype_scores: DataFrame = self.dataframe.loc[self.dataframe["Sequence"]==self.dataframe["Aminoacid"]].drop_duplicates("Score_NaN")
 
         # Optional parameters
         self.secondary_dup: Optional[List[str]] = None
@@ -138,20 +149,23 @@ class Screen:
                 self.dataset, secondary, self.start_position, self.aminoacids
             )
 
-        self.replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = replicates
-        self.replicates_dataframes: List[DataFrame] = []
-        if replicates:
-            for replicate in replicates:
+        # Only do this if there were replicates
+        if self.replicates:
+            for replicate in self.replicates:
                 _, df_replicate = transform_dataset(
                     np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
                 )
-            self.replicates_dataframes.append(df_replicate)
+                self.replicate_dataframes.append(df_replicate)
+                self.wildtype_scores_replicates.append(df_replicate.loc[df_replicate["Sequence"]==df_replicate["Aminoacid"]].drop_duplicates("Score_NaN"))
+
+            self.scatter_replicates = ScatterReplicates(aminoacids=self.aminoacids, replicate_dataframes=self.replicate_dataframes, wildtype_scores=self.wildtype_scores, wildtype_scores_replicates=self.wildtype_scores_replicates)
 
         # Assert messages
         assert len(sequence) >= len(self.dataset[0]), "Input sequence is not long enough."
 
         # kernel
-        self.kernel: Kernel = Kernel(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.kernel: Kernel = Kernel(dataframe=self.dataframe, replicate_dataframes=self.replicate_dataframes, aminoacids=self.aminoacids, wildtype_scores=self.wildtype_scores, wildtype_scores_replicates=self.wildtype_scores_replicates)
+
         self.histogram: Histogram = Histogram(
             dataframe=self.dataframe,
             dataframe_snv=self.dataframe_snv,
@@ -277,40 +291,3 @@ class Screen:
         #try:
         #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
         #except ModuleNotFoundError:
-
-    def scatter_replicates(
-        self,
-        mode: str = 'pointmutant',
-        output_file: Union[None, str, Path] = None,
-        title: str = None,
-        show: bool = False,
-        close: bool = True
-    ) -> None:
-        """
-        #Produce replicates of scatter plots.
-        """
-        combination_replicates = list(combinations(range(0, len(self.replicates)), 2))
-        for comb in combination_replicates:
-            x_label: str = "Replicate " + str(comb[0] + 1)
-            y_label: str = "Replicate " + str(comb[1] + 1)
-
-            scatter_obj_1: Scatter = Scatter(
-                dataframe=self.replicates_dataframes[comb[0]], aminoacids=self.aminoacids
-            )
-            scatter_obj_2: Scatter = Scatter(
-                dataframe=self.replicates_dataframes[comb[1]], aminoacids=self.aminoacids
-            )
-
-            scatter_obj_1(
-                scatter_obj_2,
-                mode=mode,
-                output_file=output_file.with_name(
-                    output_file.stem + "_" + str(comb[0]) + "_vs_" + str(comb[1]) +
-                    output_file.suffix
-                ),
-                x_label=x_label,
-                y_label=y_label,
-                title=title,
-                show=show,
-                close=close
-            )

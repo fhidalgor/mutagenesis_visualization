@@ -5,8 +5,9 @@ In this section we will use Plotly to make interactive plots. Please let
 us know if you have suggestions for new figures that could be made with
 Plotly.
 
-.. code:: python
+.. code:: ipython3
 
+    %matplotlib inline
     import numpy as np
     from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
     from mutagenesis_visualization.main.utils.data_paths import PDB_5P21
@@ -21,7 +22,7 @@ Heatmap
 Plot an interactive heatmap. Hopover individual pixels to get their
 characteristics.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_heatmap(
         title='H-Ras Heatmap',
@@ -42,7 +43,7 @@ one letter code) will plot the enrichment for that particular amino acid
 along the protein. In this example, we are showing the mean enrichment
 scores (top) and an alanine scan (bottom)
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_enrichment_bar(
         title='Mean',
@@ -65,7 +66,7 @@ Histogram
 
 Plot a histogram.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_histogram(
         title='Histogram',
@@ -88,7 +89,7 @@ You can download the plot as a png file by clicking the camera icon
 which appears on the far left when our cursor is over the plot. You can
 export to an html file by giving a path to the variable ``output_html``.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_rank(
         title='Rank of pointmutants',
@@ -99,7 +100,7 @@ export to an html file by giving a path to the variable ``output_html``.
 
 Now display the rank of the positional mean.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_rank(mode='mean',title='Rank of positions')
 
@@ -120,7 +121,7 @@ True, the OLS regression results will also be printed as output. The
 mode = ‘pointmutant’ is default which shows a comparison as mutation by
 mutation.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter(
         hras_gapgef,
@@ -135,7 +136,7 @@ mutation.
 
 Now we just look at the positional average.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter(
         hras_gapgef,
@@ -163,7 +164,7 @@ The method ``object.plotly_scatter_3d`` will take as an input either a
 PDB file (``pdb_path=/path/to/file``) or the x,y,z coordinates
 (``df_coordinates``).
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter_3d(
         mode='mean',
@@ -182,7 +183,7 @@ By setting up mode=‘V’, we can evaluate the impact of valine
 substitutions. Mode can be set up to any residue. In this example,
 residues in the core are tolerant to valine substitutions.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter_3d(
         mode='V',
@@ -199,7 +200,7 @@ residues in the core are tolerant to valine substitutions.
 
 When we set mode=‘D’, the core of the protein turns completely blue.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter_3d(
         mode='D',
@@ -218,7 +219,7 @@ By setting squared = True, we plot the distance to the center of the
 protein of each residue. In this example, we see that residues in the
 core of the protein are blue, indicating a sensitivity to mutations.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.plotly_scatter_3d(
         mode='mean',
@@ -241,12 +242,11 @@ Using plotly we allow the user to have a 3-D scatter plot colored by the
 enrichment scores. You can additionally include other properties to
 include such as the conservation scores using the parameter ``custom``.
 
-.. code:: python
+.. code:: ipython3
 
     # Plot 3-D SASA, log B-factor and Shannon Entropy
     hras_rbd.plotly_scatter_3d_pdbprop(
-        plot=['SASA', 'log B-factor', 'Shannon'],
-        custom=df_shannon['Shannon'],
+        plot = ['Distance', 'SASA', 'log B-factor'],
         pdb_path=PDB_5P21,
         title='Scatter 3D - PDB properties',
     )

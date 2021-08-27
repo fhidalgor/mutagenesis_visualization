@@ -10,6 +10,7 @@ Import module
 
 .. code:: python
 
+    %matplotlib inline
     from typing import List
     import numpy as np
     import pandas as pd
@@ -18,7 +19,7 @@ Import module
     from mutagenesis_visualization.main.process_data.count_fastq import count_fastq
     from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
     
-    from mutagenesis_visualization.main.demo.demo_data import HRAS_FASTQ, HRAS_GAPGEF_COUNTS
+    from mutagenesis_visualization.main.utils.data_paths import HRAS_FASTQ, HRAS_GAPGEF_COUNTS
     from mutagenesis_visualization.main.classes.counts import Counts
     from mutagenesis_visualization.main.classes.screen import Screen
 

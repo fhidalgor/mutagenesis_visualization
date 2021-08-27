@@ -4,7 +4,7 @@ This module contains the multiple kernel class.
 
 from pathlib import Path
 from typing import List, Union, Dict, Any, TYPE_CHECKING, Optional
-import seaborn as sns
+from seaborn import kdeplot
 import matplotlib.pyplot as plt
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
@@ -55,16 +55,16 @@ class MultipleKernel(Pyplot):
         # create figure
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
 
-        self.ax_object = sns.kdeplot(
+        self.ax_object = kdeplot(
             self.dataframe['Score_NaN'], color=colors[0], lw=2, label=label_kernels[0]
         )
         if isinstance(screen_object, list):
             for (label, sobj, color) in zip(label_kernels, screen_object, colors):
-                self.ax_object = sns.kdeplot(
+                self.ax_object = kdeplot(
                     sobj.dataframe['Score_NaN'], color=color, lw=2, label=label
                 )
         else:
-            self.ax_object = sns.kdeplot(
+            self.ax_object = kdeplot(
                 screen_object.dataframe['Score_NaN'], color=colors[1], lw=2, label=label_kernels[1]
             )
 
