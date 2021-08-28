@@ -5,9 +5,9 @@ This module contains the count dna reads function.
 from typing import List, Union, Tuple
 from pathlib import Path
 import numpy as np
-import pandas as pd
-from Bio.Seq import Seq
+from pandas import ExcelWriter
 from pandas.core.frame import DataFrame
+from Bio.Seq import Seq
 
 from mutagenesis_visualization.main.process_data.count_fastq import count_fastq
 from mutagenesis_visualization.main.process_data.process_data_utils import (
@@ -117,7 +117,7 @@ def count_reads(
     variants, totalreads, usefulreads = count_fastq(list(variants.keys()), input_file)
     # Convert to df_output
     wt_protein: Seq = Seq(dna_sequence).translate()
-    df_output: DataFrame = pd.DataFrame()
+    df_output: DataFrame = DataFrame()
     df_output['Position'] = np.ravel(
         [[pos] * len(codon_list)
          for pos in np.arange(start_position,
@@ -144,12 +144,12 @@ def count_reads(
     df_counts = df_counts.reindex(index=codon_list)
 
     # Get WT counts syn. Added or operator so also chooses WT codon
-    df_wt = df_output.loc[df_output['SynWT'] == True][['Counts']]
+    df_wt = df_output.loc[df_output['SynWT'] == True][['Counts']]  # pylint: disable=singleton-comparison
 
     # Export files
     if output_file:
         # Create a Pandas Excel writer using XlsxWriter as the engine.
-        writer = pd.ExcelWriter(str(output_file), engine='xlsxwriter')
+        writer = ExcelWriter(str(output_file), engine='xlsxwriter')  # pylint: disable=abstract-class-instantiated
 
         # export
         df_counts.to_excel(writer, sheet_name='Counts', index=True)

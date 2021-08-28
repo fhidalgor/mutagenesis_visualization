@@ -2,9 +2,8 @@
 This module contains utils functions for PCA plot.
 """
 from typing import List, Tuple, Union
-import itertools
+from itertools import product, chain
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
 from sklearn.decomposition import PCA
@@ -42,8 +41,8 @@ def calculate_clusters(dataset: DataFrame, dimensions: Tuple[int, int],
     model = pca.fit(dataset)
 
     # create df with PCA data
-    df_aa: DataFrame = pd.DataFrame((model.components_).T,
-                                    columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
+    df_aa: DataFrame = DataFrame((model.components_).T,
+                                 columns=['PCA1', 'PCA2', 'PCA3', 'PCA4', 'PCA5', 'PCA6'])
 
     # use kmeans to cluster the two dimensions and color
     dimensionstoplot = df_aa.iloc[:, np.r_[dimensions[0], dimensions[1]]]
@@ -106,11 +105,11 @@ def calculate_substitution_correlations(
     corr_values.reset_index(inplace=True)
 
     # Get combinations
-    replacement_combinations = list(itertools.product(*groups))
+    replacement_combinations = list(product(*groups))
 
     # Retrieve Correlation values
-    df = pd.DataFrame()
-    df['Aminoacids'] = list(itertools.chain.from_iterable(groups))
+    df = DataFrame()
+    df['Aminoacids'] = list(chain.from_iterable(groups))
     for combination in replacement_combinations:  # Iterate over a combination
         temp_list: List[Union[int, float]] = []
 
@@ -130,7 +129,7 @@ def _polishdf(df: DataFrame) -> DataFrame:
     df_mean = df.mean().to_frame()
     df_mean.reset_index(drop=False, inplace=True)
     df_mean.rename(columns={0: 'R2'}, inplace=True)
-    df_mean['Combinations'] = list(df_mean['index'].apply(lambda x: ''.join(x)))
+    df_mean['Combinations'] = list(df_mean['index'].apply(lambda x: ''.join(x)))  # pylint: disable=unnecessary-lambda
     df_mean.drop(columns=['index'], inplace=True)
     return df_mean
 

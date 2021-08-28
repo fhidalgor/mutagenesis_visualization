@@ -24,15 +24,16 @@ class MeanCounts(Pyplot):
     """
     def __init__(
         self,
-        dataframe: DataFrame,
+        dataframes_raw: List[DataFrame],
         positions: List[int],
         aminoacids: List[str],
     ) -> None:
-        super().__init__(dataframe=dataframe, aminoacids=aminoacids)
+        super().__init__(dataframes_raw=dataframes_raw, aminoacids=aminoacids)
         self.positions: List[int] = positions
 
     def __call__(
         self,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -41,6 +42,12 @@ class MeanCounts(Pyplot):
 
         Parameters
         ----------
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -56,7 +63,7 @@ class MeanCounts(Pyplot):
 
         # plot
         self.fig, ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
-        self.ax_object = self.dataframe.mean().T.plot.bar(ax=ax_object, color='red')
+        self.ax_object = self.dataframes_raw[replicate].mean().T.plot.bar(ax=ax_object, color='red')
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)

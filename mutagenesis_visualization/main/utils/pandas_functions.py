@@ -2,16 +2,15 @@
 This module contains utils to manipulate dataframes.
 """
 from typing import Any, Tuple, List
-import copy
-import itertools
+from copy import deepcopy
+from itertools import chain, repeat
 import numpy as np
-import pandas as pd
-
+from numpy import typing as npt
 from pandas.core.frame import DataFrame
 
 
 def transform_dataset(
-    dataset: Any,
+    dataset: npt.NDArray,
     sequence: str,
     aminoacids: List[str],
     start_position: int,
@@ -23,7 +22,7 @@ def transform_dataset(
     """
 
     # make a dataframe
-    df_output: DataFrame = pd.DataFrame()
+    df_output: DataFrame = DataFrame()
     # Define Columns
     df_output['Sequence'] = np.ravel([[aa] * len(aminoacids) for aa in sequence])
 
@@ -41,12 +40,10 @@ def transform_dataset(
     # Eliminate NaNs
     df_output['Score'].fillna(fillna, inplace=True)
 
-    df_not_stopcodons = df_output[df_output['Aminoacid'] != '*'].copy()
-
-    return df_output, df_not_stopcodons
+    return df_output, df_output[df_output['Aminoacid'] != '*'].copy()
 
 
-def transform_sequence(dataset: Any, sequence: str, start_position: int) -> str:
+def transform_sequence(dataset: npt.NDArray, sequence: str, start_position: int) -> str:
     """
     Internal function that trims the input sequence.
     """
@@ -67,18 +64,16 @@ def transform_secondary(
     """
 
     # Convert lists of lists to list
-    secondary_list = list(itertools.chain.from_iterable(secondary))
+    secondary_list = list(chain.from_iterable(secondary))
 
     # Truncate list
     trimmedsecondary = secondary_list[start_position - 1 : len(dataset[0]) + start_position - 1]
 
     # Multiply each element by number of aminoacids. not use stop codon
-    aminoacids_list: List[str] = copy.deepcopy(aminoacids)
+    aminoacids_list: List[str] = deepcopy(aminoacids)
     if '*' in aminoacids_list:
         aminoacids_list.remove('*')
-    secondary_dup = [
-        x for item in trimmedsecondary for x in itertools.repeat(item, len(aminoacids_list))
-    ]
+    secondary_dup = [x for item in trimmedsecondary for x in repeat(item, len(aminoacids_list))]
 
     return trimmedsecondary, secondary_dup
 
@@ -97,7 +92,7 @@ def df_rearrange(
 
     # If only SNVs, turn rest to NaN
     if show_snv is True:
-        df_copy.loc[df_copy['SNV?'] == False, values] = np.nan
+        df_copy.loc[df_copy['SNV?'] == False, values] = np.nan  # pylint: disable=singleton-comparison
 
     df_pivoted = df_copy.pivot_table(
         values=values, index='Aminoacid', columns=['Position'], dropna=False
@@ -213,7 +208,7 @@ def process_mean_residue(
     min_length: int = min(len(dataset_1), len(dataset_2))
 
     # convert to dataframe and eliminate Nans
-    df_ouput: DataFrame = pd.DataFrame()
+    df_ouput: DataFrame = DataFrame()
     df_ouput['dataset_1'] = list(dataset_1['Score'])[0 : min_length]
     df_ouput['dataset_2'] = list(dataset_2['Score'])[0 : min_length]
     df_ouput['Position'] = list(dataset_1['Position'])[0 : min_length]
@@ -234,11 +229,11 @@ def process_rmse_residue(
     """
 
     min_length: int = min(len(dataframe_1), len(dataframe_2))
-    df_ouput: DataFrame = pd.DataFrame()
+    df_ouput: DataFrame = DataFrame()
     df_ouput['Position'] = list(dataframe_1['Position'])[0 : min_length]
     df_ouput['dataset_1'] = list(dataframe_1['Score'])[0 : min_length]
     df_ouput['dataset_2'] = list(dataframe_2['Score'])[0 : min_length]
-    df_diff: DataFrame = pd.DataFrame()
+    df_diff: DataFrame = DataFrame()
 
     if metric.lower() == 'mean':
         df_ouput['d1 - d2'] = (df_ouput['dataset_1'] - df_ouput['dataset_2'])
@@ -262,7 +257,7 @@ def process_by_pointmutant(dataframe_1: DataFrame, dataframe_2: DataFrame) -> Da
     """
     # truncate so both datasets have same length and delete stop codons
     min_length: int = min(len(dataframe_1), len(dataframe_2))
-    df_ouput: DataFrame = pd.DataFrame()
+    df_ouput: DataFrame = DataFrame()
     df_ouput['dataset_1'] = list(dataframe_1['Score_NaN'])[: min_length]
     df_ouput['dataset_2'] = list(dataframe_2['Score_NaN'])[: min_length]
     df_ouput['Variant'] = list(dataframe_1['Variant'])[: min_length]

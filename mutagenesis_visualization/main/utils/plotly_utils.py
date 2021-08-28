@@ -4,7 +4,6 @@ This module contains utils for the plotly figures.
 
 from typing import Dict, Any, Tuple
 import numpy as np
-import pandas as pd
 from Bio.PDB import PDBParser
 import freesasa
 from pandas.core.frame import DataFrame
@@ -118,7 +117,7 @@ def parse_pdb_coordinates(
             coordinates.append([np.nan, np.nan, np.nan, i])
 
     # Convert to df
-    df_coordinates = pd.DataFrame(columns=['x', 'y', 'z', 'Position'], data=coordinates)
+    df_coordinates = DataFrame(columns=['x', 'y', 'z', 'Position'], data=coordinates)
 
     # Center data
     x, y, z = centroid(df_coordinates)
@@ -135,7 +134,7 @@ def parse_pdb_coordinates(
         result = freesasa.calc(structure_sasa)
         # Calculate sasa
         sasa_area = freesasa.selectArea(commands, structure_sasa, result)
-        df_sasa: DataFrame = pd.DataFrame(columns=['SASA'], data=sasa_area.values())
+        df_sasa: DataFrame = DataFrame(columns=['SASA'], data=sasa_area.values())
         df_sasa['log B-factor'] = bfactors
         df_sasa['Position'] = positions_worked
 

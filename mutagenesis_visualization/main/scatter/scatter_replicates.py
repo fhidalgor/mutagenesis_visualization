@@ -5,6 +5,7 @@ replicates within a Screen object.
 from typing import Any, Union
 from pathlib import Path
 from itertools import combinations
+from copy import deepcopy
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.scatter.scatter import Scatter
 
@@ -38,19 +39,15 @@ class ScatterReplicates(Pyplot):
 
         **kwargs : other keyword arguments
         """
+        copy_dataframes = deepcopy(self.dataframes)
         if show_wild_type_counts_only:
-            data_to_use = self.wildtype_scores_replicates
+            copy_dataframes.df_notstopcodons = copy_dataframes.df_wildtype_scores
             mode = "pointmutant"
-        else:
-            data_to_use = self.replicate_dataframes
 
-        for combination in list(combinations(range(0, len(self.replicate_dataframes)), 2)):
-            scatter_obj_1: Scatter = Scatter(
-                dataframe=data_to_use[combination[0]], aminoacids=self.aminoacids
-            )
-            scatter_obj_2: Scatter = Scatter(
-                dataframe=data_to_use[combination[1]], aminoacids=self.aminoacids
-            )
+        for combination in list(combinations(range(0, len(copy_dataframes.df_notstopcodons[:-1])),
+                                             2)):
+            scatter_obj_1: Scatter = Scatter(dataframes=copy_dataframes, aminoacids=self.aminoacids)
+            scatter_obj_2: Scatter = Scatter(dataframes=copy_dataframes, aminoacids=self.aminoacids)
 
             temp_kwargs = self._update_kwargs(kwargs)
             temp_kwargs["x_label"] = "Replicate " + str(combination[0] + 1)
@@ -65,6 +62,8 @@ class ScatterReplicates(Pyplot):
             scatter_obj_1(
                 scatter_obj_2,
                 mode,
+                combination[0],
+                combination[1],
                 output_file_edited,
                 **temp_kwargs,
             )

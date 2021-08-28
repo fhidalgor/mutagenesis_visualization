@@ -23,6 +23,8 @@ class Scatter(Pyplot):
         self,
         screen_object: Any,
         mode: str = 'pointmutant',
+        replicate: int = -1,
+        replicate_second_object: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -37,6 +39,18 @@ class Scatter(Pyplot):
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
+        replicate_second_object : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -48,9 +62,15 @@ class Scatter(Pyplot):
 
         # Chose mode:
         if mode.lower() == 'pointmutant':
-            df_output: DataFrame = process_by_pointmutant(self.dataframe, screen_object.dataframe)
+            df_output: DataFrame = process_by_pointmutant(
+                self.dataframes.df_notstopcodons[replicate],
+                screen_object.dataframes.df_notstopcodons[replicate_second_object]
+            )
         else:
-            df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
+            df_output = process_mean_residue(
+                self.dataframes.df_notstopcodons[replicate],
+                screen_object.dataframes.df_notstopcodons[replicate_second_object]
+            )
 
         # create figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])

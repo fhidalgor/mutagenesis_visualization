@@ -26,9 +26,9 @@ def test_heatmap() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'show': False}, {'hierarchical': True, 'show':
-                                                 False}, {'show_snv': True, 'show': False},
-                               {'show_cartoon': True, 'show': False}]
+    list_params: List[dict] = [{'show': False, 'close': True}, {'hierarchical': True, 'show':
+                                                 False, 'close': True}, {'show_snv': True, 'show': False, 'close': True},
+                               {'show_cartoon': True, 'show': False, 'close': True}]
 
     # Assert
     for parameters in list_params:
@@ -53,7 +53,7 @@ def test_heatmap_rows() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{"selection": "mean", 'show': False}]
+    list_params: List[dict] = [{"selection": "mean", 'show': False, 'close': True}]
 
     # Assert
     for parameters in list_params:
@@ -78,7 +78,7 @@ def test_heatmap_columns() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'segment': [20, 40], 'show': False}]
+    list_params: List[dict] = [{'segment': [20, 40], 'show': False, 'close': True}]
 
     # Assert
     for parameters in list_params:
@@ -109,12 +109,14 @@ def test_plot_miniheatmap() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'neworder_aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -122,6 +124,6 @@ def test_plot_miniheatmap() -> None:
     for parameters in list_params:
         assert _test_plot_miniheatmap( # Assert that that set of parameters works on that object
             parameters,
-        ) is False, "plot_miniheatmap failed with {} object and {} parameters".format(
+        ) is False, "plot_miniheatmap failed with {} parameters".format(
             parameters,
         )

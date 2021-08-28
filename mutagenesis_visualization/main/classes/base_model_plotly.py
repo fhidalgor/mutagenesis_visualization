@@ -3,10 +3,12 @@ This module contains the parent class for all the plot classes.
 """
 from pathlib import Path
 from typing import Union, Dict, Any, Optional, List
-import copy
+from copy import deepcopy
 from pandas import DataFrame
+from numpy import typing as npt
 from plotly.graph_objects import Figure
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
+from mutagenesis_visualization.main.utils.replicates_screen_input import DataframesHolder
 
 
 class Plotly:
@@ -16,12 +18,9 @@ class Plotly:
     """
     def __init__(
         self,
-        aminoacids: Union[str, List[str], None] = None,
-        dataset: Optional[Any] = None,
-        dataframe: Optional[DataFrame] = None,
-        dataframe_stopcodons: Optional[DataFrame] = None,
-        dataframe_snv: Optional[DataFrame] = None,
-        dataframe_nonsnv: Optional[DataFrame] = None,
+        dataframes: DataframesHolder,
+        aminoacids: Union[str, List[str]] = "",
+        datasets: Optional[List[npt.NDArray]] = None,
         sequence: Optional[str] = None,
         start_position: Optional[int] = None,
         end_position: Optional[int] = None,
@@ -34,11 +33,9 @@ class Plotly:
         elif isinstance(aminoacids, list):
             self.aminoacids = aminoacids
 
-        self.dataset: Any = dataset
-        self.dataframe: Optional[DataFrame] = dataframe
-        self.dataframe_stopcodons: Optional[DataFrame] = dataframe_stopcodons
-        self.dataframe_snv: Optional[DataFrame] = dataframe_snv
-        self.dataframe_nonsnv: Optional[DataFrame] = dataframe_nonsnv
+        if datasets:
+            self.datasets: List[npt.NDArray] = datasets
+        self.dataframes: DataframesHolder = dataframes
         self.sequence: Optional[str] = sequence
         self.start_position: Optional[int] = start_position
         self.end_position: Optional[int] = end_position
@@ -61,7 +58,7 @@ class Plotly:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
+        temp_kwargs: Dict[str, Any] = deepcopy(self.kwargs)
         temp_kwargs.update(kwargs)
         temp_kwargs['aminoacids'] = kwargs.get('aminoacids', self.aminoacids)
         if "*" in self.aminoacids and len(self.aminoacids) == 21:

@@ -5,7 +5,6 @@ from typing import Any, Dict, Tuple, Union, List
 from collections import OrderedDict
 import numpy as np
 from numpy import typing as npt
-import pandas as pd
 from pandas.core.frame import DataFrame
 from scipy import stats
 
@@ -123,7 +122,7 @@ def filter_by_mad(data: npt.NDArray, m: float = 2) -> npt.NDArray:
     """
 
     # turn data into df_output to do mad calculations
-    df_output = pd.DataFrame(np.array(data), columns=['Data'])
+    df_output = DataFrame(np.array(data), columns=['Data'])
     median = df_output['Data'].median(axis=0)
     mad = df_output['Data'].mad(axis=0)
     df_output['Abs_Dev'] = np.abs(data - median) / mad
@@ -277,7 +276,7 @@ def array_to_df_enrichments(lib: npt.NDArray, aminoacids: List[str]) -> DataFram
     Aux function to transform array in df with index of amino acids.
     """
 
-    df_output: DataFrame = pd.DataFrame(index=aminoacids, data=lib)
+    df_output: DataFrame = DataFrame(index=aminoacids, data=lib)
     return df_output.astype(float)
 
 

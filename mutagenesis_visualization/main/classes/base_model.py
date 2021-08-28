@@ -3,15 +3,16 @@ This module contains the parent class for all the plot classes.
 """
 from pathlib import Path
 from typing import Tuple, Union, Dict, Any, Optional, List, TYPE_CHECKING
-import copy
+from copy import deepcopy
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-import pandas as pd
+from numpy import typing as npt
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 from mutagenesis_visualization.main.utils.matplotlib_parameters import (
     graph_parameters, font_parameters
 )
+from mutagenesis_visualization.main.utils.replicates_screen_input import DataframesHolder
 
 if TYPE_CHECKING:
     from mutagenesis_visualization.main.classes.screen import Screen
@@ -24,15 +25,10 @@ class Pyplot:
     """
     def __init__(
         self,
+        dataframes: Optional[DataframesHolder] = None,
+        dataframes_raw: Optional[List[DataFrame]] = None,
         aminoacids: Union[str, List[str]] = "",
-        dataset: Any = pd.DataFrame(),
-        dataframe: DataFrame = pd.DataFrame(),
-        dataframe_stopcodons: DataFrame = pd.DataFrame(),
-        dataframe_snv: DataFrame = pd.DataFrame(),
-        dataframe_nonsnv: DataFrame = pd.DataFrame(),
-        replicate_dataframes: Optional[List[DataFrame]] = None,
-        wildtype_scores_replicates: Optional[List[DataFrame]] = None,
-        wildtype_scores: DataFrame = pd.DataFrame(),
+        datasets: Optional[List[npt.NDArray]] = None,
         sequence: str = "",
         sequence_raw: str = "",
         start_position: int = 0,
@@ -46,20 +42,12 @@ class Pyplot:
             self.aminoacids: List[str] = list(aminoacids)
         elif isinstance(aminoacids, list):
             self.aminoacids = aminoacids
-        self.dataset: Any = dataset
-        self.dataframe: DataFrame = dataframe
-        self.dataframe_stopcodons: DataFrame = dataframe_stopcodons
-        self.dataframe_snv: DataFrame = dataframe_snv
-        self.dataframe_nonsnv: DataFrame = dataframe_nonsnv
-        if not replicate_dataframes:
-            self.replicate_dataframes: List[DataFrame] = [pd.DataFrame()]
-            self.wildtype_scores_replicates: List[DataFrame] = [pd.DataFrame()]
-
-        else:
-            self.replicate_dataframes = replicate_dataframes
-            self.wildtype_scores_replicates = wildtype_scores_replicates
-        self.wildtype_scores: DataFrame = wildtype_scores
-
+        if datasets:
+            self.datasets: List[npt.NDArray] = datasets
+        if dataframes:
+            self.dataframes: DataframesHolder = dataframes
+        if dataframes_raw:
+            self.dataframes_raw: List[DataFrame] = dataframes_raw
         self.sequence: str = sequence
         self.sequence_raw: str = sequence_raw
         self.start_position: int = start_position
@@ -72,7 +60,7 @@ class Pyplot:
         self.ax_object: plt.Axes = None
         self.cb_object: plt.Axes = None
         self.gs_object: plt.Axes = None
-        self.df_output: DataFrame = pd.DataFrame()
+        self.df_output: DataFrame = DataFrame()
         self.screen_object: 'Screen' = None
         self.sequence_updated: Union[str, List[str]] = []
         self.ax_object2: plt.Axes = None
@@ -103,7 +91,7 @@ class Pyplot:
         """
         Update the kwargs.
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(self.kwargs)
+        temp_kwargs: Dict[str, Any] = deepcopy(self.kwargs)
         temp_kwargs.update(kwargs)
         temp_kwargs['aminoacids'] = kwargs.get('aminoacids', self.aminoacids)
         if "*" in self.aminoacids and len(self.aminoacids) == 21:

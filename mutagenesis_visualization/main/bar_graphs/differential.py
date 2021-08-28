@@ -24,6 +24,7 @@ class Differential(Pyplot):
         metric: str = 'rmse',
         plot_type: str = 'bar',
         show_cartoon: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -47,6 +48,12 @@ class Differential(Pyplot):
             structure. The user must have added the secondary structure
             to the object.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and
             name of the file. Example: 'path/filename.png' or
@@ -58,7 +65,8 @@ class Differential(Pyplot):
         self.graph_parameters()
 
         self.df_output: DataFrame = process_rmse_residue(
-            self.dataframe, screen_object.dataframe, metric
+            self.dataframes.df_notstopcodons[replicate],
+            screen_object.dataframes.df_notstopcodons[replicate], metric
         )
         # make cartoon
         if show_cartoon:

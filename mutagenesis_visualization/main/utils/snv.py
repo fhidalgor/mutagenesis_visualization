@@ -1,12 +1,12 @@
 """
 This module contains functions that manipulate SNV-related variants.
 """
-import itertools
+from itertools import product
 from typing import List, Dict
 from collections import defaultdict
-import pandas as pd
 from Bio.Seq import Seq
 from pandas.core.frame import DataFrame
+from pandas import concat
 
 
 def select_nonsnv(df_input: DataFrame) -> DataFrame:
@@ -25,8 +25,8 @@ def select_nonsnv(df_input: DataFrame) -> DataFrame:
     df_snv: DataFrame = select_snv(df_input)
 
     # Merge and eliminate duplicates. Keep Non-SNV
-    df_nonsnv: DataFrame = pd.concat([df_snv, df_input],
-                                     sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
+    df_nonsnv: DataFrame = concat([df_snv, df_input],
+                                  sort=False)[["Position", "Variant", "Score", "Score_NaN"]]
     df_nonsnv.drop_duplicates(subset="Variant", keep=False, inplace=True)
 
     return df_nonsnv
@@ -49,7 +49,7 @@ def select_snv(df_input: DataFrame) -> DataFrame:
     df_input = add_snv_boolean(df_input.copy())
 
     # Select SNV? == True only
-    df_input = df_input[df_input["SNV?"] == True].copy()
+    df_input = df_input[df_input["SNV?"] == True].copy()  # pylint: disable=singleton-comparison
 
     # Select columns of interest
     df_input = df_input[["Position", "Variant", "Score", "Score_NaN"]].copy()
@@ -87,11 +87,11 @@ def _aminoacids_snv(
     codons2 = codon_table[aa2.upper()]
 
     # Generate a list of combination pairs between all codons in aa1 and aa2
-    codon_combinations = list(itertools.product(codons1, codons2))
+    codon_combinations = list(product(codons1, codons2))
 
     # If one pair of combinations is a SNV, then return True
     for combination in codon_combinations:
-        if _codons_pointmutants(combination[0], combination[1]) == True:
+        if _codons_pointmutants(combination[0], combination[1]) is True:
             return True
     return False
 

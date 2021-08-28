@@ -30,6 +30,7 @@ def test_plotly_heatmap() -> None:
         {'show': False},
         {
             'show': False,
+            'close': True,
             'title': 'Changing this parameter for fun',
         },
     ]
@@ -63,10 +64,13 @@ def test_plotly_scatter() -> None:
         {'show': False},
         {
             'show': False,
+            'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False,
+            'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False,
+            'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -96,10 +100,13 @@ def test_plotly_rank() -> None:
         {'show': False},
         {
             'show': False,
+            'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False,
+            'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False,
+            'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -129,10 +136,13 @@ def test_plotly_histogram() -> None:
         {'show': False},
         {
             'show': False,
+            'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False,
+            'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False,
+            'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -162,10 +172,13 @@ def test_plotly_enrichment_bar() -> None:
         {'show': False},
         {
             'show': False,
+            'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False, 'title': 'hello world'},
-        {'mode': 'A', 'show': False, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False,
+            'close': True, 'title': 'hello world'},
+        {'mode': 'A', 'show': False,
+            'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -201,6 +214,7 @@ def test_plotly_scatter_3d() -> None:
             'y_label': 'y',
             'z_label': 'z',
             'show': False,
+            'close': True,
         },
         {
             'mode': 'mean',
@@ -211,6 +225,7 @@ def test_plotly_scatter_3d() -> None:
             'y_label': 'y',
             'z_label': 'z',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -245,11 +260,13 @@ def test_plotly_scatter_3d_pdbprop() -> None:
             'plot': ['Distance', 'SASA', 'log B-factor'],
             'pdb_path': PDB_5P21,
             'show': False,
+            'close': True,
         },
         {
             'plot': ['Distance', 'SASA', 'log B-factor'],
             'pdb_path': PDB_5P21,
             'show': False,
+            'close': True,
         },
     ]
 

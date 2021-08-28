@@ -31,6 +31,9 @@ def test_generate_primers() -> None:
 
 
 def test_primer_design() -> None:
+    """
+    Test the primer design function.
+    """
     dna: str = 'GGCAATGCGcccccaATGaaaaaaTAAaaACGGGGTTTTaaa'  # 42 codons
     primers0: Tuple[str, str] = _primer_design(
         dna, codon='NNS', codon_position=0, length_primer=None, melting_temp=60
@@ -80,6 +83,9 @@ def test_create_primers_list() -> None:
 
 
 def test_create_variants() -> None:
+    """
+    Test the create variants function.
+    """
     dna: str = 'AAGAAGAAG'
     codon_list1: List[str] = ['GAA', 'TAA', 'AAA']
     create_variants: CreateVariants = CreateVariants()

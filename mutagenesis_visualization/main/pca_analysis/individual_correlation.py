@@ -17,6 +17,7 @@ class IndividualCorrelation(Pyplot):
     """
     def __call__(
         self,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -27,6 +28,12 @@ class IndividualCorrelation(Pyplot):
         Parameters
         -----------
         self : object from class *Screen*
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and name
@@ -40,8 +47,9 @@ class IndividualCorrelation(Pyplot):
         # Get data
         if '*' in temp_kwargs['neworder_aminoacids']:
             temp_kwargs['neworder_aminoacids'].remove('*')
-        self.df_output = calculate_correlation(self.dataframe,
-                                               temp_kwargs['neworder_aminoacids']).mean()**2
+        self.df_output = calculate_correlation(
+            self.dataframes.df_notstopcodons[replicate], temp_kwargs['neworder_aminoacids']
+        ).mean()**2
 
         # Make figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])

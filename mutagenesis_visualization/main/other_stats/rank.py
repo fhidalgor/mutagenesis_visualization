@@ -17,6 +17,7 @@ class Rank(Pyplot):
         self,
         mode: str = 'pointmutant',
         output_file: Union[None, str, Path] = None,
+        replicate: int = -1,
         **kwargs: Any
     ) -> None:
         """
@@ -31,6 +32,12 @@ class Rank(Pyplot):
         outdf : boolean, default False
             If set to true, will return the df with the rank of mutations
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name of the file.
             Example: 'path/filename.png' or 'path/filename.svg'.
@@ -41,7 +48,8 @@ class Rank(Pyplot):
         self.graph_parameters()
 
         # Sort by enrichment scores
-        self.df_output = self.dataframe.sort_values(by=['Score']).copy()
+        self.df_output = self.dataframes.df_notstopcodons[replicate].sort_values(by=['Score']
+                                                                                 ).copy()
 
         # Chose mode:
         if mode == 'mean':

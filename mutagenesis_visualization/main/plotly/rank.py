@@ -4,8 +4,8 @@ This module contains the plotly rank plot.
 from pathlib import Path
 from typing import Any, Dict, Union
 import numpy as np
-import plotly.io as pio
-import plotly.graph_objects as go
+from plotly import io as pio
+from plotly import graph_objects as go
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 
 
@@ -16,6 +16,7 @@ class RankP(Plotly):
     def __call__(
         self,
         mode: str = 'pointmutant',
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -30,6 +31,12 @@ class RankP(Plotly):
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add the path and name of the file.
             Example: 'path/filename.html'.
@@ -39,7 +46,8 @@ class RankP(Plotly):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
 
         # Sort by enrichment scores
-        self.df_output = self.dataframe.sort_values(by=['Score']).copy()
+        self.df_output = self.dataframes.df_notstopcodons[replicate].sort_values(by=['Score']
+                                                                                 ).copy()
 
         # Chose mode:
         if mode == 'mean':

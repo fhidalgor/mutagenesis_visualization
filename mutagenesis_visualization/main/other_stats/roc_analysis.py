@@ -22,6 +22,7 @@ class ROC(Pyplot):
         self,
         df_class: DataFrame,
         mode: str = 'pointmutant',
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -38,9 +39,16 @@ class ROC(Pyplot):
 
         mode : str, default 'pointmutant'
             Specify what enrichment scores to show. If mode = 'mean', it will
-            show the mean of each position. If mode = 'A', it will show the
-            alanine substitution profile. Can be used for each amino acid.
-            Use the one-letter code and upper case.
+            show the mean of each position. 'pointmutant' will use each
+            variant. If mode = 'A', it will show the alanine substitution
+            profile. Can be used for each amino acid. Use the one-letter
+            code and upper case.
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and name
@@ -49,11 +57,10 @@ class ROC(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
 
-        # Chose mode: !!! not used
-        df_grouped: DataFrame = select_grouping(self.dataframe, mode)
-
         # Merge dataframe with classes
-        df_output: DataFrame = merge_class_variants(self.dataframe, df_class, mode)
+        df_output: DataFrame = merge_class_variants(
+            select_grouping(self.dataframes.df_notstopcodons[replicate], mode), df_class, mode
+        )
 
         # Calculate ROC parameters
         fpr, tpr, auc, _ = roc_auc(df_output)

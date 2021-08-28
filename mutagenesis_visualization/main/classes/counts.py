@@ -1,7 +1,7 @@
 """
 This module contains the class Counts.
 """
-from typing import List, Optional
+from typing import List, Optional, Union
 import numpy as np
 from pandas.core.frame import DataFrame
 
@@ -16,8 +16,11 @@ class Counts:
 
     Parameters
     ----------
-    dataframe : pandas dataframe
-        Dataframe containing the counts per codon.
+    dataframes : dataframe, list dataframes
+        2D matrix containing the counts per codon.
+        Columns will contain the amino acid substitutions, rows will
+        contain the counts for each residue in the protein sequence.
+        If multiple replicates, pass items in a list.
 
     start_position : int, default None
         First position in the protein sequence that will be used for the
@@ -35,32 +38,45 @@ class Counts:
     """
     def __init__(
         self,
-        dataframe: DataFrame,
+        dataframes: Union[DataFrame, List[DataFrame]],
         start_position: Optional[int] = None,
         aminoacids: Optional[List[str]] = None,
     ):
-        self.dataframe: DataFrame = dataframe
-        self.positions: List[int] = list(self.dataframe.columns)
+
+        if isinstance(dataframes, DataFrame):
+            self.dataframes: List[DataFrame] = [dataframes]
+        else:
+            self.dataframes = dataframes
+            df_mean: DataFrame = DataFrame(
+                np.nanmean([np.array(df) for df in self.dataframes]),
+                columns=self.dataframes[0].columns
+            )
+            self.dataframes.append(df_mean)
+
+        self.positions: List[int] = list(self.dataframes[0].columns)
         self.start_position: int = self.positions[0]
         if start_position:
             self.start_position = start_position
-            self.positions = np.arange(start_position, len(self.dataframe.columns) + start_position)
+            self.positions = np.arange(
+                start_position,
+                len(self.dataframes[0].columns) + start_position
+            )
 
         # if aminoacids is none, use the index of the dataframe
         if aminoacids:
             self.aminoacids: List[str] = aminoacids
-        elif is_dna(self.dataframe):
-            self.aminoacids = translate_codons(self.dataframe)
+        elif is_dna(self.dataframes[0]):
+            self.aminoacids = translate_codons(self.dataframes[0])
         else:
-            self.aminoacids = list(self.dataframe.index)
+            self.aminoacids = list(self.dataframes[0].index)
 
         assert len(self.aminoacids) > 0
 
         self.mean_counts = MeanCounts(
-            dataframe=self.dataframe, positions=self.positions, aminoacids=self.aminoacids
+            dataframes_raw=self.dataframes, positions=self.positions, aminoacids=self.aminoacids
         )
         self.library_representation = LibraryRepresentation(
-            dataframe=self.dataframe,
+            dataframes_raw=self.dataframes,
             aminoacids=self.aminoacids,
             positions=self.positions,
         )

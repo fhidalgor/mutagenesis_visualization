@@ -1,7 +1,7 @@
 """
 This module contains the kernel class.
 """
-from typing import Union, Dict, Any, List
+from typing import Union, Dict, Any
 from pathlib import Path
 import matplotlib.pyplot as plt
 from seaborn import kdeplot
@@ -17,6 +17,7 @@ class Kernel(Pyplot):
         show_replicates: bool = False,
         show_wild_type_counts_only: bool = False,
         show_mean: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -36,6 +37,12 @@ class Kernel(Pyplot):
             If set to true, it will plot the kernel distribution mean of
             replicates when show_wild_type_counts_only is True.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name of the file.
             Example: 'path/filename.png' or 'path/filename.svg'.
@@ -54,34 +61,33 @@ class Kernel(Pyplot):
 
         # plot kernel
         if show_replicates:
-            assert len(self.replicate_dataframes) > 1, "No replicates found."
+            assert len(self.dataframes.df_notstopcodons) > 1, "No replicates found."
             if show_wild_type_counts_only:
-                data_to_plot = [self.wildtype_scores_replicates, self.wildtype_scores]
+                data_to_plot = self.dataframes.df_wildtype_scores
             else:
-                data_to_plot = [self.replicate_dataframes, self.dataframe]
+                data_to_plot = self.dataframes.df_notstopcodons
 
-            for i, replicate in enumerate(data_to_plot[0], start=1):
+            for i, df_replicate in enumerate(data_to_plot[:-1], start=1):
                 label = "r{}".format(str(i))
                 self.ax_object = kdeplot(
-                    replicate['Score_NaN'],
+                    df_replicate['Score_NaN'],
                     color=temp_kwargs["kernel_colors"][i],
                     lw=2,
                     label=label
                 )
             if show_mean:
                 self.ax_object = kdeplot(
-                    data_to_plot[1]['Score_NaN'], color=temp_kwargs["color"], lw=2, label="mean"
+                    data_to_plot[-1]['Score_NaN'], color=temp_kwargs["color"], lw=2, label="mean"
                 )
 
             plt.legend(loc='best', frameon=False, handlelength=1, handletextpad=0.5)
         else:
             if show_wild_type_counts_only:
-                data_to_plot = self.wildtype_scores
-                print(data_to_plot)
+                data_to_plot = self.dataframes.df_wildtype_scores
             else:
-                data_to_plot = self.dataframe
+                data_to_plot = self.dataframes.df_notstopcodons
             self.ax_object = kdeplot(
-                data_to_plot['Score_NaN'],
+                data_to_plot[replicate]['Score_NaN'],
                 color=temp_kwargs["color"],
                 lw=2,
             )

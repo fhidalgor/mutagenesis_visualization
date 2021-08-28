@@ -22,6 +22,7 @@ class Miniheatmap(Pyplot):
         self,
         position_offset: int = 0,
         background_correction: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -43,6 +44,12 @@ class Miniheatmap(Pyplot):
         background_correction : boolean, default False
             If offset is nonzero, whether subtract the average effect of a substitution or not.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -55,9 +62,9 @@ class Miniheatmap(Pyplot):
 
         # do offset if appropriate
         self.df_output = transform_dataset_offset(
-            self.dataset,
-            self.dataframe,
-            self.dataframe_stopcodons,
+            self.datasets[replicate],
+            self.dataframes.df_notstopcodons[replicate],
+            self.dataframes.df_stopcodons[replicate],
             self.sequence_raw,
             self.start_position,
             position_offset,
@@ -77,9 +84,9 @@ class Miniheatmap(Pyplot):
 
             # Add position_offset sequence to df
             self.df_output = transform_dataset_offset(
-                self.dataset,
-                self.dataframe,
-                self.dataframe_stopcodons,
+                self.datasets[replicate],
+                self.dataframes.df_notstopcodons[replicate],
+                self.dataframes.df_stopcodons[replicate],
                 self.sequence_raw,
                 self.start_position,
                 position_offset,

@@ -16,6 +16,7 @@ class Histogram(Pyplot):
     def __call__(
         self,
         population: str = 'All',
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -27,6 +28,12 @@ class Histogram(Pyplot):
         ----------
         population : str, default 'All'.
             Other options are 'SNV' and 'nonSNV'.
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and
@@ -50,14 +57,14 @@ class Histogram(Pyplot):
         self.graph_parameters()
 
         # Select case input data
-        self.dataset = self.dataframe['Score_NaN']
+        data_to_use = self.dataframes.df_notstopcodons[replicate]['Score_NaN']
         if population == 'SNV':
-            self.dataset = self.dataframe_snv['Score_NaN']
+            data_to_use = self.dataframes.df_snv[replicate]['Score_NaN']
         elif population == 'nonSNV':
-            self.dataset = self.dataframe_nonsnv['Score_NaN']
+            data_to_use = self.dataframes.df_nonsnv[replicate]['Score_NaN']
 
         # plot histogram
-        self.ax_object = plt.hist(self.dataset, density=True, bins=temp_kwargs['bins'], color='k')
+        self.ax_object = plt.hist(data_to_use, density=True, bins=temp_kwargs['bins'], color='k')
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)

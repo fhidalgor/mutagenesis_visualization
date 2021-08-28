@@ -47,7 +47,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
 
     # Create object
     hras_rbd: Screen = Screen(
-        dataset=hras_enrichment_rbd,
+        datasets=hras_enrichment_rbd,
         sequence=hras_sequence,
         aminoacids=aminoacids,
         secondary=secondary

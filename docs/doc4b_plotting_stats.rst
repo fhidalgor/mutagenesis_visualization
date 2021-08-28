@@ -15,7 +15,7 @@ Import modules
     import numpy as np
     import pandas as pd
     from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
-    
+
     DEMO_OBJECTS:DemoObjects = DemoObjects()
     hras_rbd = DEMO_OBJECTS.hras_rbd
     hras_gapgef = DEMO_OBJECTS.hras_gapgef
@@ -50,12 +50,12 @@ replacements.
     hras_rbd.kernel(
         title='H-Ras 2-166', xscale=[-2, 1]
     )
-    
+
     # Plot histogram of SNVs
     hras_rbd.histogram(
         population='SNV', title='H-Ras 2-166 SNV', xscale=[-2, 1]
     )
-    
+
     # Plot histogram of non-SNVs
     hras_rbd.histogram(
         population='nonSNV',
@@ -89,7 +89,7 @@ position level ``mode=mean``.
         x_label='H-Ras Unregulated',
         y_label='H-Ras Regulated',
     )
-    
+
     # Plot a scatter plot of the mean position
     hras_rbd.scatter(
         hras_gapgef,
@@ -116,7 +116,7 @@ enrichment score.
 
 .. image:: images/exported_images/hras_rank.png
    :width: 400px
-   
+
 .. image:: images/exported_images/hras_ranktable.png
    :width: 200px
 
@@ -162,7 +162,7 @@ alanine scan (bottom)
         yscale=[-2, 0.5],
         title='',
     )
-    
+
     # Plot a bar graph with the alanine enrichment score
     hras_rbd.enrichment_bar(
         figsize=[6, 2.5],
@@ -175,7 +175,7 @@ alanine scan (bottom)
 .. image:: images/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center
-   
+
 .. image:: images/exported_images/hras_bar_alanine.png
    :width: 500px
    :align: center
@@ -304,7 +304,7 @@ notation), but that can be changed by ``dimensions`` parameter.
         adjustlabels=True,
         output_file=None
     )
-    
+
     # PCA by secondary structure motif
     hras_rbd.pca(
         title='',
@@ -314,7 +314,7 @@ notation), but that can be changed by ``dimensions`` parameter.
         adjustlabels=True,
         output_file=None
     )
-    
+
     # PCA by each individual residue. Don't set adjustlabels = True unless really big figsize
     hras_rbd.pca(
         title='',
@@ -342,10 +342,10 @@ the label for each variant.
 .. code:: python
 
     #  Fake data
-    df_freq: DataFrame = pd.DataFrame()
+    df_freq: DataFrame = DataFrame()
     df_freq['Variant'] = hras_rbd.dataframe['Variant']
     df_freq['Class'] = np.random.randint(2, size=len(df_freq))
-    
+
     # Plot ROC curve
     hras_rbd.roc(
         df_freq[['Variant', 'Class']],
@@ -378,10 +378,10 @@ Leucine, right - Aspartate).
 
     # Start pymol and color residues. Cut offs are set with gof and lof parameters.
     hras_rbd.pymol(pdb='5p21_A', mode='mean', gof=0.2, lof=-0.5)
-    
+
     # Now check the mutational profile of Leucine (left image)
     hras_rbd.pymol(pdb='5p21_A', mode='L', gof=0.2, lof=-0.5)
-    
+
     # Now check the mutational profile of Aspartate (right image)
     hras_rbd.pymol(pdb='5p21_A', mode='D', gof=0.2, lof=-0.5)
 
@@ -401,7 +401,7 @@ dataset.
 .. code:: python
 
     %matplotlib inline
-    
+
     from mutagenesis_visualization.main.classes.screen import Screen
     from mutagenesis_visualization.main.utils.data_paths import PATH_LOGO
     # Read excel file
@@ -410,26 +410,26 @@ dataset.
     #df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
     df_logo = pd.read_excel(PATH_LOGO, 'logo_2', usecols=usecols, nrows=21)
     df_faded = pd.read_excel(PATH_LOGO, 'logo_faded_2', usecols=usecols, nrows=21)
-    
+
     # Combine two dataframes
     df_mixed = df_logo * 1.2 - df_faded
-    
+
     # Aminoacids
     aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
-    
+
     # Define protein sequence
     sequence_logo = "FUNNY THAT YOU ARE READING THIS SEQUENCE. NO SECRET CODE FOR NOW"
-    
+
     # Define secondary structure
     secondary = [['L0'] * 5, ['β1'] * (9 - 1), ['L1'] * (15 - 9),
                  ['α1'] * (25 - 20), ['L2'] * (32 - 25), ['β2'] * (42 - 32),
                  ['L3'] * (50 - 42), ['α2'] * (58 - 50), ['L4'] * (70 - 58)]
-    
+
     # Create object
     logo_obj = Screen(
         df_mixed, sequence_logo, aminoacids = aminoacids, start_position=1, fillna=0, secondary=secondary
     )
-    
+
     # Create hetmap
     logo_obj.heatmap(
         show_cartoon=True,

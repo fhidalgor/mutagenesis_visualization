@@ -3,9 +3,8 @@ This module contains the plotly histogram plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import plotly.io as pio
-import plotly.graph_objects as go
-
+from plotly import io as pio
+from plotly import graph_objects as go
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.plotly_utils import select_grouping
 
@@ -17,6 +16,7 @@ class HistogramP(Plotly):
     def __call__(
         self,
         mode: str = 'pointmutant',
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -30,6 +30,12 @@ class HistogramP(Plotly):
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add the path and name of the file.
             Example: 'path/filename.html'.
@@ -42,7 +48,7 @@ class HistogramP(Plotly):
         self.fig = go.Figure()
         self.fig.add_trace(
             go.Histogram(
-                x=self.dataframe['Score'],
+                x=self.dataframes.df_notstopcodons[replicate]['Score'],
                 histnorm='probability density',
                 name='Population',
                 marker_color='black',
@@ -51,7 +57,7 @@ class HistogramP(Plotly):
 
         # Create second histogram
         if mode != 'pointmutant':
-            df_output = select_grouping(self.dataframe, mode)
+            df_output = select_grouping(self.dataframes.df_notstopcodons[replicate], mode)
             # Add second trace
             self.fig.add_trace(
                 go.Histogram(

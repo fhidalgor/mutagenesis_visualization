@@ -3,8 +3,8 @@ This module contains the plotly mean enrichment plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import plotly.io as pio
-import plotly.graph_objects as go
+from plotly import io as pio
+from plotly import graph_objects as go
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.plotly_utils import select_grouping
@@ -18,6 +18,7 @@ class EnrichmentBarP(Plotly):
     def __call__(
         self,
         mode: str = 'mean',
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -32,6 +33,12 @@ class EnrichmentBarP(Plotly):
             show the alanine substitution profile. Can be used for each
             amino acid. Use the one-letter code and upper case.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add the
             path and name of the file. Example: 'path/filename.html'.
@@ -42,7 +49,7 @@ class EnrichmentBarP(Plotly):
         temp_kwargs['title'] = kwargs.get('title', 'Filtered by: {}'.format(mode))
 
         # Chose mode:
-        self.df_output = select_grouping(self.dataframe, mode)
+        self.df_output = select_grouping(self.dataframes.df_notstopcodons[replicate], mode)
 
         # Calculate colors
         self.df_output['Color'] = self.df_output.apply(

@@ -147,6 +147,11 @@ The following classes are integrated into *Screen*, thus, you only have to use t
 .. autoclass:: mutagenesis_visualization.main.scatter.scatter.Scatter
     :members: __call__
 
+*ScatterReplicates* pyplot class
+-----------------------------
+.. autoclass:: mutagenesis_visualization.main.scatter.scatter.ScatterReplicates
+    :members: __call__
+
 Functions
 ****************
 

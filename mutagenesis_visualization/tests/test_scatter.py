@@ -31,11 +31,13 @@ def test_plot_scatter() -> None:
     list_params: list = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 

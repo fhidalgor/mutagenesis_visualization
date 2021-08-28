@@ -4,7 +4,6 @@ This module tests other stats folder.
 import traceback
 import logging
 from typing import Dict, List
-import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 
@@ -37,12 +36,14 @@ def test_rank() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'mode': 'mean',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -63,9 +64,9 @@ def test_roc() -> None:
     Test the roc auc method.
     """
     # fake data for obj_test_1 (change for other objects)
-    df_freq: DataFrame = pd.DataFrame()
-    df_freq['Variant'] = OBJ_TEST_1.dataframe['Variant']
-    df_freq['Class'] = np.random.randint(2, size=len(OBJ_TEST_1.dataframe))
+    df_freq: DataFrame = DataFrame()
+    df_freq['Variant'] = OBJ_TEST_1.dataframes.df_notstopcodons[0]['Variant']
+    df_freq['Class'] = np.random.randint(2, size=len(OBJ_TEST_1.dataframes.df_notstopcodons[0]))
 
     # Define aux function
     def _test_roc(obj_test: Screen, parameters: dict) -> bool:
@@ -82,11 +83,13 @@ def test_roc() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -122,16 +125,19 @@ def test_cumulative() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'mode': 'nonSNV',
             'show': False,
+            'close': True,
         },
         {
             'mode': 'SNV',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 

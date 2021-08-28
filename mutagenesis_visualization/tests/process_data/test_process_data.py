@@ -2,21 +2,22 @@
 This module tests the process data methods and functions.
 """
 import logging
+from typing import List
 from random import randint
 from collections import OrderedDict
-
+import numpy.typing as npt
 from mutagenesis_visualization.main.process_data.process_data_utils import (initialize_ordered_dict)
 
 log: logging.Logger = logging.getLogger('test_process_data')
 
 
-def partition_list(array, num_partitions) -> list:
+def partition_list(array: npt.NDArray, num_partitions: int) -> list:
     """
     Partition array randomly where each partition has at least one item.
     """
     if num_partitions < 2:
         return [f"{array[0]}:{array[-1]}"]
-    partition_idxs = []
+    partition_idxs: List[int] = []
     while len(partition_idxs) < num_partitions - 1:
         num = randint(0, len(array) - 1)
         if num not in partition_idxs:

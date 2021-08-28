@@ -3,7 +3,7 @@ This module contains the plotly 3D scatter plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import plotly.express as px
+from plotly import express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.plotly_utils import (
@@ -28,6 +28,7 @@ class Scatter3D(Plotly):
         position_correction: int = 0,
         chain: str = 'A',
         squared: bool = False,
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -67,6 +68,12 @@ class Scatter3D(Plotly):
             If this parameter is True, the algorithm will center the
             data, and plot the square value of the distance.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add the
             path and name of the file. Example: 'path/filename.html'.
@@ -78,7 +85,7 @@ class Scatter3D(Plotly):
 
         # Get Scores and colors
         self.df_output = color_3d_scatter(
-            self.dataframe,
+            self.dataframes.df_notstopcodons[replicate],
             mode,
             temp_kwargs['lof'],
             temp_kwargs['gof'],

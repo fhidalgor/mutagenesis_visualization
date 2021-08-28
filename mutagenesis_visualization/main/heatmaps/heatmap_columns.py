@@ -24,6 +24,7 @@ class HeatmapColumns(Pyplot):
         segment: Tuple[int, int],
         ylabel_color: str = 'k',
         nancolor: str = 'lime',
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -43,6 +44,12 @@ class HeatmapColumns(Pyplot):
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name of the file.
             Example: 'path/filename.png' or 'path/filename.svg'.
@@ -55,7 +62,9 @@ class HeatmapColumns(Pyplot):
 
         # sort data in specified order by user
         df_whole: DataFrame = df_rearrange(
-            self.dataframe_stopcodons, temp_kwargs['neworder_aminoacids'], values='Score_NaN'
+            self.dataframes.df_stopcodons[replicate],
+            temp_kwargs['neworder_aminoacids'],
+            values='Score_NaN'
         )
 
         # select subset

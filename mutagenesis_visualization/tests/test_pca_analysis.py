@@ -37,11 +37,13 @@ def test_correlation() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -82,11 +84,13 @@ def test_individual_correlation() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -127,16 +131,19 @@ def test_pca() -> None:
     list_params: list = [
         {
             'show': False,
+            'close': True,
         },
         {
             'mode': 'individual',
             'show': False,
+            'close': True,
         },
         {
             'mode': 'secondary',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 

@@ -4,7 +4,6 @@ or other DNA synthesis companies.
 """
 from pathlib import Path
 from typing import Union, List
-import pandas as pd
 from pandas.core.frame import DataFrame
 
 
@@ -16,7 +15,7 @@ class CreateVariants:
         self.dna: str = ""
         self.codon_list: List[str] = []
         self.seq_list: List[str] = []
-        self.df_output: DataFrame = pd.DataFrame()
+        self.df_output: DataFrame = DataFrame()
 
     def __call__(self, dna: str, codon_list: Union[list, str]) -> DataFrame:
         """
@@ -47,7 +46,7 @@ class CreateVariants:
         self.seq_list = self._enumerate_variants_2()
 
         # Make dataframe
-        self.df_output = pd.DataFrame()
+        self.df_output = DataFrame()
         self.df_output['Sequences'] = self.seq_list
         return self.df_output
 
@@ -88,7 +87,7 @@ class CreateVariants:
         Export list to fasta format.
         """
         # Open file
-        with open(str(output_file), "w") as ofile:
+        with open(str(output_file), "w", encoding="utf-8") as ofile:
             # Loop through list and write into file
             for i, seq in enumerate(self.seq_list):
                 line = (">{}\n{}\n").format(str(i), seq)

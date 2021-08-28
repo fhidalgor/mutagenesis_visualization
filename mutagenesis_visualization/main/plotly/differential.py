@@ -4,8 +4,8 @@ This module contains the plotly mean enrichment plot.
 from pathlib import Path
 from typing import Any, Dict, Literal, Union
 from pandas.core.frame import DataFrame
-import plotly.io as pio
-import plotly.graph_objects as go
+from plotly import io as pio
+from plotly import graph_objects as go
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.pandas_functions import process_rmse_residue
@@ -21,6 +21,7 @@ class DifferentialP(Plotly):
         metric: Literal["rmse", "squared", "mean"] = 'rmse',
         plot_type: str = 'bar',
         mode: str = 'mean',
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -39,6 +40,12 @@ class DifferentialP(Plotly):
         plot_type: str, default 'bar'
             Options are 'bar' and 'line'.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add the
             path and name of the file. Example: 'path/filename.html'.
@@ -48,7 +55,8 @@ class DifferentialP(Plotly):
         temp_kwargs: Dict[str, Any] = self._update_kwargs_2(kwargs, metric)
 
         self.df_output: DataFrame = process_rmse_residue(
-            self.dataframe, screen_object.dataframe, metric
+            self.dataframes.df_notstopcodons[replicate],
+            screen_object.dataframes.df_notstopcodons[replicate], metric
         )
 
         # Create figure

@@ -4,7 +4,6 @@ This module tests the classes.
 from typing import List
 import traceback
 import logging
-import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
 
@@ -16,7 +15,7 @@ def test_counts() -> None:
     """
     Test the class *Counts*.
     """
-    df_input: DataFrame = pd.DataFrame(
+    df_input: DataFrame = DataFrame(
         np.random.rand(21, 10) * 100, index=list('ACDEFGHIKLMNPQRSTVWY*')
     )
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
@@ -30,9 +29,9 @@ def test_counts() -> None:
             return True
         return False
 
-    list_params: List[dict] = [{'dataframe':
-                                df_input}, {'dataframe': df_input, 'start_position': 1},
-                               {'dataframe': df_input, 'aminoacids': aminoacids}]
+    list_params: List[dict] = [{'dataframes':
+                                df_input}, {'dataframes': df_input, 'start_position': 1},
+                               {'dataframes': df_input, 'aminoacids': aminoacids}]
     for parameters in list_params:
         assert _test_counts_output(
             parameters
@@ -43,7 +42,7 @@ def test_screen() -> None:
     """
     Test the class *Screen*.
     """
-    df_input: DataFrame = pd.DataFrame(np.random.rand(21, 10))
+    df_input: DataFrame = DataFrame(np.random.rand(21, 10))
     sequence: str = 'MTEYKRVVVLL'
     secondary: list = ['β1'] * len(sequence)
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
@@ -58,9 +57,9 @@ def test_screen() -> None:
         return False
 
     list_params: List[dict] = [{
-        'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids
+        'datasets': df_input, 'sequence': sequence, 'aminoacids': aminoacids
     }, {
-        'dataset': df_input, 'sequence': sequence, 'aminoacids': aminoacids, 'secondary': secondary
+        'datasets': df_input, 'sequence': sequence, 'aminoacids': aminoacids, 'secondary': secondary
     }]
 
     for parameters in list_params:

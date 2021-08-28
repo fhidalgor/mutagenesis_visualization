@@ -2,7 +2,6 @@
 This module tests the utils.snv folder.
 """
 from typing import List, Dict
-import pandas as pd
 from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.utils.snv import (
@@ -34,7 +33,7 @@ def test_aminoacids_snv() -> None:
     # Now change the same_aa_snv parameter
     assert _aminoacids_snv(
         'A', 'A', codon_table, same_aa_snv=True
-    ) == True, 'Error in determining snv when the two amino acids are the same'
+    ) is True, 'Error in determining snv when the two amino acids are the same'
 
 
 def test_codons_snv() -> None:
@@ -56,16 +55,16 @@ def test_codons_snv() -> None:
         assert expected_answer == calculated_answer, 'Error in determining snv'
 
     # Now change the same_aa_snv parameter
-    assert _codons_pointmutants(
+    assert _codons_pointmutants( # pylint: disable=singleton-comparison
         'CAA', 'CAA', same_codon_snv=True
     ) == True, 'Error in determining snv when the two codons are the same'
 
 
 def test_are_pointmutants() -> None:
     """Test."""
-    assert _are_pointmutants('M', 'ATG') == False
-    assert _are_pointmutants('A', 'ATG') == False
-    assert _are_pointmutants('F', 'TTA') == True
+    assert _are_pointmutants('M', 'ATG') is False
+    assert _are_pointmutants('A', 'ATG') is False
+    assert _are_pointmutants('F', 'TTA') is True
 
 
 def test_are_pointmutants_list() -> None:
@@ -90,7 +89,7 @@ def test_translate_codons() -> None:
         'A', 'A', 'A', 'A', 'G', 'G', 'G', 'G', 'V', 'V', 'V', 'V', '*', 'Y', '*', 'Y', 'S', 'S',
         'S', 'S', '*', 'C', 'W', 'C', 'L', 'F', 'L', 'F'
     ]
-    df_input: DataFrame = pd.DataFrame(index=list_codons)
+    df_input: DataFrame = DataFrame(index=list_codons)
     assert (
         translate_codons(df_input) == list_aminoacids
     ), 'error when translating the codons of the dataframe index'
@@ -100,7 +99,7 @@ def test_is_dna() -> None:
     """
     Testing full capabilities of function.
     """
-    df_1: DataFrame = pd.DataFrame(index=['A', 'C', 'T', 'G', 'P', 'L'])
-    df_2: DataFrame = pd.DataFrame(index=['ATA', 'CAT', 'TGG', 'TGT'])
-    assert (is_dna(df_1) == False), 'error determining if the index of the dataframe contains DNA'
-    assert (is_dna(df_2) == True), 'error determining if the index of the dataframe contains DNA'
+    df_1: DataFrame = DataFrame(index=['A', 'C', 'T', 'G', 'P', 'L'])
+    df_2: DataFrame = DataFrame(index=['ATA', 'CAT', 'TGG', 'TGT'])
+    assert (is_dna(df_1) is False), 'error determining if the index of the dataframe contains DNA'
+    assert (is_dna(df_2) is True), 'error determining if the index of the dataframe contains DNA'

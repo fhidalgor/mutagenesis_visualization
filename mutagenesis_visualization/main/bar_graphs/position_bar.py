@@ -16,6 +16,7 @@ class PositionBar(Pyplot):
     def __call__(
         self,
         position: int,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -30,6 +31,12 @@ class PositionBar(Pyplot):
         position : int
             number of residue of the protein to display.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name of
             the file.  Example: 'path/filename.png' or 'path/filename.svg'.
@@ -39,7 +46,8 @@ class PositionBar(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
         # Select position
-        df_output = self.dataframe.loc[self.dataframe['Position'] == position].copy()
+        df_output = self.dataframes.df_notstopcodons[replicate].loc[
+            self.dataframes.df_notstopcodons[replicate]['Position'] == position].copy()
 
         # Color
         df_output['Color'] = df_output.apply(

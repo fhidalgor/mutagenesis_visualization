@@ -3,12 +3,12 @@ Utilities used in the other stats methods.
 """
 from typing import List, Tuple
 
-import copy
+from copy import deepcopy
 import numpy as np
 from numpy import typing as npt
-import pandas as pd
+from pandas import merge, Categorical
 from pandas.core.frame import DataFrame
-from sklearn import metrics
+from sklearn.metrics import roc_auc_score, roc_curve
 
 from mutagenesis_visualization.main.utils.pandas_functions import return_common_elements
 
@@ -22,7 +22,7 @@ def select_grouping(df_input: DataFrame, mode: str) -> DataFrame:
     # Select grouping
     if mode.upper() == 'POINTMUTANT':
         return df_input
-    elif mode.upper() == 'MEAN':
+    if mode.upper() == 'MEAN':
         return df_input.groupby('Position', as_index=False).mean()
     return df_input.loc[df_input['Aminoacid'] == mode].copy()
 
@@ -33,8 +33,8 @@ def roc_auc(df: DataFrame) -> Tuple:
 
     The input is a dataframe that contains [Variants,Class,Score]
     """
-    fpr, tpr, thresholds = metrics.roc_curve(df['Class'], df['Score'], drop_intermediate=True)
-    auc = metrics.roc_auc_score(df['Class'], df['Score'])
+    fpr, tpr, thresholds = roc_curve(df['Class'], df['Score'], drop_intermediate=True)
+    auc = roc_auc_score(df['Class'], df['Score'])
     return fpr, tpr, auc, thresholds
 
 
@@ -48,11 +48,11 @@ def merge_class_variants(df_score: DataFrame, df_class: DataFrame, mode: str) ->
         # Cut other data
         df_class = df_class[['Variant', 'Class']].copy()
         # Merge DMS with true score dataset
-        df_merged = pd.merge(df_score, df_class, on=['Variant'], how='left')
+        df_merged = merge(df_score, df_class, on=['Variant'], how='left')
     else:
         # Cut other data
         df_class = df_class[['Position', 'Class']].copy()
-        df_merged = pd.merge(df_score, df_class, on=['Position'], how='left')
+        df_merged = merge(df_score, df_class, on=['Position'], how='left')
 
     # Drop rows with Nan values
     df_merged.dropna(inplace=True)
@@ -73,7 +73,7 @@ def condense_heatmap(df_input: DataFrame, new_order: List[str]) -> DataFrame:
     df_pivoted.reset_index(drop=False, inplace=True)
 
     # Sort in y axis desired order
-    df_pivoted['Aminoacid'] = pd.Categorical(df_pivoted['Aminoacid'], new_order)
+    df_pivoted['Aminoacid'] = Categorical(df_pivoted['Aminoacid'], new_order)
     df_pivoted = df_pivoted.sort_values(by=['Aminoacid'])
 
     # Sort in x axis desired order
@@ -97,7 +97,7 @@ def _offset_sequence(
 
     """
     # Deep copy sequence
-    sequence = copy.deepcopy(sequence)
+    sequence = deepcopy(sequence)
 
     # truncate sequence
     if position_offset > 0:
@@ -148,7 +148,7 @@ def normalize_neighbor_effect(
     Returns a normalized dataframe
     """
 
-    df_output: DataFrame = pd.DataFrame()
+    df_output: DataFrame = DataFrame()
     for aa in aminoacids:
         # Choose the neighbors of an aa
         aa_neighbors = df_input.loc[df_input['Sequence'] == aa]
@@ -176,7 +176,7 @@ def _sort_yaxis_aminoacids(
 ) -> DataFrame:
     # Sort in y axis desired order
     df_input['Aminoacid_new'] = old_order
-    df_input['Aminoacid_new'] = pd.Categorical(df_input['Aminoacid_new'], neworder_aminoacids)
+    df_input['Aminoacid_new'] = Categorical(df_input['Aminoacid_new'], neworder_aminoacids)
     df_input.sort_values(by=['Aminoacid_new'], inplace=True)
     df_input.drop(['Aminoacid_new'], inplace=True, axis=1)
     return df_input

@@ -28,10 +28,10 @@ def test_kernel() -> None:
     # Each dict in the list will be a different set of parameters
     list_params: List[dict] = [
         {'show': False},
-        {'cumulative': True, 'show': False},
+        {'cumulative': True, 'show': False, 'close': True},
         {
             'y_label': 'testing', 'title': 'this is a test', 'x_label': 'testing', 'xscale': 2,
-            'show': False
+            'show': False, 'close': True
         }  #y_label does not change
     ]
 
@@ -60,8 +60,8 @@ def test_histogram() -> None:
     # Each dict in the list will be a different set of parameters
     list_params: List[dict] = [
         {'show': False},
-        {'population': 'SNV', 'show': False},
-        {'population': 'nonSNV', 'show': False},
+        {'population': 'SNV', 'show': False, 'close': True},
+        {'population': 'nonSNV', 'show': False, 'close': True},
     ]
 
     # Assert
@@ -91,10 +91,11 @@ def test_multiple_kernel() -> None:
         {
             'label_kernels': ["H-Ras", "BLA"],
             'show': False,
+            'close': True,
         },
         {
             'label_kernels': ["H-Ras", "BLA"], 'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show':
-            False, 'title': 'go bears'
+            False, 'close': True, 'title': 'go bears'
         },
     ]
 
@@ -102,6 +103,6 @@ def test_multiple_kernel() -> None:
     for parameters in list_params:  # Loop over the parameters
         assert _test_multiple_kernel( # Assert that that set of parameters works on that object
             parameters,
-        ) is False, "plot_multiplekernel failed with {} object and {} parameters".format(
+        ) is False, "plot_multiplekernel failed with {} parameters".format(
                 parameters
             )

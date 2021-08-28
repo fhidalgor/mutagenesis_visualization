@@ -3,7 +3,7 @@ This module contains the Pymol wrapper class to plot in pymol.
 """
 from os import path
 from typing import List, Dict, Any
-import copy
+from copy import deepcopy
 
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.classes.base_model import Pyplot
@@ -85,14 +85,14 @@ class Pymol(Pyplot):
         are colored according to the enrichment scores.
 
         """
-        temp_kwargs: Dict[str, Any] = copy.deepcopy(generate_default_kwargs())
+        temp_kwargs: Dict[str, Any] = deepcopy(generate_default_kwargs())
         temp_kwargs.update(kwargs)
         temp_kwargs['color_lof'] = kwargs.get('color_lof', 'neptunium')
 
         # Calculate residues only if they are not given by the user
         if residues is None:
             residues = pymol_fitness(
-                self.dataframe.copy(),
+                self.dataframes.df_notstopcodons.copy(),
                 temp_kwargs['gof'],
                 temp_kwargs['lof'],
                 mode,

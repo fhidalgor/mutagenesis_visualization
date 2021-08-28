@@ -18,6 +18,7 @@ class Cumulative(Pyplot):
     def __call__(
         self,
         mode: str = 'all',
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -30,6 +31,12 @@ class Cumulative(Pyplot):
 
         mode : str, default 'all'
             Options are 'mean', 'all','SNV' and 'nonSNV'.
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and
@@ -45,7 +52,7 @@ class Cumulative(Pyplot):
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
 
         # Get data filtered
-        self.df_output = self._filter_by_snv(mode)
+        self.df_output = self._filter_by_snv(replicate, mode)
         cumsum = self.df_output.cumsum(skipna=False)['Score']
         plt.plot(self.df_output['Position'], cumsum / list(cumsum)[-1], color='red', lw=2)
 
@@ -61,7 +68,10 @@ class Cumulative(Pyplot):
         Change stylistic parameters of the plot.
         """
         # Graph limits
-        plt.xlim(self.dataframe['Position'].min(), self.dataframe['Position'].max() + 1)
+        plt.xlim(
+            self.dataframes.df_notstopcodons[-1]['Position'].min(),
+            self.dataframes.df_notstopcodons[-1]['Position'].max() + 1
+        )
         plt.ylim(0, 1.1)
 
         self.ax_object.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))
@@ -82,15 +92,17 @@ class Cumulative(Pyplot):
                  lw=2,
                  linestyle='--')
 
-    def _filter_by_snv(self, mode: str) -> DataFrame:
+    def _filter_by_snv(self, replicate: int, mode: str) -> DataFrame:
         if mode.lower() == 'all':
-            return self.dataframe
+            return self.dataframes.df_notstopcodons[replicate]
         if mode.lower() == 'snv':
-            return self.dataframe_snv
+            return self.dataframes.df_snv[replicate]
         if mode.lower() == 'nonsnv':
-            return self.dataframe_nonsnv
+            return self.dataframes.df_nonsnv[replicate]
         if mode.lower() == 'mean':
-            return self.dataframe.groupby(by='Position', as_index=False).mean()
+            return self.dataframes.df_notstopcodons[replicate].groupby(
+                by='Position', as_index=False
+            ).mean()
         raise ValueError("mode not selected")
 
     def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:

@@ -3,7 +3,6 @@ This module contains standard input kwarg parameters.
 """
 from typing import Dict, Any
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib import pyplot as plt
 
 
 def generate_default_kwargs() -> Dict[str, Any]:

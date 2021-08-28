@@ -5,7 +5,6 @@ scores.
 from typing import Any, Dict, Union
 from pathlib import Path
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from pandas.core.frame import DataFrame
@@ -30,6 +29,7 @@ class Heatmap(Pyplot):
         show_cartoon: bool = False,
         show_snv: bool = False,
         hierarchical: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -54,6 +54,12 @@ class Heatmap(Pyplot):
             does not take into account the wild-type DNA allele, so it will
             include any possible mutant that is one base away.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -66,7 +72,7 @@ class Heatmap(Pyplot):
 
         # sort data by rows in specified order by user
         self.df_output: DataFrame = df_rearrange(
-            add_snv_boolean(self.dataframe_stopcodons.copy()),
+            add_snv_boolean(self.dataframes.df_stopcodons[replicate].copy()),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=show_snv
@@ -74,7 +80,8 @@ class Heatmap(Pyplot):
 
         # average of residues by positon
         average = [
-            add_snv_boolean(self.dataframe.copy()).groupby(by='Position').mean()['Score_NaN']
+            add_snv_boolean(self.dataframes.df_notstopcodons[replicate].copy()
+                            ).groupby(by='Position').mean()['Score_NaN']
         ]
         # For 1 column case
 
@@ -88,10 +95,10 @@ class Heatmap(Pyplot):
             sorted_columns_corrected = sorted_columns + self.start_position
             self.df_output = self.df_output[sorted_columns_corrected]
             # had to convert back to self.df_output to be able to sort properly
-            temp = pd.DataFrame(average)
+            temp = DataFrame(average)
             average = temp[sorted_columns_corrected]
             # Change the sequence order
-            temp_df: DataFrame = pd.DataFrame(list(self.sequence)).T[sorted_columns]
+            temp_df: DataFrame = DataFrame(list(self.sequence)).T[sorted_columns]
             self.sequence_updated = list(temp_df.iloc[0])
         elif len(average) == 1:
             average = [np.array(average[0])]

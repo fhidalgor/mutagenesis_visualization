@@ -18,6 +18,7 @@ class Correlation(Pyplot):
     """
     def __call__(
         self,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -26,6 +27,12 @@ class Correlation(Pyplot):
 
         Parameters
         ----------
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -38,7 +45,7 @@ class Correlation(Pyplot):
 
         # calculate correlation heatmap
         self.df_output = calculate_correlation(
-            self.dataframe_stopcodons,
+            self.dataframes.df_stopcodons[replicate],
             temp_kwargs['neworder_aminoacids'],
         )
 

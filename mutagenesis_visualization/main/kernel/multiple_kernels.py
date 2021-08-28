@@ -22,6 +22,7 @@ class MultipleKernel(Pyplot):
         screen_object: Union['Screen', List['Screen']],
         label_kernels: List[str],
         colors: Optional[List[str]] = None,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any
     ) -> None:
@@ -36,6 +37,12 @@ class MultipleKernel(Pyplot):
         colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
             List of the colors (in order of arguments) that the kernels
             will have.
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and
@@ -56,16 +63,25 @@ class MultipleKernel(Pyplot):
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
 
         self.ax_object = kdeplot(
-            self.dataframe['Score_NaN'], color=colors[0], lw=2, label=label_kernels[0]
+            self.dataframes.df_notstopcodons[replicate]['Score_NaN'],
+            color=colors[0],
+            lw=2,
+            label=label_kernels[0]
         )
         if isinstance(screen_object, list):
             for (label, sobj, color) in zip(label_kernels, screen_object, colors):
                 self.ax_object = kdeplot(
-                    sobj.dataframe['Score_NaN'], color=color, lw=2, label=label
+                    sobj.dataframes.df_notstopcodons[replicate]['Score_NaN'],
+                    color=color,
+                    lw=2,
+                    label=label
                 )
         else:
             self.ax_object = kdeplot(
-                screen_object.dataframe['Score_NaN'], color=colors[1], lw=2, label=label_kernels[1]
+                screen_object.dataframes.df_notstopcodons[replicate]['Score_NaN'],
+                color=colors[1],
+                lw=2,
+                label=label_kernels[1]
             )
 
         self._tune_plot(temp_kwargs)

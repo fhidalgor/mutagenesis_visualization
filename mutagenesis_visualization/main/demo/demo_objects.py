@@ -51,7 +51,7 @@ class DemoObjects:
                                       ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
 
         return Screen(
-            dataset=DEMO_DATASETS['array_hras_RBD'],
+            datasets=DEMO_DATASETS['array_hras_RBD'],
             sequence=hras_sequence,
             aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
             secondary=secondary
@@ -76,7 +76,7 @@ class DemoObjects:
                                       ['α5'] * (172 - 151), ['L11'] * (190 - 172)]
 
         return Screen(
-            dataset=DEMO_DATASETS['array_hras_gapgef'],
+            datasets=DEMO_DATASETS['array_hras_gapgef'],
             sequence=hras_sequence,
             aminoacids=list('ACDEFGHIKLMNPQRSTVWY*'),
             secondary=secondary
@@ -322,4 +322,4 @@ class DemoObjects:
             hras_dna_sequence, HRAS_FASTQ, codon_list, counts_wt=False, start_position=2
         )
 
-        return Counts(dataframe=df_counts_pre)
+        return Counts(dataframes=df_counts_pre)

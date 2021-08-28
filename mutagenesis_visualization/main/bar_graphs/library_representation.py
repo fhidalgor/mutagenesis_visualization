@@ -24,16 +24,17 @@ class LibraryRepresentation(Pyplot):
     """
     def __init__(
         self,
-        dataframe: DataFrame,
-        aminoacids: List[str],
+        dataframes_raw: List[DataFrame],
         positions: List[int],
-    ) -> None:
-        super().__init__(dataframe=dataframe, aminoacids=aminoacids)
+        aminoacids: List[str],
+    ) -> None:  # pylint: disable=super-init-not-called
+        super().__init__(dataframes_raw=dataframes_raw, aminoacids=aminoacids)
         self.positions: List[int] = positions
         self.df_percentage: Optional[DataFrame] = None
 
     def __call__(
         self,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -44,6 +45,12 @@ class LibraryRepresentation(Pyplot):
 
         Parameters
         ----------
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and
             name of the file. Example: 'path/filename.png' or
@@ -55,10 +62,12 @@ class LibraryRepresentation(Pyplot):
         self.graph_parameters()
 
         # Transform data
-        self.df_percentage = _percentage_column(self._group_codons_to_aa(self.dataframe))
+        self.df_percentage = _percentage_column(
+            self._group_codons_to_aa(self.dataframes_raw[replicate])
+        )
 
         # colors
-        colors = plt.cm.tab20(np.linspace(0, 1, 20))
+        colors = plt.cm.get_cmap('tab20')(np.linspace(0, 1, 20))
 
         # plot
         self.fig, ax_object = plt.subplots(figsize=temp_kwargs['figsize'])

@@ -1,9 +1,7 @@
 """
 This module contains the class Screen, which groups the plotting classes.
 """
-# Regular libraries
 from typing import List, Optional, Union
-import numpy as np
 from numpy import typing as npt
 from pandas import DataFrame
 
@@ -34,11 +32,12 @@ from mutagenesis_visualization.main.plotly.scatter_3d import Scatter3D
 from mutagenesis_visualization.main.plotly.scatter import ScatterP
 from mutagenesis_visualization.main.scatter.scatter import Scatter
 from mutagenesis_visualization.main.scatter.scatter_replicates import ScatterReplicates
-from mutagenesis_visualization.main.utils.snv import select_snv, select_nonsnv
 from mutagenesis_visualization.main.utils.pandas_functions import (
     transform_dataset, transform_sequence, transform_secondary
 )
-
+from mutagenesis_visualization.main.utils.replicates_screen_input import (
+    handle_input_datasets, DataframesHolder
+)
 try:
     from mutagenesis_visualization.main.pymol.pymol import Pymol
 except ModuleNotFoundError:
@@ -57,10 +56,11 @@ class Screen:
 
     Parameters
     -----------
-    dataset : array
+    datasets : array, list arrays, dataframe, list dataframes
         2D matrix containing the enrichment scores of the point mutants.
         Columns will contain the amino acid substitutions, rows will
         contain the enrichment for each residue in the protein sequence.
+        If multiple replicates, pass items in a list.
 
     sequence : str
         Protein sequence in 1 letter code format.
@@ -102,7 +102,7 @@ class Screen:
     """
     def __init__(
         self,
-        dataset: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]],
+        datasets: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]],
         sequence: str,
         aminoacids: List[str],
         start_position: int = 2,
@@ -110,18 +110,8 @@ class Screen:
         secondary: Optional[List[List[str]]] = None,
     ):
 
-        self.replicates: Optional[List[Union[npt.NDArray, DataFrame]]] = None
-        self.replicate_dataframes: List[DataFrame] = []
-        self.wildtype_scores_replicates: List[DataFrame] = []
-
-        if isinstance(dataset, DataFrame):
-            self.dataset: npt.NDArray = np.array(dataset)
-        elif isinstance(dataset, np.ndarray):
-            self.dataset = dataset
-        elif isinstance(dataset, list):
-            self.dataset = np.nanmean([np.array(df_replicate) for df_replicate in dataset], 0)
-            if len(dataset) > 1:
-                self.replicates = dataset
+        self.datasets: List[npt.NDArray] = handle_input_datasets(datasets)
+        assert len(sequence) >= len(self.datasets[0][0]), "Input sequence is not long enough."
 
         if isinstance(aminoacids, list):
             self.aminoacids: List[str] = aminoacids
@@ -129,173 +119,153 @@ class Screen:
             self.aminoacids = list(aminoacids)
 
         self.start_position: int = start_position
-        self.end_position: int = len(self.dataset[0]) + start_position
+        self.end_position: int = len(self.datasets[0][0]) + start_position
         self.sequence_raw: str = sequence  # unchanged protein sequence
-        self.sequence: str = transform_sequence(self.dataset, sequence, self.start_position)
-        self.dataframe_stopcodons, self.dataframe = transform_dataset(
-            self.dataset, self.sequence, self.aminoacids, self.start_position, fillna
-        )
-        self.dataframe_snv: DataFrame = select_snv(self.dataframe)
-        self.dataframe_nonsnv: DataFrame = select_nonsnv(self.dataframe)
-        self.wildtype_scores: DataFrame = self.dataframe.loc[
-            self.dataframe["Sequence"] == self.dataframe["Aminoacid"]].drop_duplicates("Score_NaN")
+        self.sequence: str = transform_sequence(self.datasets[0], sequence, self.start_position)
+
+        df_notstopcodons: List[DataFrame] = []
+        df_stopcodons: List[DataFrame] = []
+        for dataset in self.datasets:
+            df_output, df_not_stopcodons = transform_dataset(
+                dataset, self.sequence, self.aminoacids, self.start_position, fillna
+            )
+            df_notstopcodons.append(df_not_stopcodons)
+            df_stopcodons.append(df_output)
+        self.dataframes: DataframesHolder = DataframesHolder(df_notstopcodons, df_stopcodons)
 
         # Optional parameters
         self.secondary_dup: Optional[List[str]] = None
         self.secondary: Optional[List[str]] = None
         if secondary:
             self.secondary, self.secondary_dup = transform_secondary(
-                self.dataset, secondary, self.start_position, self.aminoacids
+                self.datasets[-1], secondary, self.start_position, self.aminoacids
             )
 
         # Only do this if there were replicates
-        if self.replicates:
-            for replicate in self.replicates:
-                _, df_replicate = transform_dataset(
-                    np.array(replicate), self.sequence, self.aminoacids, self.start_position, fillna
-                )
-                self.replicate_dataframes.append(df_replicate)
-                self.wildtype_scores_replicates.append(
-                    df_replicate.loc[df_replicate["Sequence"] == df_replicate["Aminoacid"]
-                                     ].drop_duplicates("Score_NaN")
-                )
-
+        if len(self.datasets) > 1:
             self.scatter_replicates = ScatterReplicates(
+                dataframes=self.dataframes,
                 aminoacids=self.aminoacids,
-                replicate_dataframes=self.replicate_dataframes,
-                wildtype_scores=self.wildtype_scores,
-                wildtype_scores_replicates=self.wildtype_scores_replicates
             )
 
         # Assert messages
-        assert len(sequence) >= len(self.dataset[0]), "Input sequence is not long enough."
 
         # kernel
         self.kernel: Kernel = Kernel(
-            dataframe=self.dataframe,
-            replicate_dataframes=self.replicate_dataframes,
+            dataframes=self.dataframes,
             aminoacids=self.aminoacids,
-            wildtype_scores=self.wildtype_scores,
-            wildtype_scores_replicates=self.wildtype_scores_replicates
         )
 
         self.histogram: Histogram = Histogram(
-            dataframe=self.dataframe,
-            dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv,
+            dataframes=self.dataframes,
             aminoacids=self.aminoacids,
         )
         self.multiple_kernel: MultipleKernel = MultipleKernel(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
 
         # heatmaps
         self.heatmap: Heatmap = Heatmap(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
             secondary=self.secondary,
             aminoacids=self.aminoacids
         )
 
         self.heatmap_rows: HeatmapRows = HeatmapRows(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
             aminoacids=self.aminoacids
         )
         self.heatmap_columns: HeatmapColumns = HeatmapColumns(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             sequence=self.sequence,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
             aminoacids=self.aminoacids
         )
         self.miniheatmap: Miniheatmap = Miniheatmap(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             sequence_raw=self.sequence_raw,
             start_position=self.start_position,
-            dataframe_stopcodons=self.dataframe_stopcodons,
-            dataset=self.dataset,
+            datasets=self.datasets,
             aminoacids=self.aminoacids
         )
 
         # bar
         self.enrichment_bar: EnrichmentBar = EnrichmentBar(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             aminoacids=self.aminoacids,
             secondary=self.secondary
         )
         self.differential: Differential = Differential(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             aminoacids=self.aminoacids,
             secondary=self.secondary
         )
         self.position_bar: PositionBar = PositionBar(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
         self.secondary_mean: Secondary = Secondary(
-            dataframe=self.dataframe, secondary_dup=self.secondary_dup, aminoacids=self.aminoacids
+            dataframes=self.dataframes,
+            secondary_dup=self.secondary_dup,
+            aminoacids=self.aminoacids
         )
 
         # scatter
-        self.scatter: Scatter = Scatter(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.scatter: Scatter = Scatter(dataframes=self.dataframes, aminoacids=self.aminoacids)
 
         self.correlation: Correlation = Correlation(
-            dataframe_stopcodons=self.dataframe_stopcodons,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             aminoacids=self.aminoacids
         )
         self.individual_correlation: IndividualCorrelation = IndividualCorrelation(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
         self.pca: PCA = PCA(
-            dataframe=self.dataframe, secondary_dup=self.secondary_dup, aminoacids=self.aminoacids
+            dataframes=self.dataframes,
+            secondary_dup=self.secondary_dup,
+            aminoacids=self.aminoacids
         )
 
         # other stats
         self.cumulative: Cumulative = Cumulative(
-            dataframe=self.dataframe,
-            dataframe_snv=self.dataframe_snv,
-            dataframe_nonsnv=self.dataframe_nonsnv,
-            aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
-        self.rank: Rank = Rank(dataframe=self.dataframe, aminoacids=self.aminoacids)
-        self.roc: ROC = ROC(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.rank: Rank = Rank(dataframes=self.dataframes, aminoacids=self.aminoacids)
+        self.roc: ROC = ROC(dataframes=self.dataframes, aminoacids=self.aminoacids)
 
         # plotly
         self.plotly_differential: DifferentialP = DifferentialP(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             aminoacids=self.aminoacids
         )
         self.plotly_enrichment_bar: EnrichmentBarP = EnrichmentBarP(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
         self.plotly_heatmap: HeatmapP = HeatmapP(
-            sequence=self.sequence,
-            dataframe_stopcodons=self.dataframe_stopcodons,
-            aminoacids=self.aminoacids
+            sequence=self.sequence, dataframes=self.dataframes, aminoacids=self.aminoacids
         )
         self.plotly_histogram: HistogramP = HistogramP(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
-        self.plotly_rank: RankP = RankP(dataframe=self.dataframe, aminoacids=self.aminoacids)
+        self.plotly_rank: RankP = RankP(dataframes=self.dataframes, aminoacids=self.aminoacids)
         self.plotly_scatter: ScatterP = ScatterP(
-            dataframe=self.dataframe, aminoacids=self.aminoacids
+            dataframes=self.dataframes, aminoacids=self.aminoacids
         )
         self.plotly_scatter_3d: Scatter3D = Scatter3D(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             end_position=self.end_position,
             aminoacids=self.aminoacids
         )
         self.plotly_scatter_3d_pdbprop: Scatter3DPDB = Scatter3DPDB(
-            dataframe=self.dataframe,
+            dataframes=self.dataframes,
             start_position=self.start_position,
             end_position=self.end_position,
             aminoacids=self.aminoacids

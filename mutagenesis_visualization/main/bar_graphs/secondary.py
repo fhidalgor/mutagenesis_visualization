@@ -27,6 +27,7 @@ class Secondary(Pyplot):
     """
     def __call__(
         self,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -38,6 +39,12 @@ class Secondary(Pyplot):
         -----------
         self : object from class *Screen*
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -48,7 +55,9 @@ class Secondary(Pyplot):
         self.graph_parameters()
 
         # Get data
-        df_output: DataFrame = _calculate_secondary(self.dataframe, self.secondary_dup)
+        df_output: DataFrame = _calculate_secondary(
+            self.dataframes.df_notstopcodons[replicate], self.secondary_dup
+        )
 
         # Color
         df_output['Color'] = df_output.apply(

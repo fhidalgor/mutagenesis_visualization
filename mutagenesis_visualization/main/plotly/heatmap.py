@@ -4,8 +4,8 @@ This module contains the plotly heatmap plot.
 from pathlib import Path
 from typing import Any, Dict, Union
 import numpy as np
-import plotly.io as pio
-import plotly.graph_objects as go
+from plotly import io as pio
+from plotly import graph_objects as go
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.snv import add_snv_boolean
@@ -19,6 +19,7 @@ class HeatmapP(Plotly):
     """
     def __call__(
         self,
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -28,6 +29,12 @@ class HeatmapP(Plotly):
         Parameters
         ----------
         self : object from class *Screen*
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         output_html : str, default None
             If you want to export the generated graph into html, add the
@@ -39,14 +46,14 @@ class HeatmapP(Plotly):
 
         # sort data by rows in specified order by user
         self.df_output = df_rearrange(
-            add_snv_boolean(self.dataframe_stopcodons.copy()),
+            add_snv_boolean(self.dataframes.df_stopcodons[replicate].copy()),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=False
         )
 
         # get labels for texthover and reindex
-        text_hover = self.dataframe_stopcodons.pivot(
+        text_hover = self.dataframes.df_stopcodons[replicate].pivot(
             values='Variant',
             index='Aminoacid',
             columns='Position',

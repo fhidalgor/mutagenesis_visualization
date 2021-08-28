@@ -3,8 +3,8 @@ This module contains the plotly scatter plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import plotly.io as pio
-import plotly.express as px
+from plotly import io as pio
+from plotly import express as px
 
 from mutagenesis_visualization.main.classes.base_model_plotly import Plotly
 from mutagenesis_visualization.main.utils.pandas_functions import (
@@ -21,6 +21,7 @@ class ScatterP(Plotly):
         screen_object: Any,
         mode: str = 'pointmutant',
         show_results: bool = False,
+        replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -38,6 +39,12 @@ class ScatterP(Plotly):
         show_results : boolean, default False
             If set to true, will export the details of the linear fit.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_html : str, default None
             If you want to export the generated graph into html, add
             the path and name of the file. Example: 'path/filename.html'.
@@ -48,9 +55,15 @@ class ScatterP(Plotly):
 
         # Chose mode:
         if mode == 'pointmutant':
-            self.df_output = process_by_pointmutant(self.dataframe, screen_object.dataframe)
+            self.df_output = process_by_pointmutant(
+                self.dataframes.df_notstopcodons[replicate],
+                screen_object.dataframes.df_notstopcodons[replicate]
+            )
         elif mode == 'mean':
-            self.df_output = process_mean_residue(self.dataframe, screen_object.dataframe)
+            self.df_output = process_mean_residue(
+                self.dataframes.df_notstopcodons[replicate],
+                screen_object.dataframes.df_notstopcodons[replicate]
+            )
             self.df_output['Variant'] = self.df_output['Position']
         # raise error if mode is not "mean" or "pointmutant"
 

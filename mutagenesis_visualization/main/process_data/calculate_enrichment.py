@@ -5,7 +5,6 @@ from typing import Union, Optional, List
 from pathlib import Path
 import numpy as np
 from numpy import typing as npt
-import pandas as pd
 from pandas.core.frame import DataFrame
 from scipy import stats
 from mutagenesis_visualization.main.process_data.process_data_utils import (
@@ -148,7 +147,7 @@ def calculate_enrichment(
         pre_lib_df, post_lib_df, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
-    df_temp: DataFrame = pd.DataFrame(data=log10_counts)
+    df_temp: DataFrame = DataFrame(data=log10_counts)
     log10_counts_grouped: DataFrame = group_by_aa(df_temp, aminoacids)
 
     # MAD filtering

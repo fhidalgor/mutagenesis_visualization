@@ -35,12 +35,14 @@ def test_enrichment_bar() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'mode': 'A',
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
             'return_object': True,
         },
     ]
@@ -75,12 +77,14 @@ def test_differential() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'show_cartoon': True,
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -117,11 +121,13 @@ def test_position_bar() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -157,11 +163,13 @@ def test_secondary() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
+            'close': True,
         },
     ]
 
@@ -195,6 +203,7 @@ def test_library_representation() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
             'figsize': (
@@ -203,6 +212,7 @@ def test_library_representation() -> None:
             'y_label':
             r'$∆E^i_x$',  #y_label does not change --line 47 of code_bar of plot_library_representation
             'show': False,
+            'close': True,
             'title': 'go bears'
         },
     ]
@@ -211,7 +221,7 @@ def test_library_representation() -> None:
     for parameters in list_params:  # Loop over the parameters
         assert _test_library_representation( # Assert that that set of parameters works on that object
             parameters,
-        ) is False, "plot_library failed with {} object and {} parameters".format(
+        ) is False, "plot_library failed with {} parameters".format(
             parameters,
         )
 
@@ -234,9 +244,11 @@ def test_mean_counts() -> None:
     list_params: List[dict] = [
         {
             'show': False,
+            'close': True,
         },
         {
-            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False, 'text_labels':
+            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False,
+            'close': True, 'text_labels':
             [[1, 1, 'label']]
         },
     ]
@@ -245,6 +257,6 @@ def test_mean_counts() -> None:
     for parameters in list_params:  # Loop over the parameters
         assert _test_mean_counts_output( # Assert that that set of parameters works on that object
             parameters,
-        ) is False, "plot_meancounts failed with {} object and {} parameters".format(
+        ) is False, "plot_meancounts failed with {} parameters".format(
             parameters,
         )

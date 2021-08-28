@@ -18,6 +18,7 @@ def test_light_parameters() -> None:
         """checks if function runs or gives error"""
         try:
             light_parameters()
+            return False
         except:
             return True
 

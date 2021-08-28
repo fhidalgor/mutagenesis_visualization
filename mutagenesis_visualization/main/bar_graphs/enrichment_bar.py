@@ -21,6 +21,7 @@ class EnrichmentBar(Pyplot):
         self,
         mode: str = "mean",
         show_cartoon: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -43,6 +44,12 @@ class EnrichmentBar(Pyplot):
             structure. The user must have added the secondary structure
             to the object.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and
             name of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -59,9 +66,12 @@ class EnrichmentBar(Pyplot):
 
         # Select grouping
         if mode.lower() == 'mean':
-            self.df_output = self.dataframe.groupby('Position', as_index=False).mean()
+            self.df_output = self.dataframes.df_notstopcodons[replicate].groupby(
+                'Position', as_index=False
+            ).mean()
         else:
-            self.df_output = self.dataframe.loc[self.dataframe['Aminoacid'] == mode].copy()
+            self.df_output = self.dataframes.df_notstopcodons[replicate].loc[
+                self.dataframes.df_notstopcodons[replicate]['Aminoacid'] == mode].copy()
 
         self.df_output['Color'] = self.df_output.apply(
             color_data, axis=1, args=(

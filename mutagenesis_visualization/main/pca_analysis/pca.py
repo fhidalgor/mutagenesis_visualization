@@ -25,6 +25,7 @@ class PCA(Pyplot):
         mode: str = 'aminoacid',
         dimensions: Tuple[int, int] = (0, 1),
         adjust_labels: bool = False,
+        replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -49,6 +50,12 @@ class PCA(Pyplot):
             otherwise the algorithm will not find a solution. Requires to
             install adjustText package.
 
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and
             name of the file. Example: 'path/filename.png' or
@@ -62,19 +69,19 @@ class PCA(Pyplot):
         self.graph_parameters()
 
         # calculate correlation heatmap. Choose mode
-        dataset = self.dataframe.copy()
+        df_input = self.dataframes.df_notstopcodons[replicate].copy()
         if mode.lower() == 'aminoacid':
             if '*' in temp_kwargs['neworder_aminoacids']:
                 temp_kwargs['neworder_aminoacids'].remove('*')
-            self.df_output = calculate_correlation(dataset, temp_kwargs['neworder_aminoacids'])
+            self.df_output = calculate_correlation(df_input, temp_kwargs['neworder_aminoacids'])
             textlabels = temp_kwargs['neworder_aminoacids']
         elif mode.lower() == 'secondary':
             assert self.secondary_dup is not None, "add secondary structure information."
-            self.df_output = calculate_correlation_by_secondary(dataset, self.secondary_dup)
-            textlabels = list(dataset.columns)
+            self.df_output = calculate_correlation_by_secondary(df_input, self.secondary_dup)
+            textlabels = list(df_input.columns)
         elif mode.lower() == 'individual':
-            self.df_output = calculate_correlation_by_residue(dataset)
-            textlabels = list(dataset.columns)
+            self.df_output = calculate_correlation_by_residue(df_input)
+            textlabels = list(df_input.columns)
 
         # plot using plot_clusters
         dimensions_to_plot, variance = calculate_clusters(
