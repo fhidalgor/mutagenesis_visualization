@@ -10,7 +10,8 @@ generate your site saturation library.
 
 Classes reviewed in this notebook:
     - :class:`mutagenesis_visualization.main.classes.generate_primers.GeneratePrimers`
-    - :class:`from mutagenesis_visualization.main.classes.create_variants.CreateVariants`
+    - :class:`mutagenesis_visualization.main.classes.create_variants.CreateVariants`
+
 
 Design primers
 --------------

@@ -31,8 +31,8 @@ Site saturation mutagenesis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Methods and functions reviewed in this notebook:
-    - :func:`mutagenesis_visualization.main.process_data.count_fastq.count_fastq`
-    - :func:`mutagenesis_visualization.main.process_data.count_reads.count_reads`
+    - :func:`mutagenesis_visualization.count_fastq`
+    - :func:`mutagenesis_visualization.count_reads`
     - :class:`mutagenesis_visualization.main.classes.counts.Counts`
 
 After sequencing your DNA library, using other packages you will
