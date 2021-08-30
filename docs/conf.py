@@ -21,8 +21,7 @@ project = "mutagenesis_visualization"
 copyright = '2021, Frank Hidalgo'
 author = "Frank Hidalgo"
 # The full version, including alpha/beta/rc tags
-version = "0.9.0"
-
+version: "0.9.0" 
 
 # -- General configuration ---------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
