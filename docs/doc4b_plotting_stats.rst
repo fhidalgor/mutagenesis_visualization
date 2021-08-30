@@ -14,7 +14,6 @@ Import modules
     import numpy as np
     import pandas as pd
     from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
-    
     DEMO_OBJECTS:DemoObjects = DemoObjects()
     hras_rbd = DEMO_OBJECTS.hras_rbd
     hras_gapgef = DEMO_OBJECTS.hras_gapgef
@@ -24,10 +23,10 @@ Histogram, scatter and more
 
 Classes reviewed in this section:
     - :class:`mutagenesis_visualization.main.kernel.kernel.Kernel`
-    - :class:`mutagenesis_visualization.main.histogram.Histogram`
-    - :class:`mutagenesis_visualization.main.scatter.Scatter`
-    - :class:`mutagenesis_visualization.main.other.rank.Rank`
-    - :class:`mutagenesis_visualization.main.other.cumulative.Cumulative`
+    - :class:`mutagenesis_visualization.main.kernel.histogram.Histogram`
+    - :class:`mutagenesis_visualization.main.scatter.scatter.Scatter`
+    - :class:`mutagenesis_visualization.main.other_stats.rank.Rank`
+    - :class:`mutagenesis_visualization.main.other_stats.cumulative.Cumulative`
 
 There are different tools to analyze the data. The package can plot the
 kernel density estimation (``object.kernel``). There is the option to

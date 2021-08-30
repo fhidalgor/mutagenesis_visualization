@@ -15,13 +15,13 @@ Import module
     import numpy as np
     import pandas as pd
     from pandas.core.frame import DataFrame
-    from mutagenesis_visualization.main.process_data.count_reads import count_reads
-    from mutagenesis_visualization.main.process_data.count_fastq import count_fastq
-    from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
+    from mutagenesis_visualization import count_reads
+    from mutagenesis_visualization import count_fastq
+    from mutagenesis_visualization import calculate_enrichment
     
     from mutagenesis_visualization.main.utils.data_paths import HRAS_FASTQ, HRAS_GAPGEF_COUNTS
-    from mutagenesis_visualization.main.classes.counts import Counts
-    from mutagenesis_visualization.main.classes.screen import Screen
+    from mutagenesis_visualization import Counts
+    from mutagenesis_visualization import Screen
 
 
 Count DNA reads from fastq file
@@ -33,7 +33,7 @@ Site saturation mutagenesis
 Methods and functions reviewed in this notebook:
     - :func:`mutagenesis_visualization.count_fastq`
     - :func:`mutagenesis_visualization.count_reads`
-    - :class:`mutagenesis_visualization.main.classes.counts.Counts`
+    - :class:`mutagenesis_visualization.Counts`
 
 After sequencing your DNA library, using other packages you will
 assemble the forward and reverse reads and trim the flanking bases. That
@@ -135,8 +135,8 @@ Calculate enrichment scores
 ---------------------------
 
 Methods and functions reviewed in this section:
-    - :class:`mutagenesis_visualization.main.classes.screen.Screen`
-    - :func:`mutagenesis_visualization.main.process_data.calculate_enrichment.calculate_enrichment`
+    - :class:`mutagenesis_visualization.Screen`
+    - :func:`mutagenesis_visualization.calculate_enrichment`
 
 If you are performing a selection experiment, where you sequence your
 library before and after selection, you will need to calculate the

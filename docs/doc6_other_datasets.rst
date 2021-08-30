@@ -21,15 +21,15 @@ use this API.
     import matplotlib as plt
     import copy
     
-    from mutagenesis_visualization.main.classes.screen import Screen
-    from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
+    from mutagenesis_visualization import Screen
+    from mutagenesis_visualization import load_demo_datasets
     from mutagenesis_visualization.main.utils.data_paths import PDB_1ERM, PDB_1A5R, PDB_1ND4
     
     DEMO_DATASETS: Dict[str, Union[np.array, DataFrame]] = load_demo_datasets()
 
 
 Function reviewed in this section:
-    - :func:`mutagenesis_visualization.main.demo.demo_data.load_demo_datasets`
+    - :func:`mutagenesis_visualization.load_demo_datasets`
 
 
 Load objects

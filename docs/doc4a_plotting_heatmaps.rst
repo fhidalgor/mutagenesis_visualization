@@ -14,7 +14,7 @@ Import modules
     import numpy as np
     import matplotlib as plt
     import copy
-    from mutagenesis_visualization.main.classes.screen import Screen
+    from mutagenesis_visualization import Screen
     from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV, HRAS_GAPGEF_COUNTS_CSV
 
 
@@ -22,7 +22,7 @@ Create object of class Screen
 -----------------------------
 
 Class reviewed in this section:
-    - :class:`mutagenesis_visualization.Screen`
+    - :class:`mutagenesis_visualization.main.classes.screen.Screen`
 
 In order to create plots, the first step is to create a
 ``Screen.object``. The enrichment scores will be passed using the
@@ -78,9 +78,9 @@ Heatmaps
 
 Methods reviewed in this section:
     - :meth:`mutagenesis_visualization.main.heatmaps.heatmap.Heatmap`
-    - :meth:`mutagenesis_visualization.main.heatmaps.HeatmapRows`
-    - :meth:`mutagenesis_visualization.main.heatmaps.HeatmapColumns`
-    - :meth:`mutagenesis_visualization.main.heatmaps.Miniheatmap`
+    - :meth:`mutagenesis_visualization.main.heatmaps.heatmap_rows.HeatmapRows`
+    - :meth:`mutagenesis_visualization.main.heatmaps.heatmap.columns.HeatmapColumns`
+    - :meth:`mutagenesis_visualization.main.heatmaps.miniheatmap.Miniheatmap`
 
 Once the object ``hras_RBD`` is created, we will plot a heatmap of the
 enrichment scores using the method ``object.heatmap``.

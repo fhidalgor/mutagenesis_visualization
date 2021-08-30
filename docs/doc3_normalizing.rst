@@ -1,7 +1,8 @@
 Normalizing datasets
 ====================
 
-This section will teach the different options to normalize the data using the function :func:`mutagenesis_visualization.main.process_data.calculate_enrichment.calculate_enrichment` . 
+This section will teach the different options to normalize the data using the function :func:`mutagenesis_visualization.calculate_enrichment` .
+
 If you already have your own processing pipeline built, you can skip this section and go to the (:ref:`Creating plots`) examples.
 
 Import modules and load data
@@ -15,9 +16,9 @@ Import modules and load data
     import pandas as pd
     from pandas.core.frame import DataFrame
     
-    from mutagenesis_visualization.main.process_data.calculate_enrichment import calculate_enrichment
+    from mutagenesis_visualization import calculate_enrichment
     from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS
-    from mutagenesis_visualization.main.classes.screen import Screen
+    from mutagenesis_visualization import Screen
 
 
 Now let’s add some information about Ras.
@@ -117,7 +118,7 @@ Centering the data (zeroing)
 ----------------------------
 
 Functions used in this section:
-    - :func:`mutagenesis_visualization.plot_multiplekernel`
+    - :class:`mutagenesis_visualization.main.kernel.kernel.Kernel`
     - :func:`mutagenesis_visualization.calculate_enrichment`
 
 
@@ -509,7 +510,7 @@ Heatmaps
 --------
 
 Function and class used in this section:
-    - :class:`mutagenesis_visualization.main.classes.screen.Screen`
+    - :class:`mutagenesis_visualization.Screen`
     - :meth:`mutagenesis_visualization.main.heatmaps.heatmap.Heatmap`
 
 We are going to evaluate how does the heatmap of produced by each of the
