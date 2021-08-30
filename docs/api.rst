@@ -3,12 +3,12 @@ Classes
 
 *CreateVariants* class
 =========================
-.. autoclass:: mutagenesis_visualization.main.classes.create_variants.CreateVariants
+.. autoclass:: mutagenesis_visualization.CreateVariants
     :members: __call__
 
 *Counts* class
 =========================
-.. autoclass:: mutagenesis_visualization.main.classes.counts.Counts
+.. autoclass:: mutagenesis_visualization.Counts
 
 *LibraryRepresentation* pyplot class
 ---------------------------------------
@@ -22,12 +22,12 @@ Classes
 
 *GeneratePrimers* class
 =========================
-.. autoclass:: mutagenesis_visualization.main.classes.generate_primers.GeneratePrimers
+.. autoclass:: mutagenesis_visualization.GeneratePrimers
     :members: __call__
 
 *Screen* class
 =========================
-.. autoclass:: mutagenesis_visualization.main.classes.screen.Screen
+.. autoclass:: mutagenesis_visualization.Screen
 
 
 The following classes are integrated into *Screen*, thus, you only have to use the __call__ method.
@@ -162,6 +162,11 @@ The following classes are integrated into *Screen*, thus, you only have to use t
 *ScatterReplicates* pyplot class
 ----------------------------------
 .. autoclass:: mutagenesis_visualization.main.scatter.scatter_replicates.ScatterReplicates
+    :members: __call__
+
+*Pymol* pyplot class
+----------------------------------
+.. autoclass:: mutagenesis_visualization.main.pymol.pymol.Pymol
     :members: __call__
 
 Functions
