@@ -13,17 +13,15 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath('../'))
-from mutagenesis_visualization import (__author__, __version__,
-                                        __title__, __description__)
+
 
 
 # -- Project information -----------------------------------------------------
-project = __title__
+project = "mutagenesis_visualization"
 copyright = '2021, Frank Hidalgo'
-author = __author__
-description = __description__
+author = "Frank Hidalgo"
 # The full version, including alpha/beta/rc tags
-version = __version__
+version = "0.9.0"
 
 
 # -- General configuration ---------------------------------------------------
