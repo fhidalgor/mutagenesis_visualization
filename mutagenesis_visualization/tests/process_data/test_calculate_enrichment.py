@@ -18,8 +18,6 @@ def test_calculate_enrichment() -> None:
     Test the calculate_enrichment function.
     """
     # Read counts from file (could be txt, csv, xlsx, etc...)
-    prefix: str = "mutagenesis_visualization/"
-    # prefix = "../../"
     df_counts_pre = read_excel(
         HRAS_GAPGEF_COUNTS, 'R1_before', skiprows=1, index_col='Codons', usecols='E:FN', nrows=32
     )
@@ -43,15 +41,15 @@ def test_calculate_enrichment() -> None:
     zeroing_compatible = ["population"]
     # "zscore" zeroing broken at "elif zeroing == "zscore""
     zeroing_other = ["kernel", "counts"]
-    how = ["median", "mean", "mode"]
+    zeroing_metric = ["median", "mean", "mode"]
     std_scale = [0.1, randint(0, 100)]
 
     log.info(f"{min_counts=}")
     log.info(f"{mpop=}")
     log.info(f"{std_scale=}")
 
-    args_how_scale = product(zeroing_compatible, how, [True], std_scale, *common_args)
-    args_how_no_scale = product(zeroing_compatible, how, [False], *common_args)
+    args_how_scale = product(zeroing_compatible, zeroing_metric, [True], std_scale, *common_args)
+    args_how_no_scale = product(zeroing_compatible, zeroing_metric, [False], *common_args)
     args_no_how_scale = product(zeroing_other, [True], std_scale, *common_args)
     args_no_how_no_scale = product(zeroing_other, [False], *common_args)
 
@@ -59,13 +57,13 @@ def test_calculate_enrichment() -> None:
         zeroing, how, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         _ = calculate_enrichment(
-            df_counts_pre.iloc[:, : 54],
-            df_counts_sel.iloc[:, : 54],
-            zeroing=zeroing,
-            how=how,
+            aminoacids=aminoacids_nns,
+            pre_lib=df_counts_pre.iloc[:, : 54],
+            post_lib=df_counts_sel.iloc[:, : 54],
+            zeroing_method=zeroing,
+            zeroing_metric =how,
             norm_std=norm_std,
             std_scale=std_scale,
-            aminoacids=aminoacids_nns,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
@@ -78,12 +76,12 @@ def test_calculate_enrichment() -> None:
         zeroing, how, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         _ = calculate_enrichment(
-            df_counts_pre.iloc[:, : 54],
-            df_counts_sel.iloc[:, : 54],
-            zeroing=zeroing,
-            how=how,
-            norm_std=norm_std,
             aminoacids=aminoacids_nns,
+            pre_lib=df_counts_pre.iloc[:, : 54],
+            post_lib=df_counts_sel.iloc[:, : 54],
+            zeroing_method=zeroing,
+            zeroing_metric =how,
+            norm_std=norm_std,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
@@ -96,12 +94,12 @@ def test_calculate_enrichment() -> None:
         zeroing, norm_std, std_scale, *common_args = args
         stopcodon, min_counts, mpop = common_args
         _ = calculate_enrichment(
-            df_counts_pre.iloc[:, : 54],
-            df_counts_sel.iloc[:, : 54],
-            zeroing=zeroing,
+            aminoacids=aminoacids_nns,
+            pre_lib=df_counts_pre.iloc[:, : 54],
+            post_lib=df_counts_sel.iloc[:, : 54],
+            zeroing_method=zeroing,
             norm_std=norm_std,
             std_scale=std_scale,
-            aminoacids=aminoacids_nns,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
@@ -114,11 +112,11 @@ def test_calculate_enrichment() -> None:
         zeroing, norm_std, *common_args = args
         stopcodon, min_counts, mpop = common_args
         _ = calculate_enrichment(
-            df_counts_pre.iloc[:, : 54],
-            df_counts_sel.iloc[:, : 54],
-            zeroing=zeroing,
-            norm_std=norm_std,
             aminoacids=aminoacids_nns,
+            pre_lib=df_counts_pre.iloc[:, : 54],
+            post_lib=df_counts_sel.iloc[:, : 54],
+            zeroing_method=zeroing,
+            norm_std=norm_std,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,

@@ -28,6 +28,10 @@ use this API.
     DEMO_DATASETS: Dict[str, Union[np.array, DataFrame]] = load_demo_datasets()
 
 
+Function reviewed in this section:
+    - :func:`mutagenesis_visualization.main.demo.demo_data.load_demo_datasets`
+
+
 Load objects
 ------------
 

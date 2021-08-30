@@ -6,7 +6,7 @@ from collections import OrderedDict
 import numpy as np
 from numpy import typing as npt
 from pandas.core.frame import DataFrame
-from scipy import stats
+from scipy.stats import gaussian_kde
 
 
 def generate_codon_table() -> Dict[str, str]:
@@ -78,9 +78,7 @@ def initialize_ordered_dict(list_variants: List[str]) -> dict:
     Will return an ordered dictionary with variants initialized to 0 counts.
     Here the user specifies the variants as a list.
 
-    This function should be used when you want to use _count_fastq
-
-    """
+    This function should be used when you want to use _count_fastq    """
 
     # Create normal dictionary
     dictionary = dict(zip(list_variants, np.zeros(len(list_variants))))
@@ -172,7 +170,7 @@ def nan_mode(data: npt.NDArray) -> npt.NDArray:
     # Remove NaN values
     data_corrected = data[np.invert(np.isnan(data))]
     # Adjust kernel
-    kernel_processed_data = stats.gaussian_kde(data_corrected)
+    kernel_processed_data = gaussian_kde(data_corrected)
     # Find mode
     indexmax = np.where(
         kernel_processed_data(data_corrected) == kernel_processed_data(data_corrected).max()
@@ -227,7 +225,7 @@ def _kernel_data_preparation(data: DataFrame, cutoff: float) -> Tuple[npt.NDArra
     data_corrected = data_corrected[np.invert(np.isnan(data_corrected))]
 
     # Adjust gaussian kernel
-    kernel_processed_data = stats.gaussian_kde(data_corrected)
+    kernel_processed_data = gaussian_kde(data_corrected)
 
     return data_corrected, kernel_processed_data
 

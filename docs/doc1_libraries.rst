@@ -8,6 +8,10 @@ We will also generate each possible point mutant sequence and export it
 to a Fasta file, which can be useful if you use Twist Bioscience to
 generate your site saturation library.
 
+Classes reviewed in this notebook:
+    - :class:`mutagenesis_visualization.main.classes.generate_primers.GeneratePrimers`
+    - :class:`from mutagenesis_visualization.main.classes.create_variants.CreateVariants`
+
 Design primers
 --------------
 

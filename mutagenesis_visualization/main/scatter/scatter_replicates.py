@@ -14,6 +14,7 @@ class ScatterReplicates(Pyplot):
     """
     Class to generate scatter plots of each pairwise replicate combination.
     """
+
     def __call__(
         self,
         show_wild_type_counts_only: bool = False,

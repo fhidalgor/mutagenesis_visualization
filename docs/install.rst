@@ -142,7 +142,7 @@ If you would like to play with the data yourself, execute the following command 
 	datasets = mut.load_demo_datasets()
 
 
-A more detailed explanation on how to generate these figures can be seen at :ref:`Creating plots` and at :ref:`Holistic testing`.
+A more detailed explanation on how to generate these figures can be seen at :ref:`Creating plots` and at :ref:`Other datasets`.
 
 
 Workflow

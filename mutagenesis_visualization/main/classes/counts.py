@@ -35,14 +35,22 @@ class Counts:
         List of aminoacids (in order). Stop codon needs to be '*'.
         If none, it will use the index of the dataframe
 
+
+    Methods
+    --------
+    mean_counts
+    library_representation
     """
+
     def __init__(
         self,
         dataframes: Union[DataFrame, List[DataFrame]],
         start_position: Optional[int] = None,
         aminoacids: Optional[List[str]] = None,
     ):
-
+        """
+        Start.
+        """
         if isinstance(dataframes, DataFrame):
             self.dataframes: List[DataFrame] = [dataframes]
         else:

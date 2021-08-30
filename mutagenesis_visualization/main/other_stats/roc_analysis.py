@@ -18,6 +18,7 @@ class ROC(Pyplot):
     """
     Class to generate a ROC analysis.
     """
+
     def __call__(
         self,
         df_class: DataFrame,

@@ -12,6 +12,9 @@ class CreateVariants:
     Class to create variants for DNA synthesis.
     """
     def __init__(self) -> None:
+        """
+        Start.
+        """
         self.dna: str = ""
         self.codon_list: List[str] = []
         self.seq_list: List[str] = []

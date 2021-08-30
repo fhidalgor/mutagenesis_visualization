@@ -8,7 +8,7 @@ skip this section and go to the plotting examples.
 Import module
 -------------
 
-.. code:: python
+.. code:: ipython3
 
     %matplotlib inline
     from typing import List
@@ -30,9 +30,10 @@ Count DNA reads from fastq file
 Site saturation mutagenesis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Methods and functions reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.meancounts`
-    - :func:`mutagenesis_visualization.count_reads`
+Methods and functions reviewed in this notebook:
+    - :func:`mutagenesis_visualization.main.process_data.count_fastq.count_fastq`
+    - :func:`mutagenesis_visualization.main.process_data.count_reads.count_reads`
+    - :class:`mutagenesis_visualization.main.classes.counts.Counts`
 
 After sequencing your DNA library, using other packages you will
 assemble the forward and reverse reads and trim the flanking bases. That
@@ -45,7 +46,7 @@ make the point mutant library. If ``savefile=True`` , it will export the
 results to txt files. Below there is a prettified example of the output
 file.
 
-.. code:: python
+.. code:: ipython3
 
     # H-Ras dna sequence
     hras_dnasequence: str = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat'\
@@ -72,7 +73,7 @@ file.
 
 Create object of class ``Counts``.
 
-.. code:: python
+.. code:: ipython3
 
     hras_obj = Counts(df_counts_pre, start_position = 2)
 
@@ -81,7 +82,7 @@ to evaluate the coverage by position. The method
 ``library_representation`` will tell you the percentage coverage of each
 amino acid per position.
 
-.. code:: python
+.. code:: ipython3
 
     hras_obj.mean_counts(title='H-Ras mean counts per position')
     
@@ -105,7 +106,7 @@ variants on the fastq file you provide as an input. In the example non
 of the sequences we are specifying are found in the trimmed file, thus
 there are 0% of useful reads.
 
-.. code:: python
+.. code:: ipython3
 
     # Create your list of variants
     variants: List[str] = [
@@ -134,9 +135,8 @@ Calculate enrichment scores
 ---------------------------
 
 Methods and functions reviewed in this section:
-    - :class:`mutagenesis_visualization.Screen`
-    - :meth:`mutagenesis_visualization.Screen.heatmap`
-    - :func:`mutagenesis_visualization.calculate_enrichment`
+    - :class:`mutagenesis_visualization.main.classes.screen.Screen`
+    - :func:`mutagenesis_visualization.main.process_data.calculate_enrichment.calculate_enrichment`
 
 If you are performing a selection experiment, where you sequence your
 library before and after selection, you will need to calculate the
@@ -146,7 +146,7 @@ to tune how the data is muted and normalized.
 
 In this example, we show two different ways of using ``calculate_enrichment``. Note that the parameters of choice will have a say on the final result. In the example, the tonality of red of the two heatmaps is slightly different. A more detailed explanation of the parameters can be found in :ref:`Normalizing datasets`.
 
-.. code:: python
+.. code:: ipython3
 
     # Read counts from file (could be txt, csv, xlsx, etc...)
     df_counts_pre: DataFrame = pd.read_excel(
@@ -167,7 +167,7 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
         nrows=32
     )
 
-.. code:: python
+.. code:: ipython3
 
     # Ras parameters to create an object
     
@@ -195,7 +195,7 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     # Substitute Nan values with 0
     fillna = 0
 
-.. code:: python
+.. code:: ipython3
 
     # Order of amino acids (from count_reads)
     aminoacids_NNS: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
@@ -204,11 +204,11 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     
     # Zeroing using the median of the population, and not using stop codons to correct.
     frequencies = calculate_enrichment(
-        df_counts_pre.iloc[:, :54],
-        df_counts_sel.iloc[:, :54],
         aminoacids=aminoacids_NNS,
-        zeroing='population',
-        how='median',
+        pre_lib=df_counts_pre.iloc[:, :54],
+        post_lib=df_counts_sel.iloc[:, :54],
+        zeroing_method='population',
+        zeroing_metric ='median',
         norm_std=True,
         stopcodon=True,
         min_counts=25,
@@ -228,11 +228,11 @@ In this example, we show two different ways of using ``calculate_enrichment``. N
     
     # Zeroing using the median of the population, and not using stop codons to correct.
     frequencies = calculate_enrichment(
-        df_counts_pre.iloc[:, :54],
-        df_counts_sel.iloc[:, :54],
         aminoacids=aminoacids_NNS,
-        zeroing='kernel',
-        how='median',
+        pre_lib=df_counts_pre.iloc[:, :54],
+        post_lib=df_counts_sel.iloc[:, :54],
+        zeroing_method='kernel',
+        zeroing_metric ='median',
         norm_std=True,
         stopcodon=True,
         min_counts=25,

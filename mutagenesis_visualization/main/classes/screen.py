@@ -2,9 +2,9 @@
 This module contains the class Screen, which groups the plotting classes.
 """
 from typing import List, Optional, Union
+import logging
 from numpy import typing as npt
 from pandas import DataFrame
-
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.differential import Differential
 from mutagenesis_visualization.main.bar_graphs.position_bar import PositionBar
@@ -30,6 +30,7 @@ from mutagenesis_visualization.main.plotly.rank import RankP
 from mutagenesis_visualization.main.plotly.scatter_3d_pdb import Scatter3DPDB
 from mutagenesis_visualization.main.plotly.scatter_3d import Scatter3D
 from mutagenesis_visualization.main.plotly.scatter import ScatterP
+from mutagenesis_visualization.main.pymol.pymol import Pymol
 from mutagenesis_visualization.main.scatter.scatter import Scatter
 from mutagenesis_visualization.main.scatter.scatter_replicates import ScatterReplicates
 from mutagenesis_visualization.main.utils.pandas_functions import (
@@ -38,10 +39,6 @@ from mutagenesis_visualization.main.utils.pandas_functions import (
 from mutagenesis_visualization.main.utils.replicates_screen_input import (
     handle_input_datasets, DataframesHolder
 )
-try:
-    from mutagenesis_visualization.main.pymol.pymol import Pymol
-except ModuleNotFoundError:
-    pass
 
 
 class Screen:
@@ -97,9 +94,7 @@ class Screen:
         Contains the enrichment scores, position, sequence.
 
     Other attributes are same as input parameters: dataset, aminoacids,
-    start_position, roc_df, secondary
-
-    """
+    start_position, roc_df, secondary    """
     def __init__(
         self,
         datasets: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]],
@@ -271,6 +266,7 @@ class Screen:
             aminoacids=self.aminoacids
         )
         # pymol
-        #try:
-        #self.pymol: Pymol = Pymol(self.dataframe_stopcodons, )
-        #except ModuleNotFoundError:
+        try:
+            self.pymol: Pymol = Pymol(dataframes=self.dataframes)
+        except Exception:  # pylint: disable=broad-except
+            logging.info("Pymol capability not loaded.")

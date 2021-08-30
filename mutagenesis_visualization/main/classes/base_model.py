@@ -74,6 +74,8 @@ class Pyplot:
         Save file function using pathlib.
         """
         if output_file:
+            Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+
             self.fig.savefig(
                 Path(output_file),
                 format=Path(output_file).suffix.strip('.'),

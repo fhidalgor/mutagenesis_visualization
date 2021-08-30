@@ -37,7 +37,7 @@ class DemoObjects:
         Create object hras_RBD.
         """
         # Define protein sequence
-        hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+        hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary: List[List[str]] = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9),
@@ -62,7 +62,7 @@ class DemoObjects:
         Create object hras_gapgef.
         """
         # Define protein sequence
-        hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'
+        hras_sequence: str = 'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQHKLRKLNPPDESGPG'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary: List[List[str]] = [['L0'], ['β1'] * (9 - 1), ['L1'] * (15 - 9),
@@ -89,11 +89,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids: List[str] = list(DEMO_DATASETS['df_bla'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_bla'].columns[0]
 
         # Define sequence. If you dont know the start of the sequence, just add X's
-        sequence_bla_x = 'MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYIELDLNSGKILESFRP' + 'EERFPMMSTFKVLLCGAVLSRVDAGQEQLGRRIHYSQNDLVEYSPVTEKHLTDGMTVREL' + 'CSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRWEPELNEAIPNDERDTTM' + 'PAAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSALPAGWFIADKSGAGERGS' + 'RGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGASLIKHW'
+        sequence_bla_x = 'MSIQHFRVALIPFFAAFCLPVFAHPETLVKVKDAEDQLGARVGYIELDLNSGKILESFRP' + 'EERFPMMSTFKVLLCGAVLSRVDAGQEQLGRRIHYSQNDLVEYSPVTEKHLTDGMTVREL' + 'CSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDRWEPELNEAIPNDERDTTM' + 'PAAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRSALPAGWFIADKSGAGERGS' + 'RGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGASLIKHW'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_bla: List[List[str]
@@ -120,11 +119,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_sumo1'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_sumo1'].columns[0]
 
         # Full sequence
-        sequence_sumo1 = 'MSDQEAKPSTEDLGDKKEGEYIKLKVIGQDSSEIHFKVKMTTHLKKLKESYCQRQGVPMN' + 'SLRFLFEGQRIADNHTPKELGMEEEDVIEVYQEQTGGHSTV'
+        sequence_sumo1 = 'MSDQEAKPSTEDLGDKKEGEYIKLKVIGQDSSEIHFKVKMTTHLKKLKESYCQRQGVPMN' + 'SLRFLFEGQRIADNHTPKELGMEEEDVIEVYQEQTGGHSTV'  # pylint: disable=line-too-long
         # Define secondary structure
         secondary_sumo1: List[List[str]] = [['L0'] * (20), ['β1'] * (28 - 20), ['L1'] * 3,
                                             ['β2'] * (39 - 31), ['L2'] * 4, ['α1'] * (55 - 43),
@@ -144,11 +142,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_mapk1'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_mapk1'].columns[0]
 
         # Full sequence
-        sequence_mapk1_x = 'MAAAAAAGAGPEMVRGQVFDVGPRYTNLSYIGEGAYGMVCSAYDNVNKVRVAIK' + 'KISPFEHQTYCQRTLREIKILLRFRHENIIGINDIIRAPTIEQMKDVYIVQDLMETDLYKLLKTQ' + 'HLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLLNTTCDLKICDFGLARVADPDHDHTGFL' + 'TEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQ' + 'EDLNCIINLKARNYLLSLPHKNKVPWNRLFPNADSKALDLLDKMLTFNPHKRIEVEQALAHPYLE' + 'QYYDPSDEPIAEAPFKFDMELDDLPKEKLKELIFEETARFQPGYRS'
+        sequence_mapk1_x = 'MAAAAAAGAGPEMVRGQVFDVGPRYTNLSYIGEGAYGMVCSAYDNVNKVRVAIK' + 'KISPFEHQTYCQRTLREIKILLRFRHENIIGINDIIRAPTIEQMKDVYIVQDLMETDLYKLLKTQ' + 'HLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLLNTTCDLKICDFGLARVADPDHDHTGFL' + 'TEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQ' + 'EDLNCIINLKARNYLLSLPHKNKVPWNRLFPNADSKALDLLDKMLTFNPHKRIEVEQALAHPYLE' + 'QYYDPSDEPIAEAPFKFDMELDDLPKEKLKELIFEETARFQPGYRS'  # pylint: disable=line-too-long
 
         # Create objects
         return Screen(DEMO_DATASETS['df_mapk1'], sequence_mapk1_x, aminoacids, start_position, 0)
@@ -161,11 +158,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_ube2i'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_ube2i'].columns[0]
 
         # Full sequence
-        sequence_ube2i_x = 'MSGIALSRLAQERKAWRKDHPFGFVAVPTKNPDGTMNLMNWECAIPGKKGTP' + 'WEGGLFKLRMLFKDDYPSSPPKCKFEPPLFHPNVYPSGTVCLSILEEDKDWRPAITIKQ' + 'ILLGIQELLNEPNIQDPAQAEAYTIYCQNRVEYEKRVRAQAKKFAPS'
+        sequence_ube2i_x = 'MSGIALSRLAQERKAWRKDHPFGFVAVPTKNPDGTMNLMNWECAIPGKKGTP' + 'WEGGLFKLRMLFKDDYPSSPPKCKFEPPLFHPNVYPSGTVCLSILEEDKDWRPAITIKQ' + 'ILLGIQELLNEPNIQDPAQAEAYTIYCQNRVEYEKRVRAQAKKFAPS'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_ube2i: List[List[str]
@@ -190,11 +186,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_tat'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mutated, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_tat'].columns[0]
 
         # Full sequence
-        sequence_tat = 'MEPVDPRLEPWKHPGSQPKTACTNCYCKKCCFHCQVCFITKALGISYGRKKRRQRRRAHQ' + 'NSQTHQASLSKQPTSQPRGDPTGPKE'
+        sequence_tat = 'MEPVDPRLEPWKHPGSQPKTACTNCYCKKCCFHCQVCFITKALGISYGRKKRRQRRRAHQ' + 'NSQTHQASLSKQPTSQPRGDPTGPKE'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_tat: List[List[str]] = [['L1'] * (8), ['α1'] * (13 - 8), ['L2'] * (28 - 14),
@@ -212,11 +207,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_rev'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mureved, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_rev'].columns[0]
 
         # Full sequence
-        sequence_rev = 'MAGRSGDSDEDLLKAVRLIKFLYQSNPPPNPEGTRQARRNRRRRWRERQRQIHSISERIL' + 'STYLGRSAEPVPLQLPPLERLTLDCNEDCGTSGTQGVGSPQILVESPTILESGAKE'
+        sequence_rev = 'MAGRSGDSDEDLLKAVRLIKFLYQSNPPPNPEGTRQARRNRRRRWRERQRQIHSISERIL' + 'STYLGRSAEPVPLQLPPLERLTLDCNEDCGTSGTQGVGSPQILVESPTILESGAKE'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_rev: List[List[str]] = [['L1'] * (8), ['α1'] * (25 - 8), ['L2'] * (33 - 25),
@@ -234,11 +228,10 @@ class DemoObjects:
         # Order of amino acid substitutions in the hras_enrichment dataset
         aminoacids = list(DEMO_DATASETS['df_asynuclein'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mureved, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_asynuclein'].columns[0]
 
         # Full sequence
-        sequence_asynuclein = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTK' + 'EQVTNVGGAVVTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDP' + 'DNEAYEMPSEEGYQDYEPEA'
+        sequence_asynuclein = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTK' + 'EQVTNVGGAVVTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDP' + 'DNEAYEMPSEEGYQDYEPEA'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_asynuclein: List[List[str]] = [['L1'] * (1), ['α1'] * (37 - 1),
@@ -257,11 +250,10 @@ class DemoObjects:
 
         aminoacids = list(DEMO_DATASETS['df_aph'].index)
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mureved, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_aph'].columns[0]
 
         # Full sequence
-        sequence_aph = 'MIEQDGLHAGSPAAWVERLFGYDWAQQTIGCSDAAVFRLSAQGRPVLFVKTDLSGALNELQ' + 'DEAARLSWLATTGVPCAAVLDVVTEAGRDWLLLGEVPGQDLLSSHLAPAEKVSIMADAMRR' + 'LHTLDPATCPFDHQAKHRIERARTRMEAGLVDQDDLDEEHQGLAPAELFARLKARMPDGED' + 'LVVTHGDACLPNIMVENGRFSGFIDCGRLGVADRYQDIALATRDIAEELGGEWADRFLVLY' + 'GIAAPDSQRIAFYRLLDEFF'
+        sequence_aph = 'MIEQDGLHAGSPAAWVERLFGYDWAQQTIGCSDAAVFRLSAQGRPVLFVKTDLSGALNELQ' + 'DEAARLSWLATTGVPCAAVLDVVTEAGRDWLLLGEVPGQDLLSSHLAPAEKVSIMADAMRR' + 'LHTLDPATCPFDHQAKHRIERARTRMEAGLVDQDDLDEEHQGLAPAELFARLKARMPDGED' + 'LVVTHGDACLPNIMVENGRFSGFIDCGRLGVADRYQDIALATRDIAEELGGEWADRFLVLY' + 'GIAAPDSQRIAFYRLLDEFF'  # pylint: disable=line-too-long
 
         # Define secondary structure
         secondary_aph: List[List[str]
@@ -297,9 +289,8 @@ class DemoObjects:
         aminoacids = list(DEMO_DATASETS['df_b11l5f'].index)
 
         # Sequence
-        sequence_b11l5f = 'CRAASLLPGTWQVTMTNEDGQTSQGQMHFQPRSPYTLDVKAQGTISDGRPI' + 'SGKGKVTCKTPDTMDVDITYPSLGNMKVQGQVTLDSPTQFKFDVTTSDGSKVTGTLQRQE'
+        sequence_b11l5f = 'CRAASLLPGTWQVTMTNEDGQTSQGQMHFQPRSPYTLDVKAQGTISDGRPI' + 'SGKGKVTCKTPDTMDVDITYPSLGNMKVQGQVTLDSPTQFKFDVTTSDGSKVTGTLQRQE'  # pylint: disable=line-too-long
 
-        # First residue of the hras_enrichment dataset. Because 1-Met was not mureved, the dataset starts at residue 2
         start_position = DEMO_DATASETS['df_b11l5f'].columns[0]
 
         return Screen(DEMO_DATASETS['df_b11l5f'], sequence_b11l5f, aminoacids, start_position, 0)
@@ -309,9 +300,10 @@ class DemoObjects:
         This method will generate a *Counts* object.
         """
         # H-Ras dna sequence
-        hras_dna_sequence: str = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' + 'tcattgatggggagacgtgcctgttggacatcctg'
+        hras_dna_sequence: str = 'acggaatataagctggtggtggtgggcgccggcggtgtgggcaagagtgcgctgaccat' + 'ccagctgatccagaaccattttgtggacgaatacgaccccactatagaggattcctaccggaagcaggtgg' + 'tcattgatggggagacgtgcctgttggacatcctg'  # pylint: disable=line-too-long
 
-        # Codons used to make the NNS library. I could also have used 'NNS' and the package will use the NNS codons
+        # Codons used to make the NNS library. I could also have used 'NNS' and the package will use
+        # the NNS codons
         codon_list: List[str] = [
             "GCC", "GCG", "TGC", "GAC", "GAG", "TTC", "GGC", "GGG", "CAC", "ATC", "AAG", "CTC",
             "CTG", "TTG", "ATG", "AAC", "CCC", "CCG", "CAG", "CGC", "CGG", "AGG", "TCC", "TCG",

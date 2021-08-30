@@ -1,7 +1,7 @@
 Normalizing datasets
 ====================
 
-This section will teach the different options to normalize the data using the function :func:`mutagenesis_visualization.calculate_enrichment` . 
+This section will teach the different options to normalize the data using the function :func:`mutagenesis_visualization.main.process_data.calculate_enrichment.calculate_enrichment` . 
 If you already have your own processing pipeline built, you can skip this section and go to the (:ref:`Creating plots`) examples.
 
 Import modules and load data
@@ -125,18 +125,19 @@ Counts normalization
 ~~~~~~~~~~~~~~~~~~~~
 
 Normalizing by the number of counts improves normalization. Now the
-population center is closer to 0. To do so, set ``zeroing='counts'``.
+population center is closer to 0. To do so, set
+``zeroing_method='counts'``.
 
 .. code:: ipython3
 
     enrichment = {}
-    
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
         enrichment[pre_key[:2]] = calculate_enrichment(
-            dict_pre[pre_key], dict_sel[sel_key], zeroing='counts', stopcodon=False
+            aminoacids, dict_pre[pre_key], dict_sel[sel_key], zeroing_method='counts', stopcodon=False
         )
     
     # Plot histogram and KDE
@@ -146,7 +147,7 @@ population center is closer to 0. To do so, set ``zeroing='counts'``.
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
     
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = counts', xscale=(-1, 1))
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = counts', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_zeroingcounts.png
    :width: 350px
@@ -187,7 +188,7 @@ But in other datasets we have, it has been a source of error.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = wt_allele only', xscale=(-0.5, 0.5))
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = wt_allele only', xscale=(-0.5, 0.5))
 
 .. image:: images/exported_images/hras_zeroingwtallele.png
    :width: 350px
@@ -198,24 +199,27 @@ Distribution of synonymous wt alleles
 
 In our experience, it is better to use the median/mode/mean of the
 synonymous wild-type population because there is less variance.
-``calculate_enrichment`` has such an options by using ``zeroing='wt'``
-and then ``how='median', 'mean' or 'mode'``.
+``calculate_enrichment`` has such an options by using
+``zeroing_method='wt'`` and then
+``zeroing_metric ='median', 'mean' or 'mode'``.
 
 .. code:: ipython3
 
     enrichment = {}
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
         enrichment[pre_key[:2]] = calculate_enrichment(
+            aminoacids,
             dict_pre[pre_key],
             dict_sel[sel_key],
             dict_pre_wt[pre_key],
             dict_sel_wt[sel_key],
-            zeroing='wt',
-            how='mode',
+            zeroing_method='wt',
+            zeroing_metric ='mode',
             stopcodon=False
         )
     
@@ -224,7 +228,7 @@ and then ``how='median', 'mean' or 'mode'``.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = wt', xscale=(-1.5, 1))
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = wt', xscale=(-1.5, 1))
 
 .. image:: images/exported_images/hras_zeroingwtpop.png
    :width: 350px
@@ -277,7 +281,7 @@ Distribution of mutants
 
 An alternative option to normalize the data is to use the
 mean/median/mode of the population to some specific number such as zero.
-To do so, use ``zeroing='population'``. The parameters of the
+To do so, use ``zeroing_method='population'``. The parameters of the
 distribution will be calculated assuming a gaussian distribution. Not
 only the three replicates are centered, but also they have the same
 spread.
@@ -285,16 +289,18 @@ spread.
 .. code:: ipython3
 
     enrichment = {}
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
         enrichment[pre_key[:2]]  = calculate_enrichment(
+            aminoacids,
             dict_pre[pre_key],
             dict_sel[sel_key],
-            zeroing='population',
-            how='mode',
+            zeroing_method='population',
+            zeroing_metric ='mode',
             stopcodon=False
         )
     
@@ -303,32 +309,33 @@ spread.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = population', xscale=(-1, 1))
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = population', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_zeroingpopulation.png
    :width: 350px
    :align: center
 
 A variant of the previous method is to calculate the kernel density
-estimate using ``zeroing='kernel'``. This option centers the population
-using the mode of the KDE. If the data is bimodal, it will select the
-main peak. Furthermore, it will use the standard deviation of the main
-peak to scale the data. This method is useful when you have split your
-library into multiple pools because it will not only center the data
-properly but also do scale the data so each pool main peak has the same
-standard deviation. Results are quite similar to setting
-``zeroing='population'`` and ``how='mode'``.
+estimate using ``zeroing_method='kernel'``. This option centers the
+population using the mode of the KDE. If the data is bimodal, it will
+select the main peak. Furthermore, it will use the standard deviation of
+the main peak to scale the data. This method is useful when you have
+split your library into multiple pools because it will not only center
+the data properly but also do scale the data so each pool main peak has
+the same standard deviation. Results are quite similar to setting
+``zeroing_method='population'`` and ``zeroing_metric ='mode'``.
 
 .. code:: ipython3
 
     enrichment = {}
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
         enrichment[pre_key[:2]] = calculate_enrichment(
-            dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=False
+            aminoacids, dict_pre[pre_key], dict_sel[sel_key], zeroing_method='kernel', stopcodon=False
         )
     
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
@@ -336,7 +343,7 @@ standard deviation. Results are quite similar to setting
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing = kernel', xscale=(-1.5,1))
+    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = kernel', xscale=(-1.5,1))
 
 .. image:: images/exported_images/hras_zeroingkernel.png
    :width: 350px
@@ -357,20 +364,20 @@ shoulder.
 .. code:: ipython3
 
     enrichment = {}
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key in zip(list(dict_pre.keys())[:3],
                                 list(dict_sel.keys())[:3]):
         # Enrichment
         enrichment[pre_key[:2]] = calculate_enrichment(
-            dict_pre[pre_key], dict_sel[sel_key], zeroing='kernel', stopcodon=True
+            aminoacids, dict_pre[pre_key], dict_sel[sel_key], zeroing_method='kernel', stopcodon=True
         )
     
     aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
-        secondary
     )
     hras_object.kernel(show_replicates=True, title='Sublibrary 1, baseline subtraction', xscale=(-5, 1.5))
 
@@ -395,15 +402,17 @@ spread.
 
     enrichment_scalar = {}
     scalars: List[str] = [0.1, 0.2, 0.3]
+    aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
     # calculate log10 enrichment for each replicate
     for pre_key, sel_key, scalar in zip(list(dict_pre.keys())[:3],
                                         list(dict_sel.keys())[:3], scalars):
         # Enrichment
         enrichment_log10 = calculate_enrichment(
+            aminoacids,
             dict_pre[pre_key],
             dict_sel[sel_key],
-            zeroing='kernel',
+            zeroing_method='kernel',
             stopcodon=True,
             std_scale=scalar
         )
@@ -427,7 +436,7 @@ Multiple sublibraries
 In our own research projects, where we have multiple DNA pools, we have
 determined that the combination of parameters that best suit us it to
 the wild-type synonymous sequences to do a first data normalization
-step. Then use ``zeroing = 'kernel'`` to zero the data and use
+step. Then use ``zeroing_method = 'kernel'`` to zero the data and use
 ``stopcodon=True`` in order to determine the baseline level of signal.
 You may need to use different parameters for your purposes. Feel free to
 get in touch if you have questions regarding data normalization.
@@ -437,8 +446,7 @@ get in touch if you have questions regarding data normalization.
     # Labels
     labels: List[str] = ['Sublibrary 1', 'Sublibrary 2', 'Sublibrary 3']
     zeroing_options: List[str] = ['population', 'counts', 'wt', 'kernel']
-    title: str = 'Rep-A sublibraries, zeroing = '
-    aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
+    title: str = 'Rep-A sublibraries, zeroing_method = '
     
     # xscale
     xscales = [(-2, 1), (-2.5, 0.5), (-3.5, 1.5), (-3.5, 1.5)]
@@ -449,14 +457,17 @@ get in touch if you have questions regarding data normalization.
     for option, xscale in zip(zeroing_options, xscales):
         for pre_key, sel_key, label in zip(list(dict_pre.keys())[::3],
                                            list(dict_sel.keys())[::3], labels):
+            aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+    
             # log 10
             enrichment_lib[label]  = calculate_enrichment(
+                aminoacids,
                 dict_pre[pre_key],
                 dict_sel[sel_key],
                 dict_pre_wt[pre_key],
                 dict_sel_wt[sel_key],
-                zeroing=option,
-                how='mode',
+                zeroing_method=option,
+                zeroing_metric ='mode',
                 stopcodon=True,
                 infinite=2
             )
@@ -469,6 +480,7 @@ get in touch if you have questions regarding data normalization.
     
     
         # Plot
+        aminoacids: List[str] = list('ACDEFGHIKLMNPQRSTVWY*')
     
         hras_sublibrary1: Screen = Screen(
             enrichment_lib['Sublibrary 1'], hras_sequence, aminoacids, start_position, fillna,
@@ -497,8 +509,8 @@ Heatmaps
 --------
 
 Function and class used in this section:
-    - :class:`mutagenesis_visualization.Screen`
-    - :meth:`mutagenesis_visualization.heatmap`
+    - :class:`mutagenesis_visualization.main.classes.screen.Screen`
+    - :meth:`mutagenesis_visualization.main.heatmaps.heatmap.Heatmap`
 
 We are going to evaluate how does the heatmap of produced by each of the
 normalization methods. We are not going to scale the data, so some

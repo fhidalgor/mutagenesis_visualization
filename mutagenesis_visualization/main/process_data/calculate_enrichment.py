@@ -1,12 +1,12 @@
 """
 This module contais the enrichment calculations from dna counts.
 """
-from typing import Union, Optional, List
+from typing import Literal, Union, List
 from pathlib import Path
 import numpy as np
 from numpy import typing as npt
 from pandas.core.frame import DataFrame
-from scipy import stats
+from scipy.stats import zscore
 from mutagenesis_visualization.main.process_data.process_data_utils import (
     stopcodon_correction, array_to_df_enrichments, group_by_aa, filter_by_mad, nan_mode,
     kernel_correction, replace_inf
@@ -14,13 +14,14 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
 
 
 def calculate_enrichment(
+    aminoacids: Union[List[str], str],
     pre_lib: Union[str, DataFrame, npt.NDArray],
     post_lib: Union[str, DataFrame, npt.NDArray],
     pre_wt: Union[str, None, npt.NDArray] = None,
     post_wt: Union[str, None, npt.NDArray] = None,
-    aminoacids: Optional[List[str]] = None,
-    zeroing: str = 'population',
-    how: str = 'median',
+    zeroing_method: Literal['none', 'zscore', 'counts', 'wt', 'kernel',
+                            'population'] = 'population',
+    zeroing_metric: Literal['mean', 'mean', 'mode', 'median'] = 'median',
     norm_std: bool = True,
     stopcodon: bool = False,
     min_counts: int = 25,
@@ -38,6 +39,9 @@ def calculate_enrichment(
 
     Parameters
     -----------
+    aminoacids : list, str
+        Index of aminoacids (in order). Stop codon needs to be '*'.
+
     pre_lib : str, pandas dataframe or np.array
         Can be filepath and name of the exported txt file, dataframe or
         np.array.
@@ -52,17 +56,14 @@ def calculate_enrichment(
     post_wt : str, or np.array, optional
         Str with filepath and name of the exported txt file or np.array.
 
-    aminoacids : list, default ('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
-        Index of aminoacids (in order). Stop codon needs to be '*'.
-
-    zeroing : str, default 'population'
+    zeroing_method : str, default 'population'
         Method to normalize the data.
         Can also use 'none', 'zscore', 'counts', 'wt' or 'kernel'.
         If 'wt' is used 'pre_wt' must not be set to None.
 
-    how : str, default 'median'
-        Metric to zero the data. Only works if zeroing='population' or 'wt'.
-        Can also be set to 'mean' or 'mode'.
+    zeroing_metric : str, default 'median'
+        Metric to zero the data. Only works if zeroing_method='population'
+        or 'wt'. Can also be set to 'mean' or 'mode'.
 
     norm_std : boolean, default True
         If norm_std is set to True, it will scale the data.
@@ -94,22 +95,19 @@ def calculate_enrichment(
         When MAD filtering, mpop is the number of medians away a data
         point must be to be discarded. The difference with mpop is that
         mwt is only used when the population of wild-type alleles is
-        the reference for data zeroing.
+        the reference for data zeroing_method.
 
     infinite : int, default 3
         It will replace +infinite values with +3 and -infinite with -3.
 
     output_file : str, default None
-        If you want to export the generated files, add the path and name
-        of the file without suffix.
-        Example: 'path/filename'. File will be save as a txt file.
+        If you want to export the generated files, add the path and name.
+        Example: 'path/filename.txt'. File will be save as a txt, csv, xlsx file.
 
     Returns
     --------
     zeroed : ndarray
-        A np.array containing the enrichment scores.
-
-    """
+        A np.array containing the enrichment scores.    """
 
     # Convert to numpy if libraries are in dataframe format.
     # If input is a filepath, then load the txt files
@@ -128,8 +126,8 @@ def calculate_enrichment(
     if isinstance(post_wt, str):
         post_wt = np.loadtxt(post_wt)
 
-    if not aminoacids:
-        aminoacids = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
+    if isinstance(aminoacids, str):
+        aminoacids = list(aminoacids)
 
     # Convert to df
     pre_lib_df: DataFrame = array_to_df_enrichments(pre_lib, aminoacids)
@@ -181,44 +179,52 @@ def calculate_enrichment(
             mode_wt = log10_wtcounts
 
     # Zero data, select case
-    if zeroing == 'wt':
-        if how == 'mean':
+    if zeroing_method == 'wt':
+        if zeroing_metric == 'mean':
             zeroed = log10_counts_grouped - mean_wt
-        elif how == 'median':
+        elif zeroing_metric == 'median':
             zeroed = log10_counts_grouped - median_wt
-        elif how == 'mode':
+        elif zeroing_metric == 'mode':
             zeroed = log10_counts_grouped - mode_wt
         if norm_std is True:
             zeroed = zeroed * std_scale / 2 / std_wt
-    elif zeroing == 'population':
-        if how == 'mean':
+    elif zeroing_method == 'population':
+        if zeroing_metric == 'mean':
             zeroed = log10_counts_grouped - mean_pop
-        elif how == 'median':
+        elif zeroing_metric == 'median':
             zeroed = log10_counts_grouped - median_pop
-        elif how == 'mode':
+        elif zeroing_metric == 'mode':
             zeroed = log10_counts_grouped - mode_pop
         if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
-    elif zeroing == 'counts':
-        # Get the ratio of counts
+    elif zeroing_method == 'counts':
         ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
         zeroed = log10_counts_grouped - ratio
         if norm_std is True:
             zeroed = zeroed * std_scale / std_pop
-    elif zeroing == 'kernel':
+    elif zeroing_method == 'kernel':
         zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, cutoff=1)
         zeroed, kernel_std = kernel_correction(zeroed_0, cutoff=1)
         if norm_std is True:
             zeroed = zeroed * std_scale / kernel_std
-    elif zeroing == 'zscore':
-        zeroed = stats.zscore(log10_counts_grouped, nan_policy='omit')
-    elif zeroing == 'none':
+    elif zeroing_method == 'zscore':
+        zeroed = zscore(log10_counts_grouped, nan_policy='omit')
+    elif zeroing_method == 'none':
         zeroed = log10_counts_grouped
     else:
         raise ValueError('Wrong zeroed parameter.')
-    # Export files
+
     if output_file:
-        np.savetxt(Path(output_file), zeroed, fmt='%i', delimiter='\t')
+        if Path(output_file).suffix == ".txt":
+            np.savetxt(Path(output_file), zeroed.to_numpy(), fmt='%i', delimiter='\t')
+        elif Path(output_file).suffix == ".csv":
+            df_output: DataFrame = DataFrame(zeroed)
+            df_output.to_csv(Path(output_file), index=False, header=False)
+        elif Path(output_file).suffix == ".xlsx":
+            df_output = DataFrame(zeroed)
+            df_output.to_excel(
+                Path(output_file), sheet_name='Enrichment_Scores', index=False, header=False
+            )
 
     return zeroed
 
@@ -236,16 +242,20 @@ def get_log_enrichment(
     Calculate log10 enrichment scores from input and output counts.
     """
     # Copy data and replace low counts by np.nan
-    input_lib = np.copy(input_lib.astype(float))
-    output_lib = np.copy(output_lib.astype(float))
-    input_lib[input_lib < min_counts] = np.nan
+    input_lib_np: npt.NDArray = np.copy(input_lib.astype(float))
+    output_lib_np: npt.NDArray = np.copy(output_lib.astype(float))
+    input_lib_np[input_lib_np < min_counts] = np.nan
 
     # Stop codon correction
     if stopcodon:
-        output_lib = stopcodon_correction(input_lib, output_lib, input_stopcodon, output_stopcodon)
+        output_lib_np = stopcodon_correction(
+            input_lib_np, output_lib_np, np.array(input_stopcodon), np.array(output_stopcodon)
+        )
 
     # log10 of library and replace infinite values. This will potentially divide by zero.
     with np.errstate(divide='ignore'):
-        counts_log10_ratio = replace_inf(np.log10(output_lib / input_lib), infinite)
+        counts_log10_ratio: npt.NDArray = replace_inf(
+            np.log10(output_lib_np / input_lib_np), infinite
+        )
 
     return counts_log10_ratio

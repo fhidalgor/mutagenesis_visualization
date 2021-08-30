@@ -17,6 +17,7 @@ class MultipleKernel(Pyplot):
     """
     Class to generate plots of multiple kernels.
     """
+
     def __call__(
         self,
         screen_object: Union['Screen', List['Screen']],

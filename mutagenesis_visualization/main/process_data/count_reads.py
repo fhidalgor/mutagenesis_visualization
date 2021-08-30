@@ -78,9 +78,7 @@ def count_reads(
         the wild-type protein.
 
     useful_reads : str
-        Present only if `full` = True. Contains the useful reads.
-
-    """
+        Present only if `full` = True. Contains the useful reads.    """
     # Assert messages
     assert len(dna_sequence) % 3 == 0, 'The dna_sequence length is not a multiple of 3'
 

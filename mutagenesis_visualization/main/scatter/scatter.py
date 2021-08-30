@@ -19,6 +19,7 @@ class Scatter(Pyplot):
     """
     Class to generate a kernel density plot.
     """
+
     def __call__(
         self,
         screen_object: Any,

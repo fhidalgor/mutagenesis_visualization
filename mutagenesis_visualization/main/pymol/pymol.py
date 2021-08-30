@@ -2,9 +2,10 @@
 This module contains the Pymol wrapper class to plot in pymol.
 """
 from os import path
-from typing import List, Dict, Any
+from pathlib import Path
+from typing import List, Dict, Any, Union
 from copy import deepcopy
-
+import logging
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
@@ -16,19 +17,21 @@ from mutagenesis_visualization.main.utils.pymol_utils import (
 try:
     from ipymol import viewer as pymol
 except ModuleNotFoundError:
-    pass
+    logging.warning("iPymol module not loaded properly.")
 
 
 class Pymol(Pyplot):
     """
     This class acts as a wrapper with the ipymol github repo.
     """
+
     def __call__(
         self,
-        pdb: str,
+        pdb: Union[str, Path],
         mode: str = 'mean',
         residues: List[str] = None,
         position_correction: int = 0,
+        replicate: int = -1,
         **kwargs: Any
     ) -> None:
         """
@@ -40,6 +43,9 @@ class Pymol(Pyplot):
         to be installed from Github $pip install
         git+https://github.com/cxhernandez/ipymol, not from pypi (not
         updated here).
+
+        Please ensure that PyMOL is in your $PATH as pymol.
+
 
         Parameters
         ----------
@@ -65,6 +71,12 @@ class Pymol(Pyplot):
             you dataset, you can correct for that. If your start_position = 2,
             but in the PDB that same residue is at position 20,
             position_correction needs to be set at 18.
+
+        replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
 
         **kwargs : other keyword arguments
             gof : int, default is 1
@@ -92,7 +104,7 @@ class Pymol(Pyplot):
         # Calculate residues only if they are not given by the user
         if residues is None:
             residues = pymol_fitness(
-                self.dataframes.df_notstopcodons.copy(),
+                self.dataframes.df_notstopcodons[replicate].copy(),
                 temp_kwargs['gof'],
                 temp_kwargs['lof'],
                 mode,
@@ -104,20 +116,21 @@ class Pymol(Pyplot):
             pymol.start()
 
         # Fetch structure. If pdb contains a "/", it will assume it is stored locally
-        if '/' in pdb:
-            pymol.load(pdb)
-            pdb = (path.basename(pdb)
-                   ).partition('.')[0]  # Extract filename from pdb and then extract pdb code
+        if '.pdb' in str(pdb):
+            pymol.load(str(pdb))
+            pdb = (path.basename(
+                str(pdb)
+            )).partition('.')[0]  # Extract filename from pdb and then extract pdb code
         else:
-            pymol.fetch(pdb)
+            pymol.fetch(str(pdb))
 
         # Hide everything
         pymol.do('hide everything')
 
         # Selection names
-        blue = pdb + '_blue'
-        red = pdb + '_red'
-        white = pdb + '_white'
+        blue = str(pdb) + '_blue'
+        red = str(pdb) + '_red'
+        white = str(pdb) + '_white'
 
         # Do selections
         pymol.select(blue, 'resi ' + residues[0])

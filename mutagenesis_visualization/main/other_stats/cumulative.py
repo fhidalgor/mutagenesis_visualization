@@ -15,6 +15,7 @@ class Cumulative(Pyplot):
     This class will plot a cumulative function on the enrichment scores
     from first to last amino acid.
     """
+
     def __call__(
         self,
         mode: str = 'all',

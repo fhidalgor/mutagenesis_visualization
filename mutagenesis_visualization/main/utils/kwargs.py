@@ -100,9 +100,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
     Returns
     --------
     default_kwargs : dict
-        Dictionary with the default kwargs.
-
-    """
+        Dictionary with the default kwargs.    """
     default_kwargs: Dict[str, Any] = {
         'figsize': None,
         'figsize_x': None,

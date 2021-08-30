@@ -48,6 +48,7 @@ class Plotly:
         Save figure to html.
         """
         if output_html:
+            Path(output_html).parent.mkdir(parents=True, exist_ok=True)
             if '.html' not in str(output_html):
                 output_html = str(output_html) + '.html'
             self.fig.write_html(str(Path(output_html)))

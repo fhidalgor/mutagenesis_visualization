@@ -22,9 +22,8 @@ ipympl = "^0.7.0"
 xlrd = "^2.0.1"
 statsmodels = "^0.12.2"
 XlsxWriter = "^1.4.4"
-numpydoc = "^1.1.0"
-sphinx-rtd-theme = "^0.5.2"
 matplotlib = "^3.4.3"
+ipymol = {git = "git@github.com:cxhernandez/ipymol.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -35,7 +34,8 @@ pylint = "^2.6.0"
 yapf = "^0.31.0"
 sphinx = "^4.1.2"
 nbconvert = "^6.1.0"
-
+numpydoc = "^1.1.0"
+sphinx-rtd-theme = "^0.5.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

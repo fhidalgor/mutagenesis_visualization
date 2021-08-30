@@ -17,6 +17,7 @@ class HeatmapP(Plotly):
     """
     This class uses plotly to generate a heatmap.
     """
+
     def __call__(
         self,
         replicate: int = -1,

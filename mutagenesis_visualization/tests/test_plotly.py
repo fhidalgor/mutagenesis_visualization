@@ -67,10 +67,8 @@ def test_plotly_scatter() -> None:
             'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False,
-            'close': True, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False,
-            'close': True, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False, 'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -103,10 +101,8 @@ def test_plotly_rank() -> None:
             'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False,
-            'close': True, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False,
-            'close': True, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False, 'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -139,10 +135,8 @@ def test_plotly_histogram() -> None:
             'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False,
-            'close': True, 'title': 'hello world'},
-        {'mode': 'pointmutant', 'show': False,
-            'close': True, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False, 'close': True, 'title': 'hello world'},
+        {'mode': 'pointmutant', 'show': False, 'close': True, 'title': 'go bears'},
     ]
 
     # Assert
@@ -175,10 +169,8 @@ def test_plotly_enrichment_bar() -> None:
             'close': True,
             'title': 'Changing this parameter for fun',
         },
-        {'mode': 'mean', 'show': False,
-            'close': True, 'title': 'hello world'},
-        {'mode': 'A', 'show': False,
-            'close': True, 'title': 'go bears'},
+        {'mode': 'mean', 'show': False, 'close': True, 'title': 'hello world'},
+        {'mode': 'A', 'show': False, 'close': True, 'title': 'go bears'},
     ]
 
     # Assert

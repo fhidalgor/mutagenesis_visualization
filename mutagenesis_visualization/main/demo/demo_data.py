@@ -20,9 +20,7 @@ def load_demo_datasets() -> Dict[str, DataFrame]:
     Returns
     --------
     data_dict : Dict[str, DataFrame]
-        Dictionary that contains the datasets used to create the plots on the documentation.
-
-    """
+        Dictionary that contains the datasets used to create the plots on the documentation.    """
     # Create dictionary where to store data
     data_dict: Dict[str, DataFrame] = {}
 

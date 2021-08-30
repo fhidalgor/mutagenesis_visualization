@@ -2,7 +2,7 @@
 This module contains the object to create a heatmap specifying the
 selected rows.
 """
-from typing import Any, Dict, Union, List
+from typing import Any, Dict, Union, List, Optional
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ class HeatmapRows(Pyplot):
     """
     def __call__(
         self,
-        selection: List[str],
+        selection: Optional[List[str]] = None,
         nancolor: str = 'lime',
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
@@ -36,8 +36,9 @@ class HeatmapRows(Pyplot):
         ----------
         self : object from class *Screen*
 
-        selection : list of aa to show.
+        selection : list of aa to show (1-letter code).
             If you only want the mean displayed, type selection = 'mean'.
+            By default, ["D", "K", "A", "P", "L", "W"] are displayed.
 
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
@@ -57,7 +58,10 @@ class HeatmapRows(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
 
-        # Check if mean or not. Add group and pivot df_main.
+        if not selection:
+            selection = ["D", "K", "A", "P", "L", "W"]
+
+        # Check if mean or not. Add group and pivot df_main.'
         if selection == 'mean':
             df_main: DataFrame = add_snv_boolean(
                 self.dataframes.df_notstopcodons[replicate].copy()

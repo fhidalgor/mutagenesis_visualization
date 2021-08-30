@@ -2,19 +2,31 @@ Classes
 ****************
 
 *CreateVariants* class
-===============
+=========================
 .. autoclass:: mutagenesis_visualization.main.classes.create_variants.CreateVariants
+    :members: __call__
 
 *Counts* class
-===============
+=========================
 .. autoclass:: mutagenesis_visualization.main.classes.counts.Counts
 
+*LibraryRepresentation* pyplot class
+---------------------------------------
+.. autoclass:: mutagenesis_visualization.main.bar_graphs.library_representation.LibraryRepresentation
+    :members: __call__
+
+*MeanCounts* pyplot class
+-----------------------------
+.. autoclass:: mutagenesis_visualization.main.bar_graphs.mean_counts.MeanCounts
+    :members: __call__
+
 *GeneratePrimers* class
-===============
+=========================
 .. autoclass:: mutagenesis_visualization.main.classes.generate_primers.GeneratePrimers
+    :members: __call__
 
 *Screen* class
-===============
+=========================
 .. autoclass:: mutagenesis_visualization.main.classes.screen.Screen
 
 
@@ -94,7 +106,7 @@ The following classes are integrated into *Screen*, thus, you only have to use t
     :members: __call__
 
 *IndividualCorrelation* pyplot class
------------------------------
+------------------------------------------
 .. autoclass:: mutagenesis_visualization.main.pca_analysis.individual_correlation.IndividualCorrelation
     :members: __call__
 
@@ -148,8 +160,8 @@ The following classes are integrated into *Screen*, thus, you only have to use t
     :members: __call__
 
 *ScatterReplicates* pyplot class
------------------------------
-.. autoclass:: mutagenesis_visualization.main.scatter.scatter.ScatterReplicates
+----------------------------------
+.. autoclass:: mutagenesis_visualization.main.scatter.scatter_replicates.ScatterReplicates
     :members: __call__
 
 Functions

@@ -14,10 +14,6 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('../'))
 
-#sys.path.append('../')
-#sys.path.insert(0, os.path.abspath('../mutagenesis_visualization/'))
-#sys.path.insert(0, os.path.abspath('../../mutagenesis_visualization/'))
-
 # -- Project information -----------------------------------------------------
 project = 'Mutagenesis Visualization'
 copyright = '2021, Frank Hidalgo'
@@ -126,3 +122,4 @@ latex_elements = {
 # (source start file, name, description, authors, manual section).
 man_pages = [('index', 'mutagenesis-visualization', 'Mutagenesis Visualization Documentation',
      ['Frank Hidalgo'], 1)]
+numpydoc_show_class_members = False

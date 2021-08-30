@@ -26,8 +26,9 @@ def test_heatmap() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'show': False, 'close': True}, {'hierarchical': True, 'show':
-                                                 False, 'close': True}, {'show_snv': True, 'show': False, 'close': True},
+    list_params: List[dict] = [{'show': False, 'close':
+                                True}, {'hierarchical': True, 'show': False, 'close':
+                                        True}, {'show_snv': True, 'show': False, 'close': True},
                                {'show_cartoon': True, 'show': False, 'close': True}]
 
     # Assert

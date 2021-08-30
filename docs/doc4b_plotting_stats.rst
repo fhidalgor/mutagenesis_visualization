@@ -6,33 +6,28 @@ This section continues showing how to do different types of plots.
 Import modules
 --------------
 
-.. code:: python
+.. code:: ipython3
 
     # running locally, if you pip install then you just have to import the module
     %matplotlib inline
-    from typing import Dict, Union, List
     from pandas.core.frame import DataFrame
     import numpy as np
     import pandas as pd
     from mutagenesis_visualization.main.demo.demo_objects import DemoObjects
-
+    
     DEMO_OBJECTS:DemoObjects = DemoObjects()
     hras_rbd = DEMO_OBJECTS.hras_rbd
     hras_gapgef = DEMO_OBJECTS.hras_gapgef
 
-Class reviewed in this section:
-    - :func:`mutagenesis_visualization.code_create_objects`
-
-
 Histogram, scatter and more
 ---------------------------
 
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.kernel`
-    - :meth:`mutagenesis_visualization.Screen.histogram`
-    - :meth:`mutagenesis_visualization.Screen.scatter`
-    - :meth:`mutagenesis_visualization.Screen.rank`
-    - :meth:`mutagenesis_visualization.Screen.cumulative`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.kernel.kernel.Kernel`
+    - :class:`mutagenesis_visualization.main.histogram.Histogram`
+    - :class:`mutagenesis_visualization.main.scatter.Scatter`
+    - :class:`mutagenesis_visualization.main.other.rank.Rank`
+    - :class:`mutagenesis_visualization.main.other.cumulative.Cumulative`
 
 There are different tools to analyze the data. The package can plot the
 kernel density estimation (``object.kernel``). There is the option to
@@ -44,18 +39,18 @@ population. Non-SNVs are more sensitive to mutations than SNVs because
 there is a higher proportion of non-conservative amino acid
 replacements.
 
-.. code:: python
+.. code:: ipython3
 
     # Plot kernel dist using sns.distplot.
     hras_rbd.kernel(
         title='H-Ras 2-166', xscale=[-2, 1]
     )
-
+    
     # Plot histogram of SNVs
     hras_rbd.histogram(
         population='SNV', title='H-Ras 2-166 SNV', xscale=[-2, 1]
     )
-
+    
     # Plot histogram of non-SNVs
     hras_rbd.histogram(
         population='nonSNV',
@@ -77,7 +72,7 @@ with the method ``object.scatter``. We give the option to do the
 comparison at a mutation by mutation level ``mode=pointmutant``, or at a
 position level ``mode=mean``.
 
-.. code:: python
+.. code:: ipython3
 
     # Plot a scatter plot of each mutation
     hras_rbd.scatter(
@@ -89,7 +84,7 @@ position level ``mode=mean``.
         x_label='H-Ras Unregulated',
         y_label='H-Ras Regulated',
     )
-
+    
     # Plot a scatter plot of the mean position
     hras_rbd.scatter(
         hras_gapgef,
@@ -110,13 +105,13 @@ position level ``mode=mean``.
 The method ``object.rank`` sorts each mutation (or position) by its
 enrichment score.
 
-.. code:: python
+.. code:: ipython3
 
     hras_rbd.rank(mode='pointmutant', outdf=True, title='Rank of mutations')
 
 .. image:: images/exported_images/hras_rank.png
    :width: 400px
-
+   
 .. image:: images/exported_images/hras_ranktable.png
    :width: 200px
 
@@ -126,7 +121,7 @@ determine if the sensitivity to mutations is constant throughout the
 protein or not. In the example, we see that the cumulative function
 follows the x=y line, suggestion a homogeneous mutational tolerance.
 
-.. code:: python
+.. code:: ipython3
 
     # Cumulative plot
     hras_rbd.cumulative(mode='all', title='Cumulative Score')
@@ -138,11 +133,11 @@ follows the x=y line, suggestion a homogeneous mutational tolerance.
 Bar and line charts
 -------------------
 
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.mean`
-    - :meth:`mutagenesis_visualization.Screen.differential`
-    - :meth:`mutagenesis_visualization.Screen.position`
-    - :meth:`mutagenesis_visualization.Screen.secondary_mean`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.bar_graphs.enrichment_bar.EnrichmentBar`
+    - :class:`mutagenesis_visualization.main.bar_graphs.differential.Differential`
+    - :class:`mutagenesis_visualization.main.bar_graphs.position_bar.PositionBar`
+    - :class:`mutagenesis_visualization.main.bar_graphs.secondary.Secondary`
 
 The method ``object.enrichment_bar`` will plot the mean enrichment score
 for every position on a bar chart. It will be colored blue for loss of
@@ -152,7 +147,7 @@ plot the enrichment for that particular amino acid along the protein. In
 this example, we are showing the mean enrichment scores (top) and an
 alanine scan (bottom)
 
-.. code:: python
+.. code:: ipython3
 
     # Plot a bar graph with the mean enrichment score
     hras_rbd.enrichment_bar(
@@ -162,7 +157,7 @@ alanine scan (bottom)
         yscale=[-2, 0.5],
         title='',
     )
-
+    
     # Plot a bar graph with the alanine enrichment score
     hras_rbd.enrichment_bar(
         figsize=[6, 2.5],
@@ -175,7 +170,7 @@ alanine scan (bottom)
 .. image:: images/exported_images/hras_bar_mean.png
    :width: 500px
    :align: center
-
+   
 .. image:: images/exported_images/hras_bar_alanine.png
    :width: 500px
    :align: center
@@ -186,7 +181,7 @@ to compare either orthologs/paralogs or the same protein with different
 effectors, and determine which areas of the protein have a different
 sensitivity to mutations.
 
-.. code:: python
+.. code:: ipython3
 
     # Plot the difference between H-Ras unregulated and H-Ras regulated datasets
     # The subtraction is hras_RBD - hrasGAPGEF
@@ -205,7 +200,7 @@ sensitivity to mutations.
 You can check the individual mutational profile of a residue by using
 ``object.position_bar``.
 
-.. code:: python
+.. code:: ipython3
 
     # Create plot for position 117
     hras_rbd.position_bar(
@@ -223,7 +218,7 @@ If you added the secondary structure as an attribute of the object, you
 can plot the mean enrichment score for each alpha and beta motif in the
 protein (``object.secondary_mean``).
 
-.. code:: python
+.. code:: ipython3
 
     # Graph bar of the mean of each secondary motif
     hras_rbd.secondary_mean(
@@ -240,14 +235,11 @@ protein (``object.secondary_mean``).
 Correlation, PCA and ROC AUC
 ----------------------------
 
-Methods and functions reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.correlation`
-    - :meth:`mutagenesis_visualization.Screen.individual_correlation`
-    - :meth:`mutagenesis_visualization.Screen.group_correlation`
-    - :meth:`mutagenesis_visualization.Screen.pca`
-    - :meth:`mutagenesis_visualization.Screen.roc`
-    - :func:`mutagenesis_visualization.msa_enrichment`
-    - :func:`mutagenesis_visualization.plot_box`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.pca_analysis.correlation.Correlation`
+    - :class:`mutagenesis_visualization.main.pca_analysis.individual_correlation.IndividualCorrelation`
+    - :class:`mutagenesis_visualization.main.pca_analysis.pca.PCA`
+    - :class:`mutagenesis_visualization.main.other_stats.roc_analysis.ROC`
 
 If you want to know more about PCA and ROC, watch the following StatQuest videos on youtube:
 `PCA <https://www.youtube.com/watch?v=FgakZw6K1QQ&ab_channel=StatQuestwithJoshStarmer>`_
@@ -258,7 +250,7 @@ for each amino acid and graphed using ``object.correlation``. In the
 example we observe that polar amino acids have high correlation between
 themselves but low correlation with hydrophobic amino acids.
 
-.. code:: python
+.. code:: ipython3
 
     # Correlation between amino acids
     hras_rbd.correlation(
@@ -273,7 +265,7 @@ The method ``object.individual_correlation`` will tell you how a single
 amino acid substitution profile (row of the heatmap) correlates to the
 rest of the dataset.
 
-.. code:: python
+.. code:: ipython3
 
     # Explained variability by amino acid
     hras_rbd.individual_correlation(
@@ -294,7 +286,7 @@ residue and ``secondary``, in which will cluster for each motif. By
 default, the first two dimensions will be plotted (0 and 1 in Python
 notation), but that can be changed by ``dimensions`` parameter.
 
-.. code:: python
+.. code:: ipython3
 
     # PCA by amino acid substitution
     hras_rbd.pca(
@@ -304,7 +296,7 @@ notation), but that can be changed by ``dimensions`` parameter.
         adjustlabels=True,
         output_file=None
     )
-
+    
     # PCA by secondary structure motif
     hras_rbd.pca(
         title='',
@@ -314,7 +306,7 @@ notation), but that can be changed by ``dimensions`` parameter.
         adjustlabels=True,
         output_file=None
     )
-
+    
     # PCA by each individual residue. Don't set adjustlabels = True unless really big figsize
     hras_rbd.pca(
         title='',
@@ -339,13 +331,13 @@ characteristic (ROC) curve for classification. You will use the method
 ``object.roc`` and as an input you will pass a dataframe that contains
 the label for each variant.
 
-.. code:: python
+.. code:: ipython3
 
     #  Fake data
     df_freq: DataFrame = DataFrame()
-    df_freq['Variant'] = hras_rbd.dataframe['Variant']
+    df_freq['Variant'] = hras_rbd.dataframes.df_notstopcodons[-1]['Variant']
     df_freq['Class'] = np.random.randint(2, size=len(df_freq))
-
+    
     # Plot ROC curve
     hras_rbd.roc(
         df_freq[['Variant', 'Class']],
@@ -359,8 +351,8 @@ the label for each variant.
 Pymol
 -----
 
-Method reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.pymol`
+Class reviewed in this section:
+    - :class:`mutagenesis_visualization.main.pymol.pymol.Pymol`
 
 
 The data can be visualized on a Pymol object using ``object.pymol``. It
@@ -374,14 +366,14 @@ function and blue for loss of function. ``mode`` lets you specifiy
 whether to plot the mean or an individual amino acid profile (left -
 Leucine, right - Aspartate).
 
-.. code:: python
+.. code:: ipython3
 
     # Start pymol and color residues. Cut offs are set with gof and lof parameters.
     hras_rbd.pymol(pdb='5p21_A', mode='mean', gof=0.2, lof=-0.5)
-
+    
     # Now check the mutational profile of Leucine (left image)
     hras_rbd.pymol(pdb='5p21_A', mode='L', gof=0.2, lof=-0.5)
-
+    
     # Now check the mutational profile of Aspartate (right image)
     hras_rbd.pymol(pdb='5p21_A', mode='D', gof=0.2, lof=-0.5)
 
@@ -398,10 +390,10 @@ available with the package, see ``logo.xlsx``). The first step is to
 import the excel file, and then we perform the same steps as in a normal
 dataset.
 
-.. code:: python
+.. code:: ipython3
 
     %matplotlib inline
-
+    
     from mutagenesis_visualization.main.classes.screen import Screen
     from mutagenesis_visualization.main.utils.data_paths import PATH_LOGO
     # Read excel file
@@ -410,26 +402,26 @@ dataset.
     #df_faded = pd.read_excel(path, 'logo_faded', usecols=usecols, nrows=21)
     df_logo = pd.read_excel(PATH_LOGO, 'logo_2', usecols=usecols, nrows=21)
     df_faded = pd.read_excel(PATH_LOGO, 'logo_faded_2', usecols=usecols, nrows=21)
-
+    
     # Combine two dataframes
     df_mixed = df_logo * 1.2 - df_faded
-
+    
     # Aminoacids
     aminoacids = list('ACDEFGHIKLMNPQRSTVWY*')
-
+    
     # Define protein sequence
     sequence_logo = "FUNNY THAT YOU ARE READING THIS SEQUENCE. NO SECRET CODE FOR NOW"
-
+    
     # Define secondary structure
     secondary = [['L0'] * 5, ['β1'] * (9 - 1), ['L1'] * (15 - 9),
                  ['α1'] * (25 - 20), ['L2'] * (32 - 25), ['β2'] * (42 - 32),
                  ['L3'] * (50 - 42), ['α2'] * (58 - 50), ['L4'] * (70 - 58)]
-
+    
     # Create object
     logo_obj = Screen(
         df_mixed, sequence_logo, aminoacids = aminoacids, start_position=1, fillna=0, secondary=secondary
     )
-
+    
     # Create hetmap
     logo_obj.heatmap(
         show_cartoon=True,

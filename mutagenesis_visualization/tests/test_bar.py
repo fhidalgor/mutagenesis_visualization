@@ -247,9 +247,8 @@ def test_mean_counts() -> None:
             'close': True,
         },
         {
-            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False,
-            'close': True, 'text_labels':
-            [[1, 1, 'label']]
+            'figsize': (3, 2.5), 'y_label': r'$∆E^i_x$', 'show': False, 'close': True,
+            'text_labels': [[1, 1, 'label']]
         },
     ]
 

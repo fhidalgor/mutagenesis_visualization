@@ -77,10 +77,10 @@ Heatmaps
 --------
 
 Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.heatmap`
-    - :meth:`mutagenesis_visualization.Screen.heatmap_rows`
-    - :meth:`mutagenesis_visualization.Screen.heatmap_columns`
-    - :meth:`mutagenesis_visualization.Screen.miniheatmap`
+    - :meth:`mutagenesis_visualization.main.heatmaps.heatmap.Heatmap`
+    - :meth:`mutagenesis_visualization.main.heatmaps.HeatmapRows`
+    - :meth:`mutagenesis_visualization.main.heatmaps.HeatmapColumns`
+    - :meth:`mutagenesis_visualization.main.heatmaps.Miniheatmap`
 
 Once the object ``hras_RBD`` is created, we will plot a heatmap of the
 enrichment scores using the method ``object.heatmap``.

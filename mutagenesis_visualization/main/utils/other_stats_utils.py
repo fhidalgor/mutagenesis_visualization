@@ -93,9 +93,7 @@ def _offset_sequence(
 
     Returns
     --------
-    string containing trimmed sequence
-
-    """
+    string containing trimmed sequence    """
     # Deep copy sequence
     sequence = deepcopy(sequence)
 

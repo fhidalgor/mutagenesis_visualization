@@ -19,6 +19,10 @@ Plotly.
 Heatmap
 -------
 
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.heatmap.HeatmapP`
+
+
 Plot an interactive heatmap. Hopover individual pixels to get their
 characteristics.
 
@@ -34,6 +38,10 @@ characteristics.
 
 Mean
 ----
+
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.enrichment_bar.EnrichmentBarP`
+
 
 Analogous function to ``object.mean`` but rendered using plotly. Will
 plot the mean enrichment score for every position on a bar chart. It
@@ -64,6 +72,10 @@ scores (top) and an alanine scan (bottom)
 Histogram
 ---------
 
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.histogram.HistogramP`
+
+
 Plot a histogram.
 
 .. code:: ipython3
@@ -79,8 +91,8 @@ Plot a histogram.
 Rank
 ----
 
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.plotly_rank`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.rank.RankP`
 
 
 Create an interactive rank figure that displays each mutant. The default
@@ -110,8 +122,8 @@ Now display the rank of the positional mean.
 Scatter
 -------
 
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.plotly_scatter`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.scatter.ScatterP`
 
 
 If you have two datasets, you can create a scatter plot. The advantage
@@ -152,8 +164,8 @@ Now we just look at the positional average.
 3D scatter plot
 ---------------
 
-Methods reviewed in this section:
-    - :meth:`mutagenesis_visualization.Screen.plotly_scatter_3d`
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.scatter_3d.Scatter3D`
 
 
 If there is an available PDB structure, you can input it and the
@@ -236,6 +248,10 @@ core of the protein are blue, indicating a sensitivity to mutations.
 
 PDB properties
 --------------
+
+Classes reviewed in this section:
+    - :class:`mutagenesis_visualization.main.plotly.scatter_3d_pdb.Scatter3DPDB`
+
 
 From the PDB, properties such as B-factor or SASA can be extracted.
 Using plotly we allow the user to have a 3-D scatter plot colored by the
