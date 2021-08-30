@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mutagenesis-visualization"
-version = "0.4.0"
+version = "0.9.0"
 description = ""
 authors = ["Frank <fhidalgoruiz@berkeley.edu>"]
 
@@ -23,7 +23,6 @@ xlrd = "^2.0.1"
 statsmodels = "^0.12.2"
 XlsxWriter = "^1.4.4"
 matplotlib = "^3.4.3"
-ipymol = {git = "git@github.com:cxhernandez/ipymol.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -36,6 +35,7 @@ sphinx = "^4.1.2"
 nbconvert = "^6.1.0"
 numpydoc = "^1.1.0"
 sphinx-rtd-theme = "^0.5.2"
+ipymol = {git = "git@github.com:cxhernandez/ipymol.git"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

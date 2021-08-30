@@ -12,10 +12,10 @@
 #
 import sys
 import os
+sys.path.insert(0, os.path.abspath('../'))
 from mutagenesis_visualization import (__author__, __version__,
                                         __title__, __description__)
 
-sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 project = __title__
