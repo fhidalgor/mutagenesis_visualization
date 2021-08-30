@@ -13,6 +13,7 @@ from mutagenesis_visualization.main.process_data.count_reads import count_reads
 
 __author__ = "Frank Hidalgo"
 __version__ = "0.9.0"
-__title__ = "Mutagenesis Visualization"
+__title__ = "mutagenesis_visualization"
 __license__ = "GPLv3"
 __author_email__ = "fhidalgoruiz@berkeley.edu"
+__description__ = "A package for processing, analysis and visualization of site-saturation mutagenesis data."
