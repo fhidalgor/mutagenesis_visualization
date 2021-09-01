@@ -26,10 +26,12 @@ def test_heatmap() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'show': False, 'close':
-                                True}, {'hierarchical': True, 'show': False, 'close':
-                                        True}, {'show_snv': True, 'show': False, 'close': True},
-                               {'show_cartoon': True, 'show': False, 'close': True}]
+    list_params: List[dict] = [
+        {'show': False, 'close': True},
+        {'mask_selfsubstitutions': True, 'hierarchical': True, 'show': False, 'close': True},
+        {'show_snv': True, 'show': False, 'close': True},
+        {'show_cartoon': True, 'show': False, 'close': True},
+    ]
 
     # Assert
     for parameters in list_params:
@@ -54,7 +56,9 @@ def test_heatmap_rows() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{"selection": "mean", 'show': False, 'close': True}]
+    list_params: List[dict] = [{"selection": "mean", 'show': False, 'close': True}, {
+        "selection": None, 'mask_selfsubstitutions': True, 'show': False, 'close': True
+    }]
 
     # Assert
     for parameters in list_params:
@@ -79,7 +83,9 @@ def test_heatmap_columns() -> None:
 
     # Define dictionary of parameters
     # Each dict in the list will be a different set of parameters
-    list_params: List[dict] = [{'segment': [20, 40], 'show': False, 'close': True}]
+    list_params: List[dict] = [{'segment': [20, 40], 'show': False, 'close': True}, {
+        'segment': [30, 50], 'mask_selfsubstitutions': True, 'show': False, 'close': True
+    }]
 
     # Assert
     for parameters in list_params:
@@ -113,6 +119,7 @@ def test_plot_miniheatmap() -> None:
             'close': True,
         },
         {
+            'mask_selfsubstitutions': True,
             'neworder_aminoacids': list('ACDEFGHIKLMNPQRSTVWY*'),
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',

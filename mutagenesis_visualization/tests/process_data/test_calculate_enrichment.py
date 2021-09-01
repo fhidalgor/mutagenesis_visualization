@@ -48,79 +48,74 @@ def test_calculate_enrichment() -> None:
     log.info(f"{mpop=}")
     log.info(f"{std_scale=}")
 
-    args_how_scale = product(zeroing_compatible, zeroing_metric, [True], std_scale, *common_args)
-    args_how_no_scale = product(zeroing_compatible, zeroing_metric, [False], *common_args)
-    args_no_how_scale = product(zeroing_other, [True], std_scale, *common_args)
-    args_no_how_no_scale = product(zeroing_other, [False], *common_args)
+    args_how_scale = product(zeroing_compatible, zeroing_metric, std_scale, *common_args)
+    args_how_no_scale = product(zeroing_compatible, zeroing_metric, *common_args)
+    args_no_how_scale = product(zeroing_other, std_scale, *common_args)
+    args_no_how_no_scale = product(zeroing_other, *common_args)
 
     for args in args_how_scale:
-        zeroing, how, norm_std, std_scale, *common_args = args
-        stopcodon, min_counts, mpop = common_args
+        zeroing_method, zeroing_metric, std_scale, *common_args = args
+        stopcodon, min_counts, mad_filtering = common_args
         _ = calculate_enrichment(
             aminoacids=aminoacids_nns,
             pre_lib=df_counts_pre.iloc[:, : 54],
             post_lib=df_counts_sel.iloc[:, : 54],
-            zeroing_method=zeroing,
-            zeroing_metric =how,
-            norm_std=norm_std,
+            zeroing_method=zeroing_method,
+            zeroing_metric=zeroing_metric,
             std_scale=std_scale,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
-            mpop=mpop,
+            mad_filtering=mad_filtering,
             mwt=2,
             infinite=3
         )
     for args in args_no_how_scale:
         #print(args)
-        zeroing, how, norm_std, *common_args = args
-        stopcodon, min_counts, mpop = common_args
+        zeroing_method, zeroing_metric, *common_args = args
+        stopcodon, min_counts, mad_filtering = common_args
         _ = calculate_enrichment(
             aminoacids=aminoacids_nns,
             pre_lib=df_counts_pre.iloc[:, : 54],
             post_lib=df_counts_sel.iloc[:, : 54],
-            zeroing_method=zeroing,
-            zeroing_metric =how,
-            norm_std=norm_std,
+            zeroing_method=zeroing_method,
+            zeroing_metric=zeroing_metric,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
-            mpop=mpop,
+            mad_filtering=mad_filtering,
             mwt=2,
             infinite=3
         )
     for args in args_how_no_scale:
         #print(args)
-        zeroing, norm_std, std_scale, *common_args = args
-        stopcodon, min_counts, mpop = common_args
+        zeroing_method, zeroing_metric, *common_args = args
+        stopcodon, min_counts, mad_filtering = common_args
         _ = calculate_enrichment(
             aminoacids=aminoacids_nns,
             pre_lib=df_counts_pre.iloc[:, : 54],
             post_lib=df_counts_sel.iloc[:, : 54],
-            zeroing_method=zeroing,
-            norm_std=norm_std,
-            std_scale=std_scale,
+            zeroing_method=zeroing_method,
+            std_scale=0.2,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
-            mpop=mpop,
             mwt=2,
             infinite=3
         )
     for args in args_how_scale:
         #print(args)
-        zeroing, norm_std, *common_args = args
-        stopcodon, min_counts, mpop = common_args
+        zeroing_method, zeroing_metric, std_scale, *common_args = args
+        stopcodon, min_counts, mad_filtering = common_args
         _ = calculate_enrichment(
             aminoacids=aminoacids_nns,
             pre_lib=df_counts_pre.iloc[:, : 54],
             post_lib=df_counts_sel.iloc[:, : 54],
-            zeroing_method=zeroing,
-            norm_std=norm_std,
+            zeroing_method=zeroing_method,
             stopcodon=stopcodon,
             min_counts=min_counts,
             min_countswt=100,
-            mpop=mpop,
+            mad_filtering=mad_filtering,
             mwt=2,
             infinite=3
         )

@@ -26,6 +26,7 @@ class Heatmap(Pyplot):
     def __call__(
         self,
         nancolor: str = 'lime',
+        mask_selfsubstitutions: bool = False,
         show_cartoon: bool = False,
         show_snv: bool = False,
         hierarchical: bool = False,
@@ -42,6 +43,10 @@ class Heatmap(Pyplot):
 
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
+
+        mask_selfsubstitutions: bool, default False
+            If set to true, will assing a score of 0 to each self-substitution.
+            ie (A2A = 0)
 
         show_carton : boolean, default False
             If true, the plot will display a cartoon with the secondary
@@ -70,9 +75,14 @@ class Heatmap(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
 
+        # mask self-substitutions
+        self.df_output: DataFrame = self.dataframes.df_stopcodons[replicate].copy()
+        if mask_selfsubstitutions:
+            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+
         # sort data by rows in specified order by user
         self.df_output: DataFrame = df_rearrange(
-            add_snv_boolean(self.dataframes.df_stopcodons[replicate].copy()),
+            add_snv_boolean(self.df_output),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=show_snv

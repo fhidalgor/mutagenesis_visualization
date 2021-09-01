@@ -1,7 +1,7 @@
 """
 This module contais the enrichment calculations from dna counts.
 """
-from typing import Literal, Union, List
+from typing import Literal, Union, List, Optional
 from pathlib import Path
 import numpy as np
 from numpy import typing as npt
@@ -12,6 +12,15 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
     kernel_correction, replace_inf
 )
 
+ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'kernel','population'] # pylint: disable=invalid-name
+ZEROING_METRICS = Literal['mean', 'mean', 'mode', 'median'] # pylint: disable=invalid-name
+STOPCODON: bool = True
+MIN_COUNTS: int = 25
+MIN_COUNTSWT: int = 100
+STD_SCALE: float = 0.2
+MAD_FILTERING: int = 2
+MWT: float = 2
+INFINITE: float = 3
 
 def calculate_enrichment(
     aminoacids: Union[List[str], str],
@@ -19,18 +28,15 @@ def calculate_enrichment(
     post_lib: Union[str, DataFrame, npt.NDArray],
     pre_wt: Union[str, None, npt.NDArray] = None,
     post_wt: Union[str, None, npt.NDArray] = None,
-    zeroing_method: Literal['none', 'zscore', 'counts', 'wt', 'kernel',
-                            'population'] = 'population',
-    zeroing_metric: Literal['mean', 'mean', 'mode', 'median'] = 'median',
-    norm_std: bool = True,
-    stopcodon: bool = False,
-    min_counts: int = 25,
-    min_countswt: int = 100,
-    std_scale: float = 0.2,
-    mpop: float = 2,
-    mad_filtering: bool = True,
-    mwt: float = 2,
-    infinite: float = 3,
+    zeroing_method: ZEROING_METHODS = 'population',
+    zeroing_metric: ZEROING_METRICS = 'median',
+    stopcodon: bool = STOPCODON,
+    min_counts: int = MIN_COUNTS,
+    min_countswt: int = MIN_COUNTSWT,
+    std_scale: Optional[float] = STD_SCALE,
+    mad_filtering: int = MAD_FILTERING,
+    mwt: float = MWT,
+    infinite: float = INFINITE,
     output_file: Union[None, str, Path] = None
 ) -> npt.NDArray:
     """
@@ -65,9 +71,6 @@ def calculate_enrichment(
         Metric to zero the data. Only works if zeroing_method='population'
         or 'wt'. Can also be set to 'mean' or 'mode'.
 
-    norm_std : boolean, default True
-        If norm_std is set to True, it will scale the data.
-
     stopcodon : boolean, default False
         Use the enrichment score stop codons as a metric to determine
         the minimum enrichment score.
@@ -81,21 +84,17 @@ def calculate_enrichment(
         will be replaced by np.nan.
 
     std_scale : float, default 0.2
-        Factor by which the population is scaled. Only works if norm_std
-        is set to True.
+        Factor by which the population is scaled. Set to None if you don't
+        want to scale the data.
 
-    mpop : int, default 2
-        When using the median absolute deviation (MAD) filtering, mpop is
-        the number of medians away a data point must be to be discarded.
-
-    mad_filtering : boolean, default True
-        Will apply MAD filtering to data.
+    mad_filtering : int, default 2
+        Will apply MAD (median absolute deviation) filtering to data.
 
     mwt : int, default 2
-        When MAD filtering, mpop is the number of medians away a data
-        point must be to be discarded. The difference with mpop is that
-        mwt is only used when the population of wild-type alleles is
-        the reference for data zeroing_method.
+        When MAD filtering is applied, mad_filtering is the number of
+        medians away a data point must be to be discarded. mwt is only
+        used when the population of wild-type alleles is the reference
+        for data zeroing_method.
 
     infinite : int, default 3
         It will replace +infinite values with +3 and -infinite with -3.
@@ -107,7 +106,8 @@ def calculate_enrichment(
     Returns
     --------
     zeroed : ndarray
-        A np.array containing the enrichment scores.    """
+        A np.array containing the enrichment scores.
+    """
 
     # Convert to numpy if libraries are in dataframe format.
     # If input is a filepath, then load the txt files
@@ -145,22 +145,13 @@ def calculate_enrichment(
         pre_lib_df, post_lib_df, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
     # Group by amino acid
-    df_temp: DataFrame = DataFrame(data=log10_counts)
-    log10_counts_grouped: DataFrame = group_by_aa(df_temp, aminoacids)
-
-    # MAD filtering
+    log10_counts_grouped: DataFrame = group_by_aa(DataFrame(log10_counts), aminoacids)
+    log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
     if mad_filtering:
-        log10_counts_mad = filter_by_mad(np.ravel(np.array(log10_counts_grouped)), mpop)
-    else:
-        log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
-
-    # Statistics population using mad filtered data
-    mean_pop = np.nanmean(log10_counts_mad)
-    median_pop = np.nanmedian(log10_counts_mad)
-    std_pop = np.nanstd(log10_counts_mad)
-    mode_pop = nan_mode(log10_counts_mad)
+        log10_counts_mad = filter_by_mad(log10_counts_mad, mad_filtering)
 
     # Wt counts
+    log10_wtcounts = None
     if pre_wt is not None:
         log10_wtcounts = get_log_enrichment(
             pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt, stopcodon, infinite
@@ -170,53 +161,12 @@ def calculate_enrichment(
         if mad_filtering:
             log10_wtcounts = filter_by_mad(log10_wtcounts, mwt)
 
-        mean_wt = np.nanmean(log10_wtcounts)
-        median_wt = np.nanmedian(log10_wtcounts)
-        std_wt = np.nanstd(log10_wtcounts)
-        if len(log10_wtcounts) > 1:
-            mode_wt = nan_mode(log10_wtcounts)
-        else:  #case for only 1 wt
-            mode_wt = log10_wtcounts
-
-    # Zero data, select case
-    if zeroing_method == 'wt':
-        if zeroing_metric == 'mean':
-            zeroed = log10_counts_grouped - mean_wt
-        elif zeroing_metric == 'median':
-            zeroed = log10_counts_grouped - median_wt
-        elif zeroing_metric == 'mode':
-            zeroed = log10_counts_grouped - mode_wt
-        if norm_std is True:
-            zeroed = zeroed * std_scale / 2 / std_wt
-    elif zeroing_method == 'population':
-        if zeroing_metric == 'mean':
-            zeroed = log10_counts_grouped - mean_pop
-        elif zeroing_metric == 'median':
-            zeroed = log10_counts_grouped - median_pop
-        elif zeroing_metric == 'mode':
-            zeroed = log10_counts_grouped - mode_pop
-        if norm_std is True:
-            zeroed = zeroed * std_scale / std_pop
-    elif zeroing_method == 'counts':
-        ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
-        zeroed = log10_counts_grouped - ratio
-        if norm_std is True:
-            zeroed = zeroed * std_scale / std_pop
-    elif zeroing_method == 'kernel':
-        zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, cutoff=1)
-        zeroed, kernel_std = kernel_correction(zeroed_0, cutoff=1)
-        if norm_std is True:
-            zeroed = zeroed * std_scale / kernel_std
-    elif zeroing_method == 'zscore':
-        zeroed = zscore(log10_counts_grouped, nan_policy='omit')
-    elif zeroing_method == 'none':
-        zeroed = log10_counts_grouped
-    else:
-        raise ValueError('Wrong zeroed parameter.')
+    zeroed = zero_data(pre_lib=pre_lib, post_lib=post_lib, log10_counts_grouped=log10_counts_grouped, log10_counts_mad=log10_counts_mad, log10_wtcounts=log10_wtcounts, zeroing_method=zeroing_method, zeroing_metric=zeroing_metric, std_scale=std_scale)
 
     if output_file:
+        Path(output_file).parent.mkdir(parents=True, exist_ok=True)
         if Path(output_file).suffix == ".txt":
-            np.savetxt(Path(output_file), zeroed.to_numpy(), fmt='%i', delimiter='\t')
+            np.savetxt(Path(output_file), zeroed, fmt='%i', delimiter='\t')
         elif Path(output_file).suffix == ".csv":
             df_output: DataFrame = DataFrame(zeroed)
             df_output.to_csv(Path(output_file), index=False, header=False)
@@ -259,3 +209,58 @@ def get_log_enrichment(
         )
 
     return counts_log10_ratio
+
+def zero_data(pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped: DataFrame, log10_counts_mad: npt.NDArray, log10_wtcounts: Optional[npt.NDArray], zeroing_method: str, zeroing_metric: str, std_scale: float) -> npt.NDArray:
+    """
+    Zeroes the data according to the input parameters.
+    """
+    # Statistics population using mad filtered data
+    mean_pop = np.nanmean(log10_counts_mad)
+    median_pop = np.nanmedian(log10_counts_mad)
+    std_pop = np.nanstd(log10_counts_mad)
+    mode_pop = nan_mode(log10_counts_mad)
+
+    # Zero data, select case
+    if zeroing_method == 'wt' and log10_wtcounts:
+        mean_wt = np.nanmean(log10_wtcounts)
+        median_wt = np.nanmedian(log10_wtcounts)
+        std_wt = np.nanstd(log10_wtcounts)
+        if len(log10_wtcounts) > 1:
+            mode_wt = nan_mode(log10_wtcounts)
+        else:  #case for only 1 wt
+            mode_wt = log10_wtcounts
+        if zeroing_metric == 'mean':
+            zeroed = log10_counts_grouped - mean_wt
+        elif zeroing_metric == 'median':
+            zeroed = log10_counts_grouped - median_wt
+        elif zeroing_metric == 'mode':
+            zeroed = log10_counts_grouped - mode_wt
+        if std_scale:
+            zeroed = zeroed * std_scale / 2 / std_wt
+    elif zeroing_method == 'population':
+        if zeroing_metric == 'mean':
+            zeroed = log10_counts_grouped - mean_pop
+        elif zeroing_metric == 'median':
+            zeroed = log10_counts_grouped - median_pop
+        elif zeroing_metric == 'mode':
+            zeroed = log10_counts_grouped - mode_pop
+        if std_scale:
+                zeroed = zeroed * std_scale / std_pop
+    elif zeroing_method == 'counts':
+        ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
+        zeroed = log10_counts_grouped - ratio
+        if std_scale:
+            zeroed = zeroed * std_scale / std_pop
+    elif zeroing_method == 'kernel':
+        zeroed_0, kernel_std = kernel_correction(log10_counts_grouped, cutoff=1)
+        zeroed, kernel_std = kernel_correction(zeroed_0, cutoff=1)
+        if std_scale:
+            zeroed = zeroed * std_scale / kernel_std
+    elif zeroing_method == 'zscore':
+        zeroed = zscore(log10_counts_grouped, nan_policy='omit')
+    elif zeroing_method == 'none':
+        zeroed = log10_counts_grouped
+    else:
+        raise ValueError('Wrong zeroed parameter.')
+
+    return np.array(zeroed)

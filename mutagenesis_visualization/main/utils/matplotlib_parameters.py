@@ -9,12 +9,12 @@ def graph_parameters() -> None:
     Default rcParams.
     """
     # normal font
-    #rcParams['font.family'] = 'sans-serif'
-    #rcParams['font.sans-serif'] = ['Arial']
+    rcParams['font.family'] = 'sans-serif'
+    rcParams['font.sans-serif'] = ['Arial']
 
     # math font
-    #rcParams['mathtext.fontset'] = 'custom'
-    #rcParams['mathtext.rm'] = 'Arial'
+    rcParams['mathtext.fontset'] = 'custom'
+    rcParams['mathtext.rm'] = 'Arial'
     rcParams['svg.fonttype'] = 'none'
 
     # add grid
@@ -27,12 +27,11 @@ def graph_parameters() -> None:
     rcParams['xtick.labelsize'] = 9
     rcParams['ytick.labelsize'] = 9
 
-
 def font_parameters() -> None:
     """
     Default math font rcParams.
     """
     # math font
-    #rcParams['mathtext.fontset'] = 'custom'
-    #rcParams['mathtext.rm'] = 'Arial'
+    rcParams['mathtext.fontset'] = 'custom'
+    rcParams['mathtext.rm'] = 'Arial'
     rcParams['svg.fonttype'] = 'none'

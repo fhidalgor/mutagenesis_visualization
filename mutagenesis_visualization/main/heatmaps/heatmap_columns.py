@@ -24,6 +24,7 @@ class HeatmapColumns(Pyplot):
         segment: Tuple[int, int],
         ylabel_color: str = 'k',
         nancolor: str = 'lime',
+        mask_selfsubstitutions: bool = False,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -44,6 +45,10 @@ class HeatmapColumns(Pyplot):
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
 
+        mask_selfsubstitutions: bool, default False
+            If set to true, will assing a score of 0 to each self-substitution.
+            ie (A2A = 0)
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -60,15 +65,20 @@ class HeatmapColumns(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
 
+        # mask self-substitutions
+        df_main : DataFrame = self.dataframes.df_stopcodons[replicate].copy()
+        if mask_selfsubstitutions:
+            df_main.loc[df_main["Sequence"] == df_main["Aminoacid"], "Score_NaN"] = 0
+
         # sort data in specified order by user
-        df_whole: DataFrame = df_rearrange(
-            self.dataframes.df_stopcodons[replicate],
+        df_main = df_rearrange(
+            df_main,
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN'
         )
 
         # select subset
-        self.df_output = df_whole.iloc[:, segment[0] - self.start_position : segment[1] -
+        self.df_output = df_main.iloc[:, segment[0] - self.start_position : segment[1] -
                                        self.start_position + 1]
 
         # the size can be changed

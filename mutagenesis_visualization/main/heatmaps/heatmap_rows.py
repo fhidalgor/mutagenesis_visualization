@@ -25,6 +25,7 @@ class HeatmapRows(Pyplot):
         self,
         selection: Optional[List[str]] = None,
         nancolor: str = 'lime',
+        mask_selfsubstitutions: bool = False,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -42,6 +43,10 @@ class HeatmapRows(Pyplot):
 
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
+
+        mask_selfsubstitutions: bool, default False
+            If set to true, will assing a score of 0 to each self-substitution.
+            ie (A2A = 0)
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -69,8 +74,12 @@ class HeatmapRows(Pyplot):
             y_labels = [""]
             dataset = np.array([df_main.to_numpy()])
         else:
+            # mask self-substitutions
+            df_main = self.dataframes.df_stopcodons[replicate].copy()
+            if mask_selfsubstitutions:
+                df_main.loc[df_main["Sequence"] == df_main["Aminoacid"], "Score_NaN"] = 0
             df_main = select_aa(
-                self.dataframes.df_stopcodons[replicate].copy(),
+                df_main,
                 selection,
                 values='Score_NaN',
             )

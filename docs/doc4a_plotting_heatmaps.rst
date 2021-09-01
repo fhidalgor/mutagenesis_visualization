@@ -102,7 +102,12 @@ using hierarchical clustering
 .. image:: images/exported_images/hras_fullheatmap_hierarchical.png
 
 You can change the scale and the color map using the parameters
-``colorbar_scale`` and ``colormap``.
+``colorbar_scale`` and ``colormap``. You can also mask
+self-substitutions (ie T2T) by setting ``mask_selfsubstitutions=True``.
+The noise in the assay may cause self-substitutions to have a score
+different than 0, which may confuse the reader. If you use this masking,
+please make sure that there is no systematic error related to the
+centering of the data.
 
 .. code:: ipython3
 
@@ -111,6 +116,7 @@ You can change the scale and the color map using the parameters
     
     # Change scale and colormap
     hras_RBD.heatmap(
+        mask_selfsubstitutions=True,
         title='H-Ras 2-166',
         colorbar_scale=(-2, 2),
         colormap=colormap,

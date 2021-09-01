@@ -85,8 +85,7 @@ def df_rearrange(
     show_snv: bool = False,
 ) -> DataFrame:
     """
-    Convert a df_input into a numpy array for mutagenesis data. Allows the
-    option of keeping NaN scores. Returns copy
+    Rearrange heatmap according to new order of aminoacids. Returns copy
     """
     df_copy = df_input.copy()
 

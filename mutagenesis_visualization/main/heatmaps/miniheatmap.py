@@ -20,6 +20,7 @@ class Miniheatmap(Pyplot):
     """
     def __call__(
         self,
+        mask_selfsubstitutions: bool = False,
         position_offset: int = 0,
         background_correction: bool = False,
         replicate: int = -1,
@@ -32,6 +33,10 @@ class Miniheatmap(Pyplot):
 
         Parameters
         ----------
+        mask_selfsubstitutions: bool, default False
+            If set to true, will assing a score of 0 to each self-substitution.
+            ie (A2A = 0)
+
         position_offset : int, default 0
             Will group columns by residues. If the offset is not 0, it will use the values
             of the n+offset to group by. For example, you may want to see what happens when
@@ -71,6 +76,10 @@ class Miniheatmap(Pyplot):
             stopcodons=True
         )
 
+        # mask self-substitutions
+        if mask_selfsubstitutions:
+            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+
         # calculate condensed heatmap
         self.df_output = condense_heatmap(self.df_output, temp_kwargs['neworder_aminoacids'])
 
@@ -92,6 +101,9 @@ class Miniheatmap(Pyplot):
                 position_offset,
                 stopcodons=False
             )
+            # mask self-substitutions
+            if mask_selfsubstitutions:
+                self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
 
             # calculate mean effect using condensed heatmap
             df_condensed_heatmap = condense_heatmap(

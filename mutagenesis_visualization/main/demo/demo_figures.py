@@ -55,10 +55,10 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
 
     if figure.lower() == 'heatmap':
         # Create heatmap plot
-        hras_rbd.heatmap(title='H-Ras 2-166', show_cartoon=True, show=show)
+        hras_rbd.heatmap(title='H-Ras 2-166', mask_selfsubstitutions=False, show_cartoon=True, show=show)
     elif figure.lower() == 'miniheatmap':
         # Condensed heatmap
-        hras_rbd.miniheatmap(title='Wt residue H-Ras', show=show)
+        hras_rbd.miniheatmap(mask_selfsubstitutions=False,title='Wt residue H-Ras', show=show)
     elif figure.lower() == 'mean':
         # Mean enrichment by position
         hras_rbd.enrichment_bar(

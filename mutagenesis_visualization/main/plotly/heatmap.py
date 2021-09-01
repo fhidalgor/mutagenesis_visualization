@@ -3,7 +3,8 @@ This module contains the plotly heatmap plot.
 """
 from pathlib import Path
 from typing import Any, Dict, Union
-import numpy as np
+from numpy import around
+from pandas.core.frame import DataFrame
 from plotly import io as pio
 from plotly import graph_objects as go
 
@@ -20,6 +21,7 @@ class HeatmapP(Plotly):
 
     def __call__(
         self,
+        mask_selfsubstitutions: bool = False,
         replicate: int = -1,
         output_html: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -30,6 +32,10 @@ class HeatmapP(Plotly):
         Parameters
         ----------
         self : object from class *Screen*
+
+        mask_selfsubstitutions: bool, default False
+            If set to true, will assing a score of 0 to each self-substitution.
+            ie (A2A = 0)
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -45,9 +51,14 @@ class HeatmapP(Plotly):
         """
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
 
+        # mask self-substitutions
+        self.df_output: DataFrame = self.dataframes.df_stopcodons[replicate].copy()
+        if mask_selfsubstitutions:
+            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+
         # sort data by rows in specified order by user
         self.df_output = df_rearrange(
-            add_snv_boolean(self.dataframes.df_stopcodons[replicate].copy()),
+            add_snv_boolean(self.df_output),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',
             show_snv=False
@@ -62,7 +73,7 @@ class HeatmapP(Plotly):
 
         # Create figure
         self.fig = go.Figure(data=go.Heatmap(
-            z = np.around(self.df_output.to_numpy(),2),
+            z = around(self.df_output.to_numpy(),2),
             x = list(self.df_output.columns),
             y = list(self.df_output.index),
             zmin=temp_kwargs['colorbar_scale'][0],

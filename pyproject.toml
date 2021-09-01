@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mutagenesis-visualization"
+name = "mutagenesis_visualization"
 version = "0.9.0"
 description = ""
 authors = ["Frank <fhidalgoruiz@berkeley.edu>"]
