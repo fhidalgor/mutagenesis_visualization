@@ -101,6 +101,21 @@ position level ``mode=mean``.
 .. image:: images/exported_images/hras_scatter_mean.png
    :width: 200px
 
+If you are comparing two homologs/paralogs, you can evaluate what
+happens when mutating every site that differs between the two proteins
+to the identity in the other second protein. (ie K4A and A4K)
+
+.. code:: ipython3
+
+    # here map the residues that are different between the two proteins
+    map_sequence_changes = [(1, 1), (5, 5), (56, 56), (122, 123)]
+                            #^ same residue             #^ the residue 122 of the first protein matches the 123 rd of the second protein
+    # ancestralras_rbd does not exist yet, so this cell wont run
+    hras_rbd.sequence_differences(ancestralras_rbd, map_sequence_changes)
+
+.. image:: images/exported_images/hras_histogram_A_to_B.png
+   :width: 200px
+
 The method ``object.rank`` sorts each mutation (or position) by its
 enrichment score.
 
