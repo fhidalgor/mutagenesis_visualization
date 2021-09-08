@@ -63,6 +63,11 @@ The following classes are integrated into *Screen*, thus, you only have to use t
 .. autoclass:: mutagenesis_visualization.main.kernel.histogram.Histogram
     :members: __call__
 
+*Sequence* pyplot class
+-----------------------------
+.. autoclass:: mutagenesis_visualization.main.kernel.sequence_differences.SequenceDifferences
+    :members: __call__
+
 *MultipleKernel* pyplot class
 -----------------------------
 .. autoclass:: mutagenesis_visualization.main.kernel.multiple_kernels.MultipleKernel

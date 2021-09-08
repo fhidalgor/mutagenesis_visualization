@@ -24,6 +24,7 @@ Histogram, scatter and more
 Classes reviewed in this section:
     - :class:`mutagenesis_visualization.main.kernel.kernel.Kernel`
     - :class:`mutagenesis_visualization.main.kernel.histogram.Histogram`
+    - :class:`mutagenesis_visualization.main.kernel.sequence_differences.SequenceDifferences`
     - :class:`mutagenesis_visualization.main.scatter.scatter.Scatter`
     - :class:`mutagenesis_visualization.main.other_stats.rank.Rank`
     - :class:`mutagenesis_visualization.main.other_stats.cumulative.Cumulative`
@@ -114,7 +115,7 @@ to the identity in the other second protein. (ie K4A and A4K)
     hras_rbd.sequence_differences(ancestralras_rbd, map_sequence_changes)
 
 .. image:: images/exported_images/hras_histogram_A_to_B.png
-   :width: 200px
+   :width: 400px
 
 The method ``object.rank`` sorts each mutation (or position) by its
 enrichment score.
