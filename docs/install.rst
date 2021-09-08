@@ -145,6 +145,8 @@ There are four other demo plots, and can be invoked using the following command:
 .. image:: images/exported_images/hras_kde.png
    :width: 240px
 
+Run `mut.run_demo(figure = 'pymol')` to test if your Pymol is connected to this package.
+
 If you would like to play with the data yourself, execute the following command to retrieve the raw data:
 
 .. code:: ipython3
