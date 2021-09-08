@@ -27,6 +27,7 @@ def graph_parameters() -> None:
     rcParams['xtick.labelsize'] = 9
     rcParams['ytick.labelsize'] = 9
 
+
 def font_parameters() -> None:
     """
     Default math font rcParams.

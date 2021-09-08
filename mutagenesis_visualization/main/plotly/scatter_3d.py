@@ -20,7 +20,6 @@ class Scatter3D(Plotly):
     This class uses plotly to generate a 3D scatter plot of the protein
     and the enrichment scores.
     """
-
     def __call__(
         self,
         pdb_path: str,

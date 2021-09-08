@@ -15,7 +15,6 @@ class DifferentialP(Plotly):
     """
     This class uses plotly to generate a differential plot.
     """
-
     def __call__(
         self,
         screen_object: Any,

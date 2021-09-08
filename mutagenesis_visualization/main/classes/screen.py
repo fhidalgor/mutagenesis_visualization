@@ -12,6 +12,7 @@ from mutagenesis_visualization.main.bar_graphs.secondary import Secondary
 from mutagenesis_visualization.main.kernel.kernel import Kernel
 from mutagenesis_visualization.main.kernel.histogram import Histogram
 from mutagenesis_visualization.main.kernel.multiple_kernels import MultipleKernel
+from mutagenesis_visualization.main.kernel.sequence_differences import SequenceDifferences
 from mutagenesis_visualization.main.heatmaps.heatmap import Heatmap
 from mutagenesis_visualization.main.heatmaps.heatmap_columns import HeatmapColumns
 from mutagenesis_visualization.main.heatmaps.heatmap_rows import HeatmapRows
@@ -158,6 +159,9 @@ class Screen:
         self.multiple_kernel: MultipleKernel = MultipleKernel(
             dataframes=self.dataframes, aminoacids=self.aminoacids
         )
+        self.sequence_differences: SequenceDifferences = SequenceDifferences(
+            dataframes=self.dataframes, aminoacids=self.aminoacids
+        )
 
         # heatmaps
         self.heatmap: Heatmap = Heatmap(
@@ -269,4 +273,6 @@ class Screen:
         try:
             self.pymol: Pymol = Pymol(dataframes=self.dataframes)
         except Exception:  # pylint: disable=broad-except
-            logging.info("Pymol capability not loaded.")
+            logging.info(
+                "Pymol capability not loaded. Check the documentation for more information."
+            )

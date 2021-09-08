@@ -15,7 +15,6 @@ class IndividualCorrelation(Pyplot):
     This class will conduct an individual correlation from the enrichment
     scores.
     """
-
     def __call__(
         self,
         replicate: int = -1,

@@ -20,7 +20,6 @@ class PCA(Pyplot):
     """
     This class will conduct a PCA from the enrichment scores.
     """
-
     def __call__(
         self,
         mode: str = 'aminoacid',

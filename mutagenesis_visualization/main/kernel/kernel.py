@@ -12,7 +12,6 @@ class Kernel(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-
     def __call__(
         self,
         show_replicates: bool = False,

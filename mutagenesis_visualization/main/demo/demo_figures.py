@@ -1,15 +1,19 @@
 """
 This module contains demo data that can be loaded.
 """
-from typing import List
+from typing import List, Literal
 import numpy as np
 from numpy import typing as npt
 
 from mutagenesis_visualization.main.classes.screen import Screen
-from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV
+from mutagenesis_visualization.main.utils.data_paths import HRAS_RBD_COUNTS_CSV, PDB_5P21
+
+FIGURE_OPTIONS = Literal['heatmap', 'miniheatmap', 'mean', 'kernel', 'pca',  # pylint: disable=invalid-name
+                         'position', 'secondary_mean', 'correlation', 'individual_correlation',
+                         'pymol']
 
 
-def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
+def run_demo(figure: FIGURE_OPTIONS = 'heatmap', show: bool = True) -> None:
     """
     Performs a demonstration of the mutagenesis_visualization software.
 
@@ -19,11 +23,11 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
         There are a few example plots that can be displayed to test the
         package is working on your station. The options are 'heatmap',
         'miniheatmap', 'mean', 'kernel', 'pca' 'position', 'secondary_mean',
-        'correlation', 'individual_correlation'.
+        'correlation', 'individual_correlation' and 'pymol'.
         Check the documentation for more information.
 
     show : boolean, default True
-        If True, will do plt.show() for each figure.
+        If True, will execute plt.show() for each figure.
     """
 
     # Load enrichment scores
@@ -55,10 +59,12 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
 
     if figure.lower() == 'heatmap':
         # Create heatmap plot
-        hras_rbd.heatmap(title='H-Ras 2-166', mask_selfsubstitutions=False, show_cartoon=True, show=show)
+        hras_rbd.heatmap(
+            title='H-Ras 2-166', mask_selfsubstitutions=False, show_cartoon=True, show=show
+        )
     elif figure.lower() == 'miniheatmap':
         # Condensed heatmap
-        hras_rbd.miniheatmap(mask_selfsubstitutions=False,title='Wt residue H-Ras', show=show)
+        hras_rbd.miniheatmap(mask_selfsubstitutions=False, title='Wt residue H-Ras', show=show)
     elif figure.lower() == 'mean':
         # Mean enrichment by position
         hras_rbd.enrichment_bar(
@@ -98,5 +104,7 @@ def run_demo(figure: str = 'heatmap', show: bool = True) -> None:
             output_file=None,
             show=show,
         )
+    elif figure.lower() == 'pymol':
+        hras_rbd.pymol(PDB_5P21)
     else:
         raise NameError('Select a valid name for a demo figure.')

@@ -78,10 +78,11 @@ class Heatmap(Pyplot):
         # mask self-substitutions
         self.df_output: DataFrame = self.dataframes.df_stopcodons[replicate].copy()
         if mask_selfsubstitutions:
-            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"],
+                               "Score_NaN"] = 0
 
         # sort data by rows in specified order by user
-        self.df_output: DataFrame = df_rearrange(
+        self.df_output = df_rearrange(
             add_snv_boolean(self.df_output),
             temp_kwargs['neworder_aminoacids'],
             values='Score_NaN',

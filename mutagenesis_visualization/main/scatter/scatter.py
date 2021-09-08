@@ -1,7 +1,7 @@
 """
 This module contains the class that plots scatters.
 """
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, TYPE_CHECKING, Literal
 from pathlib import Path
 import numpy as np
 from pandas.core.frame import DataFrame
@@ -13,17 +13,18 @@ from mutagenesis_visualization.main.utils.pandas_functions import (
     process_mean_residue,
     process_by_pointmutant,
 )
+if TYPE_CHECKING:
+    from mutagenesis_visualization.main.classes.screen import Screen
 
 
 class Scatter(Pyplot):
     """
     Class to generate a kernel density plot.
     """
-
     def __call__(
         self,
-        screen_object: Any,
-        mode: str = 'pointmutant',
+        screen_object: Union['Screen', Any],
+        mode: Literal["mean", "pointmutant"] = 'pointmutant',
         replicate: int = -1,
         replicate_second_object: int = -1,
         output_file: Union[None, str, Path] = None,

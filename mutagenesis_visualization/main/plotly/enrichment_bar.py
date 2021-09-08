@@ -15,7 +15,6 @@ class EnrichmentBarP(Plotly):
     """
     This class uses plotly to generate a mean enrichment plot.
     """
-
     def __call__(
         self,
         mode: str = 'mean',

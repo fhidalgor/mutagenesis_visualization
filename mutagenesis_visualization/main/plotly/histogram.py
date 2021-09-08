@@ -13,7 +13,6 @@ class HistogramP(Plotly):
     """
     This class uses plotly to generate a histogram plot.
     """
-
     def __call__(
         self,
         mode: str = 'pointmutant',

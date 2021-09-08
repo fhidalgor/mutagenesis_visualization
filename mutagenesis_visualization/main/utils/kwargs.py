@@ -86,8 +86,9 @@ def generate_default_kwargs() -> Dict[str, Any]:
     random_state : int, default 554
         Random state used for PCA function.
 
-    bins : int, default 50
-        Number of bins used for kernel and histograms.
+    bins : int or str, default 'auto'.
+        Number of bins for the histogram. By default it will
+        automatically decide the number of bins.
 
     return_plot_object : boolean, default False
         If true, will return plotting object.
@@ -128,7 +129,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         'show': True,
         'close': False,
         'random_state': 554,
-        'bins': 50,
+        'bins': "auto",
         'return_plot_object': False,
         'grid': False,
         'metric': "",

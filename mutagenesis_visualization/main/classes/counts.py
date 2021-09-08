@@ -41,7 +41,6 @@ class Counts:
     mean_counts
     library_representation
     """
-
     def __init__(
         self,
         dataframes: Union[DataFrame, List[DataFrame]],

@@ -13,7 +13,6 @@ class RankP(Plotly):
     """
     This class uses plotly to generate a rank plot.
     """
-
     def __call__(
         self,
         mode: str = 'pointmutant',

@@ -78,7 +78,8 @@ class Miniheatmap(Pyplot):
 
         # mask self-substitutions
         if mask_selfsubstitutions:
-            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+            self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"],
+                               "Score_NaN"] = 0
 
         # calculate condensed heatmap
         self.df_output = condense_heatmap(self.df_output, temp_kwargs['neworder_aminoacids'])
@@ -103,7 +104,8 @@ class Miniheatmap(Pyplot):
             )
             # mask self-substitutions
             if mask_selfsubstitutions:
-                self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"], "Score_NaN"] = 0
+                self.df_output.loc[self.df_output["Sequence"] == self.df_output["Aminoacid"],
+                                   "Score_NaN"] = 0
 
             # calculate mean effect using condensed heatmap
             df_condensed_heatmap = condense_heatmap(

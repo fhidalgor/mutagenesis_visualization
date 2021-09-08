@@ -12,8 +12,8 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
     kernel_correction, replace_inf
 )
 
-ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'kernel','population'] # pylint: disable=invalid-name
-ZEROING_METRICS = Literal['mean', 'mean', 'mode', 'median'] # pylint: disable=invalid-name
+ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'kernel', 'population']  # pylint: disable=invalid-name
+ZEROING_METRICS = Literal['mean', 'mean', 'mode', 'median']  # pylint: disable=invalid-name
 STOPCODON: bool = True
 MIN_COUNTS: int = 25
 MIN_COUNTSWT: int = 100
@@ -21,6 +21,7 @@ STD_SCALE: float = 0.2
 MAD_FILTERING: int = 2
 MWT: float = 2
 INFINITE: float = 3
+
 
 def calculate_enrichment(
     aminoacids: Union[List[str], str],
@@ -161,7 +162,16 @@ def calculate_enrichment(
         if mad_filtering:
             log10_wtcounts = filter_by_mad(log10_wtcounts, mwt)
 
-    zeroed = zero_data(pre_lib=pre_lib, post_lib=post_lib, log10_counts_grouped=log10_counts_grouped, log10_counts_mad=log10_counts_mad, log10_wtcounts=log10_wtcounts, zeroing_method=zeroing_method, zeroing_metric=zeroing_metric, std_scale=std_scale)
+    zeroed = zero_data(
+        pre_lib=pre_lib,
+        post_lib=post_lib,
+        log10_counts_grouped=log10_counts_grouped,
+        log10_counts_mad=log10_counts_mad,
+        log10_wtcounts=log10_wtcounts,
+        zeroing_method=zeroing_method,
+        zeroing_metric=zeroing_metric,
+        std_scale=std_scale
+    )
 
     if output_file:
         Path(output_file).parent.mkdir(parents=True, exist_ok=True)
@@ -210,7 +220,12 @@ def get_log_enrichment(
 
     return counts_log10_ratio
 
-def zero_data(pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped: DataFrame, log10_counts_mad: npt.NDArray, log10_wtcounts: Optional[npt.NDArray], zeroing_method: str, zeroing_metric: str, std_scale: float) -> npt.NDArray:
+
+def zero_data(
+    pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped: DataFrame,
+    log10_counts_mad: npt.NDArray, log10_wtcounts: Optional[npt.NDArray], zeroing_method: str,
+    zeroing_metric: str, std_scale: float
+) -> npt.NDArray:
     """
     Zeroes the data according to the input parameters.
     """
@@ -221,7 +236,7 @@ def zero_data(pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped:
     mode_pop = nan_mode(log10_counts_mad)
 
     # Zero data, select case
-    if zeroing_method == 'wt' and log10_wtcounts:
+    if zeroing_method == 'wt' and log10_wtcounts is not None:
         mean_wt = np.nanmean(log10_wtcounts)
         median_wt = np.nanmedian(log10_wtcounts)
         std_wt = np.nanstd(log10_wtcounts)
@@ -245,7 +260,7 @@ def zero_data(pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped:
         elif zeroing_metric == 'mode':
             zeroed = log10_counts_grouped - mode_pop
         if std_scale:
-                zeroed = zeroed * std_scale / std_pop
+            zeroed = zeroed * std_scale / std_pop
     elif zeroing_method == 'counts':
         ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
         zeroed = log10_counts_grouped - ratio

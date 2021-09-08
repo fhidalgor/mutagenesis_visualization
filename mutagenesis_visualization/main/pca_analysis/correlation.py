@@ -16,7 +16,6 @@ class Correlation(Pyplot):
     """
     This class will conduct a correlation from the enrichment scores.
     """
-
     def __call__(
         self,
         replicate: int = -1,

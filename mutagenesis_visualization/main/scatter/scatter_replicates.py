@@ -2,7 +2,7 @@
 This module will have the wrapper function to plot scatters for all
 replicates within a Screen object.
 """
-from typing import Any, Union
+from typing import Any, Union, Literal
 from pathlib import Path
 from itertools import combinations
 from copy import deepcopy
@@ -14,11 +14,10 @@ class ScatterReplicates(Pyplot):
     """
     Class to generate scatter plots of each pairwise replicate combination.
     """
-
     def __call__(
         self,
         show_wild_type_counts_only: bool = False,
-        mode: str = 'pointmutant',
+        mode: Literal["mean", "pointmutant"] = 'pointmutant',
         output_file: Union[None, str, Path] = None,
         **kwargs: Any
     ) -> None:

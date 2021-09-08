@@ -13,7 +13,6 @@ class Rank(Pyplot):
     """
     Class to generate a mean enrichment bar plot.
     """
-
     def __call__(
         self,
         mode: str = 'pointmutant',

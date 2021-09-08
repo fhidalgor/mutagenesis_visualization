@@ -7,8 +7,12 @@ from numpy import typing as npt
 from numpy import savetxt, array, ravel, nanstd
 from pandas.core.frame import DataFrame
 from pandas import concat
-from mutagenesis_visualization.main.process_data.calculate_enrichment import (calculate_enrichment, ZEROING_METRICS, ZEROING_METHODS, STD_SCALE, STOPCODON, MAD_FILTERING, MIN_COUNTS, MIN_COUNTSWT, MWT, INFINITE)
+from mutagenesis_visualization.main.process_data.calculate_enrichment import (
+    calculate_enrichment, ZEROING_METRICS, ZEROING_METHODS, STD_SCALE, STOPCODON, MAD_FILTERING,
+    MIN_COUNTS, MIN_COUNTSWT, MWT, INFINITE
+)
 from mutagenesis_visualization.main.process_data.process_data_utils import filter_by_mad
+
 
 def batch_calculate_enrichment(
     aminoacids: Union[List[str], str],
@@ -104,8 +108,21 @@ def batch_calculate_enrichment(
 
     for pre, sel, pre_wt, sel_wt in zip(list_pre_lib, list_sel_lib, list_pre_wt, list_sel_wt):
         enrichment_log10 = calculate_enrichment(
-            aminoacids=aminoacids, pre_lib= pre, post_lib= sel, pre_wt= pre_wt, post_wt= sel_wt, zeroing_method=zeroing_method, zeroing_metric=zeroing_metric,
-            stopcodon=stopcodon, min_counts=min_counts, min_countswt=min_countswt, std_scale=std_scale, mad_filtering=mad_filtering, mwt=mwt, infinite=infinite, output_file= None
+            aminoacids=aminoacids,
+            pre_lib=pre,
+            post_lib=sel,
+            pre_wt=pre_wt,
+            post_wt=sel_wt,
+            zeroing_method=zeroing_method,
+            zeroing_metric=zeroing_metric,
+            stopcodon=stopcodon,
+            min_counts=min_counts,
+            min_countswt=min_countswt,
+            std_scale=std_scale,
+            mad_filtering=mad_filtering,
+            mwt=mwt,
+            infinite=infinite,
+            output_file=None
         )
         enrichment_lib.append(DataFrame(enrichment_log10))
 

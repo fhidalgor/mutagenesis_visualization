@@ -1,35 +1,58 @@
 """
-This module contains the class that plots histograms.
+This module will host the sequence_differences class
 """
-from typing import Union, Dict, Any
+
+from typing import Tuple, Union, Dict, Any, List, TYPE_CHECKING, Optional
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
+from mutagenesis_visualization.main.utils.pandas_functions import get_fitness_changes
+if TYPE_CHECKING:
+    from mutagenesis_visualization.main.classes.screen import Screen
 
 
-class Histogram(Pyplot):
+class SequenceDifferences(Pyplot):
     """
-    Class to generate a histogram plot.
+    Class to generate the sequence differences plot.
     """
     def __call__(
         self,
-        population: str = 'All',
+        screen_object: 'Screen',
+        map_sequence_changes: List[Tuple[int, int]],
+        legend_labels: Optional[Tuple[str, str]] = None,
         replicate: int = -1,
+        replicate_second_object: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
         """
-        Generate a histogram plot. Can plot single nucleotide variants
-        (SNVs) or non-SNVs only.
+        Generate two histogram plots. The first plot will have the impact
+        on fitness to go from protein A -> B, and the second plot will
+        contain the B -> A effect.
 
         Parameters
         ----------
-        population : str, default 'All'.
-            Other options are 'SNV' and 'nonSNV'.
+        screen_object : *Screen* object or list containing *Screen*
+            objects.
+
+        map_sequence_changes: list of tuples
+            Set the residues that differ between protein A and protein B.
+            Example: [(1, 1), (12, 12), (15, 16)]. In the example, the
+            algorithm will compare the residue 1 and 12 of each protein,
+            and the residue 15 of protein A vs the residue 16 of protein B.
+
+        legend_labels: tuple of str
+            Set the labels of the legend.
 
         replicate : int, default -1
+            Set the replicate to plot. By default, the mean is plotted.
+            First replicate start with index 0.
+            If there is only one replicate, then leave this parameter
+            untouched.
+
+        replicate_second_object : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
             If there is only one replicate, then leave this parameter
@@ -56,17 +79,35 @@ class Histogram(Pyplot):
         temp_kwargs = self._update_kwargs(kwargs)
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
         self.graph_parameters()
+        if not legend_labels:
+            legend_labels = ("A -> B", "B -> A")
 
         # Select case input data
-        data_to_use = self.dataframes.df_notstopcodons[replicate]['Score_NaN']
-        if population == 'SNV':
-            data_to_use = self.dataframes.df_snv[replicate]['Score_NaN']
-        elif population == 'nonSNV':
-            data_to_use = self.dataframes.df_nonsnv[replicate]['Score_NaN']
+        self.df_output = get_fitness_changes(
+            map_sequence_changes, self.dataframes.df_notstopcodons[replicate],
+            screen_object.dataframes.df_notstopcodons[replicate_second_object]
+        )
 
         # plot histogram
-        self.ax_object = plt.hist(data_to_use, density=True, bins=temp_kwargs['bins'], color='k')
+        self.ax_object = plt.hist(
+            self.df_output["A_to_B"],
+            density=True,
+            bins=temp_kwargs['bins'],
+            color='blue',
+            label=legend_labels[0],
+            alpha=0.5
+        )
+        self.ax_object = plt.hist(
+            self.df_output["B_to_A"],
+            density=True,
+            bins=temp_kwargs['bins'],
+            color='red',
+            label=legend_labels[1],
+            alpha=0.5
+        )
+        plt.legend(loc='best', frameon=False, handlelength=1, handletextpad=0.5)
 
+        # legend????
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
 
@@ -78,7 +119,7 @@ class Histogram(Pyplot):
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
+        temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
         return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
@@ -119,4 +160,4 @@ class Histogram(Pyplot):
             )
         if temp_kwargs['yscale'] != (None, None):
             plt.ylim(temp_kwargs['yscale'])
-            plt.grid()
+        plt.grid()

@@ -191,8 +191,8 @@ def color_data(row: DataFrame, color_gof: str, color_lof: str) -> str:
 
 
 def process_mean_residue(
-    dataframe_1: DataFrame,
-    dataframe_2: DataFrame,
+    df_1: DataFrame,
+    df_2: DataFrame,
 ) -> DataFrame:
     """
     Given two dataframes, it groups by position and truncates the
@@ -202,8 +202,8 @@ def process_mean_residue(
     """
 
     # truncate so both datasets have same length
-    dataset_1 = dataframe_1.groupby(['Position'], as_index=False).mean()
-    dataset_2 = dataframe_2.groupby(['Position'], as_index=False).mean()
+    dataset_1 = df_1.groupby(['Position'], as_index=False).mean()
+    dataset_2 = df_2.groupby(['Position'], as_index=False).mean()
     min_length: int = min(len(dataset_1), len(dataset_2))
 
     # convert to dataframe and eliminate Nans
@@ -217,8 +217,8 @@ def process_mean_residue(
 
 
 def process_rmse_residue(
-    dataframe_1: DataFrame,
-    dataframe_2: DataFrame,
+    df_1: DataFrame,
+    df_2: DataFrame,
     metric: str,
 ) -> DataFrame:
     """
@@ -227,11 +227,11 @@ def process_rmse_residue(
     that contains the Scores, the position and the rmse between mutations.
     """
 
-    min_length: int = min(len(dataframe_1), len(dataframe_2))
+    min_length: int = min(len(df_1), len(df_2))
     df_ouput: DataFrame = DataFrame()
-    df_ouput['Position'] = list(dataframe_1['Position'])[0 : min_length]
-    df_ouput['dataset_1'] = list(dataframe_1['Score'])[0 : min_length]
-    df_ouput['dataset_2'] = list(dataframe_2['Score'])[0 : min_length]
+    df_ouput['Position'] = list(df_1['Position'])[0 : min_length]
+    df_ouput['dataset_1'] = list(df_1['Score'])[0 : min_length]
+    df_ouput['dataset_2'] = list(df_2['Score'])[0 : min_length]
     df_diff: DataFrame = DataFrame()
 
     if metric.lower() == 'mean':
@@ -248,19 +248,63 @@ def process_rmse_residue(
     return df_diff
 
 
-def process_by_pointmutant(dataframe_1: DataFrame, dataframe_2: DataFrame) -> DataFrame:
+def process_by_pointmutant(df_1: DataFrame, df_2: DataFrame) -> DataFrame:
     """
     Given two dataframes, it truncates the longer one. It also drops nan
     values. Returns joined dataframe that contains the Scores and the
     Variants.
     """
     # truncate so both datasets have same length and delete stop codons
-    min_length: int = min(len(dataframe_1), len(dataframe_2))
+    min_length: int = min(len(df_1), len(df_2))
     df_ouput: DataFrame = DataFrame()
-    df_ouput['dataset_1'] = list(dataframe_1['Score_NaN'])[: min_length]
-    df_ouput['dataset_2'] = list(dataframe_2['Score_NaN'])[: min_length]
-    df_ouput['Variant'] = list(dataframe_1['Variant'])[: min_length]
+    df_ouput['dataset_1'] = list(df_1['Score_NaN'])[: min_length]
+    df_ouput['dataset_2'] = list(df_2['Score_NaN'])[: min_length]
+    df_ouput['Variant'] = list(df_1['Variant'])[: min_length]
 
     # eliminate Nans
     df_ouput.dropna(how='any', inplace=True)
+    return df_ouput
+
+
+def get_fitness_changes(
+    map_sequence_changes: List[Tuple[int, int]], df_1: DataFrame, df_2: DataFrame
+) -> DataFrame:
+    """
+    Generate two histogram plots. The first plot will have the impact
+    on fitness to go from protein A -> B, and the second plot will
+    contain the B -> A effect.
+    """
+    a_to_b: List[float] = []
+    b_to_a: List[float] = []
+    variants_a_to_b: List[str] = []
+    variants_b_to_a: List[str] = []
+    for residue_1, residue_2 in map_sequence_changes:
+        # Get the amino acid that maps to the index
+        sequence_1 = df_1.loc[(df_1["Position"] == residue_1)
+                              & (df_1["Sequence"] == df_1["Aminoacid"])]["Aminoacid"].values[0]
+        sequence_2 = df_1.loc[(df_1["Position"] == residue_2)
+                              & (df_1["Sequence"] == df_1["Aminoacid"])]["Aminoacid"].values[0]
+        # Get the enrinchment score of the mapping
+        a_to_b.append(
+            df_1.loc[(df_1["Position"] == residue_1)
+                     & (df_1["Aminoacid"] == sequence_2)]["Score_NaN"].values[0]
+        )
+        b_to_a.append(
+            df_2.loc[(df_2["Position"] == residue_2)
+                     & (df_2["Aminoacid"] == sequence_1)]["Score_NaN"].values[0]
+        )
+        variants_a_to_b.append(
+            df_1.loc[(df_1["Position"] == residue_1)
+                     & (df_1["Aminoacid"] == sequence_2)]["Variant"].values[0]
+        )
+        variants_b_to_a.append(
+            df_2.loc[(df_2["Position"] == residue_1)
+                     & (df_2["Aminoacid"] == sequence_1)]["Variant"].values[0]
+        )
+
+    df_ouput: DataFrame = DataFrame()
+    df_ouput["variants_A_to_B"] = variants_a_to_b
+    df_ouput["A_to_B"] = a_to_b
+    df_ouput["variants_B_to_A"] = variants_b_to_a
+    df_ouput["B_to_A"] = b_to_a
     return df_ouput

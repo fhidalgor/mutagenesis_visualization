@@ -8,10 +8,17 @@
 Installation guide
 ********************
 
+Using a virtual environment
+============================
+
+The easiest way to run mutagenesis_visualization is by creating a virtual environment, where all the dependencies are installed from scratch. That will avoid errors related to different versions of dependencies.
+There are different tools to manage virtual environments, such as `poetry <https://python-poetry.org/>`_ or `conda <https://docs.conda.io/en/latest/>`_. We recommend using poetry for its simplicity. A toml and a lock file are
+present in the repository.
+
 Installing with pip
 ====================
 
-``mutagenesis_visualization`` is compatible with Python =>3.6. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <https://pypi.org/project/mutagenesis-visualization>`_ using the ``pip`` package manager by executing the following at the command line:
+``mutagenesis_visualization`` is compatible with Python =>3.8. The code is available on `GitHub <https://github.com/fhidalgor/mutagenesis_visualization>`_ under a GNU GENERAL PUBLIC LICENSE. The package can be installed from `PyPI <https://pypi.org/project/mutagenesis-visualization>`_ using the ``pip`` package manager by executing the following at the command line:
 
 .. code-block:: bash
 
@@ -34,41 +41,44 @@ Dependencies
 ==============
 
 In this section I am listing the dependencies and the versions I used to make the package.
+Check out the requirements.txt and the pyproject.toml files to see the specific versions that were used.
 
 .. note::
     The software has been tested on Linux, Windows and MacOS platforms. The package works in all of them as long as the dependencies are updated. We have encountered issues when the Anaconda environment was old. Those issues got solved by uninstalling and reinstalling Anaconda (which will automatically update all the dependencies.)
 
 Required Dependencies
 -----------------------
-- `numpy <http://numpy.org/>`_ (version 1.19.5)
+- python (version >= 3.8)
 
-- `matplotlib <http://matplotlib.org/>`_ (version 3.3)
+- `numpy <http://numpy.org/>`_
 
-- `seaborn <https://seaborn.pydata.org/>`_ (version 0.10.1)
+- `matplotlib <http://matplotlib.org/>`_
 
-- `pandas <http://pandas.pydata.org/>`_ (version 1.2.0)
+- `seaborn <https://seaborn.pydata.org/>`_
 
-- `scipy <http://www.scipy.org/scipylib/index.html>`_ (version 1.5.0)
+- `pandas <http://pandas.pydata.org/>`_
 
-- `scikit-learn <http://scikit-learn.org/stable/>`_ (version 0.24.2)
+- `scipy <http://www.scipy.org/scipylib/index.html>`_
 
-- `biopython <https://pypi.org/project/biopython/>`_ (version 1.79)
+- `scikit-learn <http://scikit-learn.org/stable/>`_
 
-- `freesasa <https://pypi.org/project/freesasa/>`_ (version 2.1.0)
+- `biopython <https://pypi.org/project/biopython/>`_
 
-- `adjustText <https://pypi.org/project/adjustText/>`_ (version 0.7.3)
+- `freesasa <https://pypi.org/project/freesasa/>`_
 
-- `plotly <https://plotly.com/>`_ (version 5.1.0)
+- `adjustText <https://pypi.org/project/adjustText/>`_
 
-- `openpyxl <https://pypi.org/project/openpyxl/>`_ (version 3.0.7)
+- `plotly <https://plotly.com/>`_
 
-- `ipympl <https://pypi.org/project/ipympl/>`_ (version 0.7.0)
+- `openpyxl <https://pypi.org/project/openpyxl/>`_
 
-- `xlrd <https://pypi.org/project/xlrd/>`_ (version 2.0.1)
+- `ipympl <https://pypi.org/project/ipympl/>`_
 
-- `statsmodels <https://pypi.org/project/statsmodels/>`_ (version 0.12.2)
+- `xlrd <https://pypi.org/project/xlrd/>`_
 
-- `xlsxwriter <https://pypi.org/project/XlsxWriter/>`_ (version 1.4.4)
+- `statsmodels <https://pypi.org/project/statsmodels/>`_
+
+- `xlsxwriter <https://pypi.org/project/XlsxWriter/>`_
 
 More updated versions probably work too. In here, we have specified the versions we used when building the software.
 

@@ -66,20 +66,16 @@ class HeatmapColumns(Pyplot):
         self.graph_parameters()
 
         # mask self-substitutions
-        df_main : DataFrame = self.dataframes.df_stopcodons[replicate].copy()
+        df_main: DataFrame = self.dataframes.df_stopcodons[replicate].copy()
         if mask_selfsubstitutions:
             df_main.loc[df_main["Sequence"] == df_main["Aminoacid"], "Score_NaN"] = 0
 
         # sort data in specified order by user
-        df_main = df_rearrange(
-            df_main,
-            temp_kwargs['neworder_aminoacids'],
-            values='Score_NaN'
-        )
+        df_main = df_rearrange(df_main, temp_kwargs['neworder_aminoacids'], values='Score_NaN')
 
         # select subset
         self.df_output = df_main.iloc[:, segment[0] - self.start_position : segment[1] -
-                                       self.start_position + 1]
+                                      self.start_position + 1]
 
         # the size can be changed
         figwidth = 2 * len(self.df_output.columns) / 22
