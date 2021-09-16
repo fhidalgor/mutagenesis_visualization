@@ -1,7 +1,7 @@
 """
 This module contains the pca class.
 """
-from typing import Tuple, Union, Dict, Any
+from typing import Tuple, Union, Dict, Any, Literal
 from pathlib import Path
 import matplotlib.pyplot as plt
 from adjustText import adjust_text
@@ -15,6 +15,8 @@ from mutagenesis_visualization.main.utils.pca_utils import (
     auto_text,
 )
 
+MODE = Literal['aminoacid', 'secondary', 'residue']  # pylint: disable=invalid-name
+
 
 class PCA(Pyplot):
     """
@@ -22,7 +24,7 @@ class PCA(Pyplot):
     """
     def __call__(
         self,
-        mode: str = 'aminoacid',
+        mode: MODE = 'aminoacid',
         dimensions: Tuple[int, int] = (0, 1),
         adjust_labels: bool = False,
         replicate: int = -1,
@@ -38,7 +40,7 @@ class PCA(Pyplot):
 
         mode : list, default 'aminoacid'
             Can also do PCA by secondary structure element if set to
-            "secondary" or by individual residue if set to "individual".
+            "secondary" or by individual residue if set to "residue".
 
         dimensions : tuple, default (0,1)
             Specify which two PCA dimensions to plot. By default PCA1 vs
@@ -78,7 +80,7 @@ class PCA(Pyplot):
         elif mode.lower() == 'secondary':
             assert self.secondary_dup is not None, "add secondary structure information."
             self.df_output = calculate_correlation_by_secondary(df_input, self.secondary_dup)
-            textlabels = list(df_input.columns)
+            textlabels = list(self.df_output.columns)
         elif mode.lower() == 'individual':
             self.df_output = calculate_correlation_by_residue(df_input)
             textlabels = list(df_input.columns)

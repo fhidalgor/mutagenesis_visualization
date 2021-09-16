@@ -19,7 +19,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         Used for heatmaps. You can use your own colormap or the ones provided by
         matplotlib. Example colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
 
-    colorbar_scale: list, default [-1, 1]
+    colorbar_scale: tuple, default [-1, 1]
         Scale min and max used in heatmaps and correlation heatmaps.
 
     color: str, default 'k'
@@ -101,13 +101,15 @@ def generate_default_kwargs() -> Dict[str, Any]:
     Returns
     --------
     default_kwargs : dict
-        Dictionary with the default kwargs.    """
+        Dictionary with the default kwargs.
+    """
+
     default_kwargs: Dict[str, Any] = {
         'figsize': None,
         'figsize_x': None,
         'figsize_y': None,
         'colormap': _generate_colormap(),
-        'colorbar_scale': [-1, 1],
+        'colorbar_scale': (-1, 1),
         'color': 'black',
         'kernel_colors': None,
         'title': 'Title',

@@ -38,6 +38,8 @@ class Correlation(Pyplot):
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
         **kwargs : other keyword arguments
+            colorbar_scale: tuple, default [-1, 1]
+                Scale min and max used in heatmaps and correlation heatmaps.
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)

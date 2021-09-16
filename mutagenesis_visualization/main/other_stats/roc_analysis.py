@@ -1,7 +1,7 @@
 """
 This module contains the box plot class.
 """
-from typing import Union, Dict, Any
+from typing import Literal, Union, Dict, Any
 from pathlib import Path
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
@@ -13,6 +13,7 @@ from mutagenesis_visualization.main.utils.other_stats_utils import (
     roc_auc,
 )
 
+MODE = Literal["pointmutant", "mean", "A", "C", "D",  "E",  "F",  "G",  "H",  "I",  "K",  "L",  "M",  "N",   "P",  "Q", "R",  "S",  "T",  "V", "W"]  # pylint: disable=invalid-name
 
 class ROC(Pyplot):
     """
@@ -21,7 +22,7 @@ class ROC(Pyplot):
     def __call__(
         self,
         df_class: DataFrame,
-        mode: str = 'pointmutant',
+        mode: MODE = 'pointmutant',
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,

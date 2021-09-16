@@ -63,17 +63,9 @@ class SequenceDifferences(Pyplot):
             name of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
         **kwargs : other keyword arguments
-            return_plot_object : boolean, default False
-                If true, will return plotting objects (ie. fig, ax).
             bins : int or str, default 'auto'.
                 Number of bins for the histogram. By default it will
                 automatically decide the number of bins.
-
-        Returns
-        ----------
-        fig : matplotlib figure and subplots
-            Needs to have return_plot_object==True. By default they do
-            not get returned.
 
         """
         temp_kwargs = self._update_kwargs(kwargs)
