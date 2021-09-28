@@ -10,7 +10,8 @@ from numpy import typing as npt
 from pandas.core.frame import DataFrame
 from mutagenesis_visualization.main.utils.kwargs import generate_default_kwargs
 from mutagenesis_visualization.main.utils.matplotlib_parameters import (
-    graph_parameters, font_parameters
+    graph_parameters,
+    font_parameters,
 )
 from mutagenesis_visualization.main.utils.replicates_screen_input import DataframesHolder
 

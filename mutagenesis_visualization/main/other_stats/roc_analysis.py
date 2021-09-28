@@ -13,7 +13,9 @@ from mutagenesis_visualization.main.utils.other_stats_utils import (
     roc_auc,
 )
 
-MODE = Literal["pointmutant", "mean", "A", "C", "D",  "E",  "F",  "G",  "H",  "I",  "K",  "L",  "M",  "N",   "P",  "Q", "R",  "S",  "T",  "V", "W"]  # pylint: disable=invalid-name
+MODE = Literal["pointmutant", "mean", "A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N",
+               "P", "Q", "R", "S", "T", "V", "W"]  # pylint: disable=invalid-name
+
 
 class ROC(Pyplot):
     """

@@ -2,7 +2,7 @@
 This module contains the class to plot a regular heatmap from enrichment
 scores.
 """
-from typing import Any, Dict, Union
+from typing import Any, Dict, Union, Optional
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,9 +14,15 @@ from mutagenesis_visualization.main.utils.heatmap_utils import (
     generate_cartoon,
     labels,
     hierarchical_sort,
+    add_border_self_substitution,
 )
 from mutagenesis_visualization.main.utils.snv import add_snv_boolean
 from mutagenesis_visualization.main.utils.pandas_functions import df_rearrange
+
+EDGECOLORS: str = 'k'
+LINEWIDTHS: str = 0.2
+GRIDCOLOR: str = 'darkgrey'
+LABELS_COLOR: str = 'k'
 
 
 class Heatmap(Pyplot):
@@ -27,6 +33,7 @@ class Heatmap(Pyplot):
         self,
         nancolor: str = 'lime',
         mask_selfsubstitutions: bool = False,
+        color_selfsubstitutions: Optional[str] = "k",
         show_cartoon: bool = False,
         show_snv: bool = False,
         hierarchical: bool = False,
@@ -47,6 +54,10 @@ class Heatmap(Pyplot):
         mask_selfsubstitutions: bool, default False
             If set to true, will assing a score of 0 to each self-substitution.
             ie (A2A = 0)
+
+        color_selfsubstitutions: str, default black
+            If set to a color, it will color the self-substitution borders.
+            Set to None to not color the self substitutions.
 
         show_carton : boolean, default False
             If true, the plot will display a cartoon with the secondary
@@ -94,8 +105,6 @@ class Heatmap(Pyplot):
             add_snv_boolean(self.dataframes.df_notstopcodons[replicate].copy()
                             ).groupby(by='Position').mean()['Score_NaN']
         ]
-        # For 1 column case
-
         # Create new sequence that we may to change order later
         self.sequence_updated = self.sequence
 
@@ -117,6 +126,7 @@ class Heatmap(Pyplot):
         # declare figure and subplots
         figwidth = 14 * len(self.df_output.columns) / 165
         temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
+
         # Change parameters depending on whether cartoon is on or off
         if show_cartoon:
             figheight = 2.45
@@ -154,11 +164,21 @@ class Heatmap(Pyplot):
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
             cmap=cmap,
-            edgecolors='k',
-            linewidths=0.2,
+            edgecolors=EDGECOLORS,
+            linewidths=LINEWIDTHS,
             antialiased=True,
-            color='darkgrey'
+            color=GRIDCOLOR
         )
+
+        # add border to self-substitution square
+        if color_selfsubstitutions:
+            add_border_self_substitution(
+                self.ax_object,
+                self.sequence_updated,
+                temp_kwargs['neworder_aminoacids'],
+                color=color_selfsubstitutions,
+                lw=LINEWIDTHS * 2
+            )
 
         # average by position
         self.average_residue.pcolormesh(
@@ -166,10 +186,10 @@ class Heatmap(Pyplot):
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
             cmap=cmap,
-            edgecolors='k',
-            linewidths=0.2,
+            edgecolors=EDGECOLORS,
+            linewidths=LINEWIDTHS,
             antialiased=True,
-            color='darkgrey'
+            color=GRIDCOLOR
         )
 
         # ____________axes manipulation____________________________________________
@@ -219,15 +239,13 @@ class Heatmap(Pyplot):
         self.ax_object.set_xticklabels(
             list(self.sequence_updated),
             fontsize=6.5,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
         self.ax_object.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
             fontsize=6,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
         # For numbering labels, change if hierarchical sorting is true
@@ -235,8 +253,7 @@ class Heatmap(Pyplot):
             self.ax_object2.set_xticklabels(
                 temp_kwargs['number_sequencelabels'][0 : len(self.df_output.columns)],
                 fontsize=10,
-                fontname="Arial",
-                color='k',
+                color=LABELS_COLOR,
                 minor=False
             )
         else:
@@ -244,31 +261,27 @@ class Heatmap(Pyplot):
             self.ax_object2.set_xticklabels(
                 sorted_columns_corrected,
                 fontsize=5,
-                fontname="Arial",
-                color='k',
+                color=LABELS_COLOR,
                 minor=False,
                 rotation=90,
             )
         self.ax_object3.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
             fontsize=6,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
         self.average_residue.set_xticklabels(
             list(self.sequence_updated),
             fontsize=6.5,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
         rowaverage = ''
         self.average_residue.set_yticklabels(
             rowaverage,
             fontsize=6,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
 
@@ -305,8 +318,7 @@ class Heatmap(Pyplot):
         cb_object.ax.set_yticklabels(
             cb_object.ax.get_yticklabels(),
             fontsize=6,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
         )
         cb_object.update_ticks()
         plt.text(
@@ -316,8 +328,7 @@ class Heatmap(Pyplot):
             transform=cbar1.transAxes,
             horizontalalignment='center',
             fontsize=7,
-            fontname="Arial",
-            color='k'
+            color=LABELS_COLOR
         )
 
         gs_object.update(hspace=0.1, wspace=0.1 / len(self.df_output.columns) * 50)
@@ -326,7 +337,6 @@ class Heatmap(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
             fontsize=temp_kwargs["title_fontsize"]
         )
 

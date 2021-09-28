@@ -10,8 +10,12 @@ from matplotlib import gridspec
 from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
+from mutagenesis_visualization.main.heatmaps.heatmap import (
+    LABELS_COLOR, LINEWIDTHS, GRIDCOLOR, EDGECOLORS
+)
 from mutagenesis_visualization.main.utils.heatmap_utils import (
     labels,
+    add_border_self_substitution,
 )
 from mutagenesis_visualization.main.utils.snv import add_snv_boolean
 from mutagenesis_visualization.main.utils.pandas_functions import select_aa
@@ -23,9 +27,10 @@ class HeatmapRows(Pyplot):
     """
     def __call__(
         self,
-        selection: Optional[List[str]] = None,
+        selection: Union[List[str], str, None] = None,
         nancolor: str = 'lime',
         mask_selfsubstitutions: bool = False,
+        color_selfsubstitutions: Optional[str] = "k",
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -37,7 +42,7 @@ class HeatmapRows(Pyplot):
         ----------
         self : object from class *Screen*
 
-        selection : list of aa to show (1-letter code).
+        selection : list or str of aa to show (1-letter code).
             If you only want the mean displayed, type selection = 'mean'.
             By default, ["D", "K", "A", "P", "L", "W"] are displayed.
 
@@ -47,6 +52,10 @@ class HeatmapRows(Pyplot):
         mask_selfsubstitutions: bool, default False
             If set to true, will assing a score of 0 to each self-substitution.
             ie (A2A = 0)
+
+        color_selfsubstitutions: str, default black
+            If set to a color, it will color the self-substitution borders.
+            Set to None to not color the self substitutions.
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -109,11 +118,21 @@ class HeatmapRows(Pyplot):
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
             cmap=cmap,
-            edgecolors='k',
-            linewidths=0.2,
+            edgecolors=EDGECOLORS,
+            linewidths=LINEWIDTHS,
             antialiased=True,
-            color='darkgrey'
+            color=GRIDCOLOR
         )
+
+        # add border to self-substitution square
+        if color_selfsubstitutions:
+            add_border_self_substitution(
+                self.ax_object,
+                self.sequence,
+                selection,
+                color=color_selfsubstitutions,
+                lw=LINEWIDTHS * 2
+            )
 
         # put the major ticks at the middle of each cell
         self.ax_object.set_xticks(np.arange(dataset.shape[1]) + 0.5, minor=False)
@@ -139,18 +158,14 @@ class HeatmapRows(Pyplot):
         self.ax_object.set_xticklabels(
             list(self.sequence),
             fontsize=6.5,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
-        self.ax_object.set_yticklabels(
-            y_labels, fontsize=6, fontname="Arial", color='k', minor=False
-        )
+        self.ax_object.set_yticklabels(y_labels, fontsize=6, color=LABELS_COLOR, minor=False)
         ax2_object.set_xticklabels(
             temp_kwargs['number_sequencelabels'][0 : len(dataset[0])],
             fontsize=10,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False
         )
 
@@ -167,7 +182,6 @@ class HeatmapRows(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
             fontsize=temp_kwargs["title_fontsize"]
         )
 
@@ -188,8 +202,7 @@ class HeatmapRows(Pyplot):
         cb_object.ax.set_yticklabels(
             cb_object.ax.get_yticklabels(),
             fontsize=8,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
         )
         cb_object.update_ticks()
         self.gs_object.update(hspace=0.1, wspace=0.1 / len(dataset[0]) * 50)

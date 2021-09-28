@@ -2,7 +2,7 @@
 This module contains the object to create a heatmap specifying the
 selected columns.
 """
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union, Optional
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +10,10 @@ from matplotlib import gridspec
 from pandas.core.frame import DataFrame
 
 from mutagenesis_visualization.main.classes.base_model import Pyplot
-from mutagenesis_visualization.main.utils.heatmap_utils import labels
+from mutagenesis_visualization.main.heatmaps.heatmap import (
+    LABELS_COLOR, LINEWIDTHS, GRIDCOLOR, EDGECOLORS
+)
+from mutagenesis_visualization.main.utils.heatmap_utils import labels, add_border_self_substitution
 from mutagenesis_visualization.main.utils.pandas_functions import df_rearrange
 
 
@@ -25,6 +28,7 @@ class HeatmapColumns(Pyplot):
         ylabel_color: str = 'k',
         nancolor: str = 'lime',
         mask_selfsubstitutions: bool = False,
+        color_selfsubstitutions: Optional[str] = "k",
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -48,6 +52,10 @@ class HeatmapColumns(Pyplot):
         mask_selfsubstitutions: bool, default False
             If set to true, will assing a score of 0 to each self-substitution.
             ie (A2A = 0)
+
+        color_selfsubstitutions: str, default black
+            If set to a color, it will color the self-substitution borders.
+            Set to None to not color the self substitutions.
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -86,60 +94,69 @@ class HeatmapColumns(Pyplot):
         self.fig = plt.figure(figsize=(temp_kwargs['figsize_x'], temp_kwargs['figsize_y']))
         gs_object: gridspec.GridSpec = gridspec.GridSpec(nrows=1, ncols=1)
         # needed to set autoscale off to avoid missalignment
-        ax_object = plt.subplot(gs_object[0])
+        self.ax_object = plt.subplot(gs_object[0])
 
         # Change color of values that are NaN
         cmap = temp_kwargs['colormap']
         cmap.set_bad(color=nancolor)
 
         # main heatmap
-        ax_object.pcolormesh(
+        self.ax_object.pcolormesh(
             self.df_output,
             vmin=temp_kwargs['colorbar_scale'][0],
             vmax=temp_kwargs['colorbar_scale'][1],
             cmap=cmap,
-            edgecolors='k',
-            linewidths=0.2,
+            edgecolors=EDGECOLORS,
+            linewidths=LINEWIDTHS,
             antialiased=True,
-            color='darkgrey'
+            color=GRIDCOLOR
         )
 
+        # add border to self-substitution square
+        if color_selfsubstitutions:
+            add_border_self_substitution(
+                self.ax_object,
+                self.sequence[segment[0] - self.start_position : segment[1] - self.start_position +
+                              1],
+                temp_kwargs['neworder_aminoacids'],
+                color=color_selfsubstitutions,
+                lw=LINEWIDTHS * 2
+            )
+
         # put the major ticks at the middle of each cell
-        ax_object.set_xticks(
+        self.ax_object.set_xticks(
             np.arange(len(self.df_output.columns)) + 0.5,
             minor=False,
         )
-        ax_object.set_yticks(np.arange(len(self.df_output)) + 0.5, minor=False)
+        self.ax_object.set_yticks(np.arange(len(self.df_output)) + 0.5, minor=False)
 
         # position of axis labels
-        ax_object.tick_params('x', direction='out', pad=-2.5)
-        ax_object.tick_params('y', direction='out', pad=0.4)
+        self.ax_object.tick_params('x', direction='out', pad=-2.5)
+        self.ax_object.tick_params('y', direction='out', pad=0.4)
 
         # second axis
-        ax2_object = ax_object.twiny()
+        ax2_object = self.ax_object.twiny()
         ax2_object.set_xticks(np.arange(len(self.df_output.columns)) + 0.5, minor=False)
         ax2_object.tick_params(direction='out', pad=4)
 
         # Set the limits of the new axis from the original axis limits
-        ax2_object.set_xlim(ax_object.get_xlim())
+        ax2_object.set_xlim(self.ax_object.get_xlim())
 
         # want a more natural, table-like display
-        ax_object.invert_yaxis()
-        ax_object.xaxis.tick_top()
+        self.ax_object.invert_yaxis()
+        self.ax_object.xaxis.tick_top()
 
         # so labels of x and y do not show up and my labels show up instead
-        ax_object.set_xticklabels(
+        self.ax_object.set_xticklabels(
             list(self.sequence
                  )[segment[0] - self.start_position : segment[1] - self.start_position + 1],
             fontsize=6.5,
-            fontname="Arial",
-            color='k',
+            color=LABELS_COLOR,
             minor=False,
         )
-        ax_object.set_yticklabels(
+        self.ax_object.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
             fontsize=6,
-            fontname="Arial",
             color=ylabel_color,
             minor=False,
         )
@@ -147,15 +164,15 @@ class HeatmapColumns(Pyplot):
         ax2_label = (segment[1] - segment[0] + 1) * ['']
         ax2_label[0] = str(segment[0])
         ax2_label[-1] = str(segment[1])
-        ax2_object.set_xticklabels(ax2_label, fontsize=7, fontname="Arial", color='k', minor=False)
+        ax2_object.set_xticklabels(ax2_label, fontsize=7, color=LABELS_COLOR, minor=False)
 
         # align the labels of the y axis
-        for ylabel in ax_object.get_yticklabels():
+        for ylabel in self.ax_object.get_yticklabels():
             ylabel.set_horizontalalignment('center')
 
         # remove ticks
-        ax_object.xaxis.set_ticks_position('none')
-        ax_object.yaxis.set_ticks_position('none')
+        self.ax_object.xaxis.set_ticks_position('none')
+        self.ax_object.yaxis.set_ticks_position('none')
         ax2_object.yaxis.set_ticks_position('none')
         ax2_object.xaxis.set_ticks_position('none')
 

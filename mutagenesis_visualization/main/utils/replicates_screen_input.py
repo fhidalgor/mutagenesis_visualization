@@ -44,8 +44,9 @@ class DataframesHolder:
         ]
 
     @property
-    def df_notstopcodons_mean(self) ->DataFrame:
+    def df_notstopcodons_mean(self) -> DataFrame:
         return [df.groupby(['Position'], as_index=False).mean() for df in self.df_notstopcodons]
+
 
 def handle_input_datasets(
     datasets: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]]

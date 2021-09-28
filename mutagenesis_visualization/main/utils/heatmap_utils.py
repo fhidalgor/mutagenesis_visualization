@@ -154,3 +154,25 @@ def _loop(starting_aa: float, length_aa: int, color: str = 'k') -> plt.Rectangle
     Used for the loop lines.
     """
     return plt.Rectangle((starting_aa, 0), length_aa, 0.5, fc=color)
+
+
+def add_border_self_substitution(
+    ax_object, sequence: str, aminoacids_order: Union[str, List[str]], color: str, lw: float
+) -> None:
+    """
+    Add a border to each square that belongs to a self-substitution
+    """
+    if isinstance(aminoacids_order, list):
+        aminoacids_order = "".join(aminoacids_order)
+
+    for i, aminoacid in enumerate(sequence):
+        # Check if aminoacid in the sequence is in the positions
+        if aminoacid in aminoacids_order:
+            ax_object.add_patch(
+                patches.Rectangle((i, aminoacids_order.index(aminoacid)),
+                                  1,
+                                  1,
+                                  edgecolor=color,
+                                  fill=False,
+                                  lw=lw)
+            )

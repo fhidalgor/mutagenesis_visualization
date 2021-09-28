@@ -4,6 +4,7 @@ This module contains the class Screen, which groups the plotting classes.
 from typing import List, Optional, Union
 import logging
 from numpy import typing as npt
+from numpy import delete
 from pandas import DataFrame
 from mutagenesis_visualization.main.bar_graphs.enrichment_bar import EnrichmentBar
 from mutagenesis_visualization.main.bar_graphs.differential import Differential
@@ -76,6 +77,13 @@ class Screen:
         We have set the default value to 2 because normally the Methionine
         in position 1 is not mutated.
 
+    delete_position : int, List[int], default None
+        Can delete positions (columns) in the dataset. For example, if you
+        set start_position = 2 and delete_position = 122, you will be deleting
+        the column 120 of the input dataset. The sequence parameter won't
+        delete anything, so if you plan on deleting a few columns in your
+        dataset, adjust the input sequence and secondary list.
+
     fillna : float, default 0
         How to replace NaN values.
 
@@ -95,13 +103,15 @@ class Screen:
         Contains the enrichment scores, position, sequence.
 
     Other attributes are same as input parameters: dataset, aminoacids,
-    start_position, roc_df, secondary    """
+    start_position, roc_df, secondary
+    """
     def __init__(
         self,
         datasets: Union[npt.NDArray, DataFrame, List[Union[npt.NDArray, DataFrame]]],
         sequence: str,
         aminoacids: List[str],
         start_position: int = 2,
+        delete_position: Union[int, List[int], None]= None,
         fillna: float = 0,
         secondary: Optional[List[List[str]]] = None,
     ):
@@ -121,9 +131,12 @@ class Screen:
 
         df_notstopcodons: List[DataFrame] = []
         df_stopcodons: List[DataFrame] = []
-        for dataset in self.datasets:
+        for i, dataset in enumerate(self.datasets):
+            if delete_position:
+                self.datasets[i] = delete(dataset, delete_position, 1)
+
             df_output, df_not_stopcodons = transform_dataset(
-                dataset, self.sequence, self.aminoacids, self.start_position, fillna
+                self.datasets[i], self.sequence, self.aminoacids, self.start_position, fillna
             )
             df_notstopcodons.append(df_not_stopcodons)
             df_stopcodons.append(df_output)
