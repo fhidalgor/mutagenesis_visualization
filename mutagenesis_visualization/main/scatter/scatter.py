@@ -148,7 +148,7 @@ class Scatter(Pyplot):
         plt.ylim(temp_kwargs['yscale'])
         self.ax_object.xaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))
         self.ax_object.yaxis.set_major_locator(ticker.MultipleLocator(temp_kwargs['tick_spacing']))
-        plt.gca().set_aspect('equal', adjustable='box')
+        self.ax_object.set_aspect(1.0/self.ax_object.get_data_ratio(), adjustable='box')
         plt.draw()
 
         # Legend

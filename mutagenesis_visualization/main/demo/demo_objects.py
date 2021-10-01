@@ -109,7 +109,7 @@ class DemoObjects:
                                  ['α10'] * (286 - 266)]
 
         return Screen(
-            DEMO_DATASETS['df_bla'], sequence_bla_x, aminoacids, start_position, 0, secondary_bla
+            datasets = DEMO_DATASETS['df_bla'], sequence=sequence_bla_x, aminoacids=aminoacids, start_position=start_position, fillna=0, secondary=secondary_bla
         )
 
     def _generate_sumo_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -131,8 +131,8 @@ class DemoObjects:
                                             ['β4'] * (92 - 85), ['L6'] * (101 - 92)]
 
         return Screen(
-            DEMO_DATASETS['df_sumo1'], sequence_sumo1, aminoacids, start_position, 1,
-            secondary_sumo1
+            datasets = DEMO_DATASETS['df_sumo1'], sequence=sequence_sumo1, aminoacids=aminoacids, start_position=start_position, fillna=1,
+            secondary=secondary_sumo1
         )
 
     def _generate_mapk1_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -148,7 +148,7 @@ class DemoObjects:
         sequence_mapk1_x = 'MAAAAAAGAGPEMVRGQVFDVGPRYTNLSYIGEGAYGMVCSAYDNVNKVRVAIK' + 'KISPFEHQTYCQRTLREIKILLRFRHENIIGINDIIRAPTIEQMKDVYIVQDLMETDLYKLLKTQ' + 'HLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLLNTTCDLKICDFGLARVADPDHDHTGFL' + 'TEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQ' + 'EDLNCIINLKARNYLLSLPHKNKVPWNRLFPNADSKALDLLDKMLTFNPHKRIEVEQALAHPYLE' + 'QYYDPSDEPIAEAPFKFDMELDDLPKEKLKELIFEETARFQPGYRS'  # pylint: disable=line-too-long
 
         # Create objects
-        return Screen(DEMO_DATASETS['df_mapk1'], sequence_mapk1_x, aminoacids, start_position, 0)
+        return Screen(datasets = DEMO_DATASETS['df_mapk1'], sequence=sequence_mapk1_x, aminoacids=aminoacids, start_position=start_position, fillna=0)
 
     def _generate_ube2i_obj(self) -> Screen:  # pylint: disable=no-self-use
         """
@@ -174,8 +174,8 @@ class DemoObjects:
 
         # Create objects
         return Screen(
-            DEMO_DATASETS['df_ube2i'], sequence_ube2i_x, aminoacids, start_position, 1,
-            secondary_ube2i
+            datasets = DEMO_DATASETS['df_ube2i'], sequence=sequence_ube2i_x, aminoacids=aminoacids, start_position=start_position, fillna=1,
+            secondary=secondary_ube2i
         )
 
     def _generate_tat_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -196,7 +196,7 @@ class DemoObjects:
                                           ['α2'] * (41 - 28), ['L3'] * (90 - 41)]
 
         return Screen(
-            DEMO_DATASETS['df_tat'], sequence_tat, aminoacids, start_position, 0, secondary_tat
+            datasets = DEMO_DATASETS['df_tat'], sequence=sequence_tat, aminoacids=aminoacids, start_position=start_position, fillna=0, secondary=secondary_tat
         )
 
     def _generate_rev_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -217,7 +217,7 @@ class DemoObjects:
                                           ['α2'] * (68 - 33), ['L3'] * (116 - 41)]
 
         return Screen(
-            DEMO_DATASETS['df_rev'], sequence_rev, aminoacids, start_position, 0, secondary_rev
+            datasets = DEMO_DATASETS['df_rev'], sequence=sequence_rev, aminoacids=aminoacids, start_position=start_position, fillna=0, secondary=secondary_rev
         )
 
     def _generate_asynuclein_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -239,8 +239,8 @@ class DemoObjects:
                                                  ['L3'] * (140 - 92)]
 
         return Screen(
-            DEMO_DATASETS['df_asynuclein'], sequence_asynuclein, aminoacids, start_position, 0,
-            secondary_asynuclein
+            datasets = DEMO_DATASETS['df_asynuclein'], sequence = sequence_asynuclein, aminoacids = aminoacids, start_position = start_position, fillna=0,
+            secondary = secondary_asynuclein
         )
 
     def _generate_aph_obj(self) -> Screen:  # pylint: disable=no-self-use
@@ -272,11 +272,11 @@ class DemoObjects:
                                  ['L18'] * (4), ['α9'] * (264 - 249)]
 
         return Screen(
-            np.log10(DEMO_DATASETS['df_aph']),
-            sequence_aph,
-            aminoacids,
-            start_position,
-            0,
+            datasets = np.log10(DEMO_DATASETS['df_aph']),
+            sequence = sequence_aph,
+            aminoacids = aminoacids,
+            start_position= start_position,
+            fillna=0,
             secondary=secondary_aph
         )
 
@@ -293,7 +293,7 @@ class DemoObjects:
 
         start_position = DEMO_DATASETS['df_b11l5f'].columns[0]
 
-        return Screen(DEMO_DATASETS['df_b11l5f'], sequence_b11l5f, aminoacids, start_position, 0)
+        return Screen(datasets = DEMO_DATASETS['df_b11l5f'], sequence=sequence_b11l5f, aminoacids=aminoacids, start_position=start_position, fillna=0)
 
     def _return_hras_counts(self) -> Counts:
         """

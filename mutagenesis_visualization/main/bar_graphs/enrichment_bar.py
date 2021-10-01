@@ -131,14 +131,23 @@ class EnrichmentBar(Pyplot):
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (3, 2.5))
+        temp_kwargs['figsize'] = kwargs.get('figsize', (15, 2.5))
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
+        temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
+
         return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
         """
         Change stylistic parameters of the plot.
         """
+        # add grid
+        if temp_kwargs['grid']:
+            self.ax_object.grid(which='major', color='silver', linewidth=1)
+            self.ax_object.grid(which='minor', color='silver', linewidth=0.25)
+            # Show the minor ticks and grid.
+            self.ax_object.minorticks_on()
+
         # axes parameters
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
@@ -153,7 +162,7 @@ class EnrichmentBar(Pyplot):
             np.arange(
                 self.start_position,
                 len(self.df_output) + self.start_position,
-                20,
+                temp_kwargs['tick_spacing'],
             )
         )
         self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)

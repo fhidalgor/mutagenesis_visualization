@@ -1,7 +1,7 @@
 """
 This module contains the class that plots the differential bar plot.
 """
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Literal, TYPE_CHECKING
 from pathlib import Path
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -13,6 +13,10 @@ from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pandas_functions import process_rmse_residue
 from mutagenesis_visualization.main.utils.heatmap_utils import generate_cartoon
 
+METRIC = Literal['rmse', 'mean', 'squared']  # pylint: disable=invalid-name
+
+if TYPE_CHECKING:
+    from mutagenesis_visualization.main.classes.screen import Screen
 
 class Differential(Pyplot):
     """
@@ -20,8 +24,8 @@ class Differential(Pyplot):
     """
     def __call__(
         self,
-        screen_object: Any,
-        metric: str = 'rmse',
+        screen_object: 'Screen',
+        metric: METRIC = 'rmse',
         plot_type: str = 'bar',
         show_cartoon: bool = False,
         replicate: int = -1,
@@ -90,13 +94,12 @@ class Differential(Pyplot):
                 snap=False
             )
 
-        # Needs to be worked for selecting the longer one
         # cartoon
-        title_pad = 1
+        title_pad = 3
         if show_cartoon:
-            title_pad = 6
+            title_pad = 22
             generate_cartoon(
-                self.secondary,
+                self.secondary[:min(len(screen_object.secondary), len(self.secondary))],
                 self.start_position,
                 self.gs_object,
                 1,
@@ -125,7 +128,7 @@ class Differential(Pyplot):
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (5, 2.5))
+        temp_kwargs['figsize'] = kwargs.get('figsize', (15, 2.5))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
 
@@ -144,13 +147,13 @@ class Differential(Pyplot):
         # add grid
         if temp_kwargs['grid']:
             self.ax_object.grid(which='major', color='silver', linewidth=1)
-            self.ax_object.grid(which='minor', color='silver', linewidth=0.5)
+            self.ax_object.grid(which='minor', color='silver', linewidth=0.25)
             # Show the minor ticks and grid.
             self.ax_object.minorticks_on()
             # Now hide the minor ticks (but leave the gridlines).
-            self.ax_object.tick_params(which='minor', bottom=False, left=False)
+            #self.ax_object.tick_params(which='minor', bottom=False, left=False)
             # Only show minor gridlines once in between major gridlines.
-            self.ax_object.xaxis.set_minor_locator(AutoMinorLocator(2))
+            #self.ax_object.xaxis.set_minor_locator(AutoMinorLocator(2))
 
         # self.ax_objectes parameters
         self.ax_object.set_ylim(temp_kwargs['yscale'])

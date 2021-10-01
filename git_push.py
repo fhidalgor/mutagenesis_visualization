@@ -36,5 +36,5 @@ with open("CITATION.cff", "w", encoding="utf8") as f:
 
 system("poetry export --without-hashes > requirements.txt")
 system("git add .")
-system("git commit -m 'added border to self-substitution in heatmaps'")
+system("git commit -m 'fixed bug in tests'")
 system("git push")

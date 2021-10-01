@@ -13,7 +13,7 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
 )
 
 ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'kernel', 'population']  # pylint: disable=invalid-name
-ZEROING_METRICS = Literal['mean', 'mean', 'mode', 'median']  # pylint: disable=invalid-name
+ZEROING_METRICS = Literal['mean', 'mode', 'median']  # pylint: disable=invalid-name
 STOPCODON: bool = True
 MIN_COUNTS: int = 25
 MIN_COUNTSWT: int = 100

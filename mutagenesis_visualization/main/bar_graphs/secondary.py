@@ -113,6 +113,5 @@ class Secondary(Pyplot):
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
-        #temp_kwargs['yscale'] = kwargs.get('yscale', (-2, 1))
+        temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
         return temp_kwargs
