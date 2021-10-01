@@ -15,7 +15,7 @@ class Kernel(Pyplot):
     def __call__(
         self,
         show_replicates: bool = False,
-        show_wild_type_counts_only: bool = False,
+        wt_counts_only: bool = False,
         show_mean: bool = False,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
@@ -29,13 +29,13 @@ class Kernel(Pyplot):
         show_replicates: bool, optional default False
             If set to true, will plot the kernel of each replicate.
 
-        show_wild_type_counts_only: bool, optional default False
+        wt_counts_only: bool, optional default False
             If set to true, it will plot the kernel distribution of the
             wild type alleles only.
 
         show_mean: bool, optional default False
             If set to true, it will plot the kernel distribution mean of
-            replicates when show_wild_type_counts_only is True.
+            replicates when wt_counts_only is True.
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -62,7 +62,7 @@ class Kernel(Pyplot):
         # plot kernel
         if show_replicates:
             assert len(self.dataframes.df_notstopcodons) > 1, "No replicates found."
-            if show_wild_type_counts_only:
+            if wt_counts_only:
                 data_to_plot = self.dataframes.df_wildtype_scores
             else:
                 data_to_plot = self.dataframes.df_notstopcodons
@@ -82,7 +82,7 @@ class Kernel(Pyplot):
 
             plt.legend(loc='best', frameon=False, handlelength=1, handletextpad=0.5)
         else:
-            if show_wild_type_counts_only:
+            if wt_counts_only:
                 data_to_plot = self.dataframes.df_wildtype_scores
             else:
                 data_to_plot = self.dataframes.df_notstopcodons

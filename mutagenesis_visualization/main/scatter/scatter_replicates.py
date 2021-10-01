@@ -16,7 +16,7 @@ class ScatterReplicates(Pyplot):
     """
     def __call__(
         self,
-        show_wild_type_counts_only: bool = False,
+        wt_counts_only: bool = False,
         mode: Literal["mean", "pointmutant"] = 'pointmutant',
         output_file: Union[None, str, Path] = None,
         **kwargs: Any
@@ -26,7 +26,7 @@ class ScatterReplicates(Pyplot):
 
         Parameters
         ----------
-        show_wild_type_counts_only: bool, optional default False
+        wt_counts_only: bool, optional default False
             If set to true, it will plot the kernel distribution of the
             wild type alleles only. mode will be pointmutant by default.
 
@@ -40,7 +40,7 @@ class ScatterReplicates(Pyplot):
         **kwargs : other keyword arguments
         """
         copy_dataframes = deepcopy(self.dataframes)
-        if show_wild_type_counts_only:
+        if wt_counts_only:
             copy_dataframes.df_notstopcodons = copy_dataframes.df_wildtype_scores
             mode = "pointmutant"
 

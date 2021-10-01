@@ -252,7 +252,7 @@ fitness difference caused by changes in protein expression.
 
 .. code:: ipython3
 
-    hras_object.kernel(show_replicates=True, show_wild_type_counts_only=True,title='Wild-type alleles', kernel_colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], xscale=(-0.5, 1), output_file="docs/images/exported_images/hras_wildtype_distribution.png")
+    hras_object.kernel(show_replicates=True, wt_counts_only=True,title='Wild-type alleles', kernel_colors=['k', 'crimson', 'dodgerblue', 'g', 'silver'], xscale=(-0.5, 1), output_file="docs/images/exported_images/hras_wildtype_distribution.png")
 
 .. image:: images/exported_images/hras_wildtype_distribution.png
    :width: 350px
@@ -263,7 +263,7 @@ Perform the scatter plots:
 
 .. code:: ipython3
 
-    hras_object.scatter_replicates(show_wild_type_counts_only=True,title='Wild-type alleles', xscale=(-1, 1), yscale=(-1, 1), output_file="docs/images/exported_images/hras_wildtype_scatter.png")
+    hras_object.scatter_replicates(wt_counts_only=True,title='Wild-type alleles', xscale=(-1, 1), yscale=(-1, 1), output_file="docs/images/exported_images/hras_wildtype_scatter.png")
 
 .. image:: images/exported_images/hras_wildtype_scatter_1_vs_2.png
    :width: 350px
