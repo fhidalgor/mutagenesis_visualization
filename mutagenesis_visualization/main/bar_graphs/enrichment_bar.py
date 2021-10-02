@@ -31,8 +31,6 @@ class EnrichmentBar(Pyplot):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         mode : str, default 'mean'
             Specify what enrichment scores to show. If mode = 'mean', it
             will show the mean of each position. If mode = 'A', it will

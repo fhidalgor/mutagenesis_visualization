@@ -40,8 +40,6 @@ class HeatmapRows(Pyplot):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         selection : list or str of aa to show (1-letter code).
             If you only want the mean displayed, type selection = 'mean'.
             By default, ["D", "K", "A", "P", "L", "W"] are displayed.

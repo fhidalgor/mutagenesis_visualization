@@ -27,8 +27,6 @@ class Cumulative(Pyplot):
 
         Parameters
         -----------
-        self : object from class *Screen*
-
         mode : str, default 'all'
             Options are 'mean', 'all','SNV' and 'nonSNV'.
 

@@ -69,6 +69,7 @@ class Pyplot:
         self.average_residue: plt.Axes = None
         self.graph_parameters = graph_parameters
         self.font_parameters = font_parameters
+        self.segment: Tuple[int, int] = None
 
     def _save_work(self, output_file: Union[None, str, Path], temp_kwargs: Dict[str, Any]) -> None:
         """

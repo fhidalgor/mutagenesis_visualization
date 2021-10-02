@@ -38,8 +38,6 @@ class HeatmapColumns(Pyplot):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         segment : Tuple[int]
             Segment is typed as [20,40] and includes both residues 20 and 40.
 

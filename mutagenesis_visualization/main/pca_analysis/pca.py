@@ -36,8 +36,6 @@ class PCA(Pyplot):
 
         Parameters
         -----------
-        self : object from class *Screen*
-
         mode : list, default 'aminoacid'
             Can also do PCA by secondary structure element if set to
             "secondary" or by individual residue if set to "residue".

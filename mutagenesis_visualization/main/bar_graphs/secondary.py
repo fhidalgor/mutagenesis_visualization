@@ -37,8 +37,6 @@ class Secondary(Pyplot):
 
         Parameters
         -----------
-        self : object from class *Screen*
-
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.

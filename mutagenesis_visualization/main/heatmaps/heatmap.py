@@ -46,8 +46,6 @@ class Heatmap(Pyplot):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
 
@@ -81,6 +79,8 @@ class Heatmap(Pyplot):
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
 
         **kwargs : other keyword arguments
+            neworder_aminoacids: list, default list('DEKHRGNQASTPCVYMILFW*')
+                Order of amino acids (y-axis) to display in the heatmap.
         """
 
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)

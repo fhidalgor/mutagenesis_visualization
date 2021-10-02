@@ -26,8 +26,6 @@ class RankP(Plotly):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
 

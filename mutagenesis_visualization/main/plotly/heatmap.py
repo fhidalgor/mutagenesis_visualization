@@ -30,8 +30,6 @@ class HeatmapP(Plotly):
 
         Parameters
         ----------
-        self : object from class *Screen*
-
         mask_selfsubstitutions: bool, default False
             If set to true, will assing a score of 0 to each self-substitution.
             ie (A2A = 0)
