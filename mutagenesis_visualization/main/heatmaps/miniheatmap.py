@@ -173,12 +173,11 @@ class Miniheatmap(Pyplot):
 
         # so labels of x and y do not show up and my labels show up instead
         self.ax_object.set_xticklabels(
-            list(self.df_output.columns), fontsize=6.5, fontname="Arial", color='k', minor=False
+            list(self.df_output.columns), fontsize=temp_kwargs["x_label_fontsize"], color='k', minor=False
         )
         self.ax_object.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
-            fontsize=6.5,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             minor=False
         )
@@ -190,7 +189,7 @@ class Miniheatmap(Pyplot):
         # _____________________________________________________________________________
 
         self.cb_object.ax.set_yticklabels(
-            self.cb_object.ax.get_yticklabels(), fontsize=7, fontname="Arial", color='k'
+            self.cb_object.ax.get_yticklabels(), fontsize=7, color='k'
         )
         self.cb_object.update_ticks()
         plt.text(
@@ -199,7 +198,6 @@ class Miniheatmap(Pyplot):
             r'$\langle∆E^x_i\rangle_x$',
             horizontalalignment='center',
             fontsize=7,
-            fontname="Arial",
             color='k'
         )
 
@@ -207,7 +205,6 @@ class Miniheatmap(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
             fontsize=temp_kwargs["title_fontsize"],
             pad=10
         )
@@ -222,4 +219,6 @@ class Miniheatmap(Pyplot):
         temp_kwargs['aminoacids'] = self.aminoacids
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 6.5)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 6.5)
         return temp_kwargs

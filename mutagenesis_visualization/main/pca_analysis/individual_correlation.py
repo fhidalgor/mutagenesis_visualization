@@ -67,7 +67,6 @@ class IndividualCorrelation(Pyplot):
         self.ax_object.set_xticklabels(
             temp_kwargs['neworder_aminoacids'],
             fontsize=9,
-            fontname="Arial",
             color='k',
             minor=False,
             rotation=0,
@@ -75,7 +74,6 @@ class IndividualCorrelation(Pyplot):
         self.ax_object.set_ylabel(
             r'$R^2$',
             fontsize=10,
-            fontname="Arial",
             color='k',
             labelpad=12,
             rotation=0,
@@ -84,7 +82,6 @@ class IndividualCorrelation(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
             fontsize=10,
             pad=5,
         )

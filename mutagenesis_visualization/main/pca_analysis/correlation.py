@@ -104,14 +104,12 @@ class Correlation(Pyplot):
         self.ax_object.set_xticklabels(
             list(self.df_output.columns),
             fontsize=6.5,
-            fontname="Arial",
             color='k',
             minor=False,
         )
         self.ax_object.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
             fontsize=6.5,
-            fontname="Arial",
             color='k',
             minor=False,
         )
@@ -125,7 +123,6 @@ class Correlation(Pyplot):
         self.cb_object.ax.set_yticklabels(
             self.cb_object.ax.get_yticklabels(),
             fontsize=7,
-            fontname="Arial",
             color='k',
         )
         self.cb_object.update_ticks()
@@ -135,7 +132,6 @@ class Correlation(Pyplot):
             'R',
             horizontalalignment='center',
             fontsize=7,
-            fontname="Arial",
             color='k'
         )
 
@@ -143,7 +139,6 @@ class Correlation(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
             fontsize=10,
             pad=10,
         )

@@ -102,21 +102,18 @@ class Kernel(Pyplot):
         plt.xlabel(
             temp_kwargs['x_label'],
             fontsize=temp_kwargs["x_label_fontsize"],
-            fontname='Arial',
             color='k',
             labelpad=0
         )
         plt.ylabel(
             temp_kwargs['y_label'],
             fontsize=temp_kwargs["y_label_fontsize"],
-            fontname='Arial',
             color='k',
             labelpad=3
         )
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k'
         )
         plt.xlim(temp_kwargs['xscale'])

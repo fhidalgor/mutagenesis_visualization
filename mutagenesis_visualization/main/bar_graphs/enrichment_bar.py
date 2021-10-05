@@ -113,7 +113,6 @@ class EnrichmentBar(Pyplot):
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k',
             pad=title_pad
         )
@@ -132,7 +131,8 @@ class EnrichmentBar(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (15, 2.5))
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
-
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 10)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 10)
         return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
@@ -150,8 +150,7 @@ class EnrichmentBar(Pyplot):
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
             temp_kwargs['y_label'],
-            fontsize=10,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=10,
             rotation=0
@@ -163,7 +162,7 @@ class EnrichmentBar(Pyplot):
                 temp_kwargs['tick_spacing'],
             )
         )
-        self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
+        self.ax_object.set_xlabel('Residue', fontsize=temp_kwargs["x_label_fontsize"], color='k', labelpad=4)
         self.ax_object.set_xlim(
             self.start_position - 0.1,
             len(self.df_output) + self.start_position - 1 + 0.1,

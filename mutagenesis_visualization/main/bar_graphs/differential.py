@@ -111,8 +111,7 @@ class Differential(Pyplot):
         # title
         self.ax_object.set_title(
             temp_kwargs['title'],
-            fontsize=12,
-            fontname='Arial',
+            fontsize=temp_kwargs["title_fontsize"],
             color='k',
             pad=title_pad,
         )
@@ -131,6 +130,10 @@ class Differential(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (15, 2.5))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 12)
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 10)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 10)
+
 
         if metric == 'mean':
             temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
@@ -159,8 +162,7 @@ class Differential(Pyplot):
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
             temp_kwargs['y_label'],
-            fontsize=10,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=0,
             rotation=90
@@ -171,7 +173,7 @@ class Differential(Pyplot):
                 len(self.df_output) + self.start_position, temp_kwargs['tick_spacing']
             )
         )
-        self.ax_object.set_xlabel('Residue', fontsize=10, fontname="Arial", color='k', labelpad=4)
+        self.ax_object.set_xlabel('Residue', fontsize=temp_kwargs["x_label_fontsize"], color='k', labelpad=4)
         self.ax_object.set_xlim(
             self.start_position - 0.1,
             len(self.df_output) + self.start_position - 1 + 0.1

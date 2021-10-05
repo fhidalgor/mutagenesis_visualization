@@ -81,16 +81,14 @@ class Secondary(Pyplot):
         self.ax_object.set_xticks(ticks)
         self.ax_object.set_xticklabels(
             labels,
-            fontsize=9,
-            fontname="Arial",
+            fontsize=temp_kwargs["x_label_fontsize"],
             color='k',
             minor=False,
             rotation=0,
         )
         self.ax_object.set_ylabel(
             r'$∆E^i_x$',
-            fontsize=10,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=12,
             rotation=0,
@@ -99,8 +97,7 @@ class Secondary(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
-            fontsize=10,
+            fontsize=temp_kwargs['title_fontsize'],
             pad=5,
         )
 
@@ -112,4 +109,7 @@ class Secondary(Pyplot):
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
+        temp_kwargs['y_label_fontsize'] = kwargs.get('y_label_fontsize', 10)
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 10)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 9)
         return temp_kwargs

@@ -94,21 +94,18 @@ class MultipleKernel(Pyplot):
         plt.xlabel(
             r'$∆E^i_x$',
             fontsize=temp_kwargs["x_label_fontsize"],
-            fontname='Arial',
             color='k',
             labelpad=0
         )
         plt.ylabel(
             'Probability density',
             fontsize=temp_kwargs["y_label_fontsize"],
-            fontname='Arial',
             color='k',
             labelpad=3
         )
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k'
         )
         plt.xlim(temp_kwargs['xscale'])

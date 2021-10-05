@@ -76,23 +76,21 @@ class MeanCounts(Pyplot):
         self.ax_object.set_ylim(temp_kwargs['yscale'])
         self.ax_object.set_ylabel(
             temp_kwargs['y_label'],
-            fontsize=12,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=0,
             rotation=90,
         )
         self.ax_object.set_xlabel(
             'Amino acid position',
-            fontsize=12,
-            fontname="Arial",
+            fontsize=temp_kwargs["x_label_fontsize"],
             color='k',
             labelpad=4,
         )
         self.ax_object.set_xticklabels(self.positions)
 
         # Title
-        plt.title(temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=0)
+        plt.title(temp_kwargs['title'], fontsize=temp_kwargs['title_fontsize'], color='k', pad=0)
 
         # Put text labels
         input_text(temp_kwargs['text_labels'])
@@ -104,4 +102,7 @@ class MeanCounts(Pyplot):
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Mean counts')
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 14)
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 12)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 12)
         return temp_kwargs

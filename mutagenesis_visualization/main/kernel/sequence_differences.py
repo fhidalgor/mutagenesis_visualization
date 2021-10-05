@@ -122,21 +122,18 @@ class SequenceDifferences(Pyplot):
         plt.xlabel(
             r'$∆E^i_x$' if temp_kwargs['x_label'] == 'x_label' else temp_kwargs['x_label'],
             fontsize=temp_kwargs["x_label_fontsize"],
-            fontname="Arial",
             color='k',
             labelpad=0
         )
         plt.ylabel(
             'Probability density',
             fontsize=temp_kwargs["y_label_fontsize"],
-            fontname="Arial",
             color='k',
             labelpad=3
         )
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k'
         )
 

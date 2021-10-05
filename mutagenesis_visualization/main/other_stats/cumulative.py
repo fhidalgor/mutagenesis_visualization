@@ -78,11 +78,10 @@ class Cumulative(Pyplot):
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k'
         )
-        plt.ylabel(temp_kwargs['y_label'], fontsize=12, fontname="Arial", color='k', labelpad=5)
-        plt.xlabel('Position', fontsize=12, fontname="Arial", color='k', labelpad=0)
+        plt.ylabel(temp_kwargs['y_label'], fontsize=temp_kwargs['y_label_fontsize'], color='k', labelpad=5)
+        plt.xlabel('Position', fontsize=temp_kwargs["x_label_fontsize"], color='k', labelpad=0)
 
         # x=y line
         plt.plot([0, self.df_output['Position'].max()], [0, 1],

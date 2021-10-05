@@ -90,8 +90,7 @@ class LibraryRepresentation(Pyplot):
         self.ax_object.set_ylim(0, 100)
         self.ax_object.set_ylabel(
             'Cumulative % AA representation',
-            fontsize=12,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=0,
             rotation=90,
@@ -100,14 +99,13 @@ class LibraryRepresentation(Pyplot):
 
         self.ax_object.set_xlabel(
             'Amino acid position',
-            fontsize=12,
-            fontname="Arial",
+            fontsize=temp_kwargs["x_label_fontsize"],
             color='k',
             labelpad=4,
         )
         self.ax_object.set_xticklabels(self.positions)
 
-        plt.title(temp_kwargs['title'], fontsize=14, fontname='Arial', color='k', pad=20)
+        plt.title(temp_kwargs['title'], fontsize=temp_kwargs['title_fontsize'], fontname='Arial', color='k', pad=20)
 
         # legend
         plt.legend(
@@ -128,6 +126,9 @@ class LibraryRepresentation(Pyplot):
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (10, 4))
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 14)
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 12)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 12)
         return temp_kwargs
 
     def _group_codons_to_aa(self, df_input: DataFrame) -> DataFrame:

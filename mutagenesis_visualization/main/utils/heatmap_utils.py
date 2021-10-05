@@ -78,7 +78,6 @@ def generate_cartoon(
                     cartoon.text((x_label + 0.6),
                                  -0.25,
                                  label,
-                                 name='Arial',
                                  fontweight='normal',
                                  size=8.5 * fig_inches / 13.91,
                                  multialignment='right')
@@ -86,7 +85,6 @@ def generate_cartoon(
                     cartoon.text((x_label),
                                  -0.25,
                                  label,
-                                 name='Arial',
                                  fontweight='normal',
                                  size=8.5 * fig_inches / 13.91,
                                  multialignment='right')
@@ -98,7 +96,6 @@ def generate_cartoon(
                 cartoon.text((x_label),
                              -0.3,
                              label,
-                             name='Arial',
                              fontweight='normal',
                              size=9 * fig_inches / 14,
                              multialignment='center')

@@ -70,6 +70,7 @@ class Rank(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (4, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Rank')
         temp_kwargs['y_label'] = kwargs.get('y_label', r'$∆E^i_x$')
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 12)
         return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
@@ -80,19 +81,17 @@ class Rank(Pyplot):
         plt.scatter(np.arange(len(self.df_output), 0, -1), self.df_output['Score'], c='k', s=1)
 
         # Titles
-        plt.title(temp_kwargs['title'], fontsize=12, fontname='Arial', color='k', pad=8)
+        plt.title(temp_kwargs['title'], fontsize=temp_kwargs['title_fontsize'], color='k', pad=8)
         # Labels
         plt.ylabel(
             temp_kwargs['y_label'],
             fontsize=temp_kwargs["y_label_fontsize"],
-            fontname="Arial",
             color='k',
             labelpad=0
         )
         plt.xlabel(
             temp_kwargs['x_label'],
             fontsize=temp_kwargs["x_label_fontsize"],
-            fontname="Arial",
             color='k'
         )
 

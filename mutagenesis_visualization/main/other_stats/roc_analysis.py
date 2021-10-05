@@ -92,17 +92,15 @@ class ROC(Pyplot):
         plt.title(
             temp_kwargs['title'],
             fontsize=temp_kwargs["title_fontsize"],
-            fontname='Arial',
             color='k'
         )
         plt.ylabel(
             'True Positive Rate',
-            fontsize=12,
-            fontname="Arial",
+            fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
             labelpad=0,
         )
-        plt.xlabel('False Positive Rate', fontsize=12, fontname="Arial", color='k')
+        plt.xlabel('False Positive Rate', fontsize=temp_kwargs["x_label_fontsize"], color='k')
 
         # Legend
         plt.legend(

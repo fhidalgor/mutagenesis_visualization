@@ -118,8 +118,7 @@ class PCA(Pyplot):
         plt.title(
             temp_kwargs['title'],
             horizontalalignment='center',
-            fontname="Arial",
-            fontsize=10,
+            fontsize=temp_kwargs['title_fontsize'],
             pad=5
         )
 
@@ -131,4 +130,5 @@ class PCA(Pyplot):
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (2, 2))
+        temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 10)
         return temp_kwargs

@@ -25,7 +25,7 @@ class HeatmapColumns(Pyplot):
     def __call__(
         self,
         segment: Tuple[int, int],
-        ylabel_color: str = 'k',
+        ylabel: bool = True,
         nancolor: str = 'lime',
         mask_selfsubstitutions: bool = False,
         color_selfsubstitutions: Optional[str] = "k",
@@ -41,8 +41,8 @@ class HeatmapColumns(Pyplot):
         segment : Tuple[int]
             Segment is typed as [20,40] and includes both residues 20 and 40.
 
-        ylabel_color : str, default 'k'
-            Choose white if you don't want amino acid y axis label.
+        ylabel : str, default True
+            Choose False to hide.
 
         nancolor : str, default 'lime'
             Will color np.nan values with the specified color.
@@ -84,7 +84,7 @@ class HeatmapColumns(Pyplot):
                                       self.start_position + 1]
 
         # the size can be changed
-        figwidth = 2 * len(self.df_output.columns) / 22
+        figwidth = 14 * len(self.df_output.columns) / 165
         figheight = 2
         temp_kwargs['figsize_x'] = kwargs.get('figsize_x', figwidth)
         temp_kwargs['figsize_y'] = kwargs.get('figsize_y', figheight)
@@ -148,16 +148,19 @@ class HeatmapColumns(Pyplot):
         self.ax_object.set_xticklabels(
             list(self.sequence
                  )[segment[0] - self.start_position : segment[1] - self.start_position + 1],
-            fontsize=6.5,
+            fontsize=temp_kwargs["x_label_fontsize"],
             color=LABELS_COLOR,
             minor=False,
         )
         self.ax_object.set_yticklabels(
             temp_kwargs['neworder_aminoacids'],
-            fontsize=6,
-            color=ylabel_color,
+            fontsize=temp_kwargs["y_label_fontsize"],
+            color=LABELS_COLOR,
             minor=False,
         )
+        if not ylabel:
+            self.ax_object.set_yticklabels([])
+
 
         ax2_label = (segment[1] - segment[0] + 1) * ['']
         ax2_label[0] = str(segment[0])
@@ -187,4 +190,6 @@ class HeatmapColumns(Pyplot):
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
+        temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 6)
+        temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 6.5)
         return temp_kwargs
