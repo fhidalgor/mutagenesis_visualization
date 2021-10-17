@@ -30,7 +30,7 @@ class Pymol(Pyplot):
         mode: str = 'mean',
         residues: List[str] = None,
         position_correction: int = 0,
-        default_pymol_parameters: bool = True,
+        stetic_parameters: bool = True,
         replicate: int = -1,
         **kwargs: Any
     ) -> None:
@@ -72,8 +72,8 @@ class Pymol(Pyplot):
             but in the PDB that same residue is at position 20,
             position_correction needs to be set at 18.
         
-        default_pymol_parameters : bool, default True
-            If set to False, pymol will apply the mutagenesis_visualization
+        stetic_parameters : bool, default True
+            If set to True, pymol will apply the mutagenesis_visualization
             custom parameters instead of the default Pymol ones.    
     
         replicate : int, default -1
@@ -150,7 +150,7 @@ class Pymol(Pyplot):
         pymol.remove('solvent')
 
         # light parameters
-        if not(default_pymol_parameters):
+        if stetic_parameters:
             light_parameters()
 
         # deselect everything

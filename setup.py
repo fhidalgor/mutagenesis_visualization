@@ -39,7 +39,6 @@ setuptools.setup(
     url="https://github.com/fhidalgor/mutagenesis_visualization",
     keywords=['saturation','mutagenesis','deepsequencing', 'ras', 'site-saturation', 'nextgenseq', 'NGS'],
     packages=setuptools.find_packages(),
-    #py_modules=['main.mutagenesis_visualization'],
     classifiers=[
         "Programming Language :: Python :: 3",
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
@@ -48,7 +47,7 @@ setuptools.setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics'],
     project_urls={
         'Documentation': ('https://mutagenesis-visualization.readthedocs.io/'),
-        # 'Methods Paper': 'PAPER URL HERE!',
+        'Publication': 'https://doi.org/10.1101/2021.10.08.463725',
         'Source': 'https://github.com/fhidalgor/mutagenesis_visualization',},
     install_requires=read_list('requirements.txt'),
     dependency_links=['https://github.com/cxhernandez/ipymol/tarball/master'],
