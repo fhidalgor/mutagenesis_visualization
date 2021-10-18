@@ -21,7 +21,7 @@ class MultipleKernel(Pyplot):
         self,
         screen_object: Union['Screen', List['Screen']],
         label_kernels: List[str],
-        colors: Optional[List[str]] = None,
+        kernel_colors: Optional[List[str]] = None,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any
@@ -34,7 +34,7 @@ class MultipleKernel(Pyplot):
         screen_object : *Screen* object or list containing *Screen*
             objects.
 
-        colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
+        kernel_colors : list, default ['k', 'crimson', 'dodgerblue', 'g', 'silver']
             List of the colors (in order of arguments) that the kernels
             will have.
 
@@ -56,20 +56,20 @@ class MultipleKernel(Pyplot):
         temp_kwargs['label_kernels'] = label_kernels
         self.graph_parameters()
 
-        if not colors:
-            colors = ['k', 'crimson', 'dodgerblue', 'g', 'silver']
+        if not kernel_colors:
+            kernel_colors = ['k', 'crimson', 'dodgerblue', 'g', 'silver']
 
         # create figure
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
 
         self.ax_object = kdeplot(
             self.dataframes.df_notstopcodons[replicate]['Score_NaN'],
-            color=colors[0],
+            color=kernel_colors[0],
             lw=2,
             label=label_kernels[0]
         )
         if isinstance(screen_object, list):
-            for (label, sobj, color) in zip(label_kernels, screen_object, colors):
+            for (label, sobj, color) in zip(label_kernels, screen_object, kernel_colors[1:]):
                 self.ax_object = kdeplot(
                     sobj.dataframes.df_notstopcodons[replicate]['Score_NaN'],
                     color=color,
@@ -79,7 +79,7 @@ class MultipleKernel(Pyplot):
         else:
             self.ax_object = kdeplot(
                 screen_object.dataframes.df_notstopcodons[replicate]['Score_NaN'],
-                color=colors[1],
+                color=kernel_colors[1],
                 lw=2,
                 label=label_kernels[1]
             )

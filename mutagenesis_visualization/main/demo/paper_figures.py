@@ -43,17 +43,17 @@ def generate_figures() -> None:
     """
     This figure will generate the figures that go into the paper.
     """
-    HRAS_RBD.heatmap(title="", show_cartoon=True, output_file=PATH.format("a"), show=SHOW)
-    HRAS_RBD.miniheatmap(title="Wt residue", output_file=PATH.format("b"), show=SHOW)
+    HRAS_RBD.heatmap(title="", mask_selfsubstitutions=True,show_cartoon=True, output_file=PATH.format("a"), show=SHOW)
+    HRAS_RBD.miniheatmap(mask_selfsubstitutions=True,title="Wt residue", output_file=PATH.format("b"), show=SHOW)
     HRAS_RBD.correlation(
         title="Amino acid correlation",
         output_file=PATH.format("c"),
-        colorbar_scale=(0, 1),
+        colorbar_scale=(0.5, 1),
         show=SHOW
     )
     HRAS_COUNTS.library_representation(title="", output_file=PATH.format("d"), show=SHOW)
     HRAS_RBD.enrichment_bar(
-        title="", show_cartoon=True, output_file=PATH.format("e"), figsize=(6, 2.5), show=SHOW
+        title="", show_cartoon=True, output_file=PATH.format("e"), figsize=(8, 2.5), show=SHOW
     )
     HRAS_RBD.pca(
         adjust_labels=True, title="", mode="secondary", output_file=PATH.format("f"), show=SHOW
@@ -80,5 +80,5 @@ def generate_figures() -> None:
     HRAS_RBD.roc(df_class, mode="mean", title="", output_file=PATH.format("g"), show=SHOW)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     generate_figures()

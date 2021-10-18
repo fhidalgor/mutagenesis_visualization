@@ -9,10 +9,10 @@ def graph_parameters() -> None:
     Default rcParams.
     """
     # normal font
-    #rcParams['font.family'] = 'sans-serif'
-    #rcParams['font.sans-serif'] = ['Arial']
-    rcParams['font.family'] = 'serif'
-    rcParams['font.serif'] = ['Times New Roman'] + rcParams['font.serif']
+    rcParams['font.family'] = 'sans-serif'
+    rcParams['font.sans-serif'] = ['Helvetica']
+    #rcParams['font.family'] = 'serif'
+    #rcParams['font.serif'] = ['Times New Roman'] + rcParams['font.serif']
 
     # math font
     rcParams['mathtext.fontset'] = 'custom'

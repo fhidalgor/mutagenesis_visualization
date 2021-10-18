@@ -35,7 +35,9 @@ class Kernel(Pyplot):
 
         show_mean: bool, optional default False
             If set to true, it will plot the kernel distribution mean of
-            replicates when wt_counts_only is True.
+            replicates when wt_counts_only is True. Otherwise, it will
+            show the mean by default so this parameter won't work if
+            show_replicates is set to False.
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -48,7 +50,10 @@ class Kernel(Pyplot):
             Example: 'path/filename.png' or 'path/filename.svg'.
 
         **kwargs : other keyword arguments
-            kernel_colors : list of colors, default None
+            color: str, default "k"
+                Set the color of the mean plot.
+
+            kernel_color_replicates : list of colors, default None
                 Add a list of color codes to tune the colors of the plots.
 
             return_plot_object : boolean, default False
@@ -71,7 +76,7 @@ class Kernel(Pyplot):
                 label = "r{}".format(str(i))
                 self.ax_object = kdeplot(
                     df_replicate['Score_NaN'],
-                    color=temp_kwargs["kernel_colors"][i],
+                    color=temp_kwargs["kernel_color_replicates"][i-1],
                     lw=2,
                     label=label
                 )
@@ -127,5 +132,5 @@ class Kernel(Pyplot):
         temp_kwargs['figsize'] = kwargs.get('figsize', (2.5, 2))
         temp_kwargs['x_label'] = kwargs.get('x_label', r'$∆E^i_x$')
         temp_kwargs['y_label'] = kwargs.get('y_label', 'Probability density')
-        temp_kwargs['kernel_colors'] = kwargs.get('kernel_colors', [None] * 50)
+        temp_kwargs['kernel_color_replicates'] = kwargs.get('kernel_color_replicates', [None] * 50)
         return temp_kwargs

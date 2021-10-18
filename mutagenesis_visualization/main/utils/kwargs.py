@@ -111,7 +111,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         'colormap': _generate_colormap(),
         'colorbar_scale': (-1, 1),
         'color': 'black',
-        'kernel_colors': None,
+        'kernel_color_replicates': None,
         'title': 'Title',
         'x_label': 'x_label',
         'y_label': 'y_label',

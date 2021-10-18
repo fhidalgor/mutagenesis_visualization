@@ -11,7 +11,7 @@ Import modules and load data
 .. code:: ipython3
 
     %matplotlib inline
-    from typing import List
+    from typing import List, Dict
     import numpy as np
     import pandas as pd
     from pandas.core.frame import DataFrame
@@ -108,7 +108,7 @@ selected than in the pre-selected population, the center is >0.
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
     
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, ' + r'$log_{10}$' + '(sel/pre)', xscale=(-0.5, 0.75))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"], title=r'$log_{10}$' + '(sel/pre)', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_kdesub1.png
    :width: 350px
@@ -148,7 +148,7 @@ population center is closer to 0. To do so, set
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
     
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = counts', xscale=(-1, 1))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"], title='zeroing_method = counts', xscale=(-1, 0.5))
 
 .. image:: images/exported_images/hras_zeroingcounts.png
    :width: 350px
@@ -189,7 +189,7 @@ But in other datasets we have, it has been a source of error.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = wt_allele only', xscale=(-0.5, 0.5))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"], title='zeroing_method = wt allele only', xscale=(-0.5, 0.5))
 
 .. image:: images/exported_images/hras_zeroingwtallele.png
    :width: 350px
@@ -310,7 +310,7 @@ spread.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = population', xscale=(-1, 1))
+    hras_object.kernel(show_replicates=True, title='zeroing_method = population', xscale=(-1, 1))
 
 .. image:: images/exported_images/hras_zeroingpopulation.png
    :width: 350px
@@ -344,7 +344,7 @@ the same standard deviation. Results are quite similar to setting
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, zeroing_method = kernel', xscale=(-1.5,1))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"],  title='zeroing method = kernel', xscale=(-1.5,1))
 
 .. image:: images/exported_images/hras_zeroingkernel.png
    :width: 350px
@@ -380,7 +380,7 @@ shoulder.
     hras_object: Screen = Screen(
         list(enrichment.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, baseline subtraction', xscale=(-5, 1.5))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"], title='stop codon correction', xscale=(-5, 1.5))
 
 .. image:: images/exported_images/hras_baselinesubtr.png
    :width: 350px
@@ -425,7 +425,7 @@ spread.
     hras_object: Screen = Screen(
         list(enrichment_scalar.values()), hras_sequence, aminoacids, start_position, fillna,
     )
-    hras_object.kernel(show_replicates=True, title='Sublibrary 1, scaling', xscale=(-5, 1.5))
+    hras_object.kernel(show_replicates=True, kernel_color_replicates = ["b", "r", "g"], title='scaling', xscale=(-5, 1.5))
 
 .. image:: images/exported_images/hras_scaling.png
    :width: 350px
@@ -461,7 +461,7 @@ get in touch if you have questions regarding data normalization.
             aminoacids: List[str] = list('AACDEFGGHIKLLLMNPPQRRRSSSTTVVWY*')
     
             # log 10
-            enrichment_lib[label]  = calculate_enrichment(
+            enrichment_lib[label]  = DataFrame(calculate_enrichment(
                 aminoacids,
                 dict_pre[pre_key],
                 dict_sel[sel_key],
@@ -471,7 +471,7 @@ get in touch if you have questions regarding data normalization.
                 zeroing_metric ='mode',
                 stopcodon=True,
                 infinite=2
-            )
+            ))
     
         # Concatenate sublibraries and store in dict
         df_lib[option] = pd.concat([
@@ -534,7 +534,7 @@ since can easily be changed by using ``std_scale``.
     start_position: int = 2
     
     # Create objects
-    objects = {}
+    objects: Dict[str, Screen] = {}
     for key, value in df_lib.items():
         temp = Screen(value, hras_sequence, aminoacids, start_position)
         objects[key] = temp
