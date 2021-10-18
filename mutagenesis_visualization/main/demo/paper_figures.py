@@ -43,20 +43,20 @@ def generate_figures() -> None:
     """
     This figure will generate the figures that go into the paper.
     """
-    HRAS_RBD.heatmap(title="", mask_selfsubstitutions=True,show_cartoon=True, output_file=PATH.format("a"), show=SHOW)
-    HRAS_RBD.miniheatmap(mask_selfsubstitutions=True,title="Wt residue", output_file=PATH.format("b"), show=SHOW)
+    HRAS_RBD.heatmap(title="", mask_selfsubstitutions=True,show_cartoon=True, output_file=PATH.format("a"), show=SHOW, dpi = 1200)
+    HRAS_RBD.miniheatmap(mask_selfsubstitutions=True,title="Wt residue", output_file=PATH.format("b"), show=SHOW, dpi = 1200)
     HRAS_RBD.correlation(
         title="Amino acid correlation",
         output_file=PATH.format("c"),
         colorbar_scale=(0.5, 1),
-        show=SHOW
+        show=SHOW, dpi = 1200
     )
-    HRAS_COUNTS.library_representation(title="", output_file=PATH.format("d"), show=SHOW)
+    HRAS_COUNTS.library_representation(title="", output_file=PATH.format("d"), show=SHOW, dpi = 1200)
     HRAS_RBD.enrichment_bar(
-        title="", show_cartoon=True, output_file=PATH.format("e"), figsize=(8, 2.5), show=SHOW
+        title="", show_cartoon=True, output_file=PATH.format("e"), figsize=(6, 2.5), show=SHOW, dpi = 1200
     )
     HRAS_RBD.pca(
-        adjust_labels=True, title="", mode="secondary", output_file=PATH.format("f"), show=SHOW
+        adjust_labels=True, title="", mode="secondary", output_file=PATH.format("f"), show=SHOW, dpi = 1200
     )
     HRAS_RBD.sequence_differences(
         ANC_RAS,
@@ -65,7 +65,7 @@ def generate_figures() -> None:
         bins=10,
         title="",
         output_file=PATH.format("h"),
-        show=SHOW
+        show=SHOW, dpi = 1200
     )
 
     # Create noise for class
@@ -77,7 +77,7 @@ def generate_figures() -> None:
     df_class["Class"] = df_class["Score+Noise"].astype(int)
     df_class.loc[df_class["Class"] < 0] = 0
     df_class.loc[df_class["Class"] > 1] = 1
-    HRAS_RBD.roc(df_class, mode="mean", title="", output_file=PATH.format("g"), show=SHOW)
+    HRAS_RBD.roc(df_class, mode="mean", title="", output_file=PATH.format("g"), show=SHOW, dpi = 1200)
 
 
 if __name__ == "__main__":
