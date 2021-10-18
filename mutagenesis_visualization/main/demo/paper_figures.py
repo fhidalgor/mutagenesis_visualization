@@ -8,7 +8,7 @@ from mutagenesis_visualization.main.classes.screen import Screen
 
 HRAS_RBD = DemoObjects().hras_rbd
 HRAS_COUNTS = DemoObjects().hras_counts
-PATH: str = "docs/images/exported_images/paper/fig1{}.svg"
+PATH: str = "docs/images/exported_images/paper/fig1{}.png"
 ANC_RAS_ENRICHMENT = np.genfromtxt("figures_jk/enrichments/old/Ancestral167_RBD.csv", delimiter=',')
 SHOW = False
 
