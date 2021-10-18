@@ -12,8 +12,7 @@ Using a virtual environment
 ============================
 
 The easiest way to run mutagenesis_visualization is by creating a virtual environment, where all the dependencies are installed from scratch. That will avoid errors related to different versions of dependencies.
-There are different tools to manage virtual environments, such as `poetry <https://python-poetry.org/>`_ or `conda <https://docs.conda.io/en/latest/>`_. We recommend using poetry for its simplicity. A toml and a lock file are
-present in the repository.
+There are different tools to manage virtual environments, such as `poetry <https://python-poetry.org/>`_ or `conda <https://docs.conda.io/en/latest/>`_. We recommend using poetry for its simplicity. A toml, a requirements.txt, and a lock files are present in the repository. Anaconda offers the option to create a virtual environment. Check this `guide <https://medium.com/swlh/setting-up-a-conda-environment-in-less-than-5-minutes-e64d8fc338e4>`_ to know how.
 
 Installing with pip
 ====================
@@ -94,7 +93,7 @@ Optional dependencies
 - `ipymol <https://github.com/cxhernandez/ipymol>`_ (version 0.5)
 
 
-``Ipymol`` needs to be installed from Github, since the current Pypi version does not work. To install use this command:
+``Ipymol`` needs to be installed from Github, since the current Pypi version does not work. Make sure that you have a ``setuptools`` version below 58.0, otherwise there will be an error. To install ipymol, use this command:
 
 .. code:: ipython3
 
@@ -106,6 +105,9 @@ You may have already installed ``Pymol``. However, if it is not on the same path
 .. code:: ipython3
 
 	conda install -c schrodinger pymol-bundle
+	
+If you create a virtual environment with conda, you need to install the pymol bundle in the virtual environment.
+
 
 Quick demo
 ********************

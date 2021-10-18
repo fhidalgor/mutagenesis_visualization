@@ -76,3 +76,9 @@ def light_parameters() -> None:
     pymol.set('stick_radius', '0.2')
     pymol.set('sphere_scale', '0.2')
     pymol.set('sphere_quality', '4')
+    
+    # Ray parameters
+    pymol.set('ray_shadow_decay_factor', '0.3')
+    pymol.set('ray_shadow_decay_range', '1')
+    pymol.set('ray_trace_mode', '1')
+    pymol.set('ray_opaque_background', 'off')

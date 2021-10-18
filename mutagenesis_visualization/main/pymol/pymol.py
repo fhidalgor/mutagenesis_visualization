@@ -30,6 +30,7 @@ class Pymol(Pyplot):
         mode: str = 'mean',
         residues: List[str] = None,
         position_correction: int = 0,
+        esthetic_parameters: bool = True,
         replicate: int = -1,
         **kwargs: Any
     ) -> None:
@@ -70,7 +71,11 @@ class Pymol(Pyplot):
             you dataset, you can correct for that. If your start_position = 2,
             but in the PDB that same residue is at position 20,
             position_correction needs to be set at 18.
-
+        
+        esthetic_parameters : bool, default True
+            If set to True, pymol will apply the mutagenesis_visualization
+            custom parameters instead of the default Pymol ones.    
+    
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -138,14 +143,15 @@ class Pymol(Pyplot):
 
         # Representation parameters
         pymol.show_as('cartoon', pdb)
+        pymol.set('cartoon_color', 'chlorine', white)
         pymol.set('cartoon_color', temp_kwargs['color_lof'], blue)
         pymol.set('cartoon_color', temp_kwargs['color_gof'], red)
-        pymol.set('cartoon_color', 'chlorine', white)
         pymol.bg_color('white')
         pymol.remove('solvent')
 
         # light parameters
-        light_parameters()
+        if esthetic_parameters:
+            light_parameters()
 
         # deselect everything
         pymol.deselect()
