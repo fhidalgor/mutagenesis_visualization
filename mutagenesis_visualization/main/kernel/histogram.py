@@ -16,6 +16,8 @@ class Histogram(Pyplot):
     def __call__(
         self,
         population: str = 'All',
+        show_parameters: bool = False,
+        loc: str = "best",
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -28,6 +30,15 @@ class Histogram(Pyplot):
         ----------
         population : str, default 'All'.
             Other options are 'SNV' and 'nonSNV'.
+
+        show_parameters: bool, default False
+            If set to true, will display the mean and the median of
+            the data.
+
+        loc: str, default "best"
+            Set the location of the meam and median. Check the matplotlib
+            plt.legend method to see how the parameter loc works.
+            https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -45,13 +56,8 @@ class Histogram(Pyplot):
             bins : int or str, default 'auto'.
                 Number of bins for the histogram. By default it will
                 automatically decide the number of bins.
-
-        Returns
-        ----------
-        fig : matplotlib figure and subplots
-            Needs to have return_plot_object==True. By default they do
-            not get returned.
-
+            color: str, default 'k'
+                Change to a different color if desired.
         """
         temp_kwargs = self._update_kwargs(kwargs)
         self.fig = plt.figure(figsize=temp_kwargs['figsize'])
@@ -65,7 +71,14 @@ class Histogram(Pyplot):
             data_to_use = self.dataframes.df_nonsnv[replicate]['Score_NaN']
 
         # plot histogram
-        self.ax_object = plt.hist(data_to_use, density=True, bins=temp_kwargs['bins'], color='k')
+        self.ax_object = plt.hist(data_to_use, density=True, bins=temp_kwargs['bins'], color=temp_kwargs['color'])
+
+        # calculate parameters
+        if show_parameters:
+            plt.plot(0) # so there are two labels
+            legend_labels = ('x̄ = '+str(round(data_to_use.mean(),3)),'x̃ = '+str(round(data_to_use.median(),3)))
+            plt.legend(legend_labels,frameon=False, framealpha=1, loc=loc,
+                borderaxespad=0, ncol=1,handlelength=0, handletextpad=0)
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)

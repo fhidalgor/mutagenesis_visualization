@@ -109,6 +109,7 @@ class MultipleKernel(Pyplot):
             color='k'
         )
         plt.xlim(temp_kwargs['xscale'])
+        plt.ylim(temp_kwargs['yscale'])
         plt.grid()
         plt.legend(
             temp_kwargs['label_kernels'],
@@ -125,5 +126,4 @@ class MultipleKernel(Pyplot):
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
         temp_kwargs['figsize'] = kwargs.get('figsize', (3.5, 2))
-        temp_kwargs['xscale'] = kwargs.get('xscale', (-2, 2))
         return temp_kwargs

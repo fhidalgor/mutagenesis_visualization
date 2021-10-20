@@ -36,5 +36,5 @@ with open("CITATION.cff", "w", encoding="utf8") as f:
 
 system("poetry export --without-hashes > requirements.txt")
 system("git add .")
-system("git commit -m 'updated doc'")
+system("git commit -m 'updated histogram function'")
 system("git push")

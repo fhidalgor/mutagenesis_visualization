@@ -23,7 +23,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         Scale min and max used in heatmaps and correlation heatmaps.
 
     color: str, default 'k'
-        Color used for the kernel plot line.
+        Color used for the kernel plot line and the histogram.
 
     title : str, default 'Title'
         Title of plot.

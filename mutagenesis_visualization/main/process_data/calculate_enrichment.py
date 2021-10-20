@@ -12,7 +12,7 @@ from mutagenesis_visualization.main.process_data.process_data_utils import (
     kernel_correction, replace_inf
 )
 
-ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'kernel', 'population']  # pylint: disable=invalid-name
+ZEROING_METHODS = Literal['none', 'zscore', 'counts', 'wt', 'wt synonymous', 'kernel', 'population']  # pylint: disable=invalid-name
 ZEROING_METRICS = Literal['mean', 'mode', 'median']  # pylint: disable=invalid-name
 STOPCODON: bool = True
 MIN_COUNTS: int = 25
@@ -236,7 +236,7 @@ def zero_data(
     mode_pop = nan_mode(log10_counts_mad)
 
     # Zero data, select case
-    if zeroing_method == 'wt' and log10_wtcounts is not None:
+    if zeroing_method == 'wt' or zeroing_method == 'wt synonymous' and log10_wtcounts is not None:
         mean_wt = np.nanmean(log10_wtcounts)
         median_wt = np.nanmedian(log10_wtcounts)
         std_wt = np.nanstd(log10_wtcounts)
