@@ -132,3 +132,4 @@ dmypy.json
 # Other
 figures_jk/
 build_doc.ipynb
+auth.toml
