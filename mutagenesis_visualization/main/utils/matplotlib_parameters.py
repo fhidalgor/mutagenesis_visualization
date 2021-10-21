@@ -10,7 +10,7 @@ def graph_parameters() -> None:
     """
     # normal font
     rcParams['font.family'] = 'sans-serif'
-    rcParams['font.sans-serif'] = ['Helvetica']
+    rcParams['font.sans-serif'] = ['Helvetica', "Arial"]
     #rcParams['font.family'] = 'serif'
     #rcParams['font.serif'] = ['Times New Roman'] + rcParams['font.serif']
 
@@ -29,7 +29,6 @@ def graph_parameters() -> None:
     # Parameters for all graphs
     rcParams['xtick.labelsize'] = 9
     rcParams['ytick.labelsize'] = 9
-
 
 def font_parameters() -> None:
     """
