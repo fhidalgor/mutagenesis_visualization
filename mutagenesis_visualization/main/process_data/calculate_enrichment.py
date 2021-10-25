@@ -1,7 +1,7 @@
 """
 This module contais the enrichment calculations from dna counts.
 """
-from typing import Literal, Union, List, Optional
+from typing import Literal, Union, List, Optional, Tuple
 from pathlib import Path
 import numpy as np
 from numpy import typing as npt
@@ -142,9 +142,10 @@ def calculate_enrichment(
         output_stopcodon = post_lib_df.loc['*'].astype(float)
 
     # Log10 of the counts for library and wt alleles
-    log10_counts = get_log_enrichment(
+    log10_counts, output_lib_np = get_log_enrichment(
         pre_lib_df, post_lib_df, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
+    print(output_lib_np)
     # Group by amino acid
     log10_counts_grouped: DataFrame = group_by_aa(DataFrame(log10_counts), aminoacids)
     log10_counts_mad = np.ravel(np.array(log10_counts_grouped))
@@ -154,7 +155,7 @@ def calculate_enrichment(
     # Wt counts
     log10_wtcounts = None
     if pre_wt is not None:
-        log10_wtcounts = get_log_enrichment(
+        log10_wtcounts, _ = get_log_enrichment(
             pre_wt, post_wt, input_stopcodon, output_stopcodon, min_countswt, stopcodon, infinite
         )
         # MAD filtering
@@ -163,8 +164,7 @@ def calculate_enrichment(
             log10_wtcounts = filter_by_mad(log10_wtcounts, mwt)
 
     zeroed = zero_data(
-        pre_lib=pre_lib,
-        post_lib=post_lib,
+        ratio_counts=np.log10(np.nansum(output_lib_np)/np.nansum(pre_lib)),
         log10_counts_grouped=log10_counts_grouped,
         log10_counts_mad=log10_counts_mad,
         log10_wtcounts=log10_wtcounts,
@@ -197,7 +197,7 @@ def get_log_enrichment(
     min_counts: int,
     stopcodon: bool,
     infinite: float,
-) -> npt.NDArray:
+) -> Tuple[npt.NDArray, npt.NDArray]:
     """
     Calculate log10 enrichment scores from input and output counts.
     """
@@ -218,11 +218,11 @@ def get_log_enrichment(
             np.log10(output_lib_np / input_lib_np), infinite
         )
 
-    return counts_log10_ratio
+    return counts_log10_ratio, output_lib_np
 
 
 def zero_data(
-    pre_lib: npt.NDArray, post_lib: npt.NDArray, log10_counts_grouped: DataFrame,
+    ratio_counts: float, log10_counts_grouped: DataFrame,
     log10_counts_mad: npt.NDArray, log10_wtcounts: Optional[npt.NDArray], zeroing_method: str,
     zeroing_metric: str, std_scale: float
 ) -> npt.NDArray:
@@ -262,8 +262,7 @@ def zero_data(
         if std_scale:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing_method == 'counts':
-        ratio = np.log10(post_lib.sum().sum() / pre_lib.sum().sum())
-        zeroed = log10_counts_grouped - ratio
+        zeroed = log10_counts_grouped - ratio_counts
         if std_scale:
             zeroed = zeroed * std_scale / std_pop
     elif zeroing_method == 'kernel':
