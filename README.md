@@ -40,7 +40,7 @@ pip install git+https://github.com/fhidalgor/mutagenesis_visualization
 ```
 ## Citing
 
-If you use the software, please, cite our publication [doi](https://doi.org/10.1101/2021.10.08.463725).
+If you use the software, please, cite our [publication](https://doi.org/10.1101/2021.10.08.463725).
 
 ## Documentation
 
