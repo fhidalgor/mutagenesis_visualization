@@ -89,6 +89,8 @@ class Pymol(Pyplot):
             lof : int, default is -1
                 cutoff for determining loss of function mutations based on
                 mutagenesis data.
+            color : str, default 'chlorine'
+                Choose color to color neutral.
             color_gof : str, default 'red'
                 Choose color to color positions with an enrichment score > gof.
             color_lof : str, default 'neptunium'
@@ -104,6 +106,7 @@ class Pymol(Pyplot):
         temp_kwargs: Dict[str, Any] = deepcopy(generate_default_kwargs())
         temp_kwargs.update(kwargs)
         temp_kwargs['color_lof'] = kwargs.get('color_lof', 'neptunium')
+        temp_kwargs['color'] = kwargs.get('color', 'chlorine')
 
         # Calculate residues only if they are not given by the user
         if residues is None:
@@ -143,7 +146,7 @@ class Pymol(Pyplot):
 
         # Representation parameters
         pymol.show_as('cartoon', pdb)
-        pymol.set('cartoon_color', 'chlorine', white)
+        pymol.set('cartoon_color', temp_kwargs['color'], white)
         pymol.set('cartoon_color', temp_kwargs['color_lof'], blue)
         pymol.set('cartoon_color', temp_kwargs['color_gof'], red)
         pymol.bg_color('white')
