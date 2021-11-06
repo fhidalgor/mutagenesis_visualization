@@ -115,8 +115,13 @@ class Screen:
         fillna: float = 0,
         secondary: Optional[List[List[str]]] = None,
     ):
-
+        if isinstance(datasets,list):
+            self.nreplicates = len(datasets)
+        else:
+            self.nreplicates = 1
         self.datasets: List[npt.NDArray] = handle_input_datasets(datasets)
+
+
         assert len(sequence) >= len(self.datasets[0][0]), "Input sequence is not long enough."
 
         if isinstance(aminoacids, list):

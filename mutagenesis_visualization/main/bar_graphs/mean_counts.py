@@ -33,6 +33,7 @@ class MeanCounts(Pyplot):
 
     def __call__(
         self,
+        normalize: bool = False,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -42,6 +43,10 @@ class MeanCounts(Pyplot):
 
         Parameters
         ----------
+        normalize : bool, default False
+            If set to true, the mean counts will be normalized so the
+            highest value is 100.
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -63,7 +68,10 @@ class MeanCounts(Pyplot):
 
         # plot
         self.fig, ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
-        self.ax_object = self.dataframes_raw[replicate].mean().T.plot.bar(ax=ax_object, color='red')
+        self.df_output = self.dataframes_raw[replicate].mean()
+        if normalize:
+            self.df_output = self.df_output*100/self.df_output.max()
+        self.ax_object = self.df_output.T.plot.bar(ax=ax_object, color=temp_kwargs['color'])
 
         self._tune_plot(temp_kwargs)
         self._save_work(output_file, temp_kwargs)
@@ -105,4 +113,6 @@ class MeanCounts(Pyplot):
         temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 14)
         temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 12)
         temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 12)
+        temp_kwargs['color'] = kwargs.get('color', "red")
+
         return temp_kwargs

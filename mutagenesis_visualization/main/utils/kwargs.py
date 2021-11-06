@@ -23,7 +23,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         Scale min and max used in heatmaps and correlation heatmaps.
 
     color: str, default 'k'
-        Color used for the kernel plot line and the histogram.
+        Color used for the kernel plot line, the histogram, the bar plots.
 
     title : str, default 'Title'
         Title of plot.
@@ -82,7 +82,6 @@ def generate_default_kwargs() -> Dict[str, Any]:
 
     close: boolean, default False
         Whether to execute plt.close() or not on a matplotlib object.
-
     random_state : int, default 554
         Random state used for PCA function.
 

@@ -96,13 +96,15 @@ def _aminoacids_snv(
     return False
 
 
-def add_snv_boolean(df_input: DataFrame) -> DataFrame:
+def add_snv_boolean(df_input: DataFrame, column_sequence: str = "Sequence", column_aminoacid: str = "Aminoacid") -> DataFrame:
     """
     Add a column to dataframe indication if the variant is a SNV or not
 
     Parameters
     -----------
-    df_input : pandas dataframe containing DSM data
+    df_input : pandas dataframe containing DSM data.
+    column_sequence: the column that contains the original aa.
+    column_aminoacid: the column that contains the substitution.
 
     Returns
     --------
@@ -114,7 +116,7 @@ def add_snv_boolean(df_input: DataFrame) -> DataFrame:
 
     # Add column with True/False input
     df_input["SNV?"] = df_input.apply(
-        lambda x: _aminoacids_snv(x["Sequence"], x["Aminoacid"], codon_table), axis=1
+        lambda x: _aminoacids_snv(x[column_sequence], x[column_aminoacid], codon_table), axis=1
     )
 
     return df_input
