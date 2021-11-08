@@ -1,7 +1,7 @@
 """
 This module contains the class that plots the mean position bar plot.
 """
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Optional
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,6 +21,8 @@ class EnrichmentBar(Pyplot):
         self,
         mode: str = "mean",
         show_cartoon: bool = False,
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -36,6 +38,16 @@ class EnrichmentBar(Pyplot):
             will show the mean of each position. If mode = 'A', it will
             show the alanine substitution profile. Can be used for each
             amino acid. Use the one-letter code and upper case.
+
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
 
         show_cartoon : boolean, default False
             If true, the plot will display a cartoon with the secondary
@@ -64,12 +76,12 @@ class EnrichmentBar(Pyplot):
 
         # Select grouping
         if mode.lower() == 'mean':
-            self.df_output = self.dataframes.df_notstopcodons[replicate].groupby(
+            self.df_output = self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate].groupby(
                 'Position', as_index=False
             ).mean()
         else:
-            self.df_output = self.dataframes.df_notstopcodons[replicate].loc[
-                self.dataframes.df_notstopcodons[replicate]['Aminoacid'] == mode].copy()
+            self.df_output = self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate].loc[
+                self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate]['Aminoacid'] == mode].copy()
 
         self.df_output['Color'] = self.df_output.apply(
             color_data, axis=1, args=(

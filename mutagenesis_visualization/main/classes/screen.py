@@ -232,7 +232,6 @@ class Screen:
             aminoacids=self.aminoacids
         )
 
-        # scatter
         self.scatter: Scatter = Scatter(dataframes=self.dataframes, aminoacids=self.aminoacids)
 
         self.correlation: Correlation = Correlation(

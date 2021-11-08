@@ -1,7 +1,7 @@
 """
 This module contains the box plot class.
 """
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Optional
 from pathlib import Path
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
@@ -27,6 +27,8 @@ class Secondary(Pyplot):
     """
     def __call__(
         self,
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -37,6 +39,16 @@ class Secondary(Pyplot):
 
         Parameters
         -----------
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -54,7 +66,7 @@ class Secondary(Pyplot):
 
         # Get data
         df_output: DataFrame = _calculate_secondary(
-            self.dataframes.df_notstopcodons[replicate], self.secondary_dup
+            self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate], self.secondary_dup
         )
 
         # Color

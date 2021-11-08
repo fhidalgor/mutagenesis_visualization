@@ -82,6 +82,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
 
     close: boolean, default False
         Whether to execute plt.close() or not on a matplotlib object.
+
     random_state : int, default 554
         Random state used for PCA function.
 
@@ -96,6 +97,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
 
     figsize_y : int
 
+    legend_fontsize: int, default 10
 
     Returns
     --------
@@ -137,6 +139,7 @@ def generate_default_kwargs() -> Dict[str, Any]:
         'title_fontsize': 12,
         'x_label_fontsize': 10,
         'y_label_fontsize': 10,
+        'legend_fontsize': 10,
     }
 
     return default_kwargs

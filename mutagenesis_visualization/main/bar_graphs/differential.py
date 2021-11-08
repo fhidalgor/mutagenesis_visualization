@@ -1,7 +1,7 @@
 """
 This module contains the class that plots the differential bar plot.
 """
-from typing import Union, Dict, Any, Literal, TYPE_CHECKING
+from typing import Union, Dict, Any, Literal, TYPE_CHECKING, Optional
 from pathlib import Path
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -28,6 +28,8 @@ class Differential(Pyplot):
         metric: METRIC = 'rmse',
         plot_type: str = 'bar',
         show_cartoon: bool = False,
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -52,6 +54,16 @@ class Differential(Pyplot):
             structure. The user must have added the secondary structure
             to the object.
 
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -69,8 +81,8 @@ class Differential(Pyplot):
         self.graph_parameters()
 
         self.df_output: DataFrame = process_rmse_residue(
-            self.dataframes.df_notstopcodons[replicate],
-            screen_object.dataframes.df_notstopcodons[replicate], metric
+            self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate],
+            screen_object.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate], metric
         )
         # make cartoon
         if show_cartoon:

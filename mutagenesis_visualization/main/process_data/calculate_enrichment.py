@@ -145,7 +145,6 @@ def calculate_enrichment(
     log10_counts, output_lib_np = get_log_enrichment(
         pre_lib_df, post_lib_df, input_stopcodon, output_stopcodon, min_counts, stopcodon, infinite
     )
-    print(output_lib_np)
     # Group by amino acid
     log10_counts_grouped: DataFrame = group_by_aa(DataFrame(log10_counts), aminoacids)
     log10_counts_mad = np.ravel(np.array(log10_counts_grouped))

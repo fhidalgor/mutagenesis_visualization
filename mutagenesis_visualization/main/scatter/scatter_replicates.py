@@ -2,7 +2,7 @@
 This module will have the wrapper function to plot scatters for all
 replicates within a Screen object.
 """
-from typing import Any, Union, Literal
+from typing import Any, Union, Literal, Optional
 from pathlib import Path
 from itertools import combinations
 from copy import deepcopy
@@ -18,6 +18,8 @@ class ScatterReplicates(Pyplot):
         self,
         wt_counts_only: bool = False,
         mode: Literal["mean", "pointmutant"] = 'pointmutant',
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any
     ) -> None:
@@ -32,6 +34,16 @@ class ScatterReplicates(Pyplot):
 
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
+
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
 
         output_file : str, default None
             If you want to export the generated graph, add the path and name
@@ -62,6 +74,8 @@ class ScatterReplicates(Pyplot):
             scatter_obj_1(
                 scatter_obj_2,
                 mode,
+                min_score,
+                max_score,
                 combination[0],
                 combination[1],
                 output_file_edited,

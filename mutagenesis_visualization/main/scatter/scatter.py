@@ -1,7 +1,7 @@
 """
 This module contains the class that plots scatters.
 """
-from typing import Union, Dict, Any, TYPE_CHECKING, Literal
+from typing import Union, Dict, Any, TYPE_CHECKING, Literal, Optional
 from pathlib import Path
 import numpy as np
 from pandas.core.frame import DataFrame
@@ -25,6 +25,8 @@ class Scatter(Pyplot):
         self,
         screen_object: Union['Screen', Any],
         mode: Literal["mean", "pointmutant"] = 'pointmutant',
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         replicate: int = -1,
         replicate_second_object: int = -1,
         output_file: Union[None, str, Path] = None,
@@ -40,6 +42,16 @@ class Scatter(Pyplot):
 
         mode : str, default 'pointmutant'.
             Alternative set to "mean" for the mean of each position.
+
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
 
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
@@ -65,13 +77,13 @@ class Scatter(Pyplot):
         # Chose mode:
         if mode.lower() == 'pointmutant':
             df_output: DataFrame = process_by_pointmutant(
-                self.dataframes.df_notstopcodons[replicate],
-                screen_object.dataframes.df_notstopcodons[replicate_second_object]
+                self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate],
+                screen_object.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate_second_object]
             )
         else:
             df_output = process_mean_residue(
-                self.dataframes.df_notstopcodons[replicate],
-                screen_object.dataframes.df_notstopcodons[replicate_second_object]
+                self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate],
+                screen_object.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate_second_object]
             )
 
         # create figure
@@ -149,4 +161,4 @@ class Scatter(Pyplot):
         plt.draw()
 
         # Legend
-        plt.legend(loc='upper left', handlelength=0, handletextpad=0, frameon=False, fontsize=10)
+        plt.legend(loc='upper left', handlelength=0, handletextpad=0, frameon=False, fontsize=temp_kwargs['legend_fontsize'])
