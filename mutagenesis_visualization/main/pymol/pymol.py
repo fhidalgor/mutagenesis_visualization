@@ -3,7 +3,7 @@ This module contains the Pymol wrapper class to plot in pymol.
 """
 from os import path
 from pathlib import Path
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Optional
 from copy import deepcopy
 import logging
 from pandas.core.frame import DataFrame
@@ -31,6 +31,8 @@ class Pymol(Pyplot):
         residues: List[str] = None,
         position_correction: int = 0,
         esthetic_parameters: bool = True,
+        min_score: Optional[float] = None,
+        max_score: Optional[float] = None,
         replicate: int = -1,
         **kwargs: Any
     ) -> None:
@@ -71,11 +73,21 @@ class Pymol(Pyplot):
             you dataset, you can correct for that. If your start_position = 2,
             but in the PDB that same residue is at position 20,
             position_correction needs to be set at 18.
-        
+
         esthetic_parameters : bool, default True
             If set to True, pymol will apply the mutagenesis_visualization
-            custom parameters instead of the default Pymol ones.    
-    
+            custom parameters instead of the default Pymol ones.
+
+        min_score : float, default None
+            Change values below a minimum score to be that score.
+            i.e., setting min_score = -1 will change any value smaller
+            than -1 to -1.
+
+        max_score : float, default None
+            Change values below a maximum score to be that score.
+            i.e., setting max_score = 1 will change any value greater
+            than 1 to 1.
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -111,7 +123,7 @@ class Pymol(Pyplot):
         # Calculate residues only if they are not given by the user
         if residues is None:
             residues = pymol_fitness(
-                self.dataframes.df_notstopcodons[replicate].copy(),
+                self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate].copy(),
                 temp_kwargs['gof'],
                 temp_kwargs['lof'],
                 mode,
