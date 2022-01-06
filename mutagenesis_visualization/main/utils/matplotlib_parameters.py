@@ -16,7 +16,7 @@ def graph_parameters() -> None:
 
     # math font
     rcParams['mathtext.fontset'] = 'custom'
-    rcParams['mathtext.rm'] = 'Times New Roman'
+    rcParams["mathtext.default"] = "regular"
     rcParams['svg.fonttype'] = 'none'
 
     # add grid
@@ -36,5 +36,6 @@ def font_parameters() -> None:
     """
     # math font
     rcParams['mathtext.fontset'] = 'custom'
-    rcParams['mathtext.rm'] = 'Arial'
+    rcParams["mathtext.default"] = "regular"
     rcParams['svg.fonttype'] = 'none'
+

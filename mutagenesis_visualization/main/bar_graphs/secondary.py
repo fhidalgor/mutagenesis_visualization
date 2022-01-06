@@ -30,6 +30,7 @@ class Secondary(Pyplot):
         min_score: Optional[float] = None,
         max_score: Optional[float] = None,
         replicate: int = -1,
+        show_error_bars: Optional[bool] = True,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -55,6 +56,10 @@ class Secondary(Pyplot):
             If there is only one replicate, then leave this parameter
             untouched.
 
+        show_error_bars: bool, default True
+            If set to true, show error bars measured as the standard deviation
+            of all replicates.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -68,6 +73,14 @@ class Secondary(Pyplot):
         df_output: DataFrame = _calculate_secondary(
             self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate], self.secondary_dup
         )
+
+        # Error bars
+        error: Optional[DataFrame] = None
+        if show_error_bars:
+            df_temp: DataFrame = DataFrame()
+            for i, df in enumerate(self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[:-1]):
+                df_temp[str(i)] = _calculate_secondary(df, self.secondary_dup)['Score']
+            error = df_temp.std(axis=1)
 
         # Color
         df_output['Color'] = df_output.apply(
@@ -85,8 +98,11 @@ class Secondary(Pyplot):
             ticks,
             df_output['Score'],
             width,
+            yerr = error,
             color=df_output['Color'],
             ec='k',
+            ecolor='black',
+            capsize=2,
         )
 
         # graph parameters

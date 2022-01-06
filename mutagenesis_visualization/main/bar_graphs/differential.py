@@ -13,7 +13,7 @@ from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.pandas_functions import process_rmse_residue
 from mutagenesis_visualization.main.utils.heatmap_utils import generate_cartoon
 
-METRIC = Literal['rmse', 'mean', 'squared']  # pylint: disable=invalid-name
+METRIC = Literal['rmse', 'mean', 'squared', "hard_cutoff"]  # pylint: disable=invalid-name
 
 if TYPE_CHECKING:
     from mutagenesis_visualization.main.classes.screen import Screen
@@ -30,6 +30,7 @@ class Differential(Pyplot):
         show_cartoon: bool = False,
         min_score: Optional[float] = None,
         max_score: Optional[float] = None,
+        hard_cutoff: Optional[float] = None,
         replicate: int = -1,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
@@ -43,8 +44,10 @@ class Differential(Pyplot):
 
         metric: str, default 'rmse'
             The way to compare the two objects.
-            Options are 'rmse' ((x-y)**2/N)**0.5, 'squared' ((x**2-y**2)/N and
-            'mean' (x-y)/N.
+            Options are 'rmse' ((x-y)**2/N)**0.5, 'squared' ((x**2-y**2)/N,
+            'mean' (x-y)/N and 'hard_cutoff'. For 'hard_cutoff', select
+            a threshold and the algorithm will count how many mutations
+            are above/below in a pairwise comparison.
 
         plot_type: str, default 'bar'
             Options are 'bar' and 'line'.
@@ -64,6 +67,9 @@ class Differential(Pyplot):
             i.e., setting max_score = 1 will change any value greater
             than 1 to 1.
 
+        hard_cutoff: float, default None
+            Only works if metric is selected first.
+
         replicate : int, default -1
             Set the replicate to plot. By default, the mean is plotted.
             First replicate start with index 0.
@@ -82,7 +88,7 @@ class Differential(Pyplot):
 
         self.df_output: DataFrame = process_rmse_residue(
             self.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate],
-            screen_object.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate], metric
+            screen_object.dataframes.df_notstopcodons_limit_score(min_score, max_score)[replicate], metric, hard_cutoff
         )
         # make cartoon
         if show_cartoon:
@@ -95,14 +101,15 @@ class Differential(Pyplot):
         # plot
         if plot_type.lower() == 'line':
             self.ax_object.plot(
-                self.df_output['Position'], self.df_output['d1 - d2'], color=temp_kwargs['color']
+                self.df_output['Position'], self.df_output['d1 - d2'], color=temp_kwargs['color'],
             )
         else:
             self.ax_object.bar(
                 self.df_output['Position'],
                 self.df_output['d1 - d2'],
-                width=1.2,
+                width=1,
                 color=temp_kwargs['color'],
+                edgecolor=temp_kwargs['edgecolor'],
                 snap=False
             )
 
@@ -139,20 +146,21 @@ class Differential(Pyplot):
         Update the kwargs.
         """
         temp_kwargs: Dict[str, Any] = super()._update_kwargs(kwargs)
-        temp_kwargs['figsize'] = kwargs.get('figsize', (15, 2.5))
+        temp_kwargs['figsize'] = kwargs.get('figsize', (8, 2))
         temp_kwargs['tick_spacing'] = kwargs.get('tick_spacing', 10)
         temp_kwargs['x_label'] = kwargs.get('x_label', 'Position')
         temp_kwargs['title_fontsize'] = kwargs.get('title_fontsize', 12)
         temp_kwargs["y_label_fontsize"] = kwargs.get('y_label_fontsize', 10)
         temp_kwargs["x_label_fontsize"] = kwargs.get('x_label_fontsize', 10)
+        temp_kwargs["color"] = kwargs.get('color', "paleturquoise")
 
 
         if metric == 'mean':
-            temp_kwargs['y_label'] = kwargs.get('y_label', r'Mean Differential $∆E^i_x$')
+            temp_kwargs['y_label'] = kwargs.get('y_label', r'$\langle∆∆E^x_i\rangle_x$')
         elif metric == 'rmse':
-            temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Differential')
+            temp_kwargs['y_label'] = kwargs.get('y_label', r'RMSE Difference')
         if metric == 'squared':
-            temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Differential')
+            temp_kwargs['y_label'] = kwargs.get('y_label', r'Squared Difference')
         return temp_kwargs
 
     def _tune_plot(self, temp_kwargs: Dict[str, Any]) -> None:
@@ -161,8 +169,10 @@ class Differential(Pyplot):
         """
         # add grid
         if temp_kwargs['grid']:
-            self.ax_object.grid(which='major', color='silver', linewidth=1)
+            self.ax_object.grid(which='major', color='silver', linewidth=0.25)
             self.ax_object.grid(which='minor', color='silver', linewidth=0.25)
+            self.ax_object.tick_params(axis='both', which='major', labelsize=7)
+            self.ax_object.tick_params(axis='both', which='minor', labelsize=7)
             # Show the minor ticks and grid.
             self.ax_object.minorticks_on()
             # Now hide the minor ticks (but leave the gridlines).
@@ -176,7 +186,7 @@ class Differential(Pyplot):
             temp_kwargs['y_label'],
             fontsize=temp_kwargs["y_label_fontsize"],
             color='k',
-            labelpad=0,
+            labelpad=2,
             rotation=90
         )
         self.ax_object.set_xticks(
@@ -185,7 +195,7 @@ class Differential(Pyplot):
                 len(self.df_output) + self.start_position, temp_kwargs['tick_spacing']
             )
         )
-        self.ax_object.set_xlabel('Residue', fontsize=temp_kwargs["x_label_fontsize"], color='k', labelpad=4)
+        self.ax_object.set_xlabel('Amino acid position', fontsize=temp_kwargs["x_label_fontsize"], color='k', labelpad=4)
         self.ax_object.set_xlim(
             self.start_position - 0.1,
             len(self.df_output) + self.start_position - 1 + 0.1

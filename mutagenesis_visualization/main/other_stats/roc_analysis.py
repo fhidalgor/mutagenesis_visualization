@@ -1,10 +1,11 @@
 """
 This module contains the box plot class.
 """
-from typing import Literal, Union, Dict, Any
+from typing import Literal, Union, Dict, Any, Optional, List
 from pathlib import Path
 import matplotlib.pyplot as plt
 from pandas.core.frame import DataFrame
+from numpy import std
 from matplotlib import ticker
 from mutagenesis_visualization.main.classes.base_model import Pyplot
 from mutagenesis_visualization.main.utils.other_stats_utils import (
@@ -26,6 +27,7 @@ class ROC(Pyplot):
         df_class: DataFrame,
         mode: MODE = 'pointmutant',
         replicate: int = -1,
+        show_error: Optional[bool] = False,
         output_file: Union[None, str, Path] = None,
         **kwargs: Any,
     ) -> None:
@@ -53,6 +55,11 @@ class ROC(Pyplot):
             If there is only one replicate, then leave this parameter
             untouched.
 
+        show_error: bool, default False
+            If set to true, show error will calculate the error as the
+            standard deviation of repeating the ROC AUC measurement with
+            the replicates.
+
         output_file : str, default None
             If you want to export the generated graph, add the path and name
             of the file. Example: 'path/filename.png' or 'path/filename.svg'.
@@ -60,18 +67,36 @@ class ROC(Pyplot):
         temp_kwargs: Dict[str, Any] = self._update_kwargs(kwargs)
         self.graph_parameters()
 
+        # Error calculation by iteration over replicates
+        error: Optional[float] = None
+        if show_error:
+            auc_list: List[float] = []
+            for df in self.dataframes.df_notstopcodons[:-1]:
+                df_merged = merge_class_variants(
+                    select_grouping(df, mode), df_class, mode
+                )
+                _, _, auc, _ = roc_auc(df_merged)
+                auc_list.append(auc)
+            error = std(auc_list)
+
+
         # Merge dataframe with classes
-        df_output: DataFrame = merge_class_variants(
+        self.df_output: DataFrame = merge_class_variants(
             select_grouping(self.dataframes.df_notstopcodons[replicate], mode), df_class, mode
         )
 
         # Calculate ROC parameters
-        fpr, tpr, auc, _ = roc_auc(df_output)
+        fpr, tpr, auc, _ = roc_auc(self.df_output)
+
+        # Create label for legend
+        label = f"AUC = {auc:0.2f}"
+        if error:
+            label = f"AUC = {auc:0.2f} ± {error:0.2f}"
 
         # create figure
         self.fig, self.ax_object = plt.subplots(figsize=temp_kwargs['figsize'])
         lw: int = 2
-        plt.plot(fpr, tpr, color='k', lw=lw, label='AUC = %0.2f' % auc)
+        plt.plot(fpr, tpr, color='k', lw=lw, label=label)
         plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 
         self._tune_plot(temp_kwargs)
@@ -108,6 +133,7 @@ class ROC(Pyplot):
             handlelength=0,
             handletextpad=0,
             frameon=False,
+            fontsize=11.
         )
 
     def _update_kwargs(self, kwargs: Any) -> Dict[str, Any]:

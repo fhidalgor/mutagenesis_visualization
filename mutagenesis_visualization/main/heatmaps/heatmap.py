@@ -317,17 +317,17 @@ class Heatmap(Pyplot):
         )
         cb_object.ax.set_yticklabels(
             cb_object.ax.get_yticklabels(),
-            fontsize=6,
+            fontsize=10,
             color=LABELS_COLOR,
         )
         cb_object.update_ticks()
         plt.text(
-            1.2 + 10 / len(self.df_output.columns),
-            0.7,
-            r'$\langle∆E^x_i\rangle_x$',
+            1.4 + 10 / len(self.df_output.columns),
+            0.725,
+            temp_kwargs['colorbar_heatmap_label'],
             transform=cbar1.transAxes,
             horizontalalignment='center',
-            fontsize=7,
+            fontsize=10,
             color=LABELS_COLOR
         )
 
@@ -361,4 +361,5 @@ class Heatmap(Pyplot):
         # load labels
         temp_kwargs['color_sequencelabels'] = labels(self.start_position)[0]
         temp_kwargs['number_sequencelabels'] = labels(self.start_position)[1]
+        temp_kwargs['colorbar_heatmap_label'] = kwargs.get('colorbar_heatmap_label', r'$∆E^x_i$')
         return temp_kwargs

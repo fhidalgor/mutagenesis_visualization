@@ -1,7 +1,7 @@
 """
 This module contains utils to manipulate dataframes.
 """
-from typing import Any, Tuple, List
+from typing import Any, Optional, Tuple, List
 from copy import deepcopy
 from itertools import chain, repeat
 import numpy as np
@@ -220,6 +220,7 @@ def process_rmse_residue(
     df_1: DataFrame,
     df_2: DataFrame,
     metric: str,
+    hard_cutoff: Optional[float] = None,
 ) -> DataFrame:
     """
     Given two dataframes, it groups by position and truncates the
@@ -240,13 +241,26 @@ def process_rmse_residue(
     elif metric.lower() == 'rmse':
         df_ouput['d1 - d2'] = ((df_ouput['dataset_1'] - df_ouput['dataset_2'])**2)
         df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
-        df_diff['d1 - d2'] = df_diff['d1 - d2']**0.5
+        df_diff['d1 - d2'] = df_diff['d1 - d2']**0.5-df_diff['d1 - d2'].median()**0.5
     elif metric.lower() == 'squared':
         df_ouput['d1 - d2'] = (df_ouput['dataset_1']**2 - df_ouput['dataset_2']**2)
+        df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
+    elif metric.lower() == 'hard_cutoff':
+        df_ouput['d1 - d2'] = df_ouput.apply(lambda x: _check_if_over_cutoff(x["dataset_1"], x["dataset_2"], hard_cutoff), axis=1)
         df_diff = df_ouput.groupby(['Position'], as_index=False).mean()
     df_diff.dropna(how='any', inplace=True)
     return df_diff
 
+def _check_if_over_cutoff(x_value: float, y_value: float, cutoff: float)-> int:
+    """
+    Will check if two numbers are over or under the cutoff
+    """
+    if x_value>cutoff and y_value>cutoff:
+        return 0
+    if x_value<cutoff and y_value<cutoff:
+        return 0
+    else:
+        return 1
 
 def process_by_pointmutant(df_1: DataFrame, df_2: DataFrame) -> DataFrame:
     """
