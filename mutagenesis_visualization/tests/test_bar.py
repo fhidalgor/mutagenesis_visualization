@@ -13,7 +13,6 @@ OBJ_TEST_2 = DEMO_OBJECTS.bla
 DICT_OBJ: Dict[str, Screen] = {'obj_test_1': OBJ_TEST_1, 'obj_test_2': OBJ_TEST_2}
 OBJ_TEST_COUNTS = DEMO_OBJECTS.hras_counts
 
-
 def test_enrichment_bar() -> None:
     """
     Test mean bar plot.
@@ -164,8 +163,10 @@ def test_secondary() -> None:
         {
             'show': False,
             'close': True,
+            'show_error_bars':False,
         },
         {
+            'show_error_bars':False,
             'figsize': (3, 2.5),
             'y_label': r'$∆E^i_x$',
             'show': False,
