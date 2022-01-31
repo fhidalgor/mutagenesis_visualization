@@ -8,6 +8,7 @@ import numpy as np
 from mutagenesis_visualization.main.classes.counts import Counts
 from mutagenesis_visualization.main.classes.screen import Screen
 from mutagenesis_visualization.main.demo.demo_data import load_demo_datasets
+from mutagenesis_visualization.main.demo.hidalgoetal_objects import OBJECTS
 from mutagenesis_visualization.main.process_data.count_reads import count_reads
 from mutagenesis_visualization.main.utils.data_paths import HRAS_FASTQ
 
@@ -17,6 +18,15 @@ DEMO_DATASETS: Dict[str, DataFrame] = load_demo_datasets()
 class DemoObjects:
     """
     This class will load demo objects.
+
+    The objects to load are: "aph", "asynuclein", "b11l5f", "bla",
+    "hras_rbd", "hras_gapgef", "mapk1", "rev", "sumo", "tat", "ube2i",
+    "hras_counts", and from the Hidalgo et al. eLife 2022 paper: "hras_166_gap",
+    "hras_166_rbd", "hras_188_baf3", "hras_180_gap","hras_180_rbd",
+    "kras_165_gap", "kras_165_gapgef", "kras_173_gapgef", "kras_165_gef",
+    "kras_173_gef", "kras_165_rbd", "kras_173_gap", "kras_173_rbd",
+    "hras_166_gapgef", "krasq61l_173_gap", and "krasq61l_173_rbd".
+
     """
     def __init__(self) -> None:
         self.aph: Screen = self._generate_aph_obj()
@@ -31,6 +41,22 @@ class DemoObjects:
         self.tat: Screen = self._generate_tat_obj()
         self.ube2i: Screen = self._generate_ube2i_obj()
         self.hras_counts: Counts = self._return_hras_counts()
+        self.hras_166_gap: Screen = OBJECTS["H-Ras_2-166_GAP"]
+        self.hras_166_rbd: Screen = OBJECTS["H-Ras_2-166_RBD"]
+        self.hras_188_baf3: Screen = OBJECTS["H-Ras_2-188_BaF3"]
+        self.hras_180_gap: Screen = OBJECTS["H-Ras_2-180_GAP"]
+        self.hras_180_rbd: Screen = OBJECTS["H-Ras_2-180_RBD"]
+        self.kras_165_gap: Screen = OBJECTS["K-Ras_2-165_GAP"]
+        self.kras_165_gapgef: Screen = OBJECTS["K-Ras_2-165_GAPGEF"]
+        self.kras_173_gapgef: Screen = OBJECTS["K-Ras_2-173_GAPGEF"]
+        self.kras_165_gef: Screen = OBJECTS["K-Ras_2-165_GEF"]
+        self.kras_173_gef: Screen = OBJECTS["K-Ras_2-173_GEF"]
+        self.kras_165_rbd: Screen = OBJECTS["K-Ras_2-165_RBD"]
+        self.kras_173_gap: Screen = OBJECTS["K-Ras_2-173_GAP"]
+        self.kras_173_rbd: Screen = OBJECTS["K-Ras_2-173_RBD"]
+        self.hras_166_gapgef: Screen = OBJECTS["H-Ras_2-166_GAPGEF"]
+        self.krasq61l_173_gap: Screen = OBJECTS["K-Ras_2-173_Q61L_GAP"]
+        self.krasq61l_173_rbd: Screen = OBJECTS["K-Ras_2-173_Q61L_RBD"]
 
     def _generate_hras_rbd_object(self) -> Screen:  # pylint: disable=no-self-use
         """

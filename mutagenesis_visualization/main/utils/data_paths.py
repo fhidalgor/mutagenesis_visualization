@@ -6,6 +6,9 @@ import pkg_resources
 
 PATH_VARIABLE = "mutagenesis_visualization"
 
+# Data folder
+DATA_FOLDER = pkg_resources.resource_filename(PATH_VARIABLE, "data/")
+
 # PDBs
 PDB_5P21 = pkg_resources.resource_filename(PATH_VARIABLE, "data/5p21.pdb")
 PDB_1ERM = pkg_resources.resource_filename(PATH_VARIABLE, "data/1erm.pdb")

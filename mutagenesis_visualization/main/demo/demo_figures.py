@@ -92,6 +92,7 @@ def run_demo(figure: FIGURE_OPTIONS = 'heatmap', show: bool = True) -> None:
             figsize=[3, 2],
             title='Mean of secondary motifs',
             show=show,
+            show_error_bars=False,
         )
     elif figure.lower() == 'correlation':
         # Correlation between amino acids

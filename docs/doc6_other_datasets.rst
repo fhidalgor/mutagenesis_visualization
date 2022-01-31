@@ -11,7 +11,7 @@ scales, etc. Furthermore, on top of testing the resilience of
 ``mutagenesis_visualization``, we are providing extra examples on how to
 use this API.
 
-.. code:: python
+.. code:: ipython3
 
     %matplotlib inline
     from typing import Dict, Union, List
@@ -23,6 +23,7 @@ use this API.
     
     from mutagenesis_visualization import Screen
     from mutagenesis_visualization import load_demo_datasets
+    from mutagenesis_visualization import DemoObjects
     from mutagenesis_visualization.main.utils.data_paths import PDB_1ERM, PDB_1A5R, PDB_1ND4
     
     DEMO_DATASETS: Dict[str, Union[np.array, DataFrame]] = load_demo_datasets()
@@ -36,10 +37,29 @@ Load objects
 ------------
 
 For simplicity, we also have added the option of loading those datasets
-into objects automatically. The command to do that would be
-``DEMO_OBJECTS.name_object()``. There are 10 objects to load (hras_rbd,
-hras_gapgef, bla_obj, sumo_obj, mapk1_obj, ube2i_obj, tat_obj, rev_obj,
-asynuclein_obj, aph_obj, b11l5f_obj).
+into objects automatically There are 10 objects to load from other
+papers (hras_rbd, hras_gapgef, bla_obj, sumo_obj, mapk1_obj, ube2i_obj,
+tat_obj, rev_obj, asynuclein_obj, aph_obj, b11l5f_obj) and all the
+heatmaps from the Hidalgo et al. eLife 2022 paper (hras_166_gap,
+hras_166_rbd, hras_188_baf3, hras_180_gap, hras_180_rbd, kras_165_gap,
+kras_165_gapgef, kras_173_gapgef, kras_165_gef, kras_173_gef,
+kras_165_rbd, kras_173_gap, kras_173_rbd, hras_166_gapgef,
+krasq61l_173_gap, and krasq61l_173_rbd.).
+
+Hidalgo et al. eLife 2022 paper
+-------------------------------
+
+The figures of the Hidalgo et al. eLife 2022 paper were created using
+mutagenesis-visualization. To retrieve the objects, just instantiate the
+class ``DemoObjects`` and then access each of the datasets.
+
+.. code:: ipython3
+
+    # instantiate 
+    demo_objects = DemoObjects()
+    
+    # access the datasets
+    demo_objects.hras_188_baf3.heatmap()
 
 Beta Lactamase
 --------------
@@ -47,7 +67,7 @@ Beta Lactamase
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://www.uniprot.org/uniprot/P62593#sequences
     
@@ -79,7 +99,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     bla_obj.heatmap(
@@ -181,7 +201,7 @@ Create object
 3D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Plot 3-D plot
     bla_obj.plotly_scatter_3d(
@@ -210,7 +230,7 @@ Create object
 .. raw:: html
     :file: html/bla_3d_pdbprop.html
 
-.. code:: python
+.. code:: ipython3
 
     # Start pymol and color residues. Cut offs are set with gof and lof parameters.
     bla_obj.pymol(
@@ -226,7 +246,7 @@ Sumo1
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://doi.org/10.15252/msb.20177908
     
@@ -253,7 +273,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # You can use your own colormap or import it from matplotlib
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
@@ -357,7 +377,7 @@ Create object
    :width: 200px
 
 
-.. code:: python
+.. code:: ipython3
 
     # Open pymol and color the sumo structure
     sumo_obj.pymol(pdb=PDB_1A5R, mode='mean', gof=1, lof=0.5)
@@ -371,7 +391,7 @@ MAPK1
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Order of amino acid substitutions in the hras_enrichment dataset
     aminoacids = list(DEMO_DATASETS['df_mapk1'].index)
@@ -388,7 +408,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     mapk1_obj.heatmap(
@@ -472,7 +492,7 @@ UBE2I
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Order of amino acid substitutions in the hras_enrichment dataset
     aminoacids = list(DEMO_DATASETS['df_ube2i'].index)
@@ -499,7 +519,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
@@ -610,7 +630,7 @@ TAT
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://doi.org/10.1016/j.cell.2016.11.031
     
@@ -634,7 +654,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     tat_obj.heatmap(
@@ -723,7 +743,7 @@ REV
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://doi.org/10.1016/j.cell.2016.11.031
     #https://www.uniprot.org/uniprot/P69718
@@ -748,7 +768,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     rev_obj.heatmap(
@@ -831,7 +851,7 @@ Create object
 Load data
 ~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://www.uniprot.org/uniprot/P37840#sequences
     #https://doi.org/10.1038/s41589-020-0480-6
@@ -857,7 +877,7 @@ Load data
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     # Create full heatmap
     asynuclein_obj.heatmap(
@@ -942,7 +962,7 @@ APH(3) II
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://doi.org/10.1093/nar/gku511
     
@@ -976,7 +996,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
@@ -1081,7 +1101,7 @@ Create object
 3D plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     colormap = copy.copy((plt.cm.get_cmap('Blues_r')))
     
@@ -1116,7 +1136,7 @@ Create object
 .. raw:: html
     :file: html/aph_3d_pdbprop.html
 
-.. code:: python
+.. code:: ipython3
 
     # Start pymol and color residues. Cut offs are set with gof and lof parameters.
     aph_obj.pymol(
@@ -1136,7 +1156,7 @@ b11l5f
 Create object
 ~~~~~~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     #https://doi.org/10.5281/zenodo.1216229
     
@@ -1156,7 +1176,7 @@ Create object
 2D Plots
 ~~~~~~~~
 
-.. code:: python
+.. code:: ipython3
 
     colormap = copy.copy((plt.cm.get_cmap('bwr')))
     
