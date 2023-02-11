@@ -6,7 +6,7 @@ authors = ["Frank <fhidalgoruiz@berkeley.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-ipython = "^7.31.1"
+ipython = ">=7.31.1,<9.0.0"
 numpy = "^1.19.5"
 matplotlib = "^3.4.3"
 pandas = "^1.2.0"
